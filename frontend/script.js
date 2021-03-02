@@ -9,21 +9,19 @@ submitButton.addEventListener('click', () => {
     const axios = require('axios');
 
     axios
-    .post('localhost', {
+    .post('http://localhost:3000', {
         username: username,
         password: password
     })
     .then(res => {
+        console.log("Note:")
         console.log(`statusCode: ${res.statusCode}`)
         console.log(res)
     })
     .catch(error => {
+        console.log("Error:")
         console.error(error)
     })
 
-})
-    
-
-    
-    
+})  
     

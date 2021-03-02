@@ -1,1 +1,1 @@
-console.log('index.js ran');
+console.log('main.js ran');

@@ -1,7 +1,11 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
+  "name": "icare-backend",
+  "version": "0.1.0",
+  "description": "iCare Backend",
+  "scripts": {
+    "start": "node main",
+    "watch": "nodemon main"
+  },
   "main": "main.js",
   "author": "",
   "license": "ISC",

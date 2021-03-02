@@ -1,15 +1,15 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "icare",
+  "version": "0.1.0",
+  "description": "iCare",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "watch": "nodemon --exec electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/jalenng/2021-spring-cs160-team-paladins",
   "keywords": [],
-  "author": "GitHub",
+  "author": "Team Paladins",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^11.3.0",

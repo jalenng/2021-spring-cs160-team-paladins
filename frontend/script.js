@@ -3,12 +3,15 @@ var submitButton = document.getElementById('test');
 
 submitButton.addEventListener('click', () => { 
     
+    var username = form.elements[0].value;
+    var password = form.elements[1].value;
+
     const axios = require('axios');
 
     axios
     .post('localhost', {
-        first: form.elements[0].value,
-        second: form.elements[1].value
+        username: username,
+        password: password
     })
     .then(res => {
         console.log(`statusCode: ${res.statusCode}`)
@@ -16,7 +19,6 @@ submitButton.addEventListener('click', () => {
     })
     .catch(error => {
         console.error(error)
-        console.log("WELP")
     })
 
 })

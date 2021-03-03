@@ -12,4 +12,4 @@ document.getElementById('accountButton').addEventListener('click', () => {
     ipcRenderer.invoke('account-button-action')
 })
 
-const server = require('../backend/server.js')
+const server = require('../backend/main.js')

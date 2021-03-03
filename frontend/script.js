@@ -9,7 +9,7 @@ submitButton.addEventListener('click', () => {
     const axios = require('axios');
 
     axios
-    .post('http://localhost:3000', {
+    .post('http://jn.ddns.net:3000', {
         username: username,
         password: password
     })

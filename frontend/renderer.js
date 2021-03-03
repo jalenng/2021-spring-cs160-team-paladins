@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // No Node.js APIs are available in this process because
@@ -6,3 +7,10 @@
 // process.
 
 const server = require('../backend/server.js')
+=======
+const { ipcRenderer } = require('electron')
+
+document.getElementById('accountButton').addEventListener('click', () => { 
+    ipcRenderer.invoke('account-button-action')
+})
+>>>>>>> 23b9f4f0af19c299820bb563cee552c567c30fb8

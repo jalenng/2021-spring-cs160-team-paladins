@@ -4,6 +4,7 @@
       let express = require('express');
       let bodyParser = require('body-parser')
       let multer = require('multer')
+      let path = require('path')
       let upload = multer()
       // let db = require('./db.js')
       let app = express();
@@ -21,7 +22,6 @@
         console.log(req.body)
         console.log(req.body.username)
         console.log(req.body.password)
-        // res.send('received the request')
       });
       
       let server = app.listen(3000, function () {

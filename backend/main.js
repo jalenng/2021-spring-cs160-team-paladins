@@ -1,32 +1,33 @@
+(
+  function() {
+      "use strict";
+      let express = require('express');
+      let bodyParser = require('body-parser')
+      let multer = require('multer')
+      let path = require('path')
+      let upload = multer()
+      // let db = require('./db.js')
+      let app = express();
 
-const http = require('http')
+      // gets form data.
+      app.get('/', function(req, res){
+        res.render('form');
+      });
 
-var server = http.createServer(function(request, response) {
+      // for parsing application/json
+      app.use(bodyParser.json()); 
 
-    if (request.method == 'POST') {
+      // when user posts, displays form data
+      app.post('/', function(req, res) {
+        console.log(req.body)
+        console.log(req.body.username)
+        console.log(req.body.password)
+      });
+      
+      let server = app.listen(3000, function () {
+        console.log('Express server listening on port ' + server.address().port);
+      });
 
-            var body = '';
-
-            request.on('data', function (data) {
-                body += data;
-            });
-
-            request.on('end', function () {
-                try {
-                    var post = JSON.parse(body);
-                    console.log(post)
-                    return;
-                }catch (err){
-                    // Handle exception
-                    return;
-                }
-            });
-            
-            response.writeHead(200, {'Content-Type': 'text/plain'});
-            response.write('Received!');
-            response.end();
-        }
-    });
-
-    server.listen(3000);
-    console.log("Server started")
+      module.exports = app;
+  }()
+);

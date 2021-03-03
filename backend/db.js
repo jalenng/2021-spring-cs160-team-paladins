@@ -3,7 +3,7 @@
 var sql = require('mysql')
 
 var connection = mysql.createConnection({
-    host : 'localhost:3000',
+    host : 'localhost',
     user : 'root',
     password : '',
     database : 'mydb'
@@ -11,6 +11,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw error;
+    else console.log('worked')
 });
 
 module.exports = connection;

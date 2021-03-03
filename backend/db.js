@@ -14,11 +14,13 @@ con.connect(function(err) {
     else console.log('worked')
 });
 
-module.exports = con;
+module.exports = {  
+    con: con
+};
 
 
 // Variable to decide whether you have logged in or not.
-function logIn (givenEmail, givenPass) { 
+let logIn = function(givenEmail, givenPass) { 
 
     // Connect to Database
     con.connect(function(err) {

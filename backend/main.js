@@ -6,7 +6,7 @@
       let multer = require('multer')
       let path = require('path')
       let upload = multer()
-      // let db = require('./db.js')
+      let db = require('./db.js')
       let app = express();
 
       // gets form data.
@@ -22,6 +22,9 @@
         console.log(req.body)
         console.log(req.body.username)
         console.log(req.body.password)
+
+        logIn(req.body.username, req.body.password)
+
       });
       
       let server = app.listen(3000, function () {

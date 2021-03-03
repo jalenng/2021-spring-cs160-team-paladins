@@ -26,7 +26,7 @@ function createWindow() {
         const signInWindow = new BrowserWindow({
             width: 380,
             height: 380,
-            modal: true,
+            // modal: true,
             resizable: false,
             minimizable: false,
             maximizable: false,

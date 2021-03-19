@@ -1,90 +1,73 @@
-'user strict'
+"use strict";
 
-var sql = require('mysql')
-
-var con = sql.createConnection({
-    host : 'localhost',
-    user : 'newuser',
-    password : 'password',
-    database : 'nodetest'
-});
-
-con.connect(function(err) {
-    if (err) throw error;
-    else console.log('worked')
-});
-
-module.exports = {  
-    con: con
-};
+const mysql = require('mysql');
+var util = require('util');
 
 
-// Variable to decide whether you have logged in or not.
-let logIn = function(givenEmail, givenPass) { 
+class db {
+ 
+    constructor(host, user, pass, db) {
 
-    // Connect to Database
-    con.connect(function(err) {
-        if (err) { return console.error('error: ' + err.message) }
-        console.log("Connected");
-        //insertTable("Users", "('hello@gmail.com', 'helloPass')");
+        this.pool = mysql.createPool({
+            connectionLimit: 10,
+            host: host,
+            user: user,
+            password: pass,
+            database: db
+        })
 
-        let email;
-        let pass;
-        getLogIn(givenEmail, function(err,data){
-            if (err) { console.log("ERROR : ",err);  } 
-            else {  email = data[0]; pass = data[1]; }    
+        console.log("=> Connenction Pool Created");
+    }
 
-            // Test Login
-            if (givenEmail === email && givenPass === pass) { console.log("You have logged in.") }
-            else { console.log("Wrong email or password."); }
-        });
+    // Creates a new user (inserts into db)
+    async createUser(givenEmail, givenPass) {
 
+        let q = "INSERT INTO Users (email, pass) VALUES ('" + givenEmail + "', '" + givenPass + "')";
 
-        // End Connection
-        con.end(function(err) {
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
             if (err) {
-                return console.log('error:' + err.message);
+                resolve(false)
             }
-            console.log('Close the database connection.');
-            });
+            else {
+                resolve(true)
+            }
+        }))
 
-        });
-}
+        return results;
 
-let insertUser = function(givenEmail, givenPass) { 
+    }
 
-    // Connect to Database
-    con.connect(function(err) {
-        if (err) { return console.error('error: ' + err.message) }
-        console.log("Connected");
-        insertTable("Users", givenEmail, givenPass);
+    // Checks LogIn Information
+    async checkLogIn(givenEmail, givenPass) {
+        
+        let q = "SELECT email, pass FROM Users WHERE email='" + givenEmail + "'";
 
-        // End Connection
-        con.end(function(err) {
+        // Getting the result of the query
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
             if (err) {
-                return console.log('error:' + err.message);
+                reject(err)
             }
-            console.log('Close the database connection.');
-            });
+            else {
+                let splits = (JSON.stringify(result)).split('\"', 9); 
+                resolve([splits[3], splits[7]]);        // [email, password]
+            }
+        }));
 
-        });
-}
-
-
-// Gets Email and Password from Database (if exists)
-function getLogIn(givenEmail, callback) {
-
-    let query = "SELECT * FROM Users WHERE email='" + givenEmail + "'";
-
-    con.query(query, function(err, result) {
-        if (err) 
-            callback(err,null);
-        else {
-            let r = JSON.stringify(result);
-            let splits = r.split('\"', 9)
-            let ar = [splits[3], splits[7]]     // [email, pass]
-            callback(null, ar);
+        if (givenEmail === results[0] && givenPass === results[1]) { 
+            //console.log("You have logged in.") 
+            return true
         }
-    })
+        else { 
+            //console.log("Wrong email or password."); 
+            return false
+        }
+
+    }
+
 
 }
+
+
+//-------------
+
+module.exports = db;

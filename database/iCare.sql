@@ -20,8 +20,8 @@ CREATE TABLE NotificationSounds (
 # Table of User Preferences
 CREATE TABLE UserPreferences (
 	email varchar(50),
-    displayName varchar(50),
-    notiInterval int,					# DEFAULT
+    displayName varchar(50) DEFAULT "Display Name",
+    notiInterval int DEFAULT 20,
     notiSound varchar(50),				# DEFAULT
     notiSoundOn boolean DEFAULT TRUE,
     dataUsageOn bool DEFAULT TRUE,

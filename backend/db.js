@@ -10,7 +10,7 @@ var con = sql.createConnection({
 });
 
 con.connect(function(err) {
-    if (err) throw error;
+    if (err) throw err;
     else console.log('worked')
 });
 

@@ -13,7 +13,6 @@ test('check login credentials for \'hello@gmail.com\' (fail - wrong password)', 
     expect(loginCheck).not.toBe(true);
 });
 
-
 test('create user \'test@gmail.com\' (success)', async () => {
     let createUser = await userDB.createUser('test@gmail.com', 'pass')
 
@@ -31,7 +30,6 @@ test('set display name (success)', async () => {
     if (setDN == true) { expect(setDN).toBe(true) }         
     else { expect(setDN).not.toBe(true) }
 })
-
 
 test('get timer length in minutes (success)', async () => {
     let notiInt = await userDB.getNotiInterval('hello@gmail.com');
@@ -60,14 +58,12 @@ test('get dataUsageOn - boolean (success)', async () => {
     expect(dataUsageBool).toBe(true);
 });
 
-
 test('set dataUsageOn false - boolean (success)', async () => {
     await userDB.setDataUsageOn('default@gmail.com', false).then((result) => {
         if (result == true) { expect(result).toBe(true) }
         else { expect(result).not.toBe(true) }
     })
 })
-
 
 test('set dataUsageOn true - boolean (success)', async () => {
     await userDB.setDataUsageOn('default@gmail.com', true).then((result) => {

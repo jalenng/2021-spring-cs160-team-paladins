@@ -13,8 +13,6 @@ class db {
             password: pass,
             database: db
         })
-
-        console.log("=> Connenction Pool Created");
     }
 
     /**
@@ -62,7 +60,6 @@ class db {
         let splits = (JSON.stringify(data)).split('\"');       
     
         return splits[3];
-
     };
 
     /**
@@ -209,7 +206,6 @@ class db {
 
         return splits3[2]
     }
-
 }
 
 

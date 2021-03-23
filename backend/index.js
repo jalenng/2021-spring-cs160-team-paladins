@@ -76,10 +76,10 @@ function getLogIn(givenEmail, callback) {
       //   logIn(req.body.username, req.body.password)
       // }); 
 
-      app.get('/LoginMenu', (req, res) => {
-        console.log(req.body.username)
-        console.log(req.body.password)
-        console.log('worked')
+      app.get('/LoginMenu', (req, res) => { 
+          let username = req.query.username;
+          let password = req.query.password;
+          console.log(username, password)
       })
       
       let server = app.listen(3000, function () {

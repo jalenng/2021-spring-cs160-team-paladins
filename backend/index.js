@@ -1,11 +1,11 @@
-var sql = require('mysql')
+// var sql = require('mysql')
 
-var con = sql.createConnection({
-    host : 'localhost',
-    user : 'newuser',
-    password : 'password',
-    database : 'nodetest'
-});
+// var con = sql.createConnection({
+//     host : 'localhost',
+//     user : 'newuser',
+//     password : 'password',
+//     database : 'nodetest'
+// });
 
 // Variable to decide whether you have logged in or not.
 function logIn(givenEmail, givenPass) { 
@@ -62,26 +62,25 @@ function getLogIn(givenEmail, callback) {
   function() {
       "use strict";
       let express = require('express');
-      let bodyParser = require('body-parser')
       let multer = require('multer')
       let path = require('path')
       let upload = multer()
-      let db = require('./db.js')
+      //   let db = require('./db.js')
       let app = express();
 
-      // gets form data.
-      app.get('/', function(req, res){
-        res.render('form');
-      });
-
       // for parsing application/json
-      app.use(bodyParser.json()); 
+      app.use(express.json());
 
-      // when user posts, displays form data
-      app.post('/', function(req, res) {
-        logIn(req.body.username, req.body.password)
+      // // when user posts, displays form data
+      // app.post('/', function(req, res) {
+      //   logIn(req.body.username, req.body.password)
+      // }); 
 
-      });
+      app.get('/LoginMenu', (req, res) => {
+        console.log(req.body.username)
+        console.log(req.body.password)
+        console.log('worked')
+      })
       
       let server = app.listen(3000, function () {
         console.log('Express server listening on port ' + server.address().port);

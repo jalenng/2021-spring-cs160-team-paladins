@@ -3,26 +3,36 @@ const isDev = require('electron-is-dev');
 const path = require('path'); 
 
 let mainWindow; 
+let devToolsWindow;
 
 function createWindow() { 
 
     mainWindow = new BrowserWindow({ 
         width: 800, 
         height: 500,
+        maximizable: false,
+        title: "iCare",
         backgroundColor: '#ffffff', 
         webPreferences: {
-            nodeIntegration: true
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            devTools: true,
         },
-        
 
     }); 
     
     mainWindow.menuBarVisible = false;
+    devToolsWindow = new BrowserWindow();
 
+    mainWindow.webContents.setDevToolsWebContents(devToolsWindow.webContents);
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
     
-    const startURL = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
-    
-    mainWindow.loadURL(startURL); 
+    mainWindow.loadURL(
+        isDev
+        ? 'http://localhost:3000'
+        : `file://${path.join(__dirname, '../build/index.html')}`
+    ); 
 
     // Handle event for when account button is clicked
     ipcMain.handle('account-button-action', event => {
@@ -83,4 +93,8 @@ ipcMain.handle('sign-in', (event, username, password) => {
         console.error(error)
     })
 
+})
+
+ipcMain.handle('log-to-console', (event, message) => {
+    console.log(message);
 })

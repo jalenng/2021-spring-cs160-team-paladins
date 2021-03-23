@@ -161,20 +161,23 @@ class db {
     /**
      * Sets the boolean value for dataUsageOn
      * @param {string} userEmail email (primary key)
+     * @param {boolean} boolValue set DataUsageOn
      * @returns true if no error
      */
-    async setDataUsageOn(userEmail) {
+    async setDataUsageOn(userEmail, boolValue) {
         let i = boolValue ? true : false;
         let q = "UPDATE userPreferences SET dataUsageOn=" + i
+        console.log("boolValue = " + boolValue + "; i = " + i)
 
         return await this.dbPromise(false, q, userEmail)
     }
 
+    async close() {
+        this.pool.end()
+    }
 
-
-    // Gets/Sets Values from DB using Promises
     /**
-     * Getter/Setter for DB using Promises
+     * Getter/Setter for DB's userPreferences using Promises
      * @param {boolean} isGet is getter method?
      * @param {string} str first part of query
      * @param {*string} userEmail email (primary key)
@@ -184,13 +187,10 @@ class db {
         let q = str + " WHERE email='" + userEmail + "'"
 
         let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
-            if (err) {
-                reject(err)
-            }
+            if (err) { reject(err) }
             else {
                 if (isGet) { resolve(result) }      // For Getter Methods
                 else { resolve(true) }              // For Setter Methods
-                
             }
         }));
 
@@ -209,20 +209,6 @@ class db {
 
         return splits3[2]
     }
-
-
-
-
-
-
-
-        
-    
-
-
-
-    
-       
 
 }
 

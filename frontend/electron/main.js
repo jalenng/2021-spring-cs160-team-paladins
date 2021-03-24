@@ -17,6 +17,7 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             enableRemoteModule: true,
+            contextIsolation: false,
             devTools: true,
         },
 
@@ -49,7 +50,10 @@ function createWindow() {
             parent: mainWindow,
             webPreferences: {
                 preload: path.join(__dirname, 'preload.js'),
-                nodeIntegration: true
+                nodeIntegration: true,
+                enableRemoteModule: true,
+                contextIsolation: false,
+                devTools: true,
             }
 
         })

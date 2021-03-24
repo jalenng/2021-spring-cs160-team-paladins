@@ -8,5 +8,5 @@ Starts the React process and Electron process. Use this to run the program.
 ### `npm run start`
 Runs the React process only.
 
-### `npm run electron-start`
+### `npm run electron-watch`
 Starts the Electron process only.

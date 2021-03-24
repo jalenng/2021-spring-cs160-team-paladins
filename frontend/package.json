@@ -11,7 +11,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "concurrently": "^6.0.0",
-    "electron": "^11.2.1",
+    "electron": "^12.0.1",
     "electron-builder": "^22.9.1",
     "electron-is-dev": "^2.0.0",
     "electron-store": "^7.0.2",
@@ -28,8 +28,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-start": "wait-on tcp:3000 && electron .",
-    "dev": "concurrently \"npm:start\" \"npm:electron-start\""
+
+    "electron": "electron .",
+    "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron",
+    "dev": "concurrently \"npm:start\" \"npm:electron-watch\""
   },
   "eslintConfig": {
     "extends": [
@@ -48,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }

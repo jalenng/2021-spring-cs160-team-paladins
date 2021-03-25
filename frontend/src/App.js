@@ -1,31 +1,30 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import { PrimaryButton } from '@fluentui/react/lib/Button';
-import { Stack } from '@fluentui/react/lib/Stack';
+import { Text } from '@fluentui/react/lib/Text';
 
-const {ipcRenderer} = window.require('electron');
+const { ipcRenderer } = window.require('electron');
+
+const divStyle = {
+  paddingTop: '10px',
+  paddingLeft: '30px',
+};
 
 export default class App extends React.Component {
   render() {
+
     return (
-      <div>
-        <h1>Welcome to iCare</h1>
-        <Link to="/LoginMenu">Login</Link>
+      <div style={divStyle}>
+        <Text variant={'xxLarge'} block>
+          <b>Welcome to iCare</b>
+        </Text>
 
-        <Stack horizontal tokens={{ childrenGap: 40 }}>
+        <PrimaryButton
+            text='Sign In'
+            onClick={() => ipcRenderer.invoke('show-sign-in-popup')}
+        />
 
-          <PrimaryButton 
-            text="Test button 1 (temporary button)" 
-            onClick={() => ipcRenderer.invoke('log-to-console', '1')}  
-          />
-
-          <PrimaryButton 
-            text="Test button 2 (temporary button)" 
-            onClick={() => ipcRenderer.invoke('log-to-console', '2')} 
-          />
-
-        </Stack>
       </div>
     );
   }

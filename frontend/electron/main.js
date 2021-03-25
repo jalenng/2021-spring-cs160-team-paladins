@@ -2,68 +2,41 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
-let mainWindow; 
+global.mainWindow; 
+
 let devToolsWindow;
 
 function createWindow() { 
 
-    mainWindow = new BrowserWindow({ 
+    global.mainWindow = new BrowserWindow({ 
         width: 800, 
         height: 500,
         maximizable: false,
         title: "iCare",
-        backgroundColor: '#ffffff', 
+        backgroundColor: '#333333', 
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
-            enableRemoteModule: true,
             contextIsolation: false,
             devTools: true,
         },
 
     }); 
     
-    mainWindow.menuBarVisible = false;
+    global.mainWindow.menuBarVisible = false;
+
     devToolsWindow = new BrowserWindow();
 
-    mainWindow.webContents.setDevToolsWebContents(devToolsWindow.webContents);
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    global.mainWindow.webContents.setDevToolsWebContents(devToolsWindow.webContents);
+    global.mainWindow.webContents.openDevTools({ mode: 'detach' });
     
-    mainWindow.loadURL(
+    global.mainWindow.loadURL(
         isDev
         ? 'http://localhost:3000'
         : `file://${path.join(__dirname, '../build/index.html')}`
     ); 
 
-    // Handle event for when account button is clicked
-    ipcMain.handle('account-button-action', event => {
-
-        // Sign in Window
-        const signInWindow = new BrowserWindow({
-            width: 380,
-            height: 380,
-            // modal: true,
-            resizable: false,
-            minimizable: false,
-            maximizable: false,
-            title: "Sign in",
-            parent: mainWindow,
-            webPreferences: {
-                preload: path.join(__dirname, 'preload.js'),
-                nodeIntegration: true,
-                enableRemoteModule: true,
-                contextIsolation: false,
-                devTools: true,
-            }
-
-        })
-        signInWindow.menuBarVisible = false
-        signInWindow.loadFile('sign-in/index.html')   
-        
-    })
-
 } 
-
 
 // App event handlers
 app.whenReady().then(() => {
@@ -80,8 +53,12 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
+/**
+ * IPC event handlers
+ * These event handlers are executed when another process invokes the event.
+ */
 
-// IPC event handler for signing in
+// Sign in
 ipcMain.handle('sign-in', (event, username, password) => {
 
     axios
@@ -99,6 +76,48 @@ ipcMain.handle('sign-in', (event, username, password) => {
 
 })
 
+// Log to main process's console
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
 })
+
+// Show sign-in window when account button is clicked
+ipcMain.handle('show-sign-in-popup', event => {
+
+    // Sign in Window
+    const signInWindow = new BrowserWindow({
+        width: 380,
+        height: 380,
+        // modal: true,
+        resizable: false,
+        minimizable: false,
+        maximizable: false,
+        title: "Sign in",
+        backgroundColor: '#333333',
+        parent: global.mainWindow,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+
+    })
+    signInWindow.menuBarVisible = false
+    
+    signInWindow.loadURL(
+        isDev
+        ? 'http://localhost:3000/signin'
+        : `file://${path.join(__dirname, '../build/login/index.html')}`
+    ); 
+
+})
+
+// Toggle timer
+ipcMain.handle('timer-toggle', () => {
+    global.timer.toggle();
+})
+
+ipcMain.on('get-timer-status', (event) => {
+    event.returnValue = global.timer.getStatus();
+});
+

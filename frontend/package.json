@@ -28,7 +28,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-
     "electron": "electron .",
     "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron",
     "dev": "concurrently \"npm:start\" \"npm:electron-watch\""

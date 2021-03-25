@@ -7,6 +7,10 @@ import { TextField } from '@fluentui/react/lib/TextField';
 import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
 
 const divStyle = {
+  MozUserSelect: "none",
+  WebkitUserSelect: "none",
+  msUserSelect: "none",
+
   paddingTop: '10px',
   paddingLeft: '30px',
 };

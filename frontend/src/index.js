@@ -4,9 +4,11 @@ import './css/index.css';
 import App from './App';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
+
 import { BrowserRouter, Route } from "react-router-dom";
 import { loadTheme } from '@fluentui/react'
 import { createTheme } from '@fluentui/theme/lib/createTheme'
+import { initializeIcons } from '@fluentui/react/lib/Icons';
 
 const myTheme = createTheme({
   palette: {
@@ -35,9 +37,11 @@ const myTheme = createTheme({
   }
 });
 
-loadTheme(myTheme);
-
 document.body.style = 'background: #333333;';
+
+loadTheme(myTheme);
+initializeIcons();
+
 
 ReactDOM.render(
   <React.StrictMode>

@@ -12,7 +12,8 @@ export default class App extends React.Component {
       <div>
         <h1>Welcome to iCare</h1>
         <Link to="/LoginMenu">Login</Link>
-
+        <br></br>
+        <Link to="/userPreference">Preference</Link>
         <Stack horizontal tokens={{ childrenGap: 40 }}>
 
           <PrimaryButton 

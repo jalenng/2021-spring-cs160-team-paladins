@@ -1,16 +1,25 @@
 const { app, BrowserWindow, ipcMain } = require('electron'); 
+const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
 global.mainWindow; 
 
-let devToolsWindow;
-
 function createWindow() { 
 
+    let mainWindowState = windowStateKeeper({
+        defaultWidth: 800,
+        defaultHeight: 500
+    });
+
     global.mainWindow = new BrowserWindow({ 
-        width: 800, 
-        height: 500,
+        x: mainWindowState.x,
+        y: mainWindowState.y,
+        width: mainWindowState.width, 
+        height: mainWindowState.height,
+        minWidth: 400,
+        minHeight: mainWindowState.height,
+        maxHeight: mainWindowState.height,
         maximizable: false,
         title: "iCare",
         backgroundColor: '#333333', 
@@ -20,21 +29,22 @@ function createWindow() {
             contextIsolation: false,
             devTools: true,
         },
+    });
 
-    }); 
+    mainWindowState.manage(global.mainWindow);
     
     global.mainWindow.menuBarVisible = false;
-
-    devToolsWindow = new BrowserWindow();
-
-    global.mainWindow.webContents.setDevToolsWebContents(devToolsWindow.webContents);
-    global.mainWindow.webContents.openDevTools({ mode: 'detach' });
     
     global.mainWindow.loadURL(
         isDev
         ? 'http://localhost:3000'
         : `file://${path.join(__dirname, '../build/index.html')}`
     ); 
+
+    // Prevent opening new windows
+    mainWindow.webContents.on('new-window', (e, url) => {
+        e.preventDefault()
+    })
 
 } 
 

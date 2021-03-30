@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
-
 const {ipcRenderer} = window.require('electron');
 
 export default class App extends React.Component {
@@ -13,7 +12,7 @@ export default class App extends React.Component {
         <h1>Welcome to iCare</h1>
         <Link to="/LoginMenu">Login</Link>
         <br></br>
-        <Link to="/userPreference">Preference</Link>
+        <Link to="/UserPreference">Preference</Link>
         <Stack horizontal tokens={{ childrenGap: 40 }}>
 
           <PrimaryButton 
@@ -31,3 +30,4 @@ export default class App extends React.Component {
     );
   }
 }
+

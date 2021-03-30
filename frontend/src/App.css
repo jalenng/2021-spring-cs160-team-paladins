@@ -1,0 +1,48 @@
+.switchBtn {
+  position: absolute;
+  top: 30px;
+  left: 300px;
+}
+
+.account {
+  position: absolute;
+  top: 30px;
+  left: 300px;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.userName {
+  position: absolute;
+  top: 100px;
+  left: 420px;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.signoutBtn {
+  position: absolute;
+  top: 130px;
+  left: 420px;
+  background-color: white;
+}
+
+.persona {
+  position: absolute;
+  top: 70px;
+  left: 300px;
+}
+
+.toggleBtn {
+  position: absolute;
+  bottom: 80px;
+  left: 30px;
+}
+
+.sidebar {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+}

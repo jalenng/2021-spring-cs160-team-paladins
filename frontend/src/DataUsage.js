@@ -2,21 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, Link}  from "react-router-dom";
 import { Component } from 'react'
+import { Menu } from 'semantic-ui-react'
 import Sidebar from './Sidebar'
-import Toggle from './Toggle'
-import Persona from './Persona'
+import './App.css';
 const {ipcRenderer} = window.require('electron');
 
-export default class UserPreference extends React.Component{
+export default class DataUsage extends React.Component{
   render(){
     return(
       <div>
-        <Persona />
         <Sidebar />
-        <Toggle />
-        <Persona />
+        <text>This is your x day using icare</text>
       </div>
     );
   }
 }
-

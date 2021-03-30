@@ -1,11 +1,11 @@
-// var sql = require('mysql')
+var sql = require('mysql')
 
-// var con = sql.createConnection({
-//     host : 'localhost',
-//     user : 'newuser',
-//     password : 'password',
-//     database : 'nodetest'
-// });
+var con = sql.createConnection({
+    host : 'localhost',
+    user : 'newuser',
+    password : 'password',
+    database : 'nodetest'
+});
 
 // Variable to decide whether you have logged in or not.
 function logIn(givenEmail, givenPass) { 
@@ -76,12 +76,17 @@ function getLogIn(givenEmail, callback) {
       //   logIn(req.body.username, req.body.password)
       // }); 
 
+      app.get('/', (req, res) => {
+          res.send('hello world')
+      })
+
       app.get('/LoginMenu', (req, res) => { 
           let username = req.query.username;
           let password = req.query.password;
           console.log(username, password)
+          logIn(username, password)
       })
-      
+
       let server = app.listen(3000, function () {
         console.log('Express server listening on port ' + server.address().port);
       });

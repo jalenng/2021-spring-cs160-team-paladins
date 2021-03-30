@@ -1,5 +1,7 @@
 import React from "react";
  
+import Timer from "./Timer.js";
+
 import { Text } from '@fluentui/react/lib/Text';
 
 const divStyle = {
@@ -20,6 +22,8 @@ export default class HomeScreen extends React.Component {
         <Text variant={'xxLarge'} block>
           <b>Home</b>
         </Text>
+
+        <Timer/>
 
       </div>
     );

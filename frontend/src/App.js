@@ -28,10 +28,9 @@ const signInDivStyle = {
   right: "3px",
 };
 
-
 export default class App extends React.Component {
   render() {
-    
+
     return (
 
       <div style={divStyle}>

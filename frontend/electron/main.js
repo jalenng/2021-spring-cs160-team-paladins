@@ -2,6 +2,9 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
+const {TimerSystem} = require('./timer.js');
+global.timer = new TimerSystem();
+
 global.mainWindow; 
 
 let devToolsWindow;

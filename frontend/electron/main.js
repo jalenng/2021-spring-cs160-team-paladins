@@ -16,11 +16,10 @@ function createWindow() {
         height: 500,
         maximizable: false,
         title: "iCare",
-        backgroundColor: '#ffffff', 
+        backgroundColor: '#333333', 
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
-            enableRemoteModule: true,
             contextIsolation: false,
             devTools: true,
         },
@@ -86,7 +85,7 @@ ipcMain.handle('log-to-console', (event, message) => {
 })
 
 // Show sign-in window when account button is clicked
-ipcMain.handle('account-button-action', event => {
+ipcMain.handle('show-sign-in-popup', event => {
 
     // Sign in Window
     const signInWindow = new BrowserWindow({
@@ -97,16 +96,23 @@ ipcMain.handle('account-button-action', event => {
         minimizable: false,
         maximizable: false,
         title: "Sign in",
+        backgroundColor: '#333333',
         parent: global.mainWindow,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false
         }
 
     })
     signInWindow.menuBarVisible = false
-    signInWindow.loadFile('sign-in/index.html');  
     
+    signInWindow.loadURL(
+        isDev
+        ? 'http://localhost:3000/signin'
+        : `file://${path.join(__dirname, '../build/login/index.html')}`
+    ); 
+
 })
 
 // Toggle timer

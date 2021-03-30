@@ -1,6 +1,6 @@
 import React from 'react';
-import Sidebar from './Sidebar'
-import './App.css';
+import Sidebar from '../Sidebar'
+import '../App.css';
 
 export default class About extends React.Component{
   render(){

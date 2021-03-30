@@ -20,9 +20,9 @@ export default function Sidebar(){
     >
       <Button onClick={()=> history.push("/")}>Home</Button>
       <Button onClick={()=> history.push("/UserPreference")}>Account</Button>
-      <Button onClick={()=> history.push("/Notification")}>Notification</Button>
-      <Button onClick={()=> history.push("/DataUsage")}>Data Usage</Button>
-      <Button onClick={()=> history.push("/About")}>About</Button>
+      <Button onClick={()=> history.push("/Preference/Notification")}>Notification</Button>
+      <Button onClick={()=> history.push("/Preference/DataUsage")}>Data Usage</Button>
+      <Button onClick={()=> history.push("/Preference/About")}>About</Button>
       </ButtonGroup>
       </div>
     </div>

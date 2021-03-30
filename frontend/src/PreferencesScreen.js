@@ -1,7 +1,5 @@
 import React from "react";
-
 import UserPreference from './UserPreference'
-import { Text } from '@fluentui/react/lib/Text';
 
 const divStyle = {
   MozUserSelect: "none",

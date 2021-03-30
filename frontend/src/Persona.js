@@ -1,5 +1,5 @@
 import React from 'react';
-import {Persona, PersonaSize, Stack} from '@fluentui/react/lib'
+import {Persona, PersonaSize} from '@fluentui/react/lib'
 import './App.css';
 import { Button } from '@material-ui/core';
 

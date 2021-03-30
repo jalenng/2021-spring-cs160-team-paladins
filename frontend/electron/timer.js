@@ -7,15 +7,26 @@ const timerStates = {
 
 }
 
-const TIMER_DURATION = 1200000;
+// const TIMER_DURATION = 1200000;
+const TIMER_DURATION = 5000;
 
 var timeout;
 
 const timerSystem = function(){
 
+    this._events = {};
+
     this.state = timerStates.STOPPED;
     this.totalDuration = 0;
     this.endTime = new Date();
+
+    this.on = function(name, listener) {
+        if (!this._events[name]) {
+          this._events[name] = [];
+        }
+    
+        this._events[name].push(listener);
+    }
 
     this.getStatus = function() {
 
@@ -59,6 +70,13 @@ const timerSystem = function(){
     };
 
     this.end = function() {
+        clearTimeout(timeout);
+
+        const fireCallbacks = (callback) => {
+            callback();
+        };
+        this._events['end'].forEach(fireCallbacks);
+        
         this.state = timerStates.RESTING;
         console.log("Timer ended");
     };

@@ -20,8 +20,8 @@ export default class PreferencesScreen extends React.Component {
         <Text variant={'xxLarge'} block>
           <b>Preferences</b>
         </Text>
-
       </div>
+
     );
   }
 }

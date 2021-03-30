@@ -12,10 +12,6 @@ import { Stack } from '@fluentui/react/lib/Stack';
 
 const { ipcRenderer } = window.require('electron');
 
-const labelStyles = {
-  root: { marginTop: 10 },
-};
-
 const divStyle = {
   MozUserSelect: "none",
   WebkitUserSelect: "none",

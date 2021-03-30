@@ -2,7 +2,10 @@ import React from "react";
  
 import Timer from "./Timer.js";
 
+import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Text } from '@fluentui/react/lib/Text';
+
+const { ipcRenderer } = window.require('electron');
 
 const divStyle = {
   MozUserSelect: "none",
@@ -25,7 +28,13 @@ export default class HomeScreen extends React.Component {
 
         <Timer/>
 
+        <PrimaryButton
+          text='Test overlay'
+          onClick={() => ipcRenderer.invoke('handle-break')}
+        />
+
       </div>
+      
     );
   }
 }

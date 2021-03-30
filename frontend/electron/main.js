@@ -1,15 +1,27 @@
-const { app, BrowserWindow, ipcMain } = require('electron'); 
+const { app, BrowserWindow, ipcMain, screen } = require('electron'); 
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
 const {TimerSystem} = require('./timer.js');
-global.timer = new TimerSystem();
 
 global.mainWindow; 
 
-function createWindow() { 
+/**
+ * Timer system
+ */
+global.timer = new TimerSystem();
+global.timer.on('end', () => {
+    createFullscreenNotifs();
+})
 
+/**
+ * Functions for creating windows
+ */
+// Main window
+function createWindows() { 
+
+    // Main window
     let mainWindowState = windowStateKeeper({
         defaultWidth: 800,
         defaultHeight: 500
@@ -51,13 +63,67 @@ function createWindow() {
 
 } 
 
-// App event handlers
+// Fullscreen notification windows
+function createFullscreenNotifs() {
+    const disps = screen.getAllDisplays();
+
+    for (var i = 0; i < disps.length; i++) {
+
+        // Full-screen overlay window
+        const fullscreenWin = new BrowserWindow({
+            alwaysOnTop: true,
+            focusable: false,
+            width: 800,
+            height: 500,
+            resizable: false,
+            movable: false,
+            frame: false,
+            minimizable: false,
+            maximizable: false,
+            skipTaskbar: true,
+            show: false,
+            title: "iCare Overlay",
+            backgroundColor: '#333333',
+            parent: global.mainWindow,
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js'),
+                nodeIntegration: true,
+                contextIsolation: false
+            }
+        })
+
+        fullscreenWin.menuBarVisible = false;
+        
+        const closeCallback = (e) => e.preventDefault();
+        fullscreenWin.on('close', closeCallback)
+
+        fullscreenWin.loadURL(
+            isDev
+            ? 'http://localhost:3000/notification/fullscreen'
+            : `file://${path.join(__dirname, '../build/login/index.html')}`
+        ); 
+
+        fullscreenWin.setBounds(disps[i].bounds);
+
+        fullscreenWin.on('ready-to-show', () => {
+            fullscreenWin.show();
+        })
+
+        setTimeout(() => {
+            fullscreenWin.removeListener('close', closeCallback);
+            fullscreenWin.close();
+        }, 10000)
+
+    }
+}
+
+/**
+ * Application event handlers
+ */
 app.whenReady().then(() => {
-    createWindow()
+    createWindows()
 
     app.on('activate', function () {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 })
@@ -123,6 +189,11 @@ ipcMain.handle('show-sign-in-popup', event => {
         : `file://${path.join(__dirname, '../build/login/index.html')}`
     ); 
 
+})
+
+// Process break time 
+ipcMain.handle('handle-break', (event) => {
+    createFullscreenNotifs();
 })
 
 // Toggle timer

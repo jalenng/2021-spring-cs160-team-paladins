@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/index.css';
+
 import App from './App';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
+import FullscreenOverlay from './FullscreenOverlay';
 
 import { BrowserRouter, Route } from "react-router-dom";
 import { loadTheme } from '@fluentui/react'
@@ -50,6 +52,7 @@ ReactDOM.render(
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />
+          <Route path="/notification/fullscreen" exact component={FullscreenOverlay} />
         </div>
       </BrowserRouter>
   </React.StrictMode>,

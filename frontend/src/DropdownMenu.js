@@ -19,11 +19,8 @@ export default class DropdownMenu extends React.Component {
         <div className='dropdownMenu'>
             <label style={fontColor}>Select the sound notification</label>
             <div className="col-md-10">
-                <Select options={soundOptions}  />
+                <Select options={soundOptions}  /><br />
             </div>
-            <br></br>
-            <label style={fontColor}>Select the sound notification from computer</label>
-            <br></br>
         </div>  
     );
   }

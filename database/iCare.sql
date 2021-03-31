@@ -13,7 +13,7 @@ CREATE TABLE Users (
 # Table of Notification Sounds
 CREATE TABLE NotificationSounds (
 	soundName varchar(50) NOT NULL,
-    path varchar(100) NOT NULL,
+    path varchar(200) NOT NULL,
     PRIMARY KEY (soundName)
 );
 
@@ -70,6 +70,17 @@ CREATE TRIGGER AfterInsertUsers AFTER INSERT ON Users
 FOR EACH ROW BEGIN
 		INSERT INTO UserPreferences (email) VALUES (NEW.email);
         INSERT INTO DataUsage (email) VALUES (NEW.email);
+END;
+$$
+DELIMITER ;
+
+# Trigger: Before creating the UserPreferences entry
+# - sets the default notifcation sound (Leaf)
+DROP TRIGGER IF EXISTS BeforeInsertUserPreferences; 
+DELIMITER $$
+CREATE TRIGGER BeforeInsertUserPreferences BEFORE INSERT ON UserPreferences
+FOR EACH ROW BEGIN
+		SET NEW.notiSound='Leaf';
 END;
 $$
 DELIMITER ;
@@ -143,13 +154,23 @@ $$
 DELIMITER ;
 
 
+
 # ----------------------------------------------------------------------
 # mysql --local-infile -u root -p
 # source iCare.sql
+
+# MINE FOR TESTING: Basic Notification Sound Inserts 
+#INSERT INTO NotificationSounds VALUES ('Leaf', 'C:/Users/jkpkm/Documents/College/04 Spring 2021/CS 160/Project/2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg');
+#INSERT INTO NotificationSounds VALUES ('Butterfly', 'C:/Users/jkpkm/Documents/College/04 Spring 2021/CS 160/Project/2021-spring-cs160-team-paladins/database/Sounds/Butterfly.ogg');
+#INSERT INTO NotificationSounds VALUES ('Party Favor', 'C:/Users/jkpkm/Documents/College/04 Spring 2021/CS 160/Project/2021-spring-cs160-team-paladins/database/Sounds/PartyFavor.ogg');
+
+
+# Basic Notification Sound Inserts 
+INSERT INTO NotificationSounds VALUES ('Leaf', '/root/2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg');
+INSERT INTO NotificationSounds VALUES ('Butterfly', '/root/2021-spring-cs160-team-paladins/database/Sounds/Butterfly.ogg');
+INSERT INTO NotificationSounds VALUES ('Party Favor', '/root/2021-spring-cs160-team-paladins/database/Sounds/PartyFavor.ogg');
 
 # Basic Inserts
 INSERT INTO Users (email, pass) VALUES ('default@gmail.com', 'pass');
 INSERT INTO Users (email, pass) VALUES ('hello@gmail.com', 'pass');
 INSERT INTO Users (email, pass) VALUES ('basic@gmail.com', 'pass');
-
-

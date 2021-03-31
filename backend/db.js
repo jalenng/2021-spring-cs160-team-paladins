@@ -19,13 +19,13 @@ class db {
      * Creates a new user (inserts into db)
      * @param {string} givenEmail email (primary key)
      * @param {string} givenPass password
-     * @returns true if no error
+     * @returns true if no error, false for error
      */
     async createUser(givenEmail, givenPass) {
         let q = "INSERT INTO Users (email, pass) VALUES ('" + givenEmail + "', '" + givenPass + "')";
 
         let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
-            if (err) { resolve(err) }
+            if (err) { resolve(false) }
             else { resolve(true) }
         }));
 
@@ -99,21 +99,54 @@ class db {
         return await this.dbPromise(false, q, userEmail)
     }
 
+
     /**
-     * @todo do this method when we decide notification sounds
+     * Gets the path of the notification sound to play the sound!
      * @param {string} userEmail email (primary key)
+     * @return {string} path
      */
     async getNotiSound(userEmail) {
+        let query = "SELECT path FROM notificationSounds WHERE soundName="
+        let q = query + "(SELECT notiSound FROM userPreferences WHERE email='" + userEmail + "')"
 
+        let path = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
+            if (err) { reject(err) }
+            else {
+                resolve(result)
+            }
+        }));
+
+        return path;
     }
 
     /**
-     * @todo do this method when we decide notification sounds
+     * Sets the notification sound of a user 
      * @param {string} userEmail email (primary key)
-     * @param {*} newSound new sound to set to
+     * @param {String} newSound new sound to set to (sound name in database)
      */
     async setNotiSound(userEmail, newSound) {
+        let q = "UPDATE userPreferences SET notiSound='" + newSound + "'";
 
+        return await this.dbPromise(false, q, userEmail);
+    }
+
+    /**
+     * Adds notification sound to database
+     * @param {String} name name of sound file
+     * @param {String} path path of sound file
+     * @return true if no error, false for error (duplicate entry usually)
+     */
+    async addNotiSound(name, path) {
+        let q = "INSERT INTO notificationSounds VALUES ('" + name + "', '" + path + "')";
+
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
+            if (err) { resolve(false) }
+            else { resolve(true) }
+        }));
+
+        console.log(results)
+
+        return results;
     }
 
     /**

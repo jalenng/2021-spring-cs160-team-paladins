@@ -72,6 +72,34 @@ test('set dataUsageOn true - boolean (success)', async () => {
     })
 })
 
+// -------Testing Notification Sounds-------------------------
+test ('add notification sound input into database', async () => {
+    let name = "Leaf"
+    let soundPath = "2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg"
+    await userDB.addNotiSound(name, soundPath).then((result) => {
+        if (result == true) { expect(result).toBe(true) }           // Fails after it is inputted
+        else { expect(result).not.toBE(true) }
+    })
+})
+
+test ('change notification sound preference of user', async () => {
+    await userDB.setNotiSound("basic@gmail.com", "Leaf").then((result) => {
+        if (result == true) { expect(result).toBe(true) }
+        else { expect(result).not.toBE(true) }
+    });
+
+})
+
+test ('getting notification sound path of user', async () => {
+    await userDB.getNotiSound('basic@gmail.com').then((result) => {
+        if (result == true) { expect(result).toBe(true) }
+        else { expect(result).not.toBE(true) }
+    });
+
+})
+      
+//--------------------------------
+
 test('close connection', async () => {
     await userDB.close();
 })

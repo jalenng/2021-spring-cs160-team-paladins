@@ -1,28 +1,48 @@
 import React from 'react';
 import {Persona, PersonaSize} from '@fluentui/react/lib'
 import './App.css';
-import { Button } from '@material-ui/core';
 
 export default class Preference extends React.Component{
-    render(){
-        return(
-          <div>
-            <div className = 'account'>
-              <text>Your Account</text>
-            </div>
-            <div className ='persona'>
-            <Persona 
-            imageInitials = 'User'
-            size={PersonaSize.size100}
-            />
-            </div>
-            <div className = 'userName'>
-              <text>Diana Young</text>
-            </div>
-            <div className = 'signoutBtn'>
-              <Button color='primary'>Sign Out</Button>
-            </div>
-          </div>
-        );
-    }
+  constructor(props){
+    super(props);
+    this.state = { ownTime: '' };
+  }
+ 
+  handleChange = event => {
+    this.setState({ ownTime: event.target.value });
+  };
+
+  render(){
+    return(
+      <div>
+        <div className = 'account'>
+          <text>Your Account</text>
+        </div>
+        <div className ='persona'>
+        <Persona 
+        imageInitials = 'User'
+        size={PersonaSize.size100}
+        />
+        </div>
+        <div className = 'userName'>
+          <label>Diana Young</label>
+        </div>
+        <div className = 'signoutBtn'>
+          <button>Sign out</button>
+        </div>
+        <div className = 'customizedTime'>
+          <form>
+          <label htmlFor="ownTime">Customize own break time: </label><br></br>
+            <input
+              type="text"
+              name="ownTime"
+              value={this.state.ownTime}
+              onChange={this.handleChange}
+          />
+          </form><br></br>
+          <button>Save</button>
+        </div>
+      </div>
+    );
+  } 
 }

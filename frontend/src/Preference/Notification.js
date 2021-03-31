@@ -3,6 +3,7 @@ import Sidebar from '../Sidebar'
 import SwitchBtn from '../SwitchBtn'
 import DropdownMenu from '../DropdownMenu'
 import '../App.css';
+import UploadFile from '../UploadFile'
 
 
 export default class Notification extends React.Component{
@@ -13,7 +14,8 @@ export default class Notification extends React.Component{
         <div className = "switchBtn">
           <SwitchBtn />
           <DropdownMenu />
-          <button>Save</button>
+          <UploadFile />
+          <button >Save</button>
         </div>
       </div>
     );

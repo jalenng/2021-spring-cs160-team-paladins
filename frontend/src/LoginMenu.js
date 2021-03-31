@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+const {ipcRenderer} = window.require('electron');
+
  
 export default class LoginMenu extends React.Component {
   render() {
@@ -10,11 +12,13 @@ export default class LoginMenu extends React.Component {
         <div>
             <form>
                 <label>Username</label>
-                <input type="text" name="username" />
+                <input type="text" name="username" id="user" />
                 <label>Password</label>
-                <input type="text" name="password" />
-                <input type="submit" value="Submit" />
-            </form>
+                <input type="text" name="password" id="pass" />
+                <input type="submit" value="Submit" 
+                onClick={() => ipcRenderer.invoke('sign-in', document.getElementById("user").value, document.getElementById('pass').value)}  
+                />
+            </form> 
         </div>
       </div>
     );

@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron'); 
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
+const axios = require('axios')
+
 
 let mainWindow; 
 let devToolsWindow;
@@ -82,21 +84,19 @@ app.on('window-all-closed', function () {
 
 
 // IPC event handler for signing in
-ipcMain.handle('sign-in', (event, username, password) => {
-
+ipcMain.handle('sign-in', async (event, username, password) => {
     axios
-    .post('http://localhost:3000', {
+    .post('http://165.232.156.120:3000/login', {
         username: username,
         password: password
     })
     .then(res => {
         console.log(`statusCode: ${res.statusCode}`)
-        console.log(res)
+        console.log(res.data)
     })
     .catch(error => {
         console.error(error)
     })
-
 })
 
 ipcMain.handle('log-to-console', (event, message) => {

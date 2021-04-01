@@ -1,11 +1,11 @@
-//var sql = require('mysql')
-//
-//var con = sql.createConnection({
-//    host : 'localhost',
-//    user : 'newuser',
-//    password : 'password',
-//    database : 'nodetest'
-//});
+var sql = require('mysql')
+
+var con = sql.createConnection({
+   host : 'localhost',
+   user : 'newuser',
+   password : '',
+   database : 'nodetest'
+});
 
 // Variable to decide whether you have logged in or not.
 function logIn(givenEmail, givenPass) { 
@@ -78,8 +78,9 @@ function getLogIn(givenEmail, callback) {
 
      router.post('/login', function(req, res) {
 	     console.log('login attempt detected')
-	     console.log(req.body.username)
-         console.log(req.body.password)
+         username = req.body.username
+         password = req.body.password
+         logIn(username, password)
      })
 
      app.use('/', router)

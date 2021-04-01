@@ -7,8 +7,7 @@ const timerStates = {
 
 }
 
-// const TIMER_DURATION = 1200000;
-const TIMER_DURATION = 5000;
+const TIMER_DURATION = 10000;
 
 var timeout;
 
@@ -21,6 +20,7 @@ const timerSystem = function(){
     this.endTime = new Date();
 
     this.on = function(name, listener) {
+
         if (!this._events[name]) {
           this._events[name] = [];
         }
@@ -29,8 +29,8 @@ const timerSystem = function(){
     }
 
     this.getStatus = function() {
-
         var remainingTime;
+
         if (this.state === timerStates.RUNNING)
             remainingTime = this.endTime - new Date()
         else 
@@ -44,44 +44,49 @@ const timerSystem = function(){
         }
 
         return timerStatus;
-
     };
 
     this.start = function() {
 
         if (this.state != timerStates.RUNNING) {
-            this.state = timerStates.RUNNING;
-            this.endTime = new Date();
-            this.endTime.setMilliseconds(this.endTime.getMilliseconds() + TIMER_DURATION);
-            
-            totalDuration = TIMER_DURATION;
-            timeout = setTimeout(this.end.bind(this), TIMER_DURATION);
+            this.setupTimes();
             console.log("Timer started");
         }
 
     };
 
+    this.setupTimes = function() {
+        this.endTime = new Date();
+        this.endTime.setMilliseconds(this.endTime.getMilliseconds() + TIMER_DURATION);
+        this.totalDuration = TIMER_DURATION;
+        
+        clearTimeout(timeout)
+        timeout = setTimeout(this.end.bind(this), TIMER_DURATION);
+
+        this.state = timerStates.RUNNING;
+    }
 
     this.stop = function() {
-        this.state = timerStates.STOPPED;
         this.endTime = 0;
         clearTimeout(timeout);
+        this.state = timerStates.STOPPED;
+
         console.log("Timer stopped");
     };
 
     this.end = function() {
         clearTimeout(timeout);
 
-        const fireCallbacks = (callback) => {
-            callback();
-        };
-        this._events['end'].forEach(fireCallbacks);
+        const fireCallbacks = (callback) => callback();
         
         this.state = timerStates.RESTING;
+        
         console.log("Timer ended");
+        this._events['timer-end'].forEach(fireCallbacks);
     };
 
     this.toggle = function() {
+        
         switch (this.state) {
             case timerStates.RUNNING:
             case timerStates.RESTING:
@@ -92,6 +97,7 @@ const timerSystem = function(){
                 this.start();
                 break;
         }
+        
     }
 
 }

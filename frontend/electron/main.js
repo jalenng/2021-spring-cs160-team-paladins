@@ -1,40 +1,49 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron'); 
+const { app, BrowserWindow, ipcMain } = require('electron'); 
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
-const {TimerSystem} = require('./timer.js');
+const { TimerSystem } = require('./timerSystem.js');
+const { BreakSystem } = require('./breakSystem.js');
+
+const DEFAULT_WINDOW_SIZE = {
+    defaultWidth: 800,
+    defaultHeight: 500
+}
 
 global.mainWindow; 
 
 /**
- * Timer system
+ * Timer model
  */
-global.timer = new TimerSystem();
-global.timer.on('end', () => {
-    createFullscreenNotifs();
+global.timerSystem = new TimerSystem();
+global.breakSystem = new BreakSystem();
+
+global.timerSystem.on('timer-end', () => {
+    global.breakSystem.start();
 })
+
+global.breakSystem.on('break-end', () => {
+    global.timerSystem.start();
+})
+
 
 /**
  * Functions for creating windows
  */
 // Main window
-function createWindows() { 
+function createWindow() { 
 
     // Main window
-    let mainWindowState = windowStateKeeper({
-        defaultWidth: 800,
-        defaultHeight: 500
-    });
+    let mainWindowState = windowStateKeeper(DEFAULT_WINDOW_SIZE);
 
     global.mainWindow = new BrowserWindow({ 
         x: mainWindowState.x,
         y: mainWindowState.y,
         width: mainWindowState.width, 
         height: mainWindowState.height,
-        minWidth: 400,
-        minHeight: mainWindowState.height,
-        maxHeight: mainWindowState.height,
+        minHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
+        maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
         maximizable: false,
         title: "iCare",
         backgroundColor: '#333333', 
@@ -63,65 +72,12 @@ function createWindows() {
 
 } 
 
-// Fullscreen notification windows
-function createFullscreenNotifs() {
-    const disps = screen.getAllDisplays();
-
-    for (var i = 0; i < disps.length; i++) {
-
-        // Full-screen overlay window
-        const fullscreenWin = new BrowserWindow({
-            alwaysOnTop: true,
-            focusable: false,
-            width: 800,
-            height: 500,
-            resizable: false,
-            movable: false,
-            frame: false,
-            minimizable: false,
-            maximizable: false,
-            skipTaskbar: true,
-            show: false,
-            title: "iCare Overlay",
-            backgroundColor: '#333333',
-            parent: global.mainWindow,
-            webPreferences: {
-                preload: path.join(__dirname, 'preload.js'),
-                nodeIntegration: true,
-                contextIsolation: false
-            }
-        })
-
-        fullscreenWin.menuBarVisible = false;
-        
-        const closeCallback = (e) => e.preventDefault();
-        fullscreenWin.on('close', closeCallback)
-
-        fullscreenWin.loadURL(
-            isDev
-            ? 'http://localhost:3000/notification/fullscreen'
-            : `file://${path.join(__dirname, '../build/login/index.html')}`
-        ); 
-
-        fullscreenWin.setBounds(disps[i].bounds);
-
-        fullscreenWin.on('ready-to-show', () => {
-            fullscreenWin.show();
-        })
-
-        setTimeout(() => {
-            fullscreenWin.removeListener('close', closeCallback);
-            fullscreenWin.close();
-        }, 10000)
-
-    }
-}
 
 /**
  * Application event handlers
  */
 app.whenReady().then(() => {
-    createWindows()
+    createWindow()
 
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -191,17 +147,15 @@ ipcMain.handle('show-sign-in-popup', event => {
 
 })
 
-// Process break time 
-ipcMain.handle('handle-break', (event) => {
-    createFullscreenNotifs();
-})
-
 // Toggle timer
 ipcMain.handle('timer-toggle', () => {
-    global.timer.toggle();
+    global.timerSystem.toggle();
 })
 
 ipcMain.on('get-timer-status', (event) => {
-    event.returnValue = global.timer.getStatus();
+    event.reply('receive-timer-status', global.timerSystem.getStatus());
 });
 
+ipcMain.on('get-break-status', (event) => {
+    event.reply('receive-break-status', global.breakSystem.getStatus());
+});

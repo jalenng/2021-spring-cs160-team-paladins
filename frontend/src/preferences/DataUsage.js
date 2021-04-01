@@ -8,7 +8,6 @@ export default class DataUsage extends React.Component{
   render(){
     return(
       <div>
-        <NavigationMenu />
         <Sidebar />
         <Text>This is your x day using icare</Text>
       </div>

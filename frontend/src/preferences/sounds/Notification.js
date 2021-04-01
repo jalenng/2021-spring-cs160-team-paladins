@@ -10,8 +10,7 @@ import '../../App.css'
 export default class Notification extends React.Component{
   render(){
     return(
-      <div>
-        <NavigationMenu />
+      <div> 
         <Sidebar />
         <div className = 'switchBtn'>
           <SwitchBtn />

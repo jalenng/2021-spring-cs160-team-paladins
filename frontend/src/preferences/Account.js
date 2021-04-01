@@ -18,7 +18,6 @@ export default class Preference extends React.Component{
   render(){
     return(
       <div>
-        <NavigationMenu />
         <Sidebar />
         <div className = 'account'>
           <Text>Your Account</Text>

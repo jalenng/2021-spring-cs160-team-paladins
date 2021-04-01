@@ -28,7 +28,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div style={divStyle}>
-        <Pivot aria-label="Basic Pivot Example" linkSize="large" selectedKey={4}>
+        <Pivot aria-label="Basic Pivot Example" linkSize="large" >
           <PivotItem itemIcon="Home">
             <HomeScreen/>
           </PivotItem>

@@ -4,7 +4,7 @@ var con = sql.createConnection({
    host : 'localhost',
    user : 'newuser',
    password : '',
-   database : 'nodetest'
+   database : 'nodeTest'
 });
 
 // Variable to decide whether you have logged in or not.
@@ -12,7 +12,7 @@ function logIn(givenEmail, givenPass) {
 
     // Connect to Database
     con.connect(function(err) {
-        if (err) { return console.error('error: ' + err.message) }
+        if (err) { return console.error('error1: ' + err.message) }
         console.log("Connected");
         //insertTable("Users", "('hello@gmail.com', 'helloPass')");
 
@@ -31,7 +31,7 @@ function logIn(givenEmail, givenPass) {
         // End Connection
         con.end(function(err) {
             if (err) {
-                return console.log('error:' + err.message);
+                return console.log('error2:' + err.message);
             }
             console.log('Close the database connection.');
             });

@@ -56,6 +56,11 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
+// Start app when the user logs in
+app.setLoginItemSettings({
+    openAtLogin: true
+})
+
 /**
  * IPC event handlers
  * These event handlers are executed when another process invokes the event.

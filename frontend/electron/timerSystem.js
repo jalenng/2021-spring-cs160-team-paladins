@@ -1,3 +1,6 @@
+/**
+ * Timer states
+ */
 const timerStates = {
 
     BLOCKED: 'blocked',
@@ -19,6 +22,9 @@ const timerSystem = function(){
     this.totalDuration = 0;
     this.endTime = new Date();
 
+    /**
+     * Registers an event listener
+     */
     this.on = function(name, listener) {
 
         if (!this._events[name]) {
@@ -28,6 +34,10 @@ const timerSystem = function(){
         this._events[name].push(listener);
     }
 
+    /**
+     * Gets the status of the timer system
+     * @returns an object
+     */
     this.getStatus = function() {
         var remainingTime;
 
@@ -46,6 +56,9 @@ const timerSystem = function(){
         return timerStatus;
     };
 
+    /**
+     * Starts the timer. Calls this.setupTimes in the process.
+     */
     this.start = function() {
 
         if (this.state != timerStates.RUNNING) {
@@ -55,6 +68,9 @@ const timerSystem = function(){
 
     };
 
+    /**
+     * Initializes the end time and timeout
+     */
     this.setupTimes = function() {
         this.endTime = new Date();
         this.endTime.setMilliseconds(this.endTime.getMilliseconds() + TIMER_DURATION);
@@ -66,6 +82,9 @@ const timerSystem = function(){
         this.state = timerStates.RUNNING;
     }
 
+    /**
+     * Stops the timer
+     */
     this.stop = function() {
         this.endTime = 0;
         clearTimeout(timeout);
@@ -74,6 +93,10 @@ const timerSystem = function(){
         console.log("Timer stopped");
     };
 
+    /**
+     * Ends the timer and emits the 'timer-end' event.
+     * This brings the timer state to RESTING to indicate a rest.
+     */
     this.end = function() {
         clearTimeout(timeout);
 
@@ -85,6 +108,9 @@ const timerSystem = function(){
         this._events['timer-end'].forEach(fireCallbacks);
     };
 
+    /**
+     * Starts or stops the timer depending on its current state
+     */
     this.toggle = function() {
         
         switch (this.state) {

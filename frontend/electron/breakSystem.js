@@ -2,6 +2,9 @@ const { BrowserWindow, screen } = require('electron');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
+/**
+ * Break states
+ */
 const breakStates = {
 
     ON_BREAK: 'on_break',
@@ -26,6 +29,9 @@ const breakSystem = function(){
     this.totalDuration = 0;
     this.endTime = new Date();
 
+    /**
+     * Registers an event listener
+     */
     this.on = function(name, listener) {
 
         if (!this._events[name]) {
@@ -35,6 +41,10 @@ const breakSystem = function(){
         this._events[name].push(listener);
     }
 
+    /**
+     * Gets the status of the break system
+     * @returns an object
+     */
     this.getStatus = function() {
         var remainingTime;
 
@@ -53,6 +63,9 @@ const breakSystem = function(){
         return breakStatus;
     };
 
+    /**
+     * Starts the break. Calls this.setupTimes in the process.
+     */
     this.start = function() {
 
         if (this.state != breakStates.ON_BREAK) {
@@ -60,6 +73,7 @@ const breakSystem = function(){
 
             this.setupTimes();
 
+            // Set interval to continuously check mouse position
             oldMousePos = screen.getCursorScreenPoint();
             checkMousePositionInterval = setInterval(() => {
                 var newMousePos = screen.getCursorScreenPoint();
@@ -72,13 +86,23 @@ const breakSystem = function(){
 
             }, 100);
 
-            notifyFullscreen();
+            // Get display bounds and create new windows with those bounds
+            const disps = screen.getAllDisplays();
+
+            global.fsWindows = [];
+        
+            for (var i = 0; i < disps.length; i++) {
+                global.fsWindows.push(createFullscreenWindow(disps[i].bounds));
+            }
 
             console.log("Break started");
         }
         
     }
     
+    /**
+     * Initializes the end time and timeout
+     */
     this.setupTimes = function() {
         this.endTime = new Date();
         this.endTime.setMilliseconds(this.endTime.getMilliseconds() + BREAK_DURATION);
@@ -89,6 +113,9 @@ const breakSystem = function(){
         timeout = setTimeout(this.end.bind(this), BREAK_DURATION);
     }
 
+    /**
+     * Ends the break and emits the 'break-end' event
+     */
     this.end = function() {
 
         if (this.state != breakStates.NOT_ON_BREAK) {
@@ -114,17 +141,11 @@ const breakSystem = function(){
 }
 
 
-// Fullscreen notification windows
-function notifyFullscreen() {
-    const disps = screen.getAllDisplays();
-
-    global.fsWindows = [];
-
-    for (var i = 0; i < disps.length; i++) {
-        global.fsWindows.push(createFullscreenWindow(disps[i].bounds));
-    }
-
-}
+/**
+ * Creates a fullscreen break notification window
+ * @param {Rectangle} bounds The bounds of the window
+ * @returns a new BrowserWindow with the specified bounds
+ */
 
 function createFullscreenWindow(bounds) {
 

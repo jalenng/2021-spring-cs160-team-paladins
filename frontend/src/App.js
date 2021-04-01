@@ -3,7 +3,7 @@ import React from "react";
 import HomeScreen from './HomeScreen';
 import UsageScreen from './UsageScreen';
 import InsightsScreen from './InsightsScreen';
-import PreferencesScreen from './PreferencesScreen'
+import PreferencesScreen from './preferences/PreferencesScreen'
 
 import { Pivot, PivotItem } from '@fluentui/react/lib/Pivot';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';

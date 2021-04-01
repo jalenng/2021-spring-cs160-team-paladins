@@ -28,8 +28,6 @@ export default class Timer extends React.Component {
             var seconds = Math.floor((milliseconds % 60000) / 1000);
             seconds = ("00" + seconds).substr(-2,2);
 
-            console.log(milliseconds)
-
             this.setState({
                 minutes: minutes,
                 seconds: seconds,

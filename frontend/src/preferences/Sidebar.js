@@ -19,7 +19,7 @@ export default function Sidebar(){
       variant="contained" 
     >
       <Button onClick={()=> history.push("/")}>Home</Button>
-      <Button onClick={()=> history.push("/")}>Account</Button>
+      <Button onClick={()=> history.push("/preferences/Persona")}>Account</Button>
       <Button onClick={()=> history.push("/preferences/sounds/Notification")}>Notification</Button>
       <Button onClick={()=> history.push("/preferences/DataUsage")}>Data Usage</Button>
       <Button onClick={()=> history.push("/preferences/About")}>About</Button>

@@ -11,6 +11,10 @@ const { route } = require('./index.js');
       let upload = multer()
       let app = express();
 
+      app.use(bodyParser.urlencoded({extended: false}));
+      app.use(bodyParser.json())
+      app.use('/', router)
+
       // Database Connection
       let db = require('./db.js')
       const userDB = new db("localhost", "newuser", "", "iCare");

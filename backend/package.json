@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "description": "iCare Backend",
   "scripts": {
-    "start": "node main",
-    "watch": "nodemon main"
+    "start": "node index",
+    "watch": "nodemon index"
   },
-  "main": "main.js",
+  "main": "index.js",
   "author": "",
   "license": "ISC",
   "devDependencies": {

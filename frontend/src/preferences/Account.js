@@ -2,6 +2,7 @@ import React from 'react';
 import {Persona, PersonaSize} from '@fluentui/react/lib'
 import { Text } from '@fluentui/react/lib/Text';
 import Sidebar from './Sidebar';
+import NavigationMenu from '../NavigationMenu'
 import '../App.css';
 
 export default class Preference extends React.Component{
@@ -17,6 +18,7 @@ export default class Preference extends React.Component{
   render(){
     return(
       <div>
+        <NavigationMenu />
         <Sidebar />
         <div className = 'account'>
           <Text>Your Account</Text>

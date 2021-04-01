@@ -78,8 +78,8 @@ function getLogIn(givenEmail, callback) {
 
      router.post('/login', function(req, res) {
 	     console.log('login attempt detected')
-         username = req.body.username
-         password = req.body.password
+         let username = req.body.username
+         let password = req.body.password
          logIn(username, password)
      })
 

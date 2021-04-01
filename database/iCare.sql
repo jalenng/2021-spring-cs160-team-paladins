@@ -159,12 +159,6 @@ DELIMITER ;
 # mysql --local-infile -u root -p
 # source iCare.sql
 
-# MINE FOR TESTING: Basic Notification Sound Inserts 
-#INSERT INTO NotificationSounds VALUES ('Leaf', 'C:/Users/jkpkm/Documents/College/04 Spring 2021/CS 160/Project/2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg');
-#INSERT INTO NotificationSounds VALUES ('Butterfly', 'C:/Users/jkpkm/Documents/College/04 Spring 2021/CS 160/Project/2021-spring-cs160-team-paladins/database/Sounds/Butterfly.ogg');
-#INSERT INTO NotificationSounds VALUES ('Party Favor', 'C:/Users/jkpkm/Documents/College/04 Spring 2021/CS 160/Project/2021-spring-cs160-team-paladins/database/Sounds/PartyFavor.ogg');
-
-
 # Basic Notification Sound Inserts 
 INSERT INTO NotificationSounds VALUES ('Leaf', '/root/2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg');
 INSERT INTO NotificationSounds VALUES ('Butterfly', '/root/2021-spring-cs160-team-paladins/database/Sounds/Butterfly.ogg');

@@ -78,7 +78,8 @@ function getLogIn(givenEmail, callback) {
 
      router.post('/login', function(req, res) {
 	     console.log('login attempt detected')
-	     console.log(req.body)
+	     console.log(req.body.username)
+         console.log(req.body.password)
      })
 
      app.use('/', router)

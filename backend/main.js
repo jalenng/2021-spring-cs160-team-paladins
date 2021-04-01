@@ -21,6 +21,7 @@ const { route } = require('./index.js');
        let username = req.body.username;
        let password = req.body.password;
        console.log(username, password)
+       userDB.checkLogIn(username, password)
      })
 
       //--------------------------

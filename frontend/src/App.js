@@ -3,7 +3,7 @@ import React from "react";
 import HomeScreen from './HomeScreen';
 import UsageScreen from './UsageScreen';
 import InsightsScreen from './InsightsScreen';
-import UserPreference from './preferences/UserPreference'
+import PreferencesScreen from './PreferencesScreen'
 
 import { Pivot, PivotItem } from '@fluentui/react/lib/Pivot';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
@@ -39,7 +39,7 @@ export default class App extends React.Component {
             <InsightsScreen/>
           </PivotItem>
           <PivotItem itemIcon="Settings">
-            <UserPreference/>
+            <PreferencesScreen/>
           </PivotItem>
         </Pivot>
 

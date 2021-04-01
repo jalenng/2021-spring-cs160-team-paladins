@@ -1,9 +1,8 @@
 import React from 'react';
-import Sidebar from './Sidebar'
-import Toggle from '../Toggle'
-import Account from './Account'
 
 import { Nav } from '@fluentui/react/lib/Nav';
+import { Toggle } from '@fluentui/react/lib/Toggle';
+import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 
 const navStyles = {
@@ -13,6 +12,12 @@ const navStyles = {
     boxSizing: 'border-box',
     overflowY: 'auto',
   },
+};
+
+const bottomLeftOptionsStyle = {
+  position: "fixed",
+  bottom: "10px",
+  left: "30px",
 };
 
 const divStyle = {
@@ -68,6 +73,7 @@ export default class UserPreference extends React.Component{
           <b>Preferences</b>
         </Text>
 
+        {/* Left nav sidebar */}
         <Nav
           selectedKey={this.state.selectedKey}
           styles={navStyles}
@@ -77,7 +83,26 @@ export default class UserPreference extends React.Component{
           }}
         />
 
-        {/* <Toggle /> */}
+        {/* Bottom left options */}
+        <Stack 
+          vertical 
+          style={bottomLeftOptionsStyle} 
+          >
+
+          <Toggle 
+            label="Run app on system startup" 
+            defaultChecked 
+            onText="On" offText="Off"
+          />
+
+          <Toggle 
+            label="Start timer on app startup" 
+            defaultChecked 
+            onText="On" offText="Off"
+          />
+
+        </Stack>
+
       </div>
     );
   }

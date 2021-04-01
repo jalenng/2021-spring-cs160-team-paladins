@@ -2,12 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/index.css';
 
-import Account from './preferences/Account';
-import UserPreference from './preferences/UserPreference';
-import About from './preferences/About';
-import DataUsage from './preferences/DataUsage';
-import Notification from './preferences/sounds/Notification';
-
 import App from './App';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
@@ -57,11 +51,6 @@ ReactDOM.render(
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />
-          <Route path="/preferences/Account" exact component={Account} />
-          <Route path="/preferences/UserPreference" exact component={UserPreference} />
-          <Route path="/preferences/sounds/Notification" exact component={Notification} />
-          <Route path="/preferences/DataUsage" exact component={DataUsage} />
-          <Route path="/preferences/About" exact component={About} />
         </div>
       </BrowserRouter>
   </React.StrictMode>,

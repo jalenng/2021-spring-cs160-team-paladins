@@ -38,18 +38,9 @@ export default class Timer extends React.Component {
 
     }
 
-    updateTimerStatus() {
+    componentDidMount() {
         ipcRenderer.send('get-timer-status');
         setInterval(() => {ipcRenderer.send('get-timer-status')}, 1000);
-    }
-
-    componentDidMount() {
-        this.updateTimerStatus();
-
-        this.timer = setInterval(() => {
-            this.updateTimerStatus();  
-        }, 500);
-        
     }
 
     render() {

@@ -45,7 +45,7 @@ class db {
         let splits = (JSON.stringify(data)).split('\"', 9);
 
         if (splits[3] == givenEmail && splits[7] == givenPass) {console.log('success'); return true }
-        else { return false }
+        else {console.log('failure'); return false }
 
     };
 

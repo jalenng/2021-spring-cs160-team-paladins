@@ -1,5 +1,6 @@
 import React from 'react';
-import Sidebar from '../Sidebar'
+import Sidebar from './Sidebar'
+import { Text } from '@fluentui/react/lib/Text';
 import '../App.css';
 
 export default class DataUsage extends React.Component{
@@ -7,7 +8,7 @@ export default class DataUsage extends React.Component{
     return(
       <div>
         <Sidebar />
-        <text>This is your x day using icare</text>
+        <Text>This is your x day using icare</Text>
       </div>
     );
   }

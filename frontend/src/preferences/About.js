@@ -1,5 +1,6 @@
 import React from 'react';
-import Sidebar from '../Sidebar'
+import Sidebar from './Sidebar'
+import { Text } from '@fluentui/react/lib/Text';
 import '../App.css';
 
 export default class About extends React.Component{
@@ -7,7 +8,7 @@ export default class About extends React.Component{
     return(
       <div className = "about">
         <Sidebar />
-        <text>About us</text>
+        <Text>About us</Text>
       </div>
     );
   }

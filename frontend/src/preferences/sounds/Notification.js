@@ -1,9 +1,9 @@
 import React from 'react';
 import Sidebar from '../Sidebar'
-import SwitchBtn from '../SwitchBtn'
-import DropdownMenu from '../DropdownMenu'
-import '../App.css';
-import UploadFile from '../UploadFile'
+import SwitchBtn from './SwitchBtn'
+import DropdownMenu from './DropdownMenu'
+import UploadFile from './UploadFile'
+import '../../App.css'
 
 
 export default class Notification extends React.Component{
@@ -11,7 +11,7 @@ export default class Notification extends React.Component{
     return(
       <div>
         <Sidebar />
-        <div className = "switchBtn">
+        <div className = 'switchBtn'>
           <SwitchBtn />
           <DropdownMenu />
           <UploadFile />

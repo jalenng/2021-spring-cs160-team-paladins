@@ -1,6 +1,7 @@
 import React from 'react';
 import {Persona, PersonaSize} from '@fluentui/react/lib'
-import './App.css';
+import { Text } from '@fluentui/react/lib/Text';
+import '../App.css';
 
 export default class Preference extends React.Component{
   constructor(props){
@@ -16,7 +17,7 @@ export default class Preference extends React.Component{
     return(
       <div>
         <div className = 'account'>
-          <text>Your Account</text>
+          <Text>Your Account</Text>
         </div>
         <div className ='persona'>
         <Persona 

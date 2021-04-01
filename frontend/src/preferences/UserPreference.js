@@ -1,6 +1,6 @@
 import React from 'react';
 import Sidebar from './Sidebar'
-import Toggle from './Toggle'
+import Toggle from '../Toggle'
 import Persona from './Persona'
 
 export default class UserPreference extends React.Component{

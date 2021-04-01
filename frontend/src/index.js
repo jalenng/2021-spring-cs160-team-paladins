@@ -2,11 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/index.css';
 
-import LoginMenu from './LoginMenu';
-import UserPreference from './UserPreference';
-import About from './Preference/About';
-import DataUsage from './Preference/DataUsage';
-import Notification from './Preference/Notification';
+import UserPreference from './preferences/UserPreference';
+import About from './preferences/About';
+import DataUsage from './preferences/DataUsage';
+import Notification from './preferences/sounds/Notification';
 
 import App from './App';
 import SignInScreen from './SignInScreen';
@@ -55,13 +54,12 @@ ReactDOM.render(
      <BrowserRouter>
         <div className="App">
           <Route path="/" exact component={App} />
-          <Route path="/LoginMenu" exact component={LoginMenu} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />
-          <Route path="/UserPreference" exact component={UserPreference} />
-          <Route path="/Preference/Notification" exact component={Notification} />
-          <Route path="/Preference/DataUsage" exact component={DataUsage} />
-          <Route path="/Preference/About" exact component={About} />
+          <Route path="/preferences/UserPreference" exact component={UserPreference} />
+          <Route path="/preferences/sounds/Notification" exact component={Notification} />
+          <Route path="/preferences/DataUsage" exact component={DataUsage} />
+          <Route path="/preferences/About" exact component={About} />
         </div>
       </BrowserRouter>
   </React.StrictMode>,

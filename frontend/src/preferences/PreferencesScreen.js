@@ -14,11 +14,8 @@ const divStyle = {
 export default class PreferencesScreen extends React.Component {
   render() {
     return (    
-
       <div style={divStyle}>
-        
         <UserPreference/>
-
       </div>
     );
   }

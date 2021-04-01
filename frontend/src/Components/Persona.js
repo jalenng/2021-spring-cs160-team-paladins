@@ -1,6 +1,6 @@
 import React from 'react';
 import {Persona, PersonaSize} from '@fluentui/react/lib'
-import './App.css';
+import '../App.css';
 
 export default class Preference extends React.Component{
   constructor(props){
@@ -11,6 +11,14 @@ export default class Preference extends React.Component{
   handleChange = event => {
     this.setState({ ownTime: event.target.value });
   };
+
+  handleClick = () =>{
+    console.log(this.state);
+  }
+
+  handleSubmit = event =>{
+    event.preventDefault();
+  }
 
   render(){
     return(
@@ -31,7 +39,7 @@ export default class Preference extends React.Component{
           <button>Sign out</button>
         </div>
         <div className = 'customizedTime'>
-          <form>
+          <form onSubmit={this.handleSubmit}>
           <label htmlFor="ownTime">Customize own break time: </label><br></br>
             <input
               type="text"
@@ -40,7 +48,7 @@ export default class Preference extends React.Component{
               onChange={this.handleChange}
           />
           </form><br></br>
-          <button>Save</button>
+          <button onClick={this.handleClick}>Save</button>
         </div>
       </div>
     );

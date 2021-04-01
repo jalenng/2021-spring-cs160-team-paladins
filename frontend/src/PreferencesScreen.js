@@ -1,5 +1,8 @@
 import React from "react";
 import UserPreference from './UserPreference'
+// import Sidebar from './Components/Sidebar'
+// import Toggle from './Components/Toggle'
+// import Persona from './Components/Persona'
 
 const divStyle = {
   MozUserSelect: "none",
@@ -18,7 +21,10 @@ export default class PreferencesScreen extends React.Component {
       <div style={divStyle}>
         
         <UserPreference/>
-
+        {/* <Persona />
+        <Sidebar />
+        <Toggle />
+        <Persona /> */}
       </div>
     );
   }

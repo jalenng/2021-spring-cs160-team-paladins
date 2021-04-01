@@ -18,7 +18,7 @@ export default function Sidebar(){
       aria-label="Button Group"
       variant="contained" 
     >
-      <Button onClick={()=> history.push("/")}>Home</Button>
+      <Button onClick={()=> history.push("/HomeScreen")}>Home</Button>
       <Button onClick={()=> history.push("/UserPreference")}>Account</Button>
       <Button onClick={()=> history.push("/Preference/Notification")}>Notification</Button>
       <Button onClick={()=> history.push("/Preference/DataUsage")}>Data Usage</Button>

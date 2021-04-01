@@ -1,6 +1,6 @@
 import React from 'react';
 import {FormControl,FormGroup,FormControlLabel,Switch} from '@material-ui/core';
-import './App.css';
+import '../App.css';
 
 export default function SwitchesGroup() {
   const [state, setState] = React.useState({

@@ -16,6 +16,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import { loadTheme } from '@fluentui/react'
 import { createTheme } from '@fluentui/theme/lib/createTheme'
 import { initializeIcons } from '@fluentui/react/lib/Icons';
+import HomeScreen from './HomeScreen';
 
 const myTheme = createTheme({
   palette: {
@@ -62,6 +63,7 @@ ReactDOM.render(
           <Route path="/Preference/Notification" exact component={Notification} />
           <Route path="/Preference/DataUsage" exact component={DataUsage} />
           <Route path="/Preference/About" exact component={About} />
+          <Route path="/HomeScreen" exact component={HomeScreen} />
         </div>
       </BrowserRouter>
   </React.StrictMode>,

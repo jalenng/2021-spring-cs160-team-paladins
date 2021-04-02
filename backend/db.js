@@ -158,8 +158,6 @@ class db {
             else { resolve(true) }
         }));
 
-        console.log(results)
-
         return results;
     }
 
@@ -224,6 +222,82 @@ class db {
     }
 
 
+    /**
+     * Sets the values of the data usage record or creates a new one.
+     * @param {String} userEmail 
+     * @param {int} screenTime 
+     * @param {int} timerCount amount of times counter has been called
+     * @returns true if success in updating datausage records, false if fails
+     */
+    async setDataUsage(userEmail, screenTime, timerCount) {
+
+        let today = this.getDate(0);
+        let q = "";
+
+        // Checks if an entry for today exists in the database.
+        let checkq = "SELECT EXISTS(SELECT * FROM DataUsage WHERE email='" + userEmail + "' AND usageDate='"
+            + today + "')";
+
+        // 1 = the record exists, 0 = record does not exist
+        let check = await new Promise((resolve, reject) => this.pool.query(checkq, function(err, result) {
+            if (err) { resolve(false) }
+            else {
+                resolve(result);
+            }
+        }));
+
+        // Updates existing record
+        if (check == 1) {
+            q = "UPDATE DataUsage SET screenTime=" + screenTime + ", timerCount=" + timerCount + 
+                " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
+        }
+        // Creates existing record
+        else {
+            q = "INSERT INTO DataUsage VALUES(" + userEmail + ", " + screenTime + ", " + timerCount + ", " + today + ")";
+        }
+
+        // Updates the database
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
+            if (err) { resolve(false) }
+            else { resolve(true) }
+        }));
+
+        return results;
+    }
+
+    /**
+     * Gets the data usage of a user based on day, week, month, or all time
+     * @param {String} userEmail 
+     * @param {String} time day, week, month, all time (querying usageDate)
+     * @returns records, false if fails
+     */
+    async getDataUsage(userEmail, time) {
+
+        let q = "SELECT screenTime, timerCount, usageDate FROM DataUsage WHERE email='" + userEmail + "'"
+        let q2 = ""
+
+        
+        if (time == "day") {
+            q2 = " AND usageDate='" + getDate(0) + "'"
+        }
+        else if (time == "week") {
+            q2 = " AND usageDate>'" + getDate(7) + "'"
+        }
+        else if (time == "month") {
+            q2 = " AND usageDate>'" + getDate(30) + "'"
+        }
+
+        // Querying Result
+        q = q + q2
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
+            if (err) { resolve(false) }
+            else {  resolve(result) }
+        }));
+
+        return result;
+    }
+
+
 
     /**
      * Closes the database pool
@@ -264,6 +338,25 @@ class db {
         let splits3 = (JSON.stringify(splits2[0])).split('\"') 
 
         return splits3[2]
+    }
+
+    /**
+     * Gets today's date for setting the values of a Data/App Usage record in the db
+     * @param days subtract this to get a date in the past
+     * @returns mysql date formats
+     */
+    async getDate(days) {
+
+        let myDate = new Date();
+        let pastDate = myDate.getDate() - days;
+        myDate.setDate(pastDate);
+
+        let dd = String(myDate.getDate()).padStart(2, '0');
+        let mm = String(myDate.getMonth() + 1).padStart(2, '0');
+        let yyyy = myDate.getFullYear();
+
+        myDate = yyyy + '-' + mm + '-' + dd;
+        return myDate;
     }
 }
 

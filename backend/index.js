@@ -72,18 +72,17 @@ const { route } = require('./index.js');
         // Somehow convert token to user email to get info out of db
  
         let email = "Convert from token";
-        let dName = await userDB.getDisplayName(email).then((result) => { return result; })
         let notiInterval = await userDB.getNotiInterval(email).then((result) => { return result; })
         let notiSound = await userDB.getNotiSound(email).then((result) => { return result; })
         let notiSoundOn = await userDB.getNotiSoundOn(email).then((result) => { return result; })
         let dUsageOn = await userDB.getDataUsageOn(email).then((result) => { return result; })
+        let aUsageOn = await userDB.getAppUsageOn(email).then((result) => { return result; })
  
         // Send to frontend
         if (displayName != false && notiInterval != false && notiSound != false && notiSoundOn != false) {
             res.status(200).send({status: "success", data: {
-                displayName: dName,
-                notifications: {interval: notiInterval, sound: notiSound, enableSound: notiSoundOn},
-                dataUsage: dUsageOn
+                notifications: {enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
+                dataUsage: {trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: dUsageOn}
             }});
         }
         else {

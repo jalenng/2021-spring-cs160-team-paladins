@@ -222,11 +222,38 @@ class db {
         return await this.dbPromise(false, q, userEmail)
     }
 
+    /**
+     * Gets the booleanValue of AppUsageOn
+     * @param {String} userEmail user email
+     * @returns boolean value of AppUsageOn
+     */
+    async getAppUsageOn(userEmail) {
+        let q = "SELECT appUsageOn FROM UserPreferences"
+        let data = await this.dbPromise(true, q, userEmail);
+        if (data != false) {
+            let bVal = await this.gettingInteger(data)
+            return Boolean(Number(bVal))
+        }
+        return data
+    }
 
     /**
-     * Sets the values of the data usage record or creates a new one.
+     * Sets the boolean value for appUsageOn
      * @param {String} userEmail 
-     * @param {int} screenTime 
+     * @param {Boolean} boolValue set appUsageOn
+     * @returns true if no error; false if fails
+     */
+    async setAppUsageOn(userEmail, boolValue) {
+        let i = boolValue ? true : false;
+        let q = "UPDATE userPreferences SET appUsageOn=" + i
+
+        return await this.dbPromise(false, q, userEmail)
+    }
+    
+    /**
+     * Sets the values of the data usage record or creates a new one.
+     * @param {String} userEmail user email
+     * @param {int} screenTime screen time spent on computer
      * @param {int} timerCount amount of times counter has been called
      * @returns true if success in updating datausage records, false if fails
      */
@@ -307,7 +334,7 @@ class db {
 
 
     /**
-     * 
+     * Gets app usage records
      * @param {String} userEmail user email
      * @param {String} appName name of application
      * @param {int} appTime time spent on application

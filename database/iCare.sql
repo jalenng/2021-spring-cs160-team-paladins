@@ -25,6 +25,7 @@ CREATE TABLE UserPreferences (
     notiSound varchar(50),				# DEFAULT
     notiSoundOn boolean DEFAULT TRUE,
     dataUsageOn bool DEFAULT TRUE,
+    appUsageOn bool DEFAULT TRUE,
     PRIMARY KEY (email),
     FOREIGN KEY (email) REFERENCES Users (email)  ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (notiSound) REFERENCES NotificationSounds (soundName)
@@ -126,7 +127,7 @@ CREATE TRIGGER BeforeInsertAppUsage BEFORE INSERT ON AppUsage
 FOR EACH ROW BEGIN
 	
     DECLARE usageOn bool;
-    SELECT dataUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
+    SELECT appUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
     IF (usageOn) THEN
 		SET NEW.usageDate=CURDATE();
@@ -144,7 +145,7 @@ CREATE TRIGGER BeforeUpdateAppUsage BEFORE Update ON AppUsage
 FOR EACH ROW BEGIN
 	
     DECLARE usageOn bool;
-    SELECT dataUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
+    SELECT appUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
     IF (!usageOn) THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";

@@ -278,13 +278,13 @@ class db {
 
         
         if (time == "day") {
-            q2 = " AND usageDate='" + getDate(0) + "'"
+            q2 = " AND usageDate='" + this.getDate(0) + "'"
         }
         else if (time == "week") {
-            q2 = " AND usageDate>'" + getDate(7) + "'"
+            q2 = " AND usageDate>'" + this.getDate(7) + "'"
         }
         else if (time == "month") {
-            q2 = " AND usageDate>'" + getDate(30) + "'"
+            q2 = " AND usageDate>'" + this.getDate(30) + "'"
         }
 
         // Querying Result

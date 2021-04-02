@@ -1,4 +1,4 @@
-"use strict";
+ons"use strict";
 
 const mysql = require('mysql');
 var util = require('util');
@@ -216,7 +216,6 @@ class db {
     async setDataUsageOn(userEmail, boolValue) {
         let i = boolValue ? true : false;
         let q = "UPDATE userPreferences SET dataUsageOn=" + i
-        console.log("boolValue = " + boolValue + "; i = " + i)
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -241,14 +240,11 @@ class db {
         // 1 = the record exists, 0 = record does not exist
         let check = await new Promise((resolve, reject) => this.pool.query(checkq, function(err, result) {
             if (err) { resolve(false) }
-            else {
-                resolve(result);
-            }
+            else { resolve(result) }
         }));
 
         // Gets check value from [Object object] to string "1" or "0"
         let checkString = await this.gettingInteger(check).then((result) => { return result; })
-        console.log(checkString);
 
         // Updates existing record
         if (checkString == "1") {

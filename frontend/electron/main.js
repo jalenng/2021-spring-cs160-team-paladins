@@ -50,6 +50,8 @@ app.whenReady().then(() => {
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
+
+    console.log(app.getLoginItemSettings())
 })
 
 app.on('window-all-closed', function () {
@@ -58,7 +60,8 @@ app.on('window-all-closed', function () {
 
 // Start app when the user logs in
 app.setLoginItemSettings({
-    openAtLogin: true
+    openAtLogin: true,
+    path: app.getPath('exe')
 })
 
 /**

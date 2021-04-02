@@ -5,6 +5,9 @@
   "version": "0.1.0",
   "repository": "https://github.com/jalenng/2021-spring-cs160-team-paladins",
   "private": true,
+  "build": {
+    "appId": "team_paladins.icare"
+  },
   "dependencies": {
     "@fluentui/react": "^8.5.1",
     "@testing-library/jest-dom": "^5.11.4",
@@ -12,7 +15,6 @@
     "@testing-library/user-event": "^12.1.10",
     "concurrently": "^6.0.0",
     "electron": "^12.0.1",
-    "electron-builder": "^22.9.1",
     "electron-is-dev": "^2.0.0",
     "electron-store": "^7.0.2",
     "react": "^17.0.2",
@@ -24,13 +26,15 @@
   },
   "main": "./electron/main.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "electron": "electron .",
-    "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron",
-    "dev": "concurrently \"npm:start\" \"npm:electron-watch\""
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "electron-start": "electron .",
+    "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron-start",
+    "build": "npm react-build && npm electron-build",
+    "dev": "concurrently \"npm:react-start\" \"npm:electron-watch\""
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "electron-builder": "^22.10.5",
     "nodemon": "^2.0.7"
   }
 }

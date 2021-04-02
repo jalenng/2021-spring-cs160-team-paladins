@@ -15,10 +15,12 @@ class db {
         })
     }
 
+    // Database Methods--------------------------------------------------
+
     /**
      * Creates a new user (inserts into db)
-     * @param {string} givenEmail email (primary key)
-     * @param {string} givenPass password
+     * @param {String} givenEmail email (primary key)
+     * @param {String} givenPass password
      * @returns true if no error, false for error
      */
     async createUser(givenEmail, givenPass) {
@@ -34,8 +36,8 @@ class db {
 
     /**
      * Checks LogIn Information
-     * @param {string} givenEmail email (primary key)
-     * @param {string} givenPass password
+     * @param {String} givenEmail email (primary key)
+     * @param {String} givenPass password
      * @returns true if successful login, false if fails
      */
     async checkLogIn(givenEmail, givenPass) {
@@ -56,7 +58,7 @@ class db {
 
     /**
      * Gets displayName from preferences
-     * @param {string} userEmail email (primary key)
+     * @param {String} userEmail email (primary key)
      * @returns displayName, false if fails
      */
     async getDisplayName(userEmail) {
@@ -73,8 +75,8 @@ class db {
 
     /**
      * Sets the displayName
-     * @param {string} userEmail email (primary key)
-     * @param {string} displayName displayName
+     * @param {String} userEmail email (primary key)
+     * @param {String} displayName displayName
      * @returns true if no error, false if fails
      */
     async setDisplayName(userEmail, displayName) {
@@ -85,7 +87,7 @@ class db {
 
     /**
      * Gets how long the timer is set (minute)
-     * @param {string} userEmail email (primary key)
+     * @param {String} userEmail email (primary key)
      * @returns intValue - timer length, false if fails
      */
     async getNotiInterval(userEmail) {
@@ -103,8 +105,8 @@ class db {
 
     /**
      * Sets how long the timer is set (minute)
-     * @param {string} userEmail email (primary key)
-     * @param {number} newInt new timer length (minute)
+     * @param {String} userEmail email (primary key)
+     * @param {int} newInt new timer length (minute)
      * @returns true if no error, false if fails
      */
     async setNotiInterval(userEmail, newInt) {
@@ -116,8 +118,8 @@ class db {
 
     /**
      * Gets the path of the notification sound to play the sound!
-     * @param {string} userEmail email (primary key)
-     * @return {string} path if successful, false if failed
+     * @param {String} userEmail email (primary key)
+     * @return path if successful, false if failed
      */
     async getNotiSound(userEmail) {
         let query = "SELECT path FROM notificationSounds WHERE soundName="
@@ -135,7 +137,7 @@ class db {
 
     /**
      * Sets the notification sound of a user 
-     * @param {string} userEmail email (primary key)
+     * @param {String} userEmail email (primary key)
      * @param {String} newSound new sound to set to (sound name in database)
      */
     async setNotiSound(userEmail, newSound) {
@@ -163,7 +165,7 @@ class db {
 
     /**
      * Gets the boolean value for notiSoundOn
-     * @param {string} userEmail email (primary key)
+     * @param {String} userEmail email (primary key)
      * @returns boolean - notiSoundOn, false if fails
      */
     async getNotiSoundOn(userEmail) {
@@ -180,8 +182,8 @@ class db {
 
     /**
      * Sets the boolean value for notiSoundOn
-     * @param {string} userEmail email (primary key)
-     * @param {boolean} boolValue set the boolValue
+     * @param {String} userEmail email (primary key)
+     * @param {Boolean} boolValue set the boolValue
      * @returns true if no error, false if fails
      */
     async setNotiSoundOn(userEmail, boolValue) {
@@ -193,7 +195,7 @@ class db {
 
     /**
      * Gets the boolean value of dataUsageOn
-     * @param {string} userEmail email (primary key)
+     * @param {String} userEmail email (primary key)
      * @returns boolean - dataUsageOn, false if fails
      */
     async getDataUsageOn(userEmail) {
@@ -209,8 +211,8 @@ class db {
 
     /**
      * Sets the boolean value for dataUsageOn
-     * @param {string} userEmail email (primary key)
-     * @param {boolean} boolValue set DataUsageOn
+     * @param {String} userEmail email (primary key)
+     * @param {Boolean} boolValue set DataUsageOn
      * @returns true if no error
      */
     async setDataUsageOn(userEmail, boolValue) {
@@ -229,27 +231,13 @@ class db {
      * @returns true if success in updating datausage records, false if fails
      */
     async setDataUsage(userEmail, screenTime, timerCount) {
-
         let today = await this.getDate(0).then((result) => {return result;})
+        let check = await this.check("DataUsage", userEmail, "", today);
         let q = "";
 
-        // Checks if an entry for today exists in the database.
-        let checkq = "SELECT EXISTS(SELECT * FROM DataUsage WHERE email='" + userEmail + "' AND usageDate='"
-            + today + "')";
-
-        // 1 = the record exists, 0 = record does not exist
-        let check = await new Promise((resolve, reject) => this.pool.query(checkq, function(err, result) {
-            if (err) { resolve(false) }
-            else { resolve(result) }
-        }));
-
-        // Gets check value from [Object object] to string "1" or "0"
-        let checkString = await this.gettingInteger(check).then((result) => { return result; })
-
         // Updates existing record
-        if (checkString == "1") {
-            q = "UPDATE DataUsage SET screenTime=" + screenTime + ", timerCount=" + timerCount + 
-                " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
+        if (check == "1") {
+            q = "UPDATE DataUsage SET screenTime=" + screenTime + ", timerCount=" + timerCount + " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
         }
         // Creates existing record
         else {
@@ -267,37 +255,77 @@ class db {
 
     /**
      * Gets the data usage of a user based on day, week, month, or all time
-     * @param {String} userEmail 
+     * @param {String} userEmail user email
      * @param {String} time day, week, month, all time (querying usageDate)
-     * @returns records, false if fails (there are no records)
+     * @returns JSON of records, false if fails (there are no records)
      */
     async getDataUsage(userEmail, time) {
 
         let q = "SELECT screenTime, timerCount, usageDate FROM DataUsage WHERE email='" + userEmail + "'"
-        let q2 = ""
-
-        
-        if (time == "day") {
-            let date = await this.getDate(0).then((result) => {return result;})
-            q2 = " AND usageDate='" + date + "'"
-        }
-        else if (time == "week") {
-            let date = await this.getDate(7).then((result) => {return result;})
-            q2 = " AND usageDate>'" + date + "'"
-        }
-        else if (time == "month") {
-            let date = await this.getDate(30).then((result) => {return result;})
-            q2 = " AND usageDate>'" + date + "'"
-        }
+        let q2 = await this.getQueryUsage(time);
+        q = q + q2
 
         // Querying Result
-        q = q + q2
         let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
             if (err) { console.log(err); resolve(false) }
             else {  resolve(result) }
         }));
 
-        return JSON.stringify(results);
+        return results; // JSON.stringify(results); to get the string format
+    }
+
+    /**
+     * Sets the values of an AppUsage record
+     * @param {String} userEmail user email
+     * @param {String} appName name of the application
+     * @param {int} appTime time spent on the application
+     * @returns true if success in updating appusage records, false if fails
+     */
+    async setAppUsage(userEmail, appName, appTime) {
+        let today = await this.getDate(0).then((result) => {return result;})
+        let check = await this.check("AppUsage", userEmail, appName, today);
+        let q = "";
+
+        // Updates existing record
+        if (check == "1") {
+            q = "UPDATE AppUsage SET appTime=" + appTime + ", timerCount=" + timerCount + 
+                " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
+        }
+        // Creates existing record
+        else {
+            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + today + "')";
+        }
+
+        // Updates the database
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
+            if (err) { console.log(err); resolve(false) }
+            else { resolve(true) }
+        }));
+
+        return results;
+    }
+
+
+    /**
+     * 
+     * @param {String} userEmail user email
+     * @param {String} appName name of application
+     * @param {int} appTime time spent on application
+     * @param {String} time  day, week, month, all time (querying usageDate)
+     * @returns JSON of records, false if fails (there are no records)
+     */
+    async getAppUsage(userEmail, appName, appTime, time) {
+        let q = "SELECT appName, appTime, usageDate FROM AppUsage WHERE email='" + userEmail + "'"
+        let q2 = await this.getQueryUsage(time);
+        q = q + q2
+
+        // Querying Result
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
+            if (err) { console.log(err); resolve(false) }
+            else {  resolve(result) }
+        }));
+
+        return results; // JSON.stringify(results); to get the string format
     }
 
 
@@ -309,11 +337,13 @@ class db {
         this.pool.end()
     }
 
+    // Helper Methods--------------------------------------------------
+
     /**
      * Getter/Setter for DB's userPreferences using Promises
-     * @param {boolean} isGet is getter method?
-     * @param {string} str first part of query
-     * @param {*string} userEmail email (primary key)
+     * @param {Boolean} isGet is getter method?
+     * @param {String} str first part of query
+     * @param {String} userEmail email (primary key)
      * @returns true/result for successful set/get, false for failure
      */
     async dbPromise(isGet, str, userEmail) {
@@ -360,6 +390,65 @@ class db {
 
         myDate = yyyy + '-' + mm + '-' + dd;
         return myDate;
+    }
+
+    /**
+     * Checks if an entry exists in the table
+     * @param {String} table "AppUsage" or "DataUsage"
+     * @param {String} userEmail email of user
+     * @param {String} appName for "AppUsage"
+     * @param {String} today the date of today
+     * @returns "0" - no entry; "1" - entry exists; false -error
+     */
+    async check(table, userEmail, appName, today) {
+        let checkq = "SELECT EXISTS(SELECT * FROM "
+        let addq = ""
+
+        // Checks if an entry for today exists in the database.
+        if (table == "DataUsage") {
+            addq = table + " WHERE email='" + userEmail + "' AND usageDate='" + today + "')";
+        }
+        else if (table == "App Usage") {
+            addq = table + " WHERE email='" + userEmail + "' AND appName='"  + appName + "' AND usageDate='" + today + "')"; 
+        }
+        checkq = checkq + addq;
+
+        // 1 = the record exists, 0 = record does not exist
+        let check = await new Promise((resolve, reject) => this.pool.query(checkq, function(err, result) {
+            if (err) { resolve(false) }
+            else { resolve(result) }
+        }));
+
+        // Gets check value from [Object object] to string "1" or "0" / or false if fails
+        return await this.gettingInteger(check).then((result) => { return result; })
+    }
+
+    /**
+     * Gets the second half of a query for AppUsage/DataUsage where we 
+     * get a range of records back!
+     * @param {String} time 
+     */
+    async getQueryUsage(time) {
+        let queryString = " AND usageDate"
+        let qPart = ""
+        let date = ""
+
+        if (time == "day") {
+            date = await this.getDate(0).then((result) => {return result;})
+            qPart = "='"
+        }
+        else if (time == "week") {
+            date = await this.getDate(7).then((result) => {return result;})
+            qPart = ">'"
+        }
+        else if (time == "month") {
+            date = await this.getDate(30).then((result) => {return result;})
+            qPart = ">'"
+        }
+        
+        queryString = queryString + qPart  + date + "'"
+        
+        return queryString;
     }
 }
 

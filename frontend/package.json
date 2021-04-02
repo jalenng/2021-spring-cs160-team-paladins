@@ -33,7 +33,7 @@
     "electron-build": "electron-builder",
     "electron-start": "electron .",
     "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron-start",
-    "build": "npm react-build && npm electron-build",
+    "build": "npm run react-build && npm run electron-build",
     "dev": "concurrently \"npm:react-start\" \"npm:electron-watch\""
   },
   "eslintConfig": {

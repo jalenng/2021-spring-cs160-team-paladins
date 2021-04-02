@@ -269,7 +269,7 @@ class db {
      * Gets the data usage of a user based on day, week, month, or all time
      * @param {String} userEmail 
      * @param {String} time day, week, month, all time (querying usageDate)
-     * @returns records, false if fails
+     * @returns records, false if fails (there are no records)
      */
     async getDataUsage(userEmail, time) {
 
@@ -278,19 +278,22 @@ class db {
 
         
         if (time == "day") {
-            q2 = " AND usageDate='" + this.getDate(0) + "'"
+            let date = await this.getDate(0).then((result) => {return result;})
+            q2 = " AND usageDate='" + date + "'"
         }
         else if (time == "week") {
-            q2 = " AND usageDate>'" + this.getDate(7) + "'"
+            let date = await this.getDate(7).then((result) => {return result;})
+            q2 = " AND usageDate>'" + date + "'"
         }
         else if (time == "month") {
-            q2 = " AND usageDate>'" + this.getDate(30) + "'"
+            let date = await this.getDate(30).then((result) => {return result;})
+            q2 = " AND usageDate>'" + date + "'"
         }
 
         // Querying Result
         q = q + q2
         let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
-            if (err) { resolve(false) }
+            if (err) { console.log(err); resolve(false) }
             else {  resolve(result) }
         }));
 

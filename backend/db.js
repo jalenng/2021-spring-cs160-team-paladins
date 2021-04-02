@@ -36,37 +36,46 @@ class db {
      * Checks LogIn Information
      * @param {string} givenEmail email (primary key)
      * @param {string} givenPass password
-     * @returns true if successful login
+     * @returns true if successful login, false if fails
      */
     async checkLogIn(givenEmail, givenPass) {
         
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
-        let splits = (JSON.stringify(data)).split('\"', 9);
 
-        if (splits[3] == givenEmail && splits[7] == givenPass) {console.log('success'); return true }
-        else {console.log('failure'); return false }
+        if (data != false) {
+            let splits = (JSON.stringify(data)).split('\"', 9);
+
+            if (splits[3] == givenEmail && splits[7] == givenPass) { return true }
+            else { return false }
+        }
+
+        return data;
 
     };
 
     /**
      * Gets displayName from preferences
      * @param {string} userEmail email (primary key)
-     * @returns displayName
+     * @returns displayName, false if fails
      */
     async getDisplayName(userEmail) {
         let q = "SELECT displayName FROM UserPreferences";
         let data = await this.dbPromise(true, q, userEmail);
-        let splits = (JSON.stringify(data)).split('\"');       
-    
-        return splits[3];
+
+        if (data != false) {
+            let splits = (JSON.stringify(data)).split('\"');       
+            return splits[3];
+        }
+        
+        return data;
     };
 
     /**
      * Sets the displayName
      * @param {string} userEmail email (primary key)
      * @param {string} displayName displayName
-     * @returns true if no error
+     * @returns true if no error, false if fails
      */
     async setDisplayName(userEmail, displayName) {
         let q = "UPDATE userPreferences SET displayName='" + displayName + "'"
@@ -77,21 +86,26 @@ class db {
     /**
      * Gets how long the timer is set (minute)
      * @param {string} userEmail email (primary key)
-     * @returns intValue - timer length
+     * @returns intValue - timer length, false if fails
      */
     async getNotiInterval(userEmail) {
         let q = "SELECT notiInterval FROM UserPreferences"
         let data = await this.dbPromise(true, q, userEmail);
-        let intValue = await this.gettingInteger(data)
 
-        return parseInt(intValue)
+        if (data != false) {
+            let intValue = await this.gettingInteger(data)
+            return parseInt(intValue)
+        }
+        
+        return data;
+        
     }
 
     /**
      * Sets how long the timer is set (minute)
      * @param {string} userEmail email (primary key)
      * @param {number} newInt new timer length (minute)
-     * @returns true if no error
+     * @returns true if no error, false if fails
      */
     async setNotiInterval(userEmail, newInt) {
         let q = "UPDATE userPreferences SET notiInterval=" + newInt
@@ -103,14 +117,14 @@ class db {
     /**
      * Gets the path of the notification sound to play the sound!
      * @param {string} userEmail email (primary key)
-     * @return {string} path
+     * @return {string} path if successful, false if failed
      */
     async getNotiSound(userEmail) {
         let query = "SELECT path FROM notificationSounds WHERE soundName="
         let q = query + "(SELECT notiSound FROM userPreferences WHERE email='" + userEmail + "')"
 
         let path = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
-            if (err) { reject(err) }
+            if (err) { reject(false) }
             else {
                 resolve(result)
             }
@@ -152,21 +166,25 @@ class db {
     /**
      * Gets the boolean value for notiSoundOn
      * @param {string} userEmail email (primary key)
-     * @returns boolean - notiSoundOn
+     * @returns boolean - notiSoundOn, false if fails
      */
     async getNotiSoundOn(userEmail) {
         let q = "SELECT notiSoundOn FROM UserPreferences"
         let data = await this.dbPromise(true, q, userEmail);
-        let bVal = await this.gettingInteger(data)
 
-        return Boolean(Number(bVal))
+        if (data != false) {
+            let bVal = await this.gettingInteger(data)
+            return Boolean(Number(bVal))
+        }
+        
+        return data;
     }
 
     /**
      * Sets the boolean value for notiSoundOn
      * @param {string} userEmail email (primary key)
      * @param {boolean} boolValue set the boolValue
-     * @returns true if no error
+     * @returns true if no error, false if fails
      */
     async setNotiSoundOn(userEmail, boolValue) {
         let i = boolValue ? true : false;
@@ -178,14 +196,17 @@ class db {
     /**
      * Gets the boolean value of dataUsageOn
      * @param {string} userEmail email (primary key)
-     * @returns boolean - dataUsageOn
+     * @returns boolean - dataUsageOn, false if fails
      */
     async getDataUsageOn(userEmail) {
         let q = "SELECT dataUsageOn FROM UserPreferences"
         let data = await this.dbPromise(true, q, userEmail);
-        let bVal = await this.gettingInteger(data)
+        if (data != false) {
+            let bVal = await this.gettingInteger(data)
+            return Boolean(Number(bVal))
+        }
 
-        return Boolean(Number(bVal))
+        return data
     }
 
     /**
@@ -202,6 +223,11 @@ class db {
         return await this.dbPromise(false, q, userEmail)
     }
 
+
+
+    /**
+     * Closes the database pool
+     */
     async close() {
         this.pool.end()
     }
@@ -211,13 +237,13 @@ class db {
      * @param {boolean} isGet is getter method?
      * @param {string} str first part of query
      * @param {*string} userEmail email (primary key)
-     * @returns 
+     * @returns true/result for successful set/get, false for failure
      */
     async dbPromise(isGet, str, userEmail) {
         let q = str + " WHERE email='" + userEmail + "'"
 
         let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
-            if (err) { reject(err) }
+            if (err) { resolve(false) }
             else {
                 if (isGet) { resolve(result) }      // For Getter Methods
                 else { resolve(true) }              // For Setter Methods

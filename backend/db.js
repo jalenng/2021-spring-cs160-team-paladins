@@ -1,4 +1,4 @@
-ons"use strict";
+"use strict";
 
 const mysql = require('mysql');
 var util = require('util');

@@ -96,7 +96,6 @@ app.on('window-all-closed', function () {
  * These event handlers are executed when another process invokes the event.
  */
 
-<<<<<<< HEAD
 // Log to main process's console
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
@@ -131,22 +130,6 @@ ipcMain.handle('show-sign-in-popup', event => {
         : `file://${path.join(__dirname, '../build/login/index.html')}`
     ); 
 
-=======
-// IPC event handler for signing in
-ipcMain.handle('sign-in', async (event, username, password) => {
-    axios
-    .post('http://165.232.156.120:3000/login', {
-        username: username,
-        password: password
-    })
-    .then(res => {
-        console.log(`statusCode: ${res.statusCode}`)
-        console.log(res.data)
-    })
-    .catch(error => {
-        console.error(error)
-    })
->>>>>>> main
 })
 
 // Toggle timer

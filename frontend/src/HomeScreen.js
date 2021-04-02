@@ -17,15 +17,13 @@ const divStyle = {
 export default class HomeScreen extends React.Component {
   render() {
     return (    
-
       <div style={divStyle}>
         <Text variant={'xxLarge'} block>
           <b>Home</b>
         </Text>
-
         <Timer/>
-
       </div>
+      
     );
   }
 }

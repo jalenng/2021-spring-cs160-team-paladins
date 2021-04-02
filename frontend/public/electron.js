@@ -1,17 +1,52 @@
 const { app, BrowserWindow, ipcMain } = require('electron'); 
+const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
+const axios = require('axios')
 
-const {TimerSystem} = require('./timer.js');
-global.timer = new TimerSystem();
+
+const { TimerSystem } = require('./timerSystem.js');
+const { BreakSystem } = require('./breakSystem.js');
+
+const DEFAULT_WINDOW_SIZE = {
+    defaultWidth: 800,
+    defaultHeight: 500
+}
+require('./stores');
 
 global.mainWindow; 
 
+/**
+ * Timer model
+ */
+global.timerSystem = new TimerSystem();
+global.breakSystem = new BreakSystem();
+
+global.timerSystem.on('timer-end', () => {
+    global.breakSystem.start();
+})
+
+global.breakSystem.on('break-end', () => {
+    global.timerSystem.start();
+})
+
+
+/**
+ * Functions for creating windows
+ */
+// Main window
 function createWindow() { 
 
+    // Main window
+    let mainWindowState = windowStateKeeper(DEFAULT_WINDOW_SIZE);
+
     global.mainWindow = new BrowserWindow({ 
-        width: 800, 
-        height: 500,
+        x: mainWindowState.x,
+        y: mainWindowState.y,
+        width: mainWindowState.width, 
+        height: mainWindowState.height,
+        minHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
+        maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
         maximizable: false,
         title: "iCare",
         backgroundColor: '#333333', 
@@ -21,8 +56,9 @@ function createWindow() {
             contextIsolation: false,
             devTools: true,
         },
+    });
 
-    }); 
+    mainWindowState.manage(global.mainWindow);
     
     global.mainWindow.menuBarVisible = false;
     
@@ -32,15 +68,21 @@ function createWindow() {
         : `file://${path.join(__dirname, '../build/index.html')}`
     ); 
 
+    // Prevent opening new windows
+    mainWindow.webContents.on('new-window', (e, url) => {
+        e.preventDefault()
+    })
+
 } 
 
-// App event handlers
+
+/**
+ * Application event handlers
+ */
 app.whenReady().then(() => {
     createWindow()
 
     app.on('activate', function () {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 
@@ -61,24 +103,6 @@ app.setLoginItemSettings({
  * IPC event handlers
  * These event handlers are executed when another process invokes the event.
  */
-
-// Sign in
-ipcMain.handle('sign-in', (event, username, password) => {
-
-    axios
-    .post('http://localhost:3000', {
-        username: username,
-        password: password
-    })
-    .then(res => {
-        console.log(`statusCode: ${res.statusCode}`)
-        console.log(res)
-    })
-    .catch(error => {
-        console.error(error)
-    })
-
-})
 
 // Log to main process's console
 ipcMain.handle('log-to-console', (event, message) => {
@@ -118,10 +142,13 @@ ipcMain.handle('show-sign-in-popup', event => {
 
 // Toggle timer
 ipcMain.handle('timer-toggle', () => {
-    global.timer.toggle();
+    global.timerSystem.toggle();
 })
 
 ipcMain.on('get-timer-status', (event) => {
-    event.returnValue = global.timer.getStatus();
+    event.reply('receive-timer-status', global.timerSystem.getStatus());
 });
 
+ipcMain.on('get-break-status', (event) => {
+    event.reply('receive-break-status', global.breakSystem.getStatus());
+});

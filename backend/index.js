@@ -1,10 +1,10 @@
 var sql = require('mysql')
 
 var con = sql.createConnection({
-    host : 'localhost',
-    user : 'newuser',
-    password : 'password',
-    database : 'nodetest'
+   host : 'localhost',
+   user : 'newuser',
+   password : '',
+   database : 'nodeTest'
 });
 
 // Variable to decide whether you have logged in or not.
@@ -12,7 +12,7 @@ function logIn(givenEmail, givenPass) {
 
     // Connect to Database
     con.connect(function(err) {
-        if (err) { return console.error('error: ' + err.message) }
+        if (err) { return console.error('error1: ' + err.message) }
         console.log("Connected");
         //insertTable("Users", "('hello@gmail.com', 'helloPass')");
 
@@ -31,7 +31,7 @@ function logIn(givenEmail, givenPass) {
         // End Connection
         con.end(function(err) {
             if (err) {
-                return console.log('error:' + err.message);
+                return console.log('error2:' + err.message);
             }
             console.log('Close the database connection.');
             });
@@ -61,31 +61,29 @@ function getLogIn(givenEmail, callback) {
 (
   function() {
       "use strict";
-      let express = require('express');
+      let express = require('express')
+      let bodyParser = require('body-parser')
+      let router = express.Router()
       let multer = require('multer')
       let path = require('path')
       let upload = multer()
-      //   let db = require('./db.js')
-      let app = express();
+	  //   let db = require('./db.js')
+      let app = express()
 
-      // for parsing application/json
-      app.use(express.json());
+      // using body-parser as middleware
+      app.use(bodyParser.urlencoded({extended: false}));
+      app.use(bodyParser.json())
+     
+     
 
-      // // when user posts, displays form data
-      // app.post('/', function(req, res) {
-      //   logIn(req.body.username, req.body.password)
-      // }); 
+     router.post('/login', function(req, res) {
+	     console.log('login attempt detected')
+         let username = req.body.username
+         let password = req.body.password
+         logIn(username, password)
+     })
 
-      app.get('/', (req, res) => {
-          res.send('hello world')
-      })
-
-      app.get('/LoginMenu', (req, res) => { 
-          let username = req.query.username;
-          let password = req.query.password;
-          console.log(username, password)
-          logIn(username, password)
-      })
+     app.use('/', router)
 
       let server = app.listen(3000, function () {
         console.log('Express server listening on port ' + server.address().port);

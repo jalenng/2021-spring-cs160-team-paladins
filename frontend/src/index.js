@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/index.css';
+
 import App from './App';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
@@ -55,3 +56,4 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+

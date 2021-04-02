@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
+require('./stores');
+
 const {TimerSystem} = require('./timer.js');
 global.timer = new TimerSystem();
 
@@ -60,24 +62,6 @@ app.on('window-all-closed', function () {
  * IPC event handlers
  * These event handlers are executed when another process invokes the event.
  */
-
-// Sign in
-ipcMain.handle('sign-in', (event, username, password) => {
-
-    axios
-    .post('http://localhost:3000', {
-        username: username,
-        password: password
-    })
-    .then(res => {
-        console.log(`statusCode: ${res.statusCode}`)
-        console.log(res)
-    })
-    .catch(error => {
-        console.error(error)
-    })
-
-})
 
 // Log to main process's console
 ipcMain.handle('log-to-console', (event, message) => {

@@ -39,7 +39,6 @@ export default class SignInScreen extends React.Component {
 
             <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 20 }}>
               <PrimaryButton text="Sign in"/>
-
               <Link to="/signup">
                 <ActionButton> Don't have an account? </ActionButton>
               </Link>

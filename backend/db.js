@@ -294,7 +294,7 @@ class db {
             else {  resolve(result) }
         }));
 
-        return result;
+        return results;
     }
 
 

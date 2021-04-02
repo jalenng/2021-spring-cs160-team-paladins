@@ -301,7 +301,7 @@ class db {
             else {  resolve(result) }
         }));
 
-        return results;
+        return JSON.stringify(results);
     }
 
 

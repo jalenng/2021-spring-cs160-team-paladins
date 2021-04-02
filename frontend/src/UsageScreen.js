@@ -15,12 +15,10 @@ const divStyle = {
 export default class UsageScreen extends React.Component {
   render() {
     return (    
-
       <div style={divStyle}>
         <Text variant={'xxLarge'} block>
           <b>Usage Statistics</b>
         </Text>
-
       </div>
     );
   }

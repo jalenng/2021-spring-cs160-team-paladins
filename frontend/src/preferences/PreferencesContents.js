@@ -9,176 +9,201 @@ import { Slider } from '@fluentui/react/lib/Slider';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 
-const { ipcRenderer } = window.require('electron');
-
 const stackTokens = {
-  sectionStack: {
-    childrenGap: 32,
-  },
-  headingStack: {
-    childrenGap: 10,
-  },
+    sectionStack: {
+        childrenGap: 32,
+    },
+    headingStack: {
+        childrenGap: 10,
+    },
 };
 
-const yourAccountsPersona = {
-  imageInitials: 'IC',
-  text: 'iCare user',
-  onRenderSecondaryText: () => {
-    return (
-      <Stack horizontal 
-        verticalAlign="center" 
-        style={{ marginTop: "6px" }}
-        tokens={{ childrenGap: 20 }}
-      >
-        
-        <DefaultButton text="Sign out"/>    
-        <ActionButton> Delete account </ActionButton>  
-        
-      </Stack>  
-    )
-  }
-};
+const {
+    getAccountStore,
+    signOut, 
+    getAllPreferences, 
+    setPreference, 
+    getAllSounds, 
+    addCustomSound
+ } = require('../storeHelperFunctions');
 
-function getAllPreferences() {
-  return ipcRenderer.sendSync('getPrefsStore')
-}
 
-function setPreference(key, value) {
-  return (ipcRenderer.invoke('setPrefsStoreValue', key, value));
-}
-
+/**
+ * PreferencesContents Component
+ */
 export default class PreferencesContents extends React.Component {
 
-  render() {
-    
-    const preferences = getAllPreferences();
-    const notifications = preferences.notifications;
-    const startup = preferences.startup;
-    const dataUsage = preferences.dataUsage;
+    render() {
 
-    return (
-      <ScrollablePane style={{ top: '60px' }}>
+        // Retrieve information from stores before rendering them
 
-        <Stack
-          style={{
-            position: "absolute",
-            left: "260px",
-            paddingBottom: "260px",
-            right: "40px"
-          }}
-          tokens={stackTokens.sectionStack}
-        >
+        // Preferences
+        const preferences = getAllPreferences();
+        const notifications = preferences.notifications;
+        const startup = preferences.startup;
+        const dataUsage = preferences.dataUsage;
 
-          {/* Your accounts */}
-          <Stack id="your_accounts" tokens={stackTokens.headingStack}>
+        // Sounds
+        const sounds = getAllSounds();
+        const defaultSounds = sounds.defaultSounds;
+        const customSounds = sounds.customSounds;
 
-            <Text variant={'xLarge'} block> <b>Your accounts</b> </Text>
-            <Persona
-              {...yourAccountsPersona}
-              size={PersonaSize.size100}
-              imageAlt="Annie Lindqvist, status is away"
-            />
-          </Stack>
+        const combinedSoundList = defaultSounds.concat(customSounds);
 
-          {/* Notifications */}
-          <Stack 
-            tokens={stackTokens.headingStack}
-            id="notifications" 
-          >
-            <Text variant={'xLarge'} block> <b>Notifications</b> </Text>
+        // Account
+        const accountStore = getAccountStore();
 
-            <Slider
-              label="Notification interval"
-              min={5} max={60} step={5} 
-              showValue snapToStep 
-              valueFormat={(number) => `${number} minutes`}
-              styles={{ root: { maxWidth: 300 } }}
-              defaultValue={notifications.interval}
-              onChange={ number => setPreference("notifications.interval", number) }
-            />
+        const isSignedIn = accountStore.token != null
+        const displayName = accountStore.accountInfo.displayName
 
-            <Toggle
-              label="Enable sound notifications"
-              onText="On" offText="Off"
-              defaultChecked={notifications.enableSound}
-              onChange={(event, checked) => setPreference("notifications.enableSound", checked) }
-            />
+        let regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
+        let displayInitials = [...displayName.matchAll(regex)] || [];
+        displayInitials = (
+            (displayInitials.shift()?.[1] || '') + (displayInitials.pop()?.[1] || '')
+        ).toUpperCase();
 
-            <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="end">
+        const yourAccountsPersona = {
+            imageInitials: displayInitials,
+            text: displayName,
+            onRenderSecondaryText: () => {      // Display "Sign out" and "Delete account" button only if signed in
+                if (isSignedIn) {
+                    return (
+                        <Stack horizontal
+                            verticalAlign="center"
+                            style={{ marginTop: "6px" }}
+                            tokens={{ childrenGap: 20 }}
+                        >
+                            <DefaultButton text="Sign out" onClick={signOut} />
+                            <ActionButton> Delete account </ActionButton>
+                        </Stack>
+                    )
+                }
+            }
+        };
 
-              <Dropdown label="Sound" 
-                styles={{ dropdown: { width: 300 } }}
-                options={[
-                  { key: '1', text: 'Sound 1' },
-                  { key: '2', text: 'Sound 2' },
-                  { key: '3', text: 'Sound 3' },
-                ]}
-              />
+        return (
+            <ScrollablePane style={{ top: '60px' }}>
 
-              <IconButton
-                iconProps={{ iconName: 'Add' }}
-              />
+                <Stack
+                    style={{
+                        position: "absolute",
+                        left: "260px",
+                        paddingBottom: "260px",
+                        right: "40px"
+                    }}
+                    tokens={stackTokens.sectionStack}
+                >
 
-            </Stack>
+                    {/* Your accounts */}
+                    <Stack id="your_accounts" tokens={stackTokens.headingStack}>
 
-          </Stack>
+                        <Text variant={'xLarge'} block> <b>Your accounts</b> </Text>
+                        <Persona
+                            {...yourAccountsPersona}
+                            size={PersonaSize.size100}
+                        />
+                    </Stack>
 
-          {/* Startup */}
-          <Stack id="startup" tokens={stackTokens.headingStack}>
+                    {/* Notifications */}
+                    <Stack
+                        tokens={stackTokens.headingStack}
+                        id="notifications"
+                    >
+                        <Text variant={'xLarge'} block> <b>Notifications</b> </Text>
 
-            <Text variant={'xLarge'} block> <b>Startup</b> </Text>
+                        <Slider
+                            label="Notification interval"
+                            min={5} max={60} step={5}
+                            showValue snapToStep
+                            valueFormat={(number) => `${number} minutes`}
+                            styles={{ root: { maxWidth: 300 } }}
+                            defaultValue={notifications.interval}
+                            onChange={number => setPreference("notifications.interval", number)}
+                        />
 
-            <Toggle label="Start app on login"
-              onText="On" offText="Off"
-              defaultChecked={startup.startAppOnLogin}
-              onChange={ (event, checked) => setPreference("startup.startAppOnLogin", checked) }
-            />
-            <Toggle label="Start timer on app startup"
-              onText="On" offText="Off"
-              defaultChecked={startup.startTimerOnAppStartup}
-              onChange={(event, checked) => {
-                setPreference("startup.startTimerOnAppStartup", checked);
-              }}
-            />
+                        <Toggle
+                            label="Enable sound notifications"
+                            onText="On" offText="Off"
+                            defaultChecked={notifications.enableSound}
+                            onChange={(event, checked) => setPreference("notifications.enableSound", checked)}
+                        />
 
-          </Stack>
+                        <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="end">
 
-          {/* Data Usage */}
-          <Stack id="data_usage" tokens={stackTokens.headingStack}>
-            <Text variant={'xLarge'} block> <b>Data usage</b> </Text>
+                            <Dropdown label="Sound"
+                                styles={{ dropdown: { width: 300 } }}
+                                defaultSelectedKey={notifications.sound}
+                                options={combinedSoundList}
+                                onChange={(event, option, index) => {
+                                    setPreference("notifications.sound", combinedSoundList[index].key)
+                                }}
+                            />
 
-            <Toggle label="Track my application usage statistics"
-              onText="On" offText="Off"
-              defaultChecked={dataUsage.trackAppUsageStats}
-              onChange={(event, checked) => setPreference("dataUsage.trackAppUsageStats", checked) }
-            />
-            <Toggle label="Enable weekly usage statistics"
-              onText="On" offText="Off"
-              defaultChecked={dataUsage.enableWeeklyUsageStats}
-              onChange={ (event, checked) => setPreference("dataUsage.enableWeeklyUsageStats", checked) }
-            />
+                            <IconButton
+                                iconProps={{ iconName: 'Add' }}
+                                onClick={addCustomSound}
+                            />
 
-          </Stack>
+                        </Stack>
 
-          {/* About */}
-          <Stack id="about" tokens={stackTokens.headingStack}>
+                    </Stack>
 
-            <Text variant={'xLarge'} block> <b>About</b> </Text>
+                    {/* Startup */}
+                    <Stack id="startup" tokens={stackTokens.headingStack}>
 
-            <Stack tokens={stackTokens.headingStack}>
-              <Text variant={'large'} block> Contributors </Text>
-            </Stack>
+                        <Text variant={'xLarge'} block> <b>Startup</b> </Text>
 
-            <Stack tokens={stackTokens.headingStack}>
-              <Text variant={'large'} block> Open-source libraries </Text>
-            </Stack>
+                        <Toggle label="Start app on login"
+                            onText="On" offText="Off"
+                            defaultChecked={startup.startAppOnLogin}
+                            onChange={(event, checked) => setPreference("startup.startAppOnLogin", checked)}
+                        />
+                        <Toggle label="Start timer on app startup"
+                            onText="On" offText="Off"
+                            defaultChecked={startup.startTimerOnAppStartup}
+                            onChange={(event, checked) => {
+                                setPreference("startup.startTimerOnAppStartup", checked);
+                            }}
+                        />
 
-          </Stack>
+                    </Stack>
 
-        </Stack>
+                    {/* Data Usage */}
+                    <Stack id="data_usage" tokens={stackTokens.headingStack}>
+                        <Text variant={'xLarge'} block> <b>Data usage</b> </Text>
 
-      </ScrollablePane>
+                        <Toggle label="Track my application usage statistics"
+                            onText="On" offText="Off"
+                            defaultChecked={dataUsage.trackAppUsageStats}
+                            onChange={(event, checked) => setPreference("dataUsage.trackAppUsageStats", checked)}
+                        />
+                        <Toggle label="Enable weekly usage statistics"
+                            onText="On" offText="Off"
+                            defaultChecked={dataUsage.enableWeeklyUsageStats}
+                            onChange={(event, checked) => setPreference("dataUsage.enableWeeklyUsageStats", checked)}
+                        />
 
-    )
-  }
+                    </Stack>
+
+                    {/* About */}
+                    <Stack id="about" tokens={stackTokens.headingStack}>
+
+                        <Text variant={'xLarge'} block> <b>About</b> </Text>
+
+                        <Stack tokens={stackTokens.headingStack}>
+                            <Text variant={'large'} block> Contributors </Text>
+                        </Stack>
+
+                        <Stack tokens={stackTokens.headingStack}>
+                            <Text variant={'large'} block> Open-source libraries </Text>
+                        </Stack>
+
+                    </Stack>
+
+                </Stack>
+
+            </ScrollablePane>
+
+        )
+    }
 }

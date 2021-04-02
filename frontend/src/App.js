@@ -12,6 +12,8 @@ import { Stack } from '@fluentui/react/lib/Stack';
 
 const { ipcRenderer } = window.require('electron');
 
+const { getAccountStore } = require('./storeHelperFunctions');
+
 const divStyle = {
   MozUserSelect: "none",
   WebkitUserSelect: "none",
@@ -25,7 +27,21 @@ const signInDivStyle = {
 };
 
 export default class App extends React.Component {
+
   render() {
+
+    // Account
+    const accountStore = getAccountStore();
+
+    const isSignedIn = accountStore.token != null
+    const displayName = accountStore.accountInfo.displayName
+
+    let regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
+    let displayInitials = [...displayName.matchAll(regex)] || [];
+    displayInitials = (
+        (displayInitials.shift()?.[1] || '') + (displayInitials.pop()?.[1] || '')
+    ).toUpperCase();
+
     return (
       <div style={divStyle}>
         <Pivot aria-label="Basic Pivot Example" linkSize="large">
@@ -50,11 +66,11 @@ export default class App extends React.Component {
           tokens={{ childrenGap: 10 }}
           >
           <PrimaryButton
-            text='Sign In'
+            text='Sign in'
             onClick={() => ipcRenderer.invoke('show-sign-in-popup')}
           />
           <Persona
-            imageInitials= 'IC'
+            imageInitials={displayInitials}
             size= {PersonaSize.size40}
             hidePersonaDetails={true}
           />

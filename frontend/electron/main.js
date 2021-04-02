@@ -63,24 +63,6 @@ app.on('window-all-closed', function () {
  * These event handlers are executed when another process invokes the event.
  */
 
-// Sign in
-ipcMain.handle('sign-in', (event, username, password) => {
-
-    axios
-    .post('http://localhost:3000', {
-        username: username,
-        password: password
-    })
-    .then(res => {
-        console.log(`statusCode: ${res.statusCode}`)
-        console.log(res)
-    })
-    .catch(error => {
-        console.error(error)
-    })
-
-})
-
 // Log to main process's console
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);

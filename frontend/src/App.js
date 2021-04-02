@@ -36,6 +36,7 @@ export default class App extends React.Component {
     const isSignedIn = accountStore.token != null
     const displayName = accountStore.accountInfo.displayName
 
+    // Extract initials from display name. 
     let regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
     let displayInitials = [...displayName.matchAll(regex)] || [];
     displayInitials = (

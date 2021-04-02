@@ -7,8 +7,6 @@ global.timer = new TimerSystem();
 
 global.mainWindow; 
 
-let devToolsWindow;
-
 function createWindow() { 
 
     global.mainWindow = new BrowserWindow({ 
@@ -27,11 +25,6 @@ function createWindow() {
     }); 
     
     global.mainWindow.menuBarVisible = false;
-
-    devToolsWindow = new BrowserWindow();
-
-    global.mainWindow.webContents.setDevToolsWebContents(devToolsWindow.webContents);
-    global.mainWindow.webContents.openDevTools({ mode: 'detach' });
     
     global.mainWindow.loadURL(
         isDev

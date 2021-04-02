@@ -231,7 +231,7 @@ class db {
      */
     async setDataUsage(userEmail, screenTime, timerCount) {
 
-        let today = this.getDate(0);
+        let today = await this.getDate(0).then((result) => {return result;})
         let q = "";
 
         // Checks if an entry for today exists in the database.
@@ -246,19 +246,23 @@ class db {
             }
         }));
 
+        // Gets check value from [Object object] to string "1" or "0"
+        let checkString = await this.gettingInteger(check).then((result) => { return result; })
+        console.log(checkString);
+
         // Updates existing record
-        if (check == 1) {
+        if (checkString == "1") {
             q = "UPDATE DataUsage SET screenTime=" + screenTime + ", timerCount=" + timerCount + 
                 " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
         }
         // Creates existing record
         else {
-            q = "INSERT INTO DataUsage VALUES(" + userEmail + ", " + screenTime + ", " + timerCount + ", " + today + ")";
+            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + today + "')";
         }
 
         // Updates the database
         let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
-            if (err) { resolve(false) }
+            if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
 

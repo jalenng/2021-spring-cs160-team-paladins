@@ -5,6 +5,7 @@ import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
 
 const { ipcRenderer } = window.require('electron');
+
 export default class Timer extends React.Component {
 
     constructor(props){
@@ -15,12 +16,9 @@ export default class Timer extends React.Component {
             buttonLabel: "",
             state: "",
         };
-    }
 
-    componentDidMount() {
-        this.timer = setInterval(() => {
-
-            var timerStatus = ipcRenderer.sendSync('get-timer-status');
+        ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
+            
             var state = timerStatus.state;
             var buttonLabel = state === "stopped" ? "START" : "STOP";
             var milliseconds = timerStatus.remainingTime;
@@ -35,11 +33,14 @@ export default class Timer extends React.Component {
                 buttonLabel: buttonLabel,
                 state: state,
             });
-        }, 500);
+
+        })
+
     }
 
-    componentWillUnmount() {
-        clearInterval(this.timer);
+    componentDidMount() {
+        ipcRenderer.send('get-timer-status');
+        setInterval(() => {ipcRenderer.send('get-timer-status')}, 1000);
     }
 
     render() {

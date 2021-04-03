@@ -32,7 +32,7 @@ const { route } = require('./index.js');
  
  
      // User tries to login (test send)
-     router.post('/login', async function(req, res) {
+     router.post('/auth', async function(req, res) {
        let username = req.body.username;
        let password = req.body.password;
        console.log(username, password)

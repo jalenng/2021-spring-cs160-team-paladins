@@ -2,8 +2,6 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
-const axios = require('axios')
-
 
 const { TimerSystem } = require('./timerSystem.js');
 const { BreakSystem } = require('./breakSystem.js');
@@ -86,7 +84,6 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 
-    console.log(app.getLoginItemSettings())
 })
 
 app.on('window-all-closed', function () {

@@ -21,6 +21,15 @@ const columnProps = {
 };
 
 export default class SignInScreen extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      emailErrorMessage: "",
+      passwordErrorMessage: ""
+    }
+  }
+
   render() {
     return (    
 
@@ -34,8 +43,12 @@ export default class SignInScreen extends React.Component {
           <Stack {...columnProps}>
 
             <Stack style={{ width: 240 }}>
-              <TextField label='Email' id='email'/>
-              <TextField label='Password' type='password' id='password' />
+              <TextField label='Email' type='email' id='email'
+                errorMessage={this.state.emailErrorMessage}
+              />
+              <TextField label='Password' type='password' id='password' 
+                errorMessage={this.state.passwordErrorMessage}
+              />
             </Stack>
 
             <Stack horizontal verticalAlign='center' tokens={{ childrenGap: 20 }}>
@@ -44,8 +57,17 @@ export default class SignInScreen extends React.Component {
               onClick={() => {
                 let email = document.getElementById('email').value;
                 let pass = document.getElementById('password').value;
-                ipcRenderer.invoke('sign-in', email, pass);
-                console.log(email, pass)
+
+                ipcRenderer.invoke('sign-in', email, pass)
+                  .then( result => {
+
+                    console.log(result)
+                    // If response indicates failure
+                    this.setState({
+                      passwordErrorMessage: result
+                    });
+                    
+                  });
               }}
               />
               <Link to='/signup'>

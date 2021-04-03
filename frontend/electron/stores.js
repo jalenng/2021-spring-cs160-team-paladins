@@ -3,6 +3,7 @@ const Store = require('electron-store');
 const path = require("path");
 const axios = require('axios')
 
+const SERVER_URL = 'http://165.232.156.120:3000'
 
 /**
  * Persistent storage for preferences
@@ -135,20 +136,54 @@ ipcMain.on('getAccountStore', (event) => {
 });
 
 // Handles a request to sign in and update the account store
-// IPC event handler for signing in
-ipcMain.handle('sign-in', async (event, username, password) => {
-    axios
-    .post('http://165.232.156.120:3000/login', {
-        username: username,
-        password: password
-    })
-    .then(res => {
-        console.log(`statusCode: ${res.statusCode}`)
-        console.log(res.data)
-    })
-    .catch(error => {
-        console.error(error)
-    })
+ipcMain.handle('sign-in', async (event, email, password) => {
+
+    let res;
+    try {
+        // Send POST request
+        res = await axios.post(`${SERVER_URL}/user`, {
+            email: email,
+            password: password
+        })
+
+        //TODO: Process response object
+        console.log(`statusCode: ${res.statusCode}`);
+        console.log(res.data);
+        return res.data;
+    }
+    catch (error) {
+        // POST Error
+        console.error(error);
+        return error.code;
+    }
+})
+
+// Handles a request to create an account and update the account store
+ipcMain.handle('sign-up', async (event, email, password1, password2) => {
+
+    if (password1 != password2) {
+        return "Passwords do not match."
+    }
+
+    let res;
+    try {
+        // Send POST request
+        res = await axios.post(`${SERVER_URL}/user`, {
+            email: email,
+            password: password1
+        })
+
+        //TODO: Process response object
+        console.log(`statusCode: ${res.statusCode}`);
+        console.log(res.data);
+        return res.data;
+    }
+    catch (error) {
+        // POST Error
+        console.error(error);
+        return error.code;
+    }
+
 })
 
 // Handles a request to sign out and clear the account store

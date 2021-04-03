@@ -35,7 +35,7 @@ const myTheme = createTheme({
     neutralPrimary: '#ffffff',
     neutralDark: '#f4f4f4',
     black: '#f8f8f8',
-    white: '#333333',
+    white: '#222222',
   }
 });
 

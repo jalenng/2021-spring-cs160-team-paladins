@@ -61,7 +61,8 @@ const { route } = require('./index.js');
       let email = req.body.email;
       let password = req.body.password;
       console.log(email, password)
-      //userDB.createUser(username, password)
+      result = userDB.createUser(email, password)
+      console.log(result)
     })
  
  

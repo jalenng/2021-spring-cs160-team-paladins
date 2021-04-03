@@ -60,10 +60,10 @@ function createWindow() {
     
     global.mainWindow.menuBarVisible = false;
     
-    global.mainWindow.loadURL(
-        isDev
-        ? 'http://localhost:3000'
-        : `file://${path.join(__dirname, '../build/index.html')}`
+    global.mainWindow.loadURL( `file://${path.join(__dirname, '../build/index.html')}`
+        // isDev
+        // ? 'http://localhost:3000'
+        // : `file://${path.join(__dirname, '../build/index.html')}`
     ); 
 
     // Prevent opening new windows
@@ -129,10 +129,10 @@ ipcMain.handle('show-sign-in-popup', event => {
     })
     signInWindow.menuBarVisible = false
     
-    signInWindow.loadURL(
+    signInWindow.loadURL( 
         isDev
-        ? 'http://localhost:3000/signin'
-        : `file://${path.join(__dirname, '../build/login/index.html')}`
+        ? 'http://localhost:3000#/signin'
+        : `file://${path.join(__dirname, '../build/index.html#signin')}`
     ); 
 
 })

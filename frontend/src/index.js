@@ -7,7 +7,7 @@ import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import FullscreenOverlay from './FullscreenOverlay';
 
-import { HashRouter, Route } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import { loadTheme } from '@fluentui/react'
 import { createTheme } from '@fluentui/theme/lib/createTheme'
 import { initializeIcons } from '@fluentui/react/lib/Icons';
@@ -47,14 +47,16 @@ initializeIcons();
 
 ReactDOM.render(
   <React.StrictMode>
-     <HashRouter>
-        <div className="App">
+    <HashRouter>
+      <Switch>
+        <div className="App" hashType="noslash">
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />
-          <Route path="/notification/fullscreen" exact component={FullscreenOverlay} />
+          <Route path="/fullscreenNotification" exact component={FullscreenOverlay} />
         </div>
-      </HashRouter>
+      </Switch>
+    </HashRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -171,7 +171,7 @@ ipcMain.handle('sign-in', async (event, email, password) => {
     let res;
     try {
         // Send POST request
-        res = await axios.post(`${SERVER_URL}/user`, {
+        res = await axios.post(`${SERVER_URL}/auth`, {
             email: email,
             password: password
         })

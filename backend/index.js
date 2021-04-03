@@ -33,12 +33,12 @@ const { route } = require('./index.js');
  
      // User tries to login (test send)
      router.post('/auth', async function(req, res) {
-       let username = req.body.username;
+       let email = req.body.email;
        let password = req.body.password;
-       console.log(username, password)
+       console.log(email, password)
  
        // Gets success
-       let success = await userDB.checkLogIn(username, password).then((result) => {
+       let success = await userDB.checkLogIn(email, password).then((result) => {
            return result;
        })
  
@@ -57,8 +57,8 @@ const { route } = require('./index.js');
      })
 
     // User tries to create account.
-    router.post('/signup', function(req, res) {
-      let username = req.body.email;
+    router.post('/user', function(req, res) {
+      let email = req.body.email;
       let password = req.body.password;
       console.log(email, password)
       //userDB.createUser(username, password)

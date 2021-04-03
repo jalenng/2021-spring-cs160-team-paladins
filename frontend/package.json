@@ -1,54 +1,60 @@
 {
   "name": "icare_client",
+  "productName": "iCare",
   "description": "iCare",
   "author": "Team Paladins",
   "version": "0.1.0",
   "repository": "https://github.com/jalenng/2021-spring-cs160-team-paladins",
   "private": true,
+  "build": {
+    "appId": "team_paladins.icare",
+    "publish": {
+      "provider": "github"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
   "dependencies": {
-    "@fluentui/react": "^8.5.1",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "bootstrap": "^4.6.0",
-    "concurrently": "^6.0.0",
-    "electron": "^12.0.1",
-    "electron-builder": "^22.9.1",
+    "@fluentui/react": "^8.8.0",
     "electron-is-dev": "^2.0.0",
     "electron-overlay-window": "^1.0.4",
     "electron-store": "^7.0.2",
     "electron-window-state": "^5.0.3",
+    "npm": "^7.8.0",
     "react": "^17.0.2",
-    "react-bootstrap": "^1.0.0-beta.14",
-    "react-burger-menu": "^3.0.6",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "react-scroll": "^1.8.2",
     "react-select": "^4.3.0",
     "react-switch": "^6.0.0",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.0.3",
     "styled-components": "^4.3.2",
-    "wait-on": "^5.3.0",
     "web-vitals": "^1.0.1"
   },
-  "main": "./electron/main.js",
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "electron": "electron .",
-    "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron",
-    "dev": "concurrently \"npm:start\" \"npm:electron-watch\""
+  "devDependencies": {
+    "concurrently": "^6.0.0",
+    "electron": "^12.0.1",
+    "electron-builder": "^22.10.5",
+    "nodemon": "^2.0.7",
+    "react-scripts": "4.0.3",
+    "wait-on": "^5.3.0"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "main": "./public/electron.js",
+  "homepage": "./",
+  "scripts": {
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "electron-start": "electron .",
+    "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron-start",
+    "build": "npm run react-build && npm run electron-build",
+    "dev": "concurrently \"npm:react-start\" \"npm:electron-watch\""
   },
   "browserslist": {
     "production": [
@@ -61,8 +67,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
   }
 }

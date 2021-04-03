@@ -2,8 +2,6 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
-const axios = require('axios')
-
 
 const { TimerSystem } = require('./timerSystem.js');
 const { BreakSystem } = require('./breakSystem.js');
@@ -85,11 +83,13 @@ app.whenReady().then(() => {
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
+
 })
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
+
 
 /**
  * IPC event handlers
@@ -124,10 +124,10 @@ ipcMain.handle('show-sign-in-popup', event => {
     })
     signInWindow.menuBarVisible = false
     
-    signInWindow.loadURL(
+    signInWindow.loadURL( 
         isDev
-        ? 'http://localhost:3000/signin'
-        : `file://${path.join(__dirname, '../build/login/index.html')}`
+        ? 'http://localhost:3000#/signin'
+        : `file://${path.join(__dirname, '../build/index.html#signin')}`
     ); 
 
 })

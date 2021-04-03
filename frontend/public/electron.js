@@ -60,10 +60,10 @@ function createWindow() {
     
     global.mainWindow.menuBarVisible = false;
     
-    global.mainWindow.loadURL( `file://${path.join(__dirname, '../build/index.html')}`
-        // isDev
-        // ? 'http://localhost:3000'
-        // : `file://${path.join(__dirname, '../build/index.html')}`
+    global.mainWindow.loadURL(
+        isDev
+        ? 'http://localhost:3000'
+        : `file://${path.join(__dirname, '../build/index.html')}`
     ); 
 
     // Prevent opening new windows

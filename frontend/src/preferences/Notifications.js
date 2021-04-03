@@ -7,6 +7,8 @@ import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 import { Toggle } from '@fluentui/react/lib/Toggle';
 
+const { ipcRenderer } = window.require('electron');
+
 const {
     getAllPreferences,
     setPreference,
@@ -17,16 +19,36 @@ const {
 
 export default class Notifications extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            notifications: getAllPreferences().notifications,
+            sounds: getAllSounds()
+        };
+    }
+
+    componentDidMount() {
+        // Update this component's state when preferences are updated
+        ipcRenderer.on('preferences-store-changed', () => {
+            this.updateState();
+        })
+
+        ipcRenderer.on('sounds-store-changed', () => {
+            this.updateState();
+        })
+    }
+
+    updateState() {
+        this.setState({
+            notifications: getAllPreferences().notifications,
+            sounds: getAllSounds()
+        });
+    }
+
     render() {
 
-        // Get preferences from preferences store
-        const preferences = getAllPreferences();
-        const notifications = preferences.notifications;
-
-        // Get sounds from sounds store
-        const sounds = getAllSounds();
-        const defaultSounds = sounds.defaultSounds;
-        const customSounds = sounds.customSounds;
+        const defaultSounds = this.state.sounds.defaultSounds;
+        const customSounds = this.state.sounds.customSounds;
 
         const combinedSoundList = defaultSounds.concat(customSounds);
         
@@ -42,14 +64,14 @@ export default class Notifications extends React.Component {
                     showValue snapToStep
                     valueFormat={(number) => `${number} minutes`}
                     styles={{ root: { maxWidth: 300 } }}
-                    defaultValue={notifications.interval}
+                    value={this.state.notifications.interval}
                     onChange={number => setPreference("notifications.interval", number)}
-                />
+                /> 
 
                 <Toggle
                     label="Enable sound notifications"
                     onText="On" offText="Off"
-                    defaultChecked={notifications.enableSound}
+                    checked={this.state.notifications.enableSound}
                     onChange={(event, checked) => setPreference("notifications.enableSound", checked)}
                 />
 
@@ -57,7 +79,7 @@ export default class Notifications extends React.Component {
 
                     <Dropdown label="Sound"
                         styles={{ dropdown: { width: 300 } }}
-                        defaultSelectedKey={notifications.sound}
+                        selectedKey={this.state.notifications.sound}
                         options={combinedSoundList}
                         onChange={(event, option, index) => {
                             setPreference("notifications.sound", combinedSoundList[index].key)
@@ -72,7 +94,6 @@ export default class Notifications extends React.Component {
                 </Stack>
 
             </Stack>
-
         )
     }
 }

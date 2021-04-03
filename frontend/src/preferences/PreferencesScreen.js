@@ -21,15 +21,6 @@ const divStyle = {
   display: "grid"
 };
 
-const stackTokens = {
-  sectionStack: {
-      childrenGap: 32,
-  },
-  headingStack: {
-      childrenGap: 10,
-  },
-};
-
 const preferencePages = {
   your_accounts: <YourAccounts/>,
   notifications: <Notifications/>,

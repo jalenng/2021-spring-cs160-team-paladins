@@ -90,11 +90,6 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
-// Start app when the user logs in
-app.setLoginItemSettings({
-    openAtLogin: true,
-    path: app.getPath('exe')
-})
 
 /**
  * IPC event handlers

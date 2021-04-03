@@ -6,9 +6,7 @@ import { Text } from '@fluentui/react/lib/Text';
 export default class About extends React.Component {
 
     render() {
-
         return (
-
             <Stack id="about" tokens={{ childrenGap: 10 }}>
 
                 <Text variant={'xLarge'} block> About </Text>
@@ -22,7 +20,6 @@ export default class About extends React.Component {
                 </Stack>
 
             </Stack>
-
         )
     }
 }

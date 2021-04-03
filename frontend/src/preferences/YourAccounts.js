@@ -5,21 +5,36 @@ import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 
+const { ipcRenderer } = window.require('electron');
+
 const {
     getAccountStore,
     signOut
  } = require('../storeHelperFunctions');
 
  
-export default class PreferencesContents extends React.Component {
+export default class YourAccounts extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = getAccountStore();
+    }
+
+    componentDidMount() {
+        // Update this component's state when account is updated
+        ipcRenderer.on('account-store-changed', () => {
+            updateState();
+        })
+    }
+
+    updateState() {
+        this.setState(getAccountStore());
+    }
 
     render() {
-
         // Get account store info from account store
-        const accountStore = getAccountStore();
-
-        const isSignedIn = accountStore.token != null
-        const displayName = accountStore.accountInfo.displayName
+        const isSignedIn = this.state.token != null
+        const displayName = this.state.accountInfo.displayName
 
         let regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
         let displayInitials = [...displayName.matchAll(regex)] || [];
@@ -60,7 +75,6 @@ export default class PreferencesContents extends React.Component {
                 />
 
             </Stack>
-
         )
     }
 }

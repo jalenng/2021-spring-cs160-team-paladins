@@ -13,14 +13,14 @@ function getAccountStore() {
  * @returns {Object} the response of the sign-in attempt
  */
 function signIn(username, password) {
-    return ipcRenderer.invoke('sign-in', username, password)
+    return ipcRenderer.invoke('signIn', username, password)
 }
 
 /**
  * Helper function to sign out of logged-in account
  */
 function signOut() {
-    ipcRenderer.invoke('sign-out')
+    ipcRenderer.invoke('signOut')
 }
 
 /**

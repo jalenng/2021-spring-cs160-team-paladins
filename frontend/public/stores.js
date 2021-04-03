@@ -2,94 +2,112 @@ const { ipcMain, dialog, app } = require('electron');
 const Store = require('electron-store');
 const path = require("path");
 
-
-/**
- * Persistent storage for preferences
- */
-const preferencesStoreOptions = {
-    defaults: {
+/* Preferences defaults */
+const preferencesStoreDefaults = {
         notifications: {
-            enableSound: true,
-            interval: 20,
-            sound: "sound1"
-        },
-        dataUsage: {
-            trackAppUsageStats: true,
-            enableWeeklyUsageStats: true
-        },
-        startup: {
-            startAppOnLogin: true,
-            startTimerOnAppStartup: true
+        enableSound: true,
+        interval: 20,
+        sound: "sound1"
+    },
+    dataUsage: {
+        trackAppUsageStats: true,
+        enableWeeklyUsageStats: true
+    },
+    startup: {
+        startAppOnLogin: true,
+        startTimerOnAppStartup: true
+    }
+}
+
+/* Sounds defaults */
+const soundsStoreDefaults = {
+    defaultSounds: [
+        {
+            key: "Bell.mp3",
+            text: "Bell"
         }
-    },
-    watch: true
-}
-const preferencesStore = new Store(preferencesStoreOptions);
-
-
-/**
- * Persistent storage for sound-related data
- */
-const soundStoreOptions = {
-    defaults: {
-        defaultSounds: [
-            {
-                key: "Bell.mp3",
-                text: "Bell"
-            }
-        ],
-        customSounds: [
-            {
-                key: "C:/.../CustomSound.mp3",
-                text: "CustomSound"
-            }
-        ]
-    },
-    watch: true
-}
-const soundStore = new Store(soundStoreOptions);
-
-
-/**
- * Persistent storage/cache for account-related data
- */
- const accountStoreOptions = {
-    defaults: {
-        token: null,
-        accountInfo: {
-            email: null,
-            displayName: 'iCare Guest',
+    ],
+    customSounds: [
+        {
+            key: "C:/.../CustomSound.mp3",
+            text: "CustomSound"
         }
+    ]
+}
+
+/* Account defaults */
+const accountStoreDefaults = {
+    token: null,
+    accountInfo: {
+        email: null,
+        displayName: 'iCare Guest',
+    }
+}
+
+const storeOptions = {
+    defaults: {
+        preferences: preferencesStoreDefaults,
+        sounds: soundsStoreDefaults,
+        account: accountStoreDefaults,
     },
     watch: true
 }
-const accountStore = new Store(accountStoreOptions);
+
+const store = new Store(storeOptions);
+
+/**
+ * Handler for store change events
+ */
+// Handles a change to preferences.startup.startAppOnLogin 
+store.onDidChange('preferences.startup.startAppOnLogin', (newVal, oldVal) => {
+    // Start app when the user logs in
+    app.setLoginItemSettings({
+        openAtLogin: newVal,
+        enabled: newVal,
+        path: app.getPath('exe')
+    })
+});
+
+// Notifies the main window of preference store updates
+store.onDidChange('preferences', () => {
+    global.mainWindow.webContents.send('preferences-store-changed');
+});
+
+// Notifies the main window of sound store updates
+store.onDidChange('sounds', () => {
+    global.mainWindow.webContents.send('sounds-store-changed');
+});
+
+// Notifies the main window of account store updates
+store.onDidChange('account', () => {
+    global.mainWindow.webContents.send('account-store-changed');
+});
 
 
 /**
- * Preferences store-related IPC event handlers 
- * These event handlers retrieve and update the preferences store on behalf of the renderer.
+ * Preferences-related IPC event handlers 
+ * These event handlers retrieve and update the preferences on behalf of the renderer.
  */
 
 // Handles a request to retrieve the preferences store
 ipcMain.on('getPrefsStore', (event) => {
-    event.returnValue = preferencesStore.store;
+    event.returnValue = store.get('preferences');
 });
 
 // Handles a request to update the preferences store
 ipcMain.handle('setPrefsStoreValue', (event, key, value) => {
-    preferencesStore.set(key, value);
+    store.set(`preferences.${key}`, value);
 });
 
 
 /**
- * Sounds store-related IPC event handlers 
- * These event handlers retrieve and update the sounds store on behalf of the renderer.
+ * Sounds-related IPC event handlers 
+ * These event handlers retrieve and update the sounds on behalf of the renderer.
  */
 
 // Handles a request to retrieve the sounds store
 ipcMain.on('getSoundsStore', (event) => {
-    event.returnValue = soundStore.store;
+    event.returnValue = store.get('sounds');
 });
 
 // Handles a request to update the sounds store
@@ -106,18 +124,29 @@ ipcMain.handle('addCustomSound', (event) => {
         properties: ['openFile', 'dontAddToRecent']
     })
         .then(result => {
-            if (!result.canceled) {     // If user did not cancel the dialog
-                var filePath = result.filePaths[0]
-                var newSound = {        // Create new sound object from selected file
+            // If user did not cancel the dialog
+            if (!result.canceled) {     
+                var filePath = result.filePaths[0];
+
+                // Create new sound object from selected file
+                var newSound = {        
                     key: filePath,
                     text: path.basename(filePath)
                 }
-                var newCustomSounds = soundStore.get('customSounds')
-                newCustomSounds = newCustomSounds.concat(newSound)      // Concatenate with existing list of custom sounds
-                soundStore.set('customSounds', newCustomSounds);        // Update custom sounds with updated array
+                var newCustomSounds = store.get('sounds.customSounds');
+
+                // Concatenate with existing list of custom sounds
+                newCustomSounds = newCustomSounds.concat(newSound);      
+
+                // Update custom sounds with updated array
+                store.set('sounds.customSounds', newCustomSounds);
+                
+                // Set new sound as default notification sound
+                store.set('preferences.notifications.sound', filePath);
+
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
         })
 
 });
@@ -130,7 +159,7 @@ ipcMain.handle('addCustomSound', (event) => {
 
 // Handles a request to retrieve the account store
 ipcMain.on('getAccountStore', (event) => {
-    event.returnValue = accountStore.store;
+    event.returnValue = store.get('account');
 });
 
 // Handles a request to sign in and update the account store
@@ -153,5 +182,5 @@ ipcMain.handle('sign-in', (event, username, password) => {
 
 // Handles a request to sign out and clear the account store
 ipcMain.handle('sign-out', () => {
-    accountStore.reset();
+    store.reset('account');
 })

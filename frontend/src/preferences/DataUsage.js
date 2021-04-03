@@ -4,6 +4,8 @@ import { Toggle } from '@fluentui/react/lib/Toggle';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 
+const { ipcRenderer } = window.require('electron');
+
 const {
     getAllPreferences, 
     setPreference, 
@@ -12,12 +14,23 @@ const {
 
 export default class DataUsage extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = getAllPreferences().dataUsage;
+    }
+
+    componentDidMount() {
+        // Update this component's state when preferences are updated
+        ipcRenderer.on('preferences-store-changed', () => {
+            this.updateState();
+        })
+    }
+
+    updateState() {
+        this.setState(getAllPreferences().dataUsage);
+    }
+
     render() {
-
-        // Get preferences from preferences store
-        const preferences = getAllPreferences();
-        const dataUsage = preferences.dataUsage;
-
 
         return (
 
@@ -27,12 +40,12 @@ export default class DataUsage extends React.Component {
 
                 <Toggle label="Track my application usage statistics"
                     onText="On" offText="Off"
-                    defaultChecked={dataUsage.trackAppUsageStats}
+                    checked={this.state.trackAppUsageStats}
                     onChange={(event, checked) => setPreference("dataUsage.trackAppUsageStats", checked)}
                 />
                 <Toggle label="Enable weekly usage statistics"
                     onText="On" offText="Off"
-                    defaultChecked={dataUsage.enableWeeklyUsageStats}
+                    checked={this.state.enableWeeklyUsageStats}
                     onChange={(event, checked) => setPreference("dataUsage.enableWeeklyUsageStats", checked)}
                 />
 

@@ -135,21 +135,20 @@ ipcMain.on('getAccountStore', (event) => {
 });
 
 // Handles a request to sign in and update the account store
-ipcMain.handle('sign-in', (event, username, password) => {
-    console.log(username, password)
+// IPC event handler for signing in
+ipcMain.handle('sign-in', async (event, username, password) => {
     axios
-    .post('165.232.156.120:3000/login', {
+    .post('http://165.232.156.120:3000/login', {
         username: username,
         password: password
     })
     .then(res => {
         console.log(`statusCode: ${res.statusCode}`)
-        console.log(res)
+        console.log(res.data)
     })
     .catch(error => {
         console.error(error)
     })
-
 })
 
 // Handles a request to sign out and clear the account store

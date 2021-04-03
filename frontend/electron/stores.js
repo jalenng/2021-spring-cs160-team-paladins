@@ -1,6 +1,7 @@
 const { ipcMain, dialog, app } = require('electron');
 const Store = require('electron-store');
 const path = require("path");
+const axios = require('axios')
 
 
 /**
@@ -135,9 +136,9 @@ ipcMain.on('getAccountStore', (event) => {
 
 // Handles a request to sign in and update the account store
 ipcMain.handle('sign-in', (event, username, password) => {
-
+    console.log(username, password)
     axios
-    .post('http://localhost:3000', {
+    .post('165.232.156.120:3000/login', {
         username: username,
         password: password
     })

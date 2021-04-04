@@ -4,7 +4,7 @@ const mysql = require('mysql');
 var util = require('util');
 
 class db {
- 
+
     constructor(host, user, pass, db) {
         this.pool = mysql.createPool({
             connectionLimit: 10,
@@ -26,7 +26,7 @@ class db {
     async createUser(givenEmail, givenPass) {
         let q = "INSERT INTO Users (email, pass) VALUES ('" + givenEmail + "', '" + givenPass + "')";
 
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
             if (err) { resolve(false) }
             else { resolve(true) }
         }));
@@ -41,7 +41,7 @@ class db {
      * @returns true if successful login, false if fails
      */
     async checkLogIn(givenEmail, givenPass) {
-        
+
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
 
@@ -66,10 +66,10 @@ class db {
         let data = await this.dbPromise(true, q, userEmail);
 
         if (data != false) {
-            let splits = (JSON.stringify(data)).split('\"');       
+            let splits = (JSON.stringify(data)).split('\"');
             return splits[3];
         }
-        
+
         return data;
     };
 
@@ -98,9 +98,9 @@ class db {
             let intValue = await this.gettingInteger(data)
             return parseInt(intValue)
         }
-        
+
         return data;
-        
+
     }
 
     /**
@@ -111,7 +111,7 @@ class db {
      */
     async setNotiInterval(userEmail, newInt) {
         let q = "UPDATE userPreferences SET notiInterval=" + newInt
-        
+
         return await this.dbPromise(false, q, userEmail)
     }
 
@@ -125,7 +125,7 @@ class db {
         let query = "SELECT path FROM notificationSounds WHERE soundName="
         let q = query + "(SELECT notiSound FROM userPreferences WHERE email='" + userEmail + "')"
 
-        let path = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
+        let path = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
             if (err) { reject(false) }
             else {
                 resolve(result)
@@ -155,7 +155,7 @@ class db {
     async addNotiSound(name, path) {
         let q = "INSERT INTO notificationSounds VALUES ('" + name + "', '" + path + "')";
 
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
             if (err) { resolve(false) }
             else { resolve(true) }
         }));
@@ -176,7 +176,7 @@ class db {
             let bVal = await this.gettingInteger(data)
             return Boolean(Number(bVal))
         }
-        
+
         return data;
     }
 
@@ -249,7 +249,7 @@ class db {
 
         return await this.dbPromise(false, q, userEmail)
     }
-    
+
     /**
      * Sets the values of the data usage record or creates a new one.
      * @param {String} userEmail user email
@@ -258,7 +258,7 @@ class db {
      * @returns true if success in updating datausage records, false if fails
      */
     async setDataUsage(userEmail, screenTime, timerCount) {
-        let today = await this.getDate(0).then((result) => {return result;})
+        let today = await this.getDate(0).then((result) => { return result; })
         let check = await this.check("DataUsage", userEmail, "", today);
         let q = "";
 
@@ -272,7 +272,7 @@ class db {
         }
 
         // Updates the database
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
@@ -293,9 +293,9 @@ class db {
         q = q + q2
 
         // Querying Result
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
             if (err) { console.log(err); resolve(false) }
-            else {  resolve(result) }
+            else { resolve(result) }
         }));
 
         return results; // JSON.stringify(results); to get the string format
@@ -309,13 +309,13 @@ class db {
      * @returns true if success in updating appusage records, false if fails
      */
     async setAppUsage(userEmail, appName, appTime) {
-        let today = await this.getDate(0).then((result) => {return result;})
+        let today = await this.getDate(0).then((result) => { return result; })
         let check = await this.check("AppUsage", userEmail, appName, today);
         let q = "";
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE AppUsage SET appTime=" + appTime + ", timerCount=" + timerCount + 
+            q = "UPDATE AppUsage SET appTime=" + appTime + ", timerCount=" + timerCount +
                 " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
         }
         // Creates existing record
@@ -324,7 +324,7 @@ class db {
         }
 
         // Updates the database
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err) {
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
@@ -347,9 +347,9 @@ class db {
         q = q + q2
 
         // Querying Result
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
             if (err) { console.log(err); resolve(false) }
-            else {  resolve(result) }
+            else { resolve(result) }
         }));
 
         return results; // JSON.stringify(results); to get the string format
@@ -376,7 +376,7 @@ class db {
     async dbPromise(isGet, str, userEmail) {
         let q = str + " WHERE email='" + userEmail + "'"
 
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function(err, result) {
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
             if (err) { resolve(false) }
             else {
                 if (isGet) { resolve(result) }      // For Getter Methods
@@ -394,8 +394,8 @@ class db {
      */
     async gettingInteger(data) {
         let splits = (JSON.stringify(data)).split(':');
-        let splits2 = (JSON.stringify(splits[1])).split('}')     
-        let splits3 = (JSON.stringify(splits2[0])).split('\"') 
+        let splits2 = (JSON.stringify(splits[1])).split('}')
+        let splits3 = (JSON.stringify(splits2[0])).split('\"')
 
         return splits3[2]
     }
@@ -436,12 +436,12 @@ class db {
             addq = table + " WHERE email='" + userEmail + "' AND usageDate='" + today + "')";
         }
         else if (table == "App Usage") {
-            addq = table + " WHERE email='" + userEmail + "' AND appName='"  + appName + "' AND usageDate='" + today + "')"; 
+            addq = table + " WHERE email='" + userEmail + "' AND appName='" + appName + "' AND usageDate='" + today + "')";
         }
         checkq = checkq + addq;
 
         // 1 = the record exists, 0 = record does not exist
-        let check = await new Promise((resolve, reject) => this.pool.query(checkq, function(err, result) {
+        let check = await new Promise((resolve, reject) => this.pool.query(checkq, function (err, result) {
             if (err) { resolve(false) }
             else { resolve(result) }
         }));
@@ -461,20 +461,20 @@ class db {
         let date = ""
 
         if (time == "day") {
-            date = await this.getDate(0).then((result) => {return result;})
+            date = await this.getDate(0).then((result) => { return result; })
             qPart = "='"
         }
         else if (time == "week") {
-            date = await this.getDate(7).then((result) => {return result;})
+            date = await this.getDate(7).then((result) => { return result; })
             qPart = ">'"
         }
         else if (time == "month") {
-            date = await this.getDate(30).then((result) => {return result;})
+            date = await this.getDate(30).then((result) => { return result; })
             qPart = ">'"
         }
-        
-        queryString = queryString + qPart  + date + "'"
-        
+
+        queryString = queryString + qPart + date + "'"
+
         return queryString;
     }
 }

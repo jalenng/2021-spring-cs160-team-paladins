@@ -40,6 +40,10 @@
 
 # Branching | Working on Features
 ####  Create a separate branch for each feature or issue you work on. We have two main branches, frontend-dev & backend-dev. Every branch we create should be branched from one of these.
+## Opening an existing branch
+`git checkout branchName`
+## Returning to our main branch
+` git checkout main`
 ## Working on front-end features
 `git checkout -b branchName frontend-dev`
 ## Working on back-end features

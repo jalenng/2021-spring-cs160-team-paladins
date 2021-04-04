@@ -63,8 +63,22 @@ const { route } = require('./index.js');
       let email = req.body.email;
       let password = req.body.password;
       console.log(email, password)
-      let result = userDB.createUser(email, password)
-      console.log(result)
+
+      let success = await userDB.createUser(username, password).then((result) => {
+         return result; 
+      })
+      
+      if (success == true) {
+        res.status(200).send({
+          token: "data"
+        });
+      }
+      else {
+        res.status(401).send({
+          reason: "ACCOUNT EXISTS",
+          message: "Email already in use."
+        });
+      }
     })
 
 

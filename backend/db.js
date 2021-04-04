@@ -30,7 +30,6 @@ class db {
             if (err) { resolve(false) }
             else { resolve(true) }
         }));
-
         return results;
     }
 

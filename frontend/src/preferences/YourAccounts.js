@@ -23,7 +23,7 @@ export default class YourAccounts extends React.Component {
     componentDidMount() {
         // Update this component's state when account is updated
         ipcRenderer.on('account-store-changed', () => {
-            updateState();
+            this.updateState();
         })
     }
 

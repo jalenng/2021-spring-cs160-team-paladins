@@ -47,7 +47,7 @@ function createWindow() {
         maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
         maximizable: false,
         title: "iCare",
-        backgroundColor: '#333333', 
+        backgroundColor: '#222222', 
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -113,7 +113,7 @@ ipcMain.handle('show-sign-in-popup', event => {
         minimizable: false,
         maximizable: false,
         title: "Sign in",
-        backgroundColor: '#333333',
+        backgroundColor: '#222222',
         parent: global.mainWindow,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),

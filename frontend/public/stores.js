@@ -1,13 +1,16 @@
 const { ipcMain, dialog, app } = require('electron');
 const Store = require('electron-store');
 const path = require("path");
+const axios = require('axios');
+
+const SERVER_URL = 'http://165.232.156.120:3000'
 
 /* Preferences defaults */
 const preferencesStoreDefaults = {
         notifications: {
         enableSound: true,
         interval: 20,
-        sound: "sound1"
+        sound: "Bell.mp3"
     },
     dataUsage: {
         trackAppUsageStats: true,
@@ -27,12 +30,7 @@ const soundsStoreDefaults = {
             text: "Bell"
         }
     ],
-    customSounds: [
-        {
-            key: "C:/.../CustomSound.mp3",
-            text: "CustomSound"
-        }
-    ]
+    customSounds: []
 }
 
 /* Account defaults */
@@ -44,6 +42,7 @@ const accountStoreDefaults = {
     }
 }
 
+/* Create the store */
 const storeOptions = {
     defaults: {
         preferences: preferencesStoreDefaults,
@@ -52,8 +51,8 @@ const storeOptions = {
     },
     watch: true
 }
-
 const store = new Store(storeOptions);
+
 
 /**
  * Handler for store change events
@@ -162,25 +161,81 @@ ipcMain.on('getAccountStore', (event) => {
     event.returnValue = store.get('account');
 });
 
-// Handles a request to sign in and update the account store
-ipcMain.handle('sign-in', (event, username, password) => {
-
-    axios
-    .post('http://localhost:3000', {
-        username: username,
-        password: password
-    })
-    .then(res => {
-        console.log(`statusCode: ${res.statusCode}`)
-        console.log(res)
-    })
-    .catch(error => {
-        console.error(error)
-    })
-
-})
-
 // Handles a request to sign out and clear the account store
 ipcMain.handle('sign-out', () => {
     store.reset('account');
+})
+
+// Handles a request to sign in and update the account store
+ipcMain.handle('sign-in', async (event, email, password) => {
+
+    let success = false;
+    let message = "";
+
+    try {
+        // Send POST request
+        let res = await axios.post(`${SERVER_URL}/auth`, {
+            email: email,
+            password: password
+        })
+
+        // Sign-in was successful. Process token.
+        if (res.status === 200) {
+            store.set('account.token', res.data.token);
+            success = true,
+            message = "Sign-in was successful"
+        }
+    }
+    catch (error) {
+        // On POST Error
+        success = false;
+        message = error.code
+                    ? `Error: ${error.code}`
+                    : error.response.data.message;
+    }
+    
+    return {
+        success: success,
+        message: message
+    }
+})
+
+// Handles a request to create an account and update the account store
+ipcMain.handle('sign-up', async (event, email, password1, password2) => {
+
+    let success = false;
+    let message = "";
+
+    // Check if passwords match
+    if (password1 != password2) {
+        message = "Passwords do not match.";
+    }
+    else {
+        try {
+            // Send POST request
+            let res = await axios.post(`${SERVER_URL}/user`, {
+                email: email,
+                password: password1
+            })
+    
+            // Sign-up was successful. Process token.
+            if (res.status === 200) {
+                success = true;
+                message = "Account created. Please sign in.";
+            }
+        }
+        catch (error) {
+            // On POST Error
+            console.error(error);
+            message = error.code
+                        ? `Error: ${error.code}`
+                        : error.response.data.message;
+        }
+    }
+
+    return {
+        success: success,
+        message: message
+    }
+    
 })

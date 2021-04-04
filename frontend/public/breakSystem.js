@@ -163,7 +163,7 @@ function createFullscreenWindow(bounds) {
         skipTaskbar: true,
         show: false,
         title: "iCare Overlay",
-        backgroundColor: '#333333',
+        backgroundColor: '#222222',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,

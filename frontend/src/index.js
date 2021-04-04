@@ -35,11 +35,11 @@ const myTheme = createTheme({
     neutralPrimary: '#ffffff',
     neutralDark: '#f4f4f4',
     black: '#f8f8f8',
-    white: '#333333',
+    white: '#1b1a19',
   }
 });
 
-document.body.style = 'background: #333333;';
+document.body.style = 'background: #222222;';
 
 loadTheme(myTheme);
 initializeIcons();
@@ -49,7 +49,7 @@ ReactDOM.render(
   <React.StrictMode>
     <HashRouter>
       <Switch>
-        <div className="App" hashType="noslash">
+        <div className="App">
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />

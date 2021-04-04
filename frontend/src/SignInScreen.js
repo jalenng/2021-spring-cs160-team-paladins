@@ -16,6 +16,11 @@ const divStyle = {
   paddingLeft: '30px',
 };
 
+const textFieldStyles = {
+  // Make error message more legible over a dark background
+  errorMessage: {color: '#F1707B'}
+}
+
 const columnProps = {
   tokens: { childrenGap: 15 },
 };
@@ -25,8 +30,8 @@ export default class SignInScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      emailErrorMessage: "",
-      passwordErrorMessage: ""
+      emailErrorMessage: '',
+      passwordErrorMessage: ''
     }
   }
 
@@ -43,10 +48,14 @@ export default class SignInScreen extends React.Component {
           <Stack {...columnProps}>
 
             <Stack style={{ width: 240 }}>
-              <TextField label='Email' type='email' id='email'
+              <TextField label='Email' 
+                type='email' id='email'
+                styles={textFieldStyles}
                 errorMessage={this.state.emailErrorMessage}
               />
-              <TextField label='Password' type='password' id='password' 
+              <TextField label='Password' 
+                type='password' id='password' 
+                styles={textFieldStyles}
                 errorMessage={this.state.passwordErrorMessage}
               />
             </Stack>
@@ -54,18 +63,26 @@ export default class SignInScreen extends React.Component {
             <Stack horizontal verticalAlign='center' tokens={{ childrenGap: 20 }}>
               <PrimaryButton 
               text='Sign in'
+              type='submit'
               onClick={() => {
+
+                // Get email and password from TextFields
                 let email = document.getElementById('email').value;
                 let pass = document.getElementById('password').value;
 
+                // Invoke main process to handle sign-in
                 ipcRenderer.invoke('sign-in', email, pass)
                   .then( result => {
 
-                    console.log(result)
-                    // If response indicates failure
-                    this.setState({
-                      passwordErrorMessage: result
-                    });
+                    // If sign-in was successful, close the window
+                    if (result.success) window.close()
+
+                    // Else, display error
+                    else {
+                      this.setState({
+                        passwordErrorMessage: result.message
+                      });  
+                    }
                     
                   });
               }}

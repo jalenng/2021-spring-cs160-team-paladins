@@ -42,7 +42,7 @@ class db {
      */
     async checkLogIn(givenEmail, givenPass) {
 
-        let q = "SELECT email, pass FROM Users";
+        let q = "SELECT email, pass FROM Users WHERE email='" + givenEmail + "'"
         let data = await this.dbPromise(true, q, givenEmail);
 
         if (data != false) {
@@ -51,7 +51,7 @@ class db {
             if (splits[3] == givenEmail && splits[7] == givenPass) { return true }
             else { return false }
         }
-
+        console.log(data)
         return data;
 
     };

@@ -35,11 +35,13 @@ const { route } = require('./index.js');
     router.post('/auth', async function (req, res) {
       let email = req.body.email;
       let password = req.body.password;
-      console.log(email, password)
+      console.log('hi')
 
-      // Gets success
-      let success = await userDB.checkLogIn(email, password).then((result) => {
-        return result;
+      //Gets success
+      let success = await userDB.checkLogIn(email, password).then((res) => {
+        console.log(res)
+        console.log('hi')
+        return res;
       })
 
       // Sends result based on login success

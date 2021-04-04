@@ -5,6 +5,7 @@ import { Text } from '@fluentui/react/lib/Text';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -31,12 +32,28 @@ export default class SignUpScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       emailErrorMessage: '',
       passwordErrorMessage: ''
     }
   }
 
   render() {
+
+    // Show spinner if signing in
+    if (this.state.isLoading) {
+      return (
+        <div style={{
+          position: 'absolute', 
+          left: '50%', 
+          top: '50%',
+          transform: 'translate(-50%, -50%)'
+          }}>
+          <Spinner label="Signing you up." size={SpinnerSize.large}/>
+        </div>
+      )
+    }
+
     return (
 
       <div style={divStyle}>
@@ -49,8 +66,7 @@ export default class SignUpScreen extends React.Component {
           <Stack {...columnProps}>
 
             <Stack style={{ width: 240 }}>
-              <TextField label='Email'
-                type='email' id='email'
+              <TextField label='Email' id='email'
                 styles={textFieldStyles}
                 errorMessage={this.state.emailErrorMessage}
               />
@@ -70,6 +86,12 @@ export default class SignUpScreen extends React.Component {
                 text='Sign up'
                 type='submit'
                 onClick={() => {
+
+                  this.setState({
+                    isLoading: true,
+                    passwordErrorMessage: ''
+                  });
+
                   let email = document.getElementById('email').value;
                   let pass1 = document.getElementById('password1').value;
                   let pass2 = document.getElementById('password2').value;
@@ -79,6 +101,7 @@ export default class SignUpScreen extends React.Component {
                       
                       if (!result.success) {
                         this.setState({
+                          isLoading: false,
                           passwordErrorMessage: result.message
                         });
                       }
@@ -100,4 +123,3 @@ export default class SignUpScreen extends React.Component {
     );
   }
 }
-

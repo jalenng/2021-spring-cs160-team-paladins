@@ -5,6 +5,8 @@ import { Text } from '@fluentui/react/lib/Text';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
+
 const { ipcRenderer } = window.require('electron');
 
 const divStyle = {
@@ -30,12 +32,29 @@ export default class SignInScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       emailErrorMessage: '',
       passwordErrorMessage: ''
     }
   }
 
   render() {
+
+    // Show spinner if signing in
+    if (this.state.isLoading) {
+      return (
+        <div style={{
+          position: 'absolute', 
+          left: '50%', 
+          top: '50%',
+          transform: 'translate(-50%, -50%)'
+          }}>
+          <Spinner label="Signing you in." size={SpinnerSize.large}/>
+        </div>
+      )
+    }
+
+    // Otherwise, show normal sign-in menu
     return (    
 
       <div style={divStyle}>
@@ -48,8 +67,7 @@ export default class SignInScreen extends React.Component {
           <Stack {...columnProps}>
 
             <Stack style={{ width: 240 }}>
-              <TextField label='Email' 
-                type='email' id='email'
+              <TextField label='Email' id='email'
                 styles={textFieldStyles}
                 errorMessage={this.state.emailErrorMessage}
               />
@@ -66,6 +84,11 @@ export default class SignInScreen extends React.Component {
               type='submit'
               onClick={() => {
 
+                this.setState({
+                  isLoading: true,
+                  passwordErrorMessage: ''
+                });  
+
                 // Get email and password from TextFields
                 let email = document.getElementById('email').value;
                 let pass = document.getElementById('password').value;
@@ -80,6 +103,7 @@ export default class SignInScreen extends React.Component {
                     // Else, display error
                     else {
                       this.setState({
+                        isLoading: false,
                         passwordErrorMessage: result.message
                       });  
                     }
@@ -100,4 +124,3 @@ export default class SignInScreen extends React.Component {
     );
   }
 }
-

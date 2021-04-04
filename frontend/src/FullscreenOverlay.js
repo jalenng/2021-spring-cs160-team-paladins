@@ -59,29 +59,25 @@ export default class FullscreenOverlay extends React.Component {
                 transform: 'translate(-50%, -50%)'
                 }}>
 
-                <Stack token={{childrenGap: 10}}>
-                    <Stack.Item align="center">
-                        <FontIcon iconName="RedEye" className={iconClass} />
-                    </Stack.Item>
+                    <Stack token={{childrenGap: 32}}>
+                        <Stack.Item align="center">
+                            <FontIcon iconName="RedEye" className={iconClass} />
+                        </Stack.Item>
 
-                    <Stack.Item align="center">
-                        <Text variant={"xxLarge"}>
-                            Look at something 20 feet away.
-                        </Text>
-                    </Stack.Item>
-                    
-                    <Stack.Item align="center">
-                        <Text variant={"xLarge"} align="center">
-                            {this.state.remainingTimeString}
-                        </Text>
-                    </Stack.Item>
+                        <Stack.Item align="center">
+                            <Text variant={"xxLarge"}>
+                                Look at something 20 feet away.
+                            </Text>
+                        </Stack.Item>
+                        
+                        <Stack.Item align="center">
+                            <Text variant={"xLarge"} align="center">
+                                {this.state.remainingTimeString}
+                            </Text>
+                        </Stack.Item>
 
-                    <Stack.Item align="center">
-                        <ProgressIndicator percentComplete={0.5} />
-                    </Stack.Item>
+                    </Stack>
 
-                </Stack>
-                
                 </div>
 
                 <div style={{

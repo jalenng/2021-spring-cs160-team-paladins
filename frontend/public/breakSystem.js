@@ -163,7 +163,7 @@ function createFullscreenWindow(bounds) {
         skipTaskbar: true,
         show: false,
         title: "iCare Overlay",
-        backgroundColor: '#333333',
+        backgroundColor: '#222222',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -179,8 +179,8 @@ function createFullscreenWindow(bounds) {
 
     fsWin.loadURL(
         isDev
-        ? 'http://localhost:3000/notification/fullscreen'
-        : `file://${path.join(__dirname, '../build/login/index.html')}`
+        ? 'http://localhost:3000#/fullscreenNotification'
+        : `file://${path.join(__dirname, '../build/index.html#fullscreenNotification')}`
     ); 
 
     fsWin.on('ready-to-show', () => {

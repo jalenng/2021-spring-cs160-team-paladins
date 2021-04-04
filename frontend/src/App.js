@@ -31,7 +31,7 @@ const topRightCornerProps = {
   horizontal: true,
   verticalAlign: 'center', 
   style: signInDivStyle,
-  height: '54px',
+  styles: { root: { height: 42} },
   tokens: { childrenGap: 16 }
 }
 

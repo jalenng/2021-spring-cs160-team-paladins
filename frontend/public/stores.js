@@ -1,7 +1,7 @@
 const { ipcMain, dialog, app } = require('electron');
 const Store = require('electron-store');
 const path = require("path");
-const axios = require('axios')
+const axios = require('axios');
 
 const SERVER_URL = 'http://165.232.156.120:3000'
 

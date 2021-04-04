@@ -35,11 +35,11 @@ const myTheme = createTheme({
     neutralPrimary: '#ffffff',
     neutralDark: '#f4f4f4',
     black: '#f8f8f8',
-    white: '#222222',
+    white: '#1b1a19',
   }
 });
 
-document.body.style = 'background: #333333;';
+document.body.style = 'background: #222222;';
 
 loadTheme(myTheme);
 initializeIcons();

@@ -43,8 +43,8 @@ const { route } = require('./index.js');
       })
 
       // Sends result based on login success
-      if (success) {
-        console.log('success')
+
+      if (success == true) {
         res.status(200).send({
           token: "data"
         });

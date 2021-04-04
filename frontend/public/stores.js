@@ -217,7 +217,8 @@ ipcMain.handle('sign-up', async (event, email, password1, password2) => {
                 email: email,
                 password: password1
             })
-    
+            
+            console.log(res);
             // Sign-up was successful. Process token.
             if (res.status === 200) {
                 success = true;

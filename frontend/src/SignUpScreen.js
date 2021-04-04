@@ -99,12 +99,10 @@ export default class SignUpScreen extends React.Component {
                   ipcRenderer.invoke('sign-up', email, pass1, pass2)
                     .then( result => {
                       
-                      if (!result.success) {
-                        this.setState({
-                          isLoading: false,
-                          passwordErrorMessage: result.message
-                        });
-                      }
+                      this.setState({
+                        isLoading: false,
+                        passwordErrorMessage: result.message
+                      });
 
                     });
                 }}

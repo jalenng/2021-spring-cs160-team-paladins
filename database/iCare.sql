@@ -5,7 +5,7 @@ USE iCare;
 # Table of Users
 CREATE TABLE Users (
 	email varchar(50) NOT NULL,
-	pass varchar(100) NOT NULL,
+	pass varchar(150) NOT NULL,
     dateCreated date,
 	PRIMARY KEY (email)
 );

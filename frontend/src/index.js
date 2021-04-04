@@ -49,7 +49,7 @@ ReactDOM.render(
   <React.StrictMode>
     <HashRouter>
       <Switch>
-        <div className="App" hashType="noslash">
+        <div className="App">
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />

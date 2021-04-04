@@ -16,7 +16,9 @@ export default class Timer extends React.Component {
             buttonLabel: "",
             state: "",
         };
-
+    }
+    
+    componentDidMount() {
         ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
             
             var state = timerStatus.state;
@@ -36,11 +38,12 @@ export default class Timer extends React.Component {
 
         })
 
-    }
-
-    componentDidMount() {
         ipcRenderer.send('get-timer-status');
         setInterval(() => {ipcRenderer.send('get-timer-status')}, 1000);
+    }
+
+    updateState() {
+        this.setState(getAccountStore());
     }
 
     render() {

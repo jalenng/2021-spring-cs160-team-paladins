@@ -59,12 +59,12 @@ const { route } = require('./index.js');
     })
 
     // User tries to create account.
-    router.post('/user', function (req, res) {
+    router.post('/user', async function (req, res) {
       let email = req.body.email;
       let password = req.body.password;
       console.log(email, password)
 
-      let success = await userDB.createUser(username, password).then((result) => {
+      let success = await userDB.createUser(email, password).then((result) => {
          return result; 
       })
       

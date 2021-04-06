@@ -37,13 +37,18 @@ const { route } = require('./index.js');
       let password = req.body.password;
 
       //Gets success
-      let success = await userDB.checkLogIn(email, password).then((res) => {
-        console.log(res)
-        return res;
-      })
-
+      let success = "";
+      if (email === null || password === null) {
+        success = false;
+      }
+      else {
+        success = await userDB.checkLogIn(email, password).then((res) => {
+          console.log(res)
+          return res;
+        })
+      }
+      
       // Sends result based on login success
-
       if (success == true) {
         res.status(200).send({
           token: "data"

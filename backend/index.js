@@ -16,7 +16,7 @@ const { route } = require('./index.js');
     app.use('/', router)
  
     // Database Connection
-    let db = require('./db.js')
+    let db = require('./db.js');
     let userDB = new db("localhost", "newuser", "", "iCare");
 
     // API Methods
@@ -95,11 +95,14 @@ const { route } = require('./index.js');
           message: "Authentication invalid"
         })
       }
+
     })
  
     // Gets preferences of user
     router.get('/pref/:user', async function (req, res) {
- 
+
+      let token = req.body.auth.token;
+
       // Gets token from frontend
       // Somehow convert token to user email to get info out of db
  
@@ -113,7 +116,7 @@ const { route } = require('./index.js');
       // Send to frontend
       if (notiInterval != false && notiSound != false && notiSoundOn != false) {
         res.status(200).send({
-          status: "success", data: {
+          status: 200, data: {
             notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
             dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: dUsageOn }
           }
@@ -121,8 +124,8 @@ const { route } = require('./index.js');
       }
       else {
         res.status(504).send({
-          status: "failure", 
-          data: { reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences" }
+          status: 504, 
+          data: { reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }
         });
       }
  
@@ -131,8 +134,13 @@ const { route } = require('./index.js');
     // Saves the user preferences
     router.put('/pref/:user', async function (req, res) {
  
+      let token = req.body.auth.token;
+
       // Get data from frontend (token, notification interval, sound, and boolean (sound on/off))
       // Somehow convert token to user email to get info out of db
+
+      
+
       let email = "Convert from token";
       let notiInterval = req.body.data.interval
       let notiSound = req.body.data.sound
@@ -148,7 +156,7 @@ const { route } = require('./index.js');
       let success5 = await userDB.setAppUsageOn(email, aUsageOn).then((result) => { return result; })
 
       // Send to frontend
-      if (success1 == success2 == success3 == success4 == true) {
+      if (success1 == success2 == success3 == success4 == success5 == true) {
         res.status(200).send({ status: 200 })
       }
       else {

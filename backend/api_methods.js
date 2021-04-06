@@ -1,5 +1,4 @@
-  
-class api_methods {
+  class api_methods {
     constructor() {}
 
     /**

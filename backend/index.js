@@ -19,6 +19,10 @@ const { route } = require('./index.js');
     let db = require('./db.js')
     let userDB = new db("localhost", "newuser", "", "iCare");
 
+    // Token Methods
+    let tokenClass = require('./token.js')
+    let userToken = new tokenClass();
+
     // ---------------------------------
     // Our server listens for POST requests.
     // ---------------------------------
@@ -37,57 +41,7 @@ var atob = require('atob');
 var btoa = require('btoa');
 var Cryptr = require('cryptr'),
 cryptr = new Cryptr('myTotalySecretKey');
-let email = 'newemail1';
-//console.log(email);
-let password = 'newpass1';
-//console.log(password);
-userDB.checkLogIn(email, password)    
 
-//var data = JSON.stringify(results);
-var secret = 'TOPSECRETTTTT';
-var now = Math.floor(Date.now() / 1000),
-iat = (now - 10),
-expiresIn = 3600,
-expr = (now + expiresIn),
-notBefore = (now - 10),
-jwtId = Math.random().toString(36).substring(7);
-var payload = 
-{
-  iat: iat,
-  jwtid : jwtId,
-  audience : 'TEST',
-  data : 'email'
-};           
-//console.log(payload)
-jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn : expiresIn}, function(err, token)
-{     
-  if(err)
-  {
-    console.log("Error occurred while generating token");
-  }
-  else
-  {
-        //console.log("token:" + token);
-
-      if(token != false)
-      {            
-            //var token_data =
-            //{
-                //"results":
-                //{"status": true,
-                //"token" : token,
-                //"user" : result[0]}
-      //};
-            //console.log(token_data);
-            console.log("You have logged in");
-            console.log(token);
-      }
-      else
-      {
-        console.log("Could not create token.");
-      }
-  }
-})
 
     // User tries to login (test send)
     router.post('/auth', async function (req, res) {
@@ -108,8 +62,12 @@ jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn : expiresIn}, function
       
       // Sends result based on login success
       if (success == true) {
+
+        // Create token
+        let tokenValue = await userToken.createToken(email).then((res) => { return res });
+
         res.status(200).send({
-          token: "data"
+          token: tokenValue
         });
       }
       else {
@@ -132,8 +90,13 @@ jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn : expiresIn}, function
       })
       
       if (success == true) {
+
+      // Create token
+      let tokenValue = await userToken.createToken(email).then((res) => { return res });
+
+
         res.status(200).send({
-          token: "data"
+          token: tokenValue
         });
       }
       else {

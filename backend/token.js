@@ -5,6 +5,11 @@ var jwt = require('jsonwebtoken');
 class token {
     constructor() {}
 
+    /**
+     * Creates a token
+     * @param {String} email 
+     * @returns token
+     */
     async createToken(email) {
 
         let secret = 'TOPSECRETTTTT';
@@ -19,7 +24,7 @@ class token {
             iat: iat,
             jwtid : jwtId,
             audience : 'TEST',
-            data : 'email'
+            data : email
         };           
 
         let token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn : expiresIn}, async function(err, token) {     

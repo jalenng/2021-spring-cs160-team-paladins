@@ -21,10 +21,12 @@ class db {
      * Creates a new user (inserts into db)
      * @param {String} givenEmail email (primary key)
      * @param {String} givenPass password
+     * @param {String} displayName display name
      * @returns true if no error, false for error
      */
-    async createUser(givenEmail, givenPass) {
-        let q = "INSERT INTO Users (email, pass) VALUES ('" + givenEmail + "', '" + givenPass + "')";
+    async createUser(givenEmail, givenPass, displayName) {
+        let q = "INSERT INTO Users (email, pass, displayName)";
+        q = q + "VALUES ('" + givenEmail + "', '" + givenPass + "', '" + displayName + "')";
 
         let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
             if (err) { resolve(false) }
@@ -82,7 +84,7 @@ class db {
      * @returns displayName, false if fails
      */
     async getDisplayName(userEmail) {
-        let q = "SELECT displayName FROM UserPreferences";
+        let q = "SELECT displayName FROM Users";
         let data = await this.dbPromise(true, q, userEmail);
 
         if (data != false) {

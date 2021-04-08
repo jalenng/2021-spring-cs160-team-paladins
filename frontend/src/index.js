@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import './css/index.css';
 
 import App from './App';
-import SignInScreen from './SignInScreen';
-import SignUpScreen from './SignUpScreen';
+import SignInScreen from './account/SignInScreen';
+import SignUpScreen from './account/SignUpScreen';
 import FullscreenOverlay from './FullscreenOverlay';
 
 import { HashRouter, Route, Switch } from "react-router-dom";

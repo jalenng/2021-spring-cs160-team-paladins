@@ -48,6 +48,7 @@ function createWindow() {
         maximizable: false,
         title: "iCare",
         backgroundColor: '#222222', 
+        show: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -65,6 +66,8 @@ function createWindow() {
         ? 'http://localhost:3000'
         : `file://${path.join(__dirname, '../build/index.html')}`
     ); 
+
+    global.mainWindow.on('ready-to-show', () => global.mainWindow.show());
 
     // Prevent opening new windows
     mainWindow.webContents.on('new-window', (e, url) => {
@@ -107,7 +110,7 @@ ipcMain.handle('show-sign-in-popup', event => {
     // Sign in Window
     const signInWindow = new BrowserWindow({
         width: 380,
-        height: 380,
+        height: 420,
         // modal: true,
         resizable: false,
         minimizable: false,
@@ -115,6 +118,7 @@ ipcMain.handle('show-sign-in-popup', event => {
         title: "Sign in",
         backgroundColor: '#222222',
         parent: global.mainWindow,
+        show: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -129,6 +133,8 @@ ipcMain.handle('show-sign-in-popup', event => {
         ? 'http://localhost:3000#/signin'
         : `file://${path.join(__dirname, '../build/index.html#signin')}`
     ); 
+    
+    signInWindow.on('ready-to-show', () => signInWindow.show());
 
 })
 

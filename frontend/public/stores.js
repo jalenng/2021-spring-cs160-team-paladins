@@ -1,16 +1,16 @@
 const { ipcMain, dialog, app } = require('electron');
 const Store = require('electron-store');
-const path = require("path");
+const path = require('path');
 const axios = require('axios');
 
 const SERVER_URL = 'http://165.232.156.120:3000'
 
 /* Preferences defaults */
 const preferencesStoreDefaults = {
-        notifications: {
+    notifications: {
         enableSound: true,
         interval: 20,
-        sound: "Bell.mp3"
+        sound: 'Bell.mp3'
     },
     dataUsage: {
         trackAppUsageStats: true,
@@ -24,12 +24,10 @@ const preferencesStoreDefaults = {
 
 /* Sounds defaults */
 const soundsStoreDefaults = {
-    defaultSounds: [
-        {
-            key: "Bell.mp3",
-            text: "Bell"
-        }
-    ],
+    defaultSounds: [{
+        key: 'Bell.mp3',
+        text: 'Bell'
+    }],
     customSounds: []
 }
 
@@ -89,12 +87,13 @@ store.onDidChange('account', () => {
  */
 
 // Handles a request to retrieve the preferences store
-ipcMain.on('getPrefsStore', (event) => {
+ipcMain.on('get-prefs-store', (event) => {
+    console.log('get prefs store')
     event.returnValue = store.get('preferences');
 });
 
 // Handles a request to update the preferences store
-ipcMain.handle('setPrefsStoreValue', (event, key, value) => {
+ipcMain.handle('set-prefs-store-value', (event, key, value) => {
     store.set(`preferences.${key}`, value);
 });
 
@@ -105,41 +104,41 @@ ipcMain.handle('setPrefsStoreValue', (event, key, value) => {
  */
 
 // Handles a request to retrieve the sounds store
-ipcMain.on('getSoundsStore', (event) => {
+ipcMain.on('get-sounds-store', (event) => {
     event.returnValue = store.get('sounds');
 });
 
 // Handles a request to update the sounds store
-ipcMain.handle('addCustomSound', (event) => {
+ipcMain.handle('add-custom-sound', (event) => {
 
     // Open file selection dialog box
     dialog.showOpenDialog(mainWindow, {
-        title: 'Choose custom sound',
-        filters: [{
-            name: 'Audio files',
-            extensions: ['wav', 'mp3', 'ogg']
-        }],
-        defaultPath: app.getPath('music'),
-        properties: ['openFile', 'dontAddToRecent']
-    })
+            title: 'Choose custom sound',
+            filters: [{
+                name: 'Audio files',
+                extensions: ['wav', 'mp3', 'ogg']
+            }],
+            defaultPath: app.getPath('music'),
+            properties: ['openFile', 'dontAddToRecent']
+        })
         .then(result => {
             // If user did not cancel the dialog
-            if (!result.canceled) {     
+            if (!result.canceled) {
                 var filePath = result.filePaths[0];
 
                 // Create new sound object from selected file
-                var newSound = {        
+                var newSound = {
                     key: filePath,
                     text: path.basename(filePath)
                 }
                 var newCustomSounds = store.get('sounds.customSounds');
 
                 // Concatenate with existing list of custom sounds
-                newCustomSounds = newCustomSounds.concat(newSound);      
+                newCustomSounds = newCustomSounds.concat(newSound);
 
                 // Update custom sounds with updated array
                 store.set('sounds.customSounds', newCustomSounds);
-                
+
                 // Set new sound as default notification sound
                 store.set('preferences.notifications.sound', filePath);
 
@@ -157,7 +156,7 @@ ipcMain.handle('addCustomSound', (event) => {
  */
 
 // Handles a request to retrieve the account store
-ipcMain.on('getAccountStore', (event) => {
+ipcMain.on('get-account-store', (event) => {
     event.returnValue = store.get('account');
 });
 
@@ -166,77 +165,80 @@ ipcMain.handle('sign-out', () => {
     store.reset('account');
 })
 
-// Handles a request to sign in and update the account store
-ipcMain.handle('sign-in', async (event, email, password) => {
+// Handles a request to authenticate the user (by signing in or signing up)
+ipcMain.handle('authenticate', async (event, email, password, createAccount = false, displayName = '') => {
 
-    let success = false;
-    let message = "";
+    let result = {
+        success: false,
+        data: {}
+    };
 
+    // Try to authenticate
     try {
-        // Send POST request
-        let res = await axios.post(`${SERVER_URL}/auth`, {
-            email: email,
-            password: password
-        })
-
-        // Sign-in was successful. Process token.
-        if (res.status === 200) {
-            store.set('account.token', res.data.token);
-            success = true,
-            message = "Sign-in was successful"
-        }
-    }
-    catch (error) {
-        // On POST Error
-        success = false;
-        message = error.code
-                    ? `Error: ${error.code}`
-                    : error.response.data.message;
-    }
-    
-    return {
-        success: success,
-        message: message
-    }
-})
-
-// Handles a request to create an account and update the account store
-ipcMain.handle('sign-up', async (event, email, password1, password2) => {
-
-    let success = false;
-    let message = "";
-
-    // Check if passwords match
-    if (password1 != password2) {
-        message = "Passwords do not match.";
-    }
-    else {
-        try {
-            // Send POST request
-            let res = await axios.post(`${SERVER_URL}/user`, {
+        
+        // Send POST request        
+        let url;
+        let data;
+        if (createAccount) {
+            url = `${SERVER_URL}/user`
+            data = {
                 email: email,
-                password: password1
-            })
-            
-            console.log(res);
-            // Sign-up was successful. Process token.
-            if (res.status === 200) {
-                success = true;
-                message = "Account created. Please sign in.";
+                password: password,
+                displayName: displayName
+            }
+        } else {
+            url = `${SERVER_URL}/auth`
+            data = {
+                email: email,
+                password: password
             }
         }
-        catch (error) {
-            // On POST Error
-            console.error(error);
-            message = error.code
-                        ? `Error: ${error.code}`
-                        : error.response.data.message;
+
+        // Await for response
+        let res = await axios.post(url, data);
+
+        // If sign-in was successful
+        if (res.status === 200 || res.status === 201) {
+
+            let account = {
+                token: res.data.token,
+                accountInfo: {
+                    email: res.data.accountInfo.email,
+                    displayName: res.data.accountInfo.displayName
+                }
+            }
+            store.set('account', account)
+
+            result.success = true;
+
         }
     }
+    // Handle errors
+    catch (error) {
+     
+        console.log(error)
 
-    return {
-        success: success,
-        message: message
+        // Axios error code?
+        if (error.code) {
+            result.data = {
+                reason: error.code,
+                message: `Error: ${error.code}`
+            }
+        }
+        // Response error code?
+        else if (error.response && error.response.data && error.response.data.reason && error.response.data.message) {
+            result.data = error.response.data;
+        }
+        // Generic error
+        else {
+            result.data = {
+                reason: 'RESPONSE_ERR',
+                message: error.toString()
+            }
+        }
+
     }
-    
+
+    // Return the result object
+    return result;
 })

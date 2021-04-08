@@ -5,15 +5,15 @@ const { ipcRenderer } = window.require('electron');
  * @returns {Object}
  */
 function getAccountStore() {
-    return ipcRenderer.sendSync('getAccountStore')
+    return ipcRenderer.sendSync('get-account-store')
 }
 
 /**
- * Helper function to sign in to an account.
- * @returns {Object} the response of the sign-in attempt
+ * Helper function to authenticate an account.
+ * @returns {Object} the response of the sign-in or sign-up attempt
  */
-function signIn(username, password) {
-    return ipcRenderer.invoke('sign-in', username, password)
+function authenticate(email, password, createAccount=false, displayName='') {
+    return ipcRenderer.invoke('authenticate', email, password, createAccount, displayName)
 }
 
 /**
@@ -28,14 +28,14 @@ function signOut() {
  * @returns {Object}
  */
 function getAllPreferences() {
-    return ipcRenderer.sendSync('getPrefsStore')
+    return ipcRenderer.sendSync('get-prefs-store')
 }
 
 /**
  * Helper function to update a preference on the preferences store
  */
 function setPreference(key, value) {
-    ipcRenderer.invoke('setPrefsStoreValue', key, value)
+    ipcRenderer.invoke('set-prefs-store-value', key, value)
 }
 
 /**
@@ -43,19 +43,19 @@ function setPreference(key, value) {
  * @returns {Object}
  */
 function getAllSounds() {
-    return ipcRenderer.sendSync('getSoundsStore')
+    return ipcRenderer.sendSync('get-sounds-store')
 }
 
 /**
  * Helper function to open a file selection dialog for adding a custom sound to the sounds store
  */
 function addCustomSound() {
-    ipcRenderer.invoke('addCustomSound')
+    ipcRenderer.invoke('add-custom-sound')
 }
 
 module.exports = {
     getAccountStore: getAccountStore,
-    signIn: signIn,
+    authenticate: authenticate,
     signOut: signOut,
     getAllPreferences: getAllPreferences,
     setPreference: setPreference,

@@ -60,8 +60,8 @@ export default class Timer extends React.Component {
     };
 
     return (
-      <div>
-        <Stack horizontal tokens={{ childrenGap: 20 }}>
+      <Stack>
+        <Stack.Item align="auto">
           <CountdownCircleTimer
             key={this.state.key}
             isPlaying={this.state.buttonLabel === "STOP"}
@@ -70,21 +70,30 @@ export default class Timer extends React.Component {
               10
             }
             colors={[
-              ["#004777", 0.33],
+              ["#009dff", 0.33],
               ["#F7B801", 0.33],
-              ["#A30000", 0.33],
+              ["#009dff", 0.33],
             ]}
+            strokeWidth={15}
+            size={280}
             onComplete={() => [true, 100]}
           >
             {renderTime}
           </CountdownCircleTimer>
-
+        </Stack.Item>
+        <div
+          style={{
+            position: "absolute",
+            left: "40%",
+            top: "70%",
+          }}
+        >
           <PrimaryButton
             text={this.state.buttonLabel}
             onClick={this.handleClick}
           />
-        </Stack>
-      </div>
+        </div>
+      </Stack>
     );
   }
 }

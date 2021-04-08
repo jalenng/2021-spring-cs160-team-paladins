@@ -15,6 +15,7 @@ export default class Timer extends React.Component {
       seconds: "0",
       buttonLabel: "",
       state: "",
+      key: 0,
     };
 
     ipcRenderer.on("receive-timer-status", (event, timerStatus) => {
@@ -42,6 +43,11 @@ export default class Timer extends React.Component {
     }, 1000);
   }
 
+  handleClick = () => {
+    ipcRenderer.invoke("timer-toggle");
+    this.setState({ key: this.state.key + 1 });
+  };
+
   render() {
     let renderTime = () => {
       return (
@@ -57,6 +63,7 @@ export default class Timer extends React.Component {
       <div>
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <CountdownCircleTimer
+            key={this.state.key}
             isPlaying={this.state.buttonLabel === "STOP"}
             duration={
               //parseInt(this.state.seconds)}
@@ -67,14 +74,14 @@ export default class Timer extends React.Component {
               ["#F7B801", 0.33],
               ["#A30000", 0.33],
             ]}
-            onComplete={() => [true, 1000]}
+            onComplete={() => [true, 100]}
           >
             {renderTime}
           </CountdownCircleTimer>
 
           <PrimaryButton
             text={this.state.buttonLabel}
-            onClick={() => ipcRenderer.invoke("timer-toggle")}
+            onClick={this.handleClick}
           />
         </Stack>
       </div>

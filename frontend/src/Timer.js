@@ -51,7 +51,7 @@ export default class Timer extends React.Component {
         let renderTime = () => {
             return (
                 <div className="time">
-                    <Text variant={'large'}>
+                    <Text variant={'xxLarge'} block>
                         {this.state.minutes}:{this.state.seconds}
                     </Text>
                 </div>
@@ -64,8 +64,11 @@ export default class Timer extends React.Component {
                 <Stack horizontal tokens={{ childrenGap: 20 }}>
 
                     <CountdownCircleTimer
-                        true
-                        duration={parseInt(this.state.seconds)}
+                        isPlaying={this.state.buttonLabel === "STOP"}
+                        duration={
+                            //parseInt(this.state.seconds)}
+                            10
+                        }
                         colors={[
                             ['#004777', 0.33],
                             ['#F7B801', 0.33],
@@ -79,8 +82,6 @@ export default class Timer extends React.Component {
                         text={this.state.buttonLabel}
                         onClick={() => ipcRenderer.invoke('timer-toggle')}
                     />
-
-
 
                 </Stack>
             </div>

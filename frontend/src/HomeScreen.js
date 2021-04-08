@@ -11,8 +11,9 @@ const divStyle = {
 
   paddingTop: '10px',
   paddingLeft: '30px',
+  justifyContent: 'center',
+  alignItems: 'center'
 };
-
 
 export default class HomeScreen extends React.Component {
   render() {
@@ -21,7 +22,9 @@ export default class HomeScreen extends React.Component {
         <Text variant={'xxLarge'} block>
           iCare
         </Text>
+        <div>
         <Timer/>
+        </div>
       </div>
       
     );

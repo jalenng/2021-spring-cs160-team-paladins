@@ -19,6 +19,11 @@ const { route } = require('./index.js');
     let db = require('./db.js')
     let userDB = new db("localhost", "newuser", "", "iCare");
 
+    // Crypto Requirements
+    var atob = require('atob');
+    var Cryptr = require('cryptr'),
+    cryptr = new Cryptr('myTotalySecretKey'); 
+
     // Token Methods
     let tokenClass = require('./token.js')
     let userToken = new tokenClass();
@@ -26,22 +31,6 @@ const { route } = require('./index.js');
     // ---------------------------------
     // Our server listens for POST requests.
     // ---------------------------------
- 
-    // Testing get/set for datausage (Works!)
-    //userDB.getDataUsage('basic@gmail.com', 'day').then((result) => { console.log(result); });
-    //userDB.getDataUsage('basic@gmail.com', 'week').then((result) => { console.log(result); });
-    //userDB.getDataUsage('basic@gmail.com', 'month').then((result) => { console.log(result); });
- 
-    //userDB.setDataUsage('basic@gmail.com', 20, 3).then((result) => { console.log(result); });
-
-// --------------------- CRYPTO
-var sql = require('mysql')
-var jwt = require('jsonwebtoken');
-var atob = require('atob');
-var btoa = require('btoa');
-var Cryptr = require('cryptr'),
-cryptr = new Cryptr('myTotalySecretKey');
-
 
     // User tries to login (test send)
     router.post('/auth', async function (req, res) {
@@ -53,28 +42,18 @@ cryptr = new Cryptr('myTotalySecretKey');
 
       let success = await userDB.getPassword(email).then((r) => {
         let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) {
-          console.log("SCUCESSFUL LOGIN")
-          return true
-        } else {
-          console.log("FAILED")
-          return false
-        }
+        if (decryptPass == dec_pass) { return true } 
+        else { return false }
       })
       
       // Sends result based on login success
       if (success == true) {
-
-        // Create token
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
-
-        res.status(200).send({
-          token: tokenValue
-        });
+        res.status(200).send({ token: tokenValue });
       }
       else {
         res.status(401).send({
-          reason: "INVALID CREDENTIALS",
+          reason: "INVALID_CREDENTIALS",
           message: "Authentication invalid"
         });
       }
@@ -86,9 +65,7 @@ cryptr = new Cryptr('myTotalySecretKey');
     // User tries to create account.
     router.post('/user', async function (req, res) {
       let email = req.body.email;
-      let password = req.body.password;
-      console.log(email, password)
- 
+      let password = req.body.password; 
  
       // CRYPTO: Encrypt password and store in the database
       let dec_pass = atob(password);
@@ -99,14 +76,8 @@ cryptr = new Cryptr('myTotalySecretKey');
       })
       
       if (success == true) {
-
-      // Create token
       let tokenValue = await userToken.createToken(email).then((res) => { return res });
-
-
-        res.status(200).send({
-          token: tokenValue
-        });
+        res.status(200).send({ token: tokenValue });
       }
       else {
         res.status(401).send({
@@ -178,6 +149,15 @@ cryptr = new Cryptr('myTotalySecretKey');
         });
       }
     });
+
+
+     
+    // Testing get/set for datausage (Works!)
+    //userDB.getDataUsage('basic@gmail.com', 'day').then((result) => { console.log(result); });
+    //userDB.getDataUsage('basic@gmail.com', 'week').then((result) => { console.log(result); });
+    //userDB.getDataUsage('basic@gmail.com', 'month').then((result) => { console.log(result); });
+ 
+    //userDB.setDataUsage('basic@gmail.com', 20, 3).then((result) => { console.log(result); });
  
     //--------------------------
  

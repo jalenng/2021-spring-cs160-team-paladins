@@ -1,8 +1,10 @@
 import React from "react";
 
+
 import { Text } from '@fluentui/react/lib/Text';
 import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 const { ipcRenderer } = window.require('electron');
 
@@ -33,7 +35,6 @@ export default class Timer extends React.Component {
                 buttonLabel: buttonLabel,
                 state: state,
             });
-
         })
 
     }
@@ -43,24 +44,43 @@ export default class Timer extends React.Component {
         setInterval(() => {ipcRenderer.send('get-timer-status')}, 1000);
     }
 
-    render() {
+    
 
+
+    render() {
+        let renderTime = () => {
+            return (
+                <div className="time">
+                    <Text variant={'large'}>
+                        {this.state.minutes}:{this.state.seconds}
+                    </Text>
+                </div>
+            )
+        }
+    
         return (
+
             <div>
                 <Stack horizontal tokens={{ childrenGap: 20 }}>
 
-                    <Text variant={'large'} nowrap block>
-                        {this.state.state}
-                    </Text>
-
-                    <Text variant={'xLarge'} nowrap block>
-                        {this.state.minutes}:{this.state.seconds}
-                    </Text>
+                    <CountdownCircleTimer
+                        true
+                        duration={parseInt(this.state.seconds)}
+                        colors={[
+                            ['#004777', 0.33],
+                            ['#F7B801', 0.33],
+                            ['#A30000', 0.33],
+                        ]}
+                    >
+                        {renderTime}
+                    </CountdownCircleTimer>
 
                     <PrimaryButton
                         text={this.state.buttonLabel}
                         onClick={() => ipcRenderer.invoke('timer-toggle')}
                     />
+
+
 
                 </Stack>
             </div>

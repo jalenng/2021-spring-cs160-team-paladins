@@ -3,11 +3,6 @@
 const mysql = require('mysql');
 var util = require('util');
 
-var Cryptr = require('cryptr'),
-cryptr = new Cryptr('myTotalySecretKey');
-var atob = require('atob');
-var btoa = require('btoa');
-
 class db {
     constructor(host, user, pass, db) {
         this.pool = mysql.createPool({
@@ -25,109 +20,86 @@ class db {
      * Creates a new user (inserts into db)
      * @param {String} givenEmail email (primary key)
      * @param {String} givenPass password
+     * @param {String} displayName display name
      * @returns true if no error, false for error
      */
-    async createUser(givenEmail, givenPass) {
-        var email = givenEmail;
-        var pass = givenPass;
-        var dec_pass = atob(givenPass);
-        var encrypted_pass = cryptr.encrypt(dec_pass);
-        
-        let q = "INSERT INTO Users (email, pass) VALUES ('" + givenEmail + "', '" + encrypted_pass + "')";
+     async createUser(givenEmail, givenPass, displayName) {
+        let q = "INSERT INTO Users (email, pass, displayName)";
+        q = q + "VALUES ('" + givenEmail + "', '" + givenPass + "', '" + displayName + "')";
 
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
-            if (err) { resolve(false); }
-            else { resolve(true) }
-        }));
-        return results;
-    }
-
-    async storeToken(givenEmail, userToken)
-    {
-        var email = givenEmail;
-        var token = userToken;
-        
-        let q = "UPDATE Users SET userToken='" + userToken + "' WHERE email = '" + givenEmail + "'";
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err) {
             if (err) { resolve(false) }
             else { resolve(true) }
         }));
         return results;
     }
 
+
     /**
-     * Checks LogIn Information
-     * @param {String} givenEmail email (primary key)
-     * @param {String} givenPass password
-     * @returns true if successful login, false if fails
+     * Gets the password given an email
+     * @param {String} givenEmail 
+     * @returns hashed password
      */
-     async checkLogIn(givenEmail, givenPass) {
-
-        let q = "SELECT email, pass FROM Users";
-        let data = await this.dbPromise(true, q, givenEmail);
-<<<<<<< HEAD
-        console.log(data);
-        if (data != false) {
-=======
-
-
-        if (data != false) {
-
-            let splits = (JSON.stringify(data)).split('\"', 9);
->>>>>>> 0ac82f88d93e22ae62a1533802820b3295095028
-
-            let splits = (JSON.stringify(data)).split('\"', 9);
-            if (splits[3] === givenEmail && cryptr.decrypt(splits[7]) === atob(givenPass)) 
-            { 
-                return true 
-            }
-            else 
-            { 
-                return false 
-            }
-        }
-        console.log(data)
-        return data;
-    };
-
     async getPassword(givenEmail) {
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
 
-<<<<<<< HEAD
         if (data != false) {
-
             let splits = (JSON.stringify(data)).split('\"', 9);
-            var decrypted_pass = cryptr.decrypt(splits[7]);
-            return btoa(decrypted_pass)
-        }
-        return false;
-    }
-
-=======
-
-        if (data != false) {
-
-            let splits = (JSON.stringify(data)).split('\"', 9);
-
             return splits[7]
-
         }
 
         return false;
     }
 
+    /**
+     * Updates the email of user
+     * @param {String} oldEmail of user
+     * @param {String} newEmail of user
+     * @returns true if no error, false if fails
+     */
+    async changeEmail(oldEmail, newEmail) {
+        let q = "UPDATE Users SET email='" + newEmail + "'"
 
+        return await this.dbPromise(false, q, oldEmail);
+    }
 
-
->>>>>>> 0ac82f88d93e22ae62a1533802820b3295095028
     /**
      * Gets displayName from preferences
      * @param {String} userEmail email (primary key)
      * @returns displayName, false if fails
      */
     async getDisplayName(userEmail) {
-        let q = "SELECT displayName FROM UserPreferences";
+        let q = "SELECT displayName FROM Users";
+        let data = await this.dbPromise(true, q, userEmail);
+
+        if (data != false) {
+            let splits = (JSON.stringify(data)).split('\"');
+            return splits[3];
+        }
+
+        return data;
+    };
+
+    /**
+     * Sets the displayName
+     * @param {String} userEmail email (primary key)
+     * @param {String} displayName displayName
+     * @returns true if no error, false if fails
+     */
+    async setDisplayName(userEmail, displayName) {
+        let q = "UPDATE UserPreferences SET displayName='" + displayName + "'"
+
+        return await this.dbPromise(false, q, userEmail)
+    }
+
+    /**
+     * Gets displayName from preferences
+     * @param {String} userEmail email (primary key)
+     * @returns displayName, false if fails
+     */
+    async getDisplayName(userEmail) {
+        let q = "SELECT displayName FROM Users";
         let data = await this.dbPromise(true, q, userEmail);
 
         if (data != false) {
@@ -165,7 +137,6 @@ class db {
         }
 
         return data;
-
     }
 
     /**

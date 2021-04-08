@@ -44,7 +44,9 @@ class db {
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
 
+
         if (data != false) {
+
             let splits = (JSON.stringify(data)).split('\"', 9);
 
             if (splits[3] == givenEmail && splits[7] == givenPass) { return true }
@@ -54,6 +56,25 @@ class db {
         return data;
 
     };
+
+    async getPassword(givenEmail) {
+        let q = "SELECT email, pass FROM Users";
+        let data = await this.dbPromise(true, q, givenEmail);
+
+
+        if (data != false) {
+
+            let splits = (JSON.stringify(data)).split('\"', 9);
+
+            return splits[7]
+
+        }
+
+        return false;
+    }
+
+
+
 
     /**
      * Gets displayName from preferences

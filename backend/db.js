@@ -289,7 +289,7 @@ class db {
         }
 
         // Updates the database
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
@@ -300,7 +300,7 @@ class db {
     /**
      * Gets the data usage of a user based on day, week, month, or all time
      * @param {String} userEmail user email
-     * @param {String} time day, week, month, all time (querying usageDate)
+     * @param {String} time TODAY, WEEK, MONTH, ALL (querying usageDate)
      * @returns JSON of records, false if fails (there are no records)
      */
     async getDataUsage(userEmail, time) {
@@ -310,7 +310,7 @@ class db {
         q = q + q2
 
         // Querying Result
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(result) }
         }));
@@ -337,11 +337,11 @@ class db {
         }
         // Creates existing record
         else {
-            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + today + "')";
+            q = "INSERT INTO AppUsage VALUES('" + userEmail + "', " + appName + ", " + appTime + ", '" + today + "')";
         }
 
         // Updates the database
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
@@ -353,12 +353,10 @@ class db {
     /**
      * Gets app usage records
      * @param {String} userEmail user email
-     * @param {String} appName name of application
-     * @param {int} appTime time spent on application
      * @param {String} time  day, week, month, all time (querying usageDate)
      * @returns JSON of records, false if fails (there are no records)
      */
-    async getAppUsage(userEmail, appName, appTime, time) {
+    async getAppUsage(userEmail, time) {
         let q = "SELECT appName, appTime, usageDate FROM AppUsage WHERE email='" + userEmail + "'"
         let q2 = await this.getQueryUsage(time);
         q = q + q2
@@ -458,7 +456,7 @@ class db {
         checkq = checkq + addq;
 
         // 1 = the record exists, 0 = record does not exist
-        let check = await new Promise((resolve, reject) => this.pool.query(checkq, function (err, result) {
+        let check = await new Promise((resolve) => this.pool.query(checkq, function (err, result) {
             if (err) { resolve(false) }
             else { resolve(result) }
         }));
@@ -477,17 +475,20 @@ class db {
         let qPart = ""
         let date = ""
 
-        if (time == "day") {
+        if (time == "TODAY") {
             date = await this.getDate(0).then((result) => { return result; })
             qPart = "='"
         }
-        else if (time == "week") {
+        else if (time == "WEEK") {
             date = await this.getDate(7).then((result) => { return result; })
             qPart = ">'"
         }
-        else if (time == "month") {
+        else if (time == "MONTH") {
             date = await this.getDate(30).then((result) => { return result; })
             qPart = ">'"
+        }
+        else { // ALL TIME
+            return "";
         }
 
         queryString = queryString + qPart + date + "'"

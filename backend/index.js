@@ -138,7 +138,7 @@ const { route } = require('./index.js');
  
     });
  
-    // Saves the user preferences
+    // Saves the user preferences (incomplete)
     router.put('/pref/:user', async function (req, res) {
       let token = req.body.auth.token;
 
@@ -178,7 +178,7 @@ const { route } = require('./index.js');
       }
     });
 
-    // Gets data usage
+    // Gets data usage (incomplete)
     router.get('/data/:user', async (req, res) => {
       let token = req.body.auth.token;
       let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL

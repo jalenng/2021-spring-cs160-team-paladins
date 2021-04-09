@@ -14,8 +14,6 @@ class db {
         })
     }
 
-    // Database Methods--------------------------------------------------
-
     /**
      * Creates a new user (inserts into db)
      * @param {String} givenEmail email (primary key)
@@ -62,24 +60,9 @@ class db {
         let q = "UPDATE Users SET email='" + newEmail + "'"
 
         return await this.dbPromise(false, q, oldEmail);
+
     }
 
-    /**
-     * Gets displayName from preferences
-     * @param {String} userEmail email (primary key)
-     * @returns displayName, false if fails
-     */
-    async getDisplayName(userEmail) {
-        let q = "SELECT displayName FROM Users";
-        let data = await this.dbPromise(true, q, userEmail);
-
-        if (data != false) {
-            let splits = (JSON.stringify(data)).split('\"');
-            return splits[3];
-        }
-
-        return data;
-    };
 
     /**
      * Sets the displayName

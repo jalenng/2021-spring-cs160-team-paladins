@@ -1,12 +1,28 @@
-# Getting Started with Create React App
+# Commands
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Main commands
 
 ### `npm run dev`
-Starts the React process and Electron process. Use this to run the program.
+Starts the React development environment and Electron process together.
 
-### `npm run start`
-Runs the React process only.
+### `npm run build`
+Creates a distributable build of the whole app.
+
+---
+
+## Helper/advanced commands
+
+### `npm run react-start`
+Starts the React development environment only.
+
+### `npm run react-build`
+Creates a production build of the React app only.
+
+### `npm run electron-build`
+Creates a production build of the Electron app only.
+
+### `npm run electron-start`
+Starts the Electron process only.
 
 ### `npm run electron-watch`
-Starts the Electron process only.
+Starts the Electron process with nodemon. Updating Electron source files will automatically reload Electron.

@@ -29,7 +29,7 @@ const navLinkGroups = [
       },
       {
         name: 'Startup',
-        icon: 'Up',
+        icon: 'PowerButton',
         key: 'startup'
       },
       {
@@ -57,7 +57,6 @@ export default class PreferencesSidebar extends React.Component {
   handleChange(event, item) {
     const key = item.key;
     this.props.onUpdateSelectedKey(key);
-    window.location.hash = `#${key}`;
   }
 
   render() {

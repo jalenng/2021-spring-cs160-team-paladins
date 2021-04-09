@@ -132,7 +132,7 @@ const { route } = require('./index.js');
  
     });
  
-    // Saves the user preferences
+    // Saves the user preferences (incomplete)
     router.put('/pref/:user', async function (req, res) {
  
       let token = req.body.auth.token;
@@ -141,11 +141,11 @@ const { route } = require('./index.js');
       // Somehow convert token to user email to get info out of db
 
       let email = "Convert from token";
-      let notiInterval = req.body.data.interval
-      let notiSound = req.body.data.sound
-      let notiSoundOn = req.body.data.enableSound
-      let dUsageOn = "get from frontend"
-      let aUsageOn = "get from frontend"
+      let notiInterval = req.body.data.notifications.interval;
+      let notiSound = req.body.data.notifications.sound;
+      let notiSoundOn = req.body.data.notifications.enableSound;
+      let dUsageOn = req.body.dataUsage.enableWeeklyUsageStats;
+      let aUsageOn = eq.body.dataUsage.trackAppUsageStats;
  
       // Save user preferences in database
       let success1 = await userDB.setNotiInterval(email, notiInterval).then((result) => { return result; })
@@ -166,7 +166,7 @@ const { route } = require('./index.js');
       }
     });
 
-    // Gets data usage
+    // Gets data usage (incomplete)
     router.get('/data/:user', async (req, res) => {
 
       let token = req.body.auth.token;
@@ -191,7 +191,7 @@ const { route } = require('./index.js');
       }
     });
 
-    // Updates the data/app usage of user
+    // Updates the data/app usage of user (incomplete)
     router.put('/data/:user', async (req, res) => {
 
       let token = req.body.auth.token;
@@ -221,6 +221,80 @@ const { route } = require('./index.js');
           data: { reason: "UPDATE_FAILED", message: "Couldn't update data usage" }
         })
       }
+
+    });
+
+    // Change email (incomplete)
+    router.put('/user/:user', async (req, res) => {
+      let token = req.body.auth.token;
+      let oldEmail = "Get from token"
+
+      let newEmail = req.body.data.email;
+      let pass = req.body.data.password;
+
+      // Checks password
+      let dec_pass = atob(pass)
+      let success = await userDB.getPassword(email).then((r) => {
+        let decryptPass = cryptr.decrypt(r)
+        if (decryptPass == dec_pass) { return true } 
+        else { return false }
+      })
+      
+
+      // Response Code (check password)
+      if (success == true) {
+        success = userDB.changeEmail(oldEmail, newEmail);
+      }
+      else {
+        res.status(401).send({ 
+          status: 401, 
+          data: { reason: "INVALID_CREDENTIALS", message: "Your password is incorrect." } 
+        });
+      }
+      
+      // Response Code (check changeEmail success)
+      if (success == true) {
+        res.status(200).send({ status: 200 });
+      }
+      else {
+        res.status(401).send({ 
+          status: 401, 
+          data: { reason: "BAD_EMAIL", message: "The email is already in use." } 
+        });
+      }
+
+    
+    });
+
+    // Delete user (incomplete)
+    router.delete('/user/:user', async (req, res) => {
+
+      let token = req.body.auth.token;
+
+      let email = "GET FROM TOKEN"
+      let pass = req.body.data.password;
+
+      // Checks crypto pass
+      let dec_pass = atob(pass)
+      let success = await userDB.getPassword(email).then((r) => {
+        let decryptPass = cryptr.decrypt(r)
+        if (decryptPass == dec_pass) { return true } 
+        else { return false }
+      })
+      
+      // Response Code
+      if (success == true) {
+        res.status(200).send({ status: 200 });
+      }
+      else {
+        let r = ""    // INVALID_CREDENTIALS / INVALID_TOKEN
+
+        res.status(504).send({
+          status: 504,
+          data: { reason: r, message: "Couldn't delete account." }
+        });
+      }
+
 
     });
  

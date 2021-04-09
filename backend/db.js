@@ -15,8 +15,6 @@ class db {
         })
     }
 
-    // Database Methods--------------------------------------------------
-
     /**
      * Creates a new user (inserts into db)
      * @param {String} givenEmail email (primary key)
@@ -36,43 +34,33 @@ class db {
     }
 
     /**
-     * Checks LogIn Information
-     * @param {String} givenEmail email (primary key)
-     * @param {String} givenPass password
-     * @returns true if successful login, false if fails
+     * Gets the password given an email
+     * @param {String} givenEmail 
+     * @returns 
      */
-    async checkLogIn(givenEmail, givenPass) {
-
-        let q = "SELECT email, pass FROM Users";
-        let data = await this.dbPromise(true, q, givenEmail);
-
-
-        if (data != false) {
-
-            let splits = (JSON.stringify(data)).split('\"', 9);
-
-            if (splits[3] == givenEmail && splits[7] == givenPass) { return true }
-            else { return false }
-        }
-        console.log(data)
-        return data;
-
-    };
-
     async getPassword(givenEmail) {
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
 
-
         if (data != false) {
-
             let splits = (JSON.stringify(data)).split('\"', 9);
-
             return splits[7]
-
         }
 
         return false;
+    }
+
+    /**
+     * Updates the email of user
+     * @param {String} oldEmail of user
+     * @param {String} newEmail of user
+     * @returns true if no error, false if fails
+     */
+    async changeEmail(oldEmail, newEmail) {
+        let q = "UPDATE Users SET email='" + newEmail + "'"
+
+        return await this.dbPromise(false, q, oldEmail);
+
     }
 
 

@@ -2,23 +2,22 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
+const soundPlayer = require('sound-play');
 
-const { TimerSystem } = require('./timerSystem.js');
-const { BreakSystem } = require('./breakSystem.js');
+require('./stores');
+require('./timerSystem.js');
+require('./breakSystem.js');
 
 const DEFAULT_WINDOW_SIZE = {
     defaultWidth: 800,
     defaultHeight: 500
 }
-require('./stores');
 
 global.mainWindow; 
 
 /**
  * Timer model
  */
-global.timerSystem = new TimerSystem();
-global.breakSystem = new BreakSystem();
 
 global.timerSystem.on('timer-end', () => {
     global.breakSystem.start();
@@ -132,15 +131,17 @@ ipcMain.handle('show-sign-in-popup', event => {
 
 })
 
-// Toggle timer
-ipcMain.handle('timer-toggle', () => {
-    global.timerSystem.toggle();
+// Play sound file
+ipcMain.handle('play-sound', (event, filepath) => {
+    let fullFilepath = path.isAbsolute(filepath)
+        ? filepath
+        : path.join(__dirname, filepath);
+    soundPlayer.play(fullFilepath);
+});
+
+ipcMain.handle('get-app-info', () => {
+    return {
+        name: app.getName(),
+        version: app.getVersion()
+    }
 })
-
-ipcMain.on('get-timer-status', (event) => {
-    event.reply('receive-timer-status', global.timerSystem.getStatus());
-});
-
-ipcMain.on('get-break-status', (event) => {
-    event.reply('receive-break-status', global.breakSystem.getStatus());
-});

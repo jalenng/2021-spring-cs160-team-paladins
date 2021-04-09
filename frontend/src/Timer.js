@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Text } from '@fluentui/react/lib/Text';
-import { PrimaryButton } from '@fluentui/react/lib/Button';
+import { PrimaryButton, DefaultButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
 
 const { ipcRenderer } = window.require('electron');
@@ -65,6 +65,12 @@ export default class Timer extends React.Component {
                         onClick={() => ipcRenderer.invoke('timer-toggle')}
                     />
 
+                    {/* For development and testing purposes */}
+                    <DefaultButton
+                        text='End timer'
+                        onClick={() => ipcRenderer.invoke('timer-end')}
+                    />
+                    
                 </Stack>
             </div>
         );

@@ -87,6 +87,13 @@ export default class Notifications extends React.Component {
                     />
 
                     <IconButton
+                        iconProps={{ iconName: 'Play' }}
+                        onClick={() => {
+                            ipcRenderer.invoke("play-sound", this.state.notifications.sound);
+                        }}
+                    />
+
+                    <IconButton
                         iconProps={{ iconName: 'Add' }}
                         onClick={addCustomSound}
                     />

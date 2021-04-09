@@ -1,24 +1,22 @@
+const { ipcMain } = require('electron');
+
 /**
  * Timer states
  */
-const timerStates = {
-
+const states = {
     BLOCKED: 'blocked',
     STOPPED: 'stopped',
     RUNNING: 'running',
     RESTING: 'resting',
-
 }
-
-const TIMER_DURATION = 10000;
 
 var timeout;
 
-const timerSystem = function(){
+const TimerSystem = function(){
 
     this._events = {};
 
-    this.state = timerStates.STOPPED;
+    this.state = states.STOPPED;
     this.totalDuration = 0;
     this.endTime = new Date();
 
@@ -39,14 +37,14 @@ const timerSystem = function(){
      * @returns an object
      */
     this.getStatus = function() {
-        var remainingTime;
+        let remainingTime;
 
-        if (this.state === timerStates.RUNNING)
+        if (this.state === states.RUNNING)
             remainingTime = this.endTime - new Date()
         else 
             remainingTime = this.totalDuration;
 
-        var timerStatus = {
+        let timerStatus = {
             state: this.state,
             endTime: this.endTime,
             duration: this.totalDuration,
@@ -60,26 +58,24 @@ const timerSystem = function(){
      * Starts the timer. Calls this.setupTimes in the process.
      */
     this.start = function() {
-
-        if (this.state != timerStates.RUNNING) {
+        if (this.state != states.RUNNING) {
+            this.state = states.RUNNING;
             this.setupTimes();
-            console.log("Timer started");
         }
-
     };
 
     /**
      * Initializes the end time and timeout
      */
     this.setupTimes = function() {
+        let timerDuration = global.store.get('preferences.notifications.interval') * 60000;
+        
         this.endTime = new Date();
-        this.endTime.setMilliseconds(this.endTime.getMilliseconds() + TIMER_DURATION);
-        this.totalDuration = TIMER_DURATION;
+        this.endTime.setMilliseconds(this.endTime.getMilliseconds() + timerDuration);
+        this.totalDuration = timerDuration;
         
         clearTimeout(timeout)
-        timeout = setTimeout(this.end.bind(this), TIMER_DURATION);
-
-        this.state = timerStates.RUNNING;
+        timeout = setTimeout(this.end.bind(this), timerDuration);
     }
 
     /**
@@ -88,9 +84,7 @@ const timerSystem = function(){
     this.stop = function() {
         this.endTime = 0;
         clearTimeout(timeout);
-        this.state = timerStates.STOPPED;
-
-        console.log("Timer stopped");
+        this.state = states.STOPPED;
     };
 
     /**
@@ -100,12 +94,11 @@ const timerSystem = function(){
     this.end = function() {
         clearTimeout(timeout);
 
+         // Call timer-end listeners
         const fireCallbacks = (callback) => callback();
-        
-        this.state = timerStates.RESTING;
-        
-        console.log("Timer ended");
         this._events['timer-end'].forEach(fireCallbacks);
+        
+        this.state = states.RESTING;        
     };
 
     /**
@@ -114,12 +107,12 @@ const timerSystem = function(){
     this.toggle = function() {
         
         switch (this.state) {
-            case timerStates.RUNNING:
-            case timerStates.RESTING:
+            case states.RUNNING:
+            case states.RESTING:
                 this.stop();
                 break;
-            case timerStates.STOPPED:
-            case timerStates.BLOCKED:
+            case states.STOPPED:
+            case states.BLOCKED:
                 this.start();
                 break;
         }
@@ -128,7 +121,36 @@ const timerSystem = function(){
 
 }
 
+
+// Instantiate the timer system
+global.timerSystem = new TimerSystem();
+
+// Start timer automatically based on user preference
+if (global.store.get('preferences.startup.startTimerOnAppStartup'))
+    global.timerSystem.start();
+
+
+/**
+ * Timer-related IPC event handlers 
+ * These event handlers retrieve and update the timer on behalf of the renderer.
+ */
+
+// Toggle timer
+ipcMain.handle('timer-toggle', () => {
+    global.timerSystem.toggle();
+})
+
+// Toggle timer
+ipcMain.handle('timer-end', () => {
+    global.timerSystem.end();
+})
+
+// Get timer status
+ipcMain.on('get-timer-status', (event) => {
+    event.reply('receive-timer-status', global.timerSystem.getStatus());
+});
+
+
 module.exports = {
-    TimerSystem: timerSystem,
-    timerStates: timerStates
+    TimerStates: states
 }

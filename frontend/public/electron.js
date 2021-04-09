@@ -1,33 +1,24 @@
+require ('hazardous');
+
 const { app, BrowserWindow, ipcMain } = require('electron'); 
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
+const soundPlayer = require('sound-play');
 
-const { TimerSystem } = require('./timerSystem.js');
-const { BreakSystem } = require('./breakSystem.js');
+require('./store');
+require('./timerSystem.js');
+require('./breakSystem.js');
 
 const DEFAULT_WINDOW_SIZE = {
     defaultWidth: 800,
     defaultHeight: 500
 }
-require('./stores');
 
 global.mainWindow; 
 
-/**
- * Timer model
- */
-global.timerSystem = new TimerSystem();
-global.breakSystem = new BreakSystem();
-
-global.timerSystem.on('timer-end', () => {
-    global.breakSystem.start();
-})
-
-global.breakSystem.on('break-end', () => {
-    global.timerSystem.start();
-})
-
+timerSystem.on('timer-end', () => breakSystem.start());
+breakSystem.on('break-end', () => timerSystem.start());
 
 /**
  * Functions for creating windows
@@ -38,7 +29,7 @@ function createWindow() {
     // Main window
     let mainWindowState = windowStateKeeper(DEFAULT_WINDOW_SIZE);
 
-    global.mainWindow = new BrowserWindow({ 
+    mainWindow = new BrowserWindow({ 
         x: mainWindowState.x,
         y: mainWindowState.y,
         width: mainWindowState.width, 
@@ -56,11 +47,11 @@ function createWindow() {
         },
     });
 
-    mainWindowState.manage(global.mainWindow);
+    mainWindowState.manage(mainWindow);
     
-    global.mainWindow.menuBarVisible = false;
+    mainWindow.menuBarVisible = false;
     
-    global.mainWindow.loadURL(
+    mainWindow.loadURL(
         isDev
         ? 'http://localhost:3000'
         : `file://${path.join(__dirname, '../build/index.html')}`
@@ -72,6 +63,16 @@ function createWindow() {
     })
 
 } 
+
+
+/**
+ * App settings for when user logs in
+ */
+ app.setLoginItemSettings({
+    openAtLogin: global.store.get('preferences.startup.startAppOnLogin'),
+    enabled: global.store.get('preferences.startup.startAppOnLogin'),
+    path: app.getPath('exe')
+})
 
 
 /**
@@ -132,15 +133,20 @@ ipcMain.handle('show-sign-in-popup', event => {
 
 })
 
-// Toggle timer
-ipcMain.handle('timer-toggle', () => {
-    global.timerSystem.toggle();
+// Play sound file
+ipcMain.handle('play-sound', (event, filepath) => {
+    let fullFilepath = path.isAbsolute(filepath)
+        ? filepath
+        : path.join(__dirname, filepath);
+    soundPlayer.play(fullFilepath);
+});
+
+// Get app info
+ipcMain.on('get-app-info', (event) => {
+    let appInfo = {
+        name: app.getName(),
+        version: app.getVersion()
+    }
+    event.reply('receive-app-info', appInfo);
 })
 
-ipcMain.on('get-timer-status', (event) => {
-    event.reply('receive-timer-status', global.timerSystem.getStatus());
-});
-
-ipcMain.on('get-break-status', (event) => {
-    event.reply('receive-break-status', global.breakSystem.getStatus());
-});

@@ -1,3 +1,5 @@
+require ('hazardous');
+
 const { app, BrowserWindow, ipcMain } = require('electron'); 
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 

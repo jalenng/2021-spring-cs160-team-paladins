@@ -6,7 +6,7 @@ const isDev = require('electron-is-dev');
 const path = require('path'); 
 const soundPlayer = require('sound-play');
 
-require('./stores');
+require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
 
@@ -17,18 +17,8 @@ const DEFAULT_WINDOW_SIZE = {
 
 global.mainWindow; 
 
-/**
- * Timer model
- */
-
-global.timerSystem.on('timer-end', () => {
-    global.breakSystem.start();
-})
-
-global.breakSystem.on('break-end', () => {
-    global.timerSystem.start();
-})
-
+timerSystem.on('timer-end', () => breakSystem.start());
+breakSystem.on('break-end', () => timerSystem.start());
 
 /**
  * Functions for creating windows
@@ -39,7 +29,7 @@ function createWindow() {
     // Main window
     let mainWindowState = windowStateKeeper(DEFAULT_WINDOW_SIZE);
 
-    global.mainWindow = new BrowserWindow({ 
+    mainWindow = new BrowserWindow({ 
         x: mainWindowState.x,
         y: mainWindowState.y,
         width: mainWindowState.width, 
@@ -57,11 +47,11 @@ function createWindow() {
         },
     });
 
-    mainWindowState.manage(global.mainWindow);
+    mainWindowState.manage(mainWindow);
     
-    global.mainWindow.menuBarVisible = false;
+    mainWindow.menuBarVisible = false;
     
-    global.mainWindow.loadURL(
+    mainWindow.loadURL(
         isDev
         ? 'http://localhost:3000'
         : `file://${path.join(__dirname, '../build/index.html')}`
@@ -73,6 +63,16 @@ function createWindow() {
     })
 
 } 
+
+
+/**
+ * App settings for when user logs in
+ */
+ app.setLoginItemSettings({
+    openAtLogin: global.store.get('preferences.startup.startAppOnLogin'),
+    enabled: global.store.get('preferences.startup.startAppOnLogin'),
+    path: app.getPath('exe')
+})
 
 
 /**
@@ -143,7 +143,6 @@ ipcMain.handle('play-sound', (event, filepath) => {
 
 // Get app info
 ipcMain.on('get-app-info', (event) => {
-
     let appInfo = {
         name: app.getName(),
         version: app.getVersion()

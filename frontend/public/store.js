@@ -77,6 +77,7 @@ const storeOptions = {
 }
 global.store = new Store(storeOptions);
 
+
 /**
  * Handler for store change events
  */

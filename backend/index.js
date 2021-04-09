@@ -1,3 +1,4 @@
+const { time } = require('console');
 const { route } = require('./index.js');
  
 (
@@ -139,8 +140,6 @@ const { route } = require('./index.js');
       // Get data from frontend (token, notification interval, sound, and boolean (sound on/off))
       // Somehow convert token to user email to get info out of db
 
-      
-
       let email = "Convert from token";
       let notiInterval = req.body.data.interval
       let notiSound = req.body.data.sound
@@ -167,12 +166,63 @@ const { route } = require('./index.js');
       }
     });
 
-    // Testing get/set for datausage (Works!)
-    //userDB.getDataUsage('basic@gmail.com', 'day').then((result) => { console.log(result); });
-    //userDB.getDataUsage('basic@gmail.com', 'week').then((result) => { console.log(result); });
-    //userDB.getDataUsage('basic@gmail.com', 'month').then((result) => { console.log(result); });
- 
-    //userDB.setDataUsage('basic@gmail.com', 20, 3).then((result) => { console.log(result); });
+    // Gets data usage
+    router.get('/data/:user', async (req, res) => {
+
+      let token = req.body.auth.token;
+      let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
+
+      //dsfafasdfadjsklfjasdklfjasdfasf
+      let email = ""    // get from token
+      let dUsage = await userDB.getDataUsage(email, timePeriod).then((result) => { return result; });
+      let aUsage = await userDB.getAppUsage(email, timePeriod).then((result) => { return result; });
+
+      if (dUsage != false && aUsage != false) {
+        res.status(200).send({ 
+          status: 200,
+          data: { dataUsage: dUsage, appUsage: aUsage }     // Sends JSONs
+        })
+      }
+      else {
+        res.status(504).send({
+          status: 504,
+          data: { reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage" }
+        })
+      }
+    });
+
+    // Updates the data/app usage of user
+    router.put('/data/:user', async (req, res) => {
+
+      let token = req.body.auth.token;
+      let todayScreenTime = req.body.data.dailyDataUsage.screenTime;
+      let todaynumBreaks = req.body.data.dailyDataUsage.numBreaks;
+      let todayAppUsage = req.body.data.dailyAppUsage;
+
+      //dsfafasdfadjsklfjasdklfjasdfasf
+      let email = ""    // get from token
+      
+      let duSuccess = await userDB.setDataUsage(email, todayScreenTime, todaynumBreaks);
+
+
+      let ausuccess = ""
+      // For app usage, use dictionary key-value pairing in a for loop to insert into the database
+      // If one fails, success == false
+
+
+
+
+      if (dusuccess == true && auSuccess == true) {
+        res.status(200).send({ status: 200 })
+      }
+      else {
+        res.status(504).send({
+          status: 504,
+          data: { reason: "UPDATE_FAILED", message: "Couldn't update data usage" }
+        })
+      }
+
+    });
  
     //--------------------------
  

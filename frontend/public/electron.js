@@ -139,9 +139,13 @@ ipcMain.handle('play-sound', (event, filepath) => {
     soundPlayer.play(fullFilepath);
 });
 
-ipcMain.handle('get-app-info', () => {
-    return {
+// Get app info
+ipcMain.on('get-app-info', (event) => {
+
+    let appInfo = {
         name: app.getName(),
         version: app.getVersion()
     }
+    event.reply('receive-app-info', appInfo);
 })
+

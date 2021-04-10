@@ -110,7 +110,7 @@ export default class Timer extends React.Component {
             isPlaying={this.state.buttonLabel === "STOP"}
             duration={
               //parseInt(this.state.seconds)}
-              this.state.duration
+              60
             }
             colors={[
               ["#009dff", 0.33],

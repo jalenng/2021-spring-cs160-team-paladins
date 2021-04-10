@@ -19,6 +19,11 @@ const { route } = require('./index.js');
     let db = require('./db.js')
     let userDB = new db("localhost", "newuser", "", "iCare");
 
+    // Crypto Requirements
+    var atob = require('atob');
+    var Cryptr = require('cryptr'),
+    cryptr = new Cryptr('myTotalySecretKey'); 
+
     // Token Methods
     let tokenClass = require('./token.js')
     let userToken = new tokenClass();
@@ -26,22 +31,6 @@ const { route } = require('./index.js');
     // ---------------------------------
     // Our server listens for POST requests.
     // ---------------------------------
-
-    // Testing get/set for datausage (Works!)
-    //userDB.getDataUsage('basic@gmail.com', 'day').then((result) => { console.log(result); });
-    //userDB.getDataUsage('basic@gmail.com', 'week').then((result) => { console.log(result); });
-    //userDB.getDataUsage('basic@gmail.com', 'month').then((result) => { console.log(result); });
-
-    //userDB.setDataUsage('basic@gmail.com', 20, 3).then((result) => { console.log(result); });
-
-// --------------------- CRYPTO
-var sql = require('mysql')
-var jwt = require('jsonwebtoken');
-var atob = require('atob');
-var btoa = require('btoa');
-var Cryptr = require('cryptr'),
-cryptr = new Cryptr('myTotalySecretKey');
-
 
     // User tries to login (test send)
     router.post('/auth', async function (req, res) {
@@ -55,7 +44,7 @@ cryptr = new Cryptr('myTotalySecretKey');
       }
       else {
         success = await userDB.checkLogIn(email, password).then((res) => {
-          console.log(res)
+          //console.log(res)
           return res;
         })
       }

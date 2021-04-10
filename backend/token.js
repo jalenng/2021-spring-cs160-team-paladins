@@ -1,6 +1,7 @@
 "use strict";
 
 var jwt = require('jsonwebtoken');
+var atob = require('atob');
 
 class token {
     constructor() {}
@@ -15,11 +16,12 @@ class token {
         notBefore = (now - 10),
         jwtId = Math.random().toString(36).substring(7);
         
-        var payload = {
+        var payload = 
+        {
             iat: iat,
             jwtid : jwtId,
             audience : 'TEST',
-            data : 'email'
+            data : email
         };           
 
         let token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn : expiresIn}, async function(err, token) {     
@@ -40,6 +42,19 @@ class token {
 
         return token
     }
-}
 
+    async getEmailFromToken(userToken)
+    {
+        var token = userToken;
+        try 
+        {
+            var parsed_token = JSON.parse(atob(token.split('.')[1]));
+            return parsed_token.data;
+        } 
+        catch (e) 
+        {
+            return null;
+        }
+    }
+}
 module.exports = token;

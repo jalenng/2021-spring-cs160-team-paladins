@@ -17,8 +17,6 @@ class token {
         let  now = Math.floor(Date.now() / 1000),
         iat = (now - 10),
         expiresIn = 3600,
-        expr = (now + expiresIn),
-        notBefore = (now - 10),
         jwtId = Math.random().toString(36).substring(7);
         
         var payload = 
@@ -27,39 +25,49 @@ class token {
             jwtid : jwtId,
             audience : 'TEST',
             data : email
-        };           
+        };    
 
-        let token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn : expiresIn}, async function(err, token) {     
-            if(err) {
-                console.log("Error occurred while generating token");
-                return false;
-            }
-            else if (token != false) {
-                console.log("You have logged in");
-                console.log(token);
-                return token;
-            }
-            else {
-                console.log("Could not create token.")
-                return false;
-            }
-        });
-
-        return token
+        return new Promise((resolve) => {
+            jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn : expiresIn}, function(err, token) {     
+                if (token != false) { resolve(token) }
+                else { resolve(false) }
+            });
+        })
     }
 
-    async getEmailFromToken(userToken)
-    {
-        var token = userToken;
-        try 
-        {
-            var parsed_token = JSON.parse(atob(token.split('.')[1]));
-            return parsed_token.data;
-        } 
-        catch (e) 
-        {
-            return null;
-        }
-    }
+    /**
+     * Gets the email value from a token
+     * @param {String} userToken 
+     * @returns email
+     */
+     async getEmailFromToken(userToken)
+     {
+         try {
+             let parsed_token = JSON.parse(atob(userToken.split('.')[1]));
+             return parsed_token.data;
+         } 
+         catch (e) {
+             return false;
+         }
+     }
 }
 module.exports = token;
+
+/*
+async function test() {
+    let d = new token();
+    let tt = await d.createToken('basic@gmail.com').then((res) => { return res });
+    console.log('TOKNE: ' + tt)    
+    console.log('')
+
+    let ttt = await d.getEmailFromToken(tt).then((res) => { return res });
+    console.log('Email: ' + ttt)
+}
+
+test()
+*/
+
+
+
+
+

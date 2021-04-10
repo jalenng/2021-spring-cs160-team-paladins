@@ -11,6 +11,7 @@ const DEFAULT_WINDOW_SIZE = {
     defaultHeight: 500
 }
 require('./stores');
+require('./accountPopups');
 
 global.mainWindow; 
 
@@ -79,7 +80,7 @@ function createWindow() {
         const closeConfirm = dialog.showMessageBoxSync(mainWindow, {
             type: 'question',
             title: 'iCare',
-            message: 'Are you sure you want to close iCare?',
+            message: 'Close iCare?',
             detail: 'You will not receive notifications when the app is closed.',
             buttons: ['Yes', 'No'],
             defaultId: 1
@@ -116,40 +117,6 @@ app.on('window-all-closed', function () {
 // Log to main process's console
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
-})
-
-// Show sign-in window when account button is clicked
-ipcMain.handle('show-sign-in-popup', event => {
-
-    // Sign in Window
-    const signInWindow = new BrowserWindow({
-        width: 380,
-        height: 420,
-        // modal: true,
-        resizable: false,
-        minimizable: false,
-        maximizable: false,
-        title: "Sign in",
-        backgroundColor: '#222222',
-        parent: global.mainWindow,
-        show: false,
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-
-    })
-    signInWindow.menuBarVisible = false
-    
-    signInWindow.loadURL( 
-        isDev
-        ? 'http://localhost:3000#/signin'
-        : `file://${path.join(__dirname, '../build/index.html#signin')}`
-    ); 
-    
-    signInWindow.on('ready-to-show', () => signInWindow.show());
-
 })
 
 // Toggle timer

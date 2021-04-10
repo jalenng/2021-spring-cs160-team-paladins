@@ -9,18 +9,33 @@ function getAccountStore() {
 }
 
 /**
- * Helper function to authenticate an account.
- * @returns {Object} the response of the sign-in or sign-up attempt
+ * Helper function to sign into an account.
+ * @returns {Object} the response of the sign-in attempt
  */
-function authenticate(email, password, createAccount=false, displayName='') {
-    return ipcRenderer.invoke('authenticate', email, password, createAccount, displayName)
+ function signIn(email, password) {
+    return ipcRenderer.invoke('authenticate', email, password)
 }
 
+/**
+ * Helper function to sign up an account.
+ * @returns {Object} the response of the sign-up attempt
+ */
+ function signUp(email, password, displayName) {
+    return ipcRenderer.invoke('authenticate', email, password, true, displayName)
+}
+    
 /**
  * Helper function to sign out of logged-in account
  */
 function signOut() {
-    ipcRenderer.invoke('sign-out')
+    return ipcRenderer.invoke('sign-out', false)
+}
+
+/**
+ * Helper function to delete account account
+ */
+ function deleteAccount(password) {
+    return ipcRenderer.invoke('sign-out', true, password)
 }
 
 /**
@@ -55,8 +70,10 @@ function addCustomSound() {
 
 module.exports = {
     getAccountStore: getAccountStore,
-    authenticate: authenticate,
+    signIn: signIn,
+    signUp: signUp,
     signOut: signOut,
+    deleteAccount: deleteAccount,
     getAllPreferences: getAllPreferences,
     setPreference: setPreference,
     getAllSounds: getAllSounds,

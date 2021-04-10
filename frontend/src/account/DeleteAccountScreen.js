@@ -1,14 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { Dialog } from '@fluentui/react/lib/Dialog';
 import { Text } from '@fluentui/react/lib/Text';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { TextField } from '@fluentui/react/lib/TextField';
-import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
-const { signIn } = require('../storeHelperFunctions');
+const { deleteAccount } = require('../storeHelperFunctions');
 
 const divStyle = {
     MozUserSelect: 'none',
@@ -31,11 +30,9 @@ export default class extends React.Component {
         this.state = {
             isLoading: false,
             inputs: {
-                email: '',
-                password: ''
+                password: '',
             },
             errors: {
-                email: '',
                 password: ''
             }
         };
@@ -46,11 +43,10 @@ export default class extends React.Component {
     // Handles changes to the TextFields by updating the state
     handleChange(event) {
         let state = this.state;
-        state.inputs[event.target.id] = event.target.value;
+        state.inputs[event.target.id] = event.target.value
         this.setState(state);
     }
 
-    // Handles a submit
     handleSubmit(event) {
         event.preventDefault();
 
@@ -59,22 +55,24 @@ export default class extends React.Component {
         state.isLoading = true;
         this.setState(state);
 
-        // Authenticate user with sign-in
-        let email = state.inputs.email
-        let password = state.inputs.password
+        // Get passwords from TextField
+        let password = state.inputs.password;
 
-        signIn(email, password)
+        // Delete account
+        deleteAccount(password)
             .then(result => {
-
-                // If sign-in was successful, close the window
+                console.log(result);
+                // If deletion was successful, close the window
                 if (result.success) window.close()
 
-                
-                else {
+                // Else, update state
+                else {  
                     let data = result.data;
                     let state = this.state;
                     state.isLoading = false;    // Stop spinner
-                    state.errors.password = data.message;   // Update error message
+
+                    state.errors.password = data.message;
+
                     this.setState(state);
                 }
 
@@ -88,21 +86,15 @@ export default class extends React.Component {
 
             <div style={divStyle}>
                 <Text variant={'xxLarge'} block>
-                    <b>Sign in</b>
+                    <b>Delete account</b>
                 </Text>
 
                 <form>
-                    <Stack 
+                    <Stack
                         style={{ marginTop: '10px' }}
                         tokens={{ childrenGap: 15 }}>
 
                         <Stack style={{ width: 240 }}>
-                            <TextField label='Email' id='email'
-                                styles={textFieldStyles}
-                                value={this.state.inputs.email}
-                                onChange={this.handleChange}
-                                errorMessage={this.state.errors.email}
-                            />
                             <TextField label='Password' type='password' id='password'
                                 styles={textFieldStyles}
                                 value={this.state.inputs.password}
@@ -115,26 +107,19 @@ export default class extends React.Component {
                             horizontal 
                             verticalAlign='center' 
                             tokens={{ childrenGap: 20 }}>
-
                             <PrimaryButton
-                                text='Sign in'
+                                text='Delete account'
                                 type='submit'
                                 onClick={this.handleSubmit}
                             />
-
-                            <Link to='/signup'>
-                                <ActionButton> Don't have an account? </ActionButton>
-                            </Link>
-
                         </Stack>
-
+                        
                     </Stack>
                 </form>
-
+                
                 {/* Spinner that shows when loading */}
                 <Dialog hidden={!this.state.isLoading}>
-                    <Spinner 
-                    label='Signing you in' size={SpinnerSize.large} />
+                    <Spinner label='Deleting your account' size={SpinnerSize.large} />
                 </Dialog>
 
             </div>

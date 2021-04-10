@@ -8,7 +8,7 @@ import { TextField } from '@fluentui/react/lib/TextField';
 import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
-const { signIn } = require('../storeHelperFunctions');
+const { authenticate } = require('../storeHelperFunctions');
 
 const divStyle = {
     MozUserSelect: 'none',
@@ -24,7 +24,7 @@ const textFieldStyles = {
     errorMessage: { color: '#F1707B' }
 }
 
-export default class extends React.Component {
+export default class EditAccountScreen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -32,10 +32,13 @@ export default class extends React.Component {
             isLoading: false,
             inputs: {
                 email: '',
-                password: ''
+                displayName: '',
+                password: '',
+                confirm: ''
             },
             errors: {
                 email: '',
+                displayName: '',
                 password: ''
             }
         };
@@ -47,34 +50,64 @@ export default class extends React.Component {
     handleChange(event) {
         let state = this.state;
         state.inputs[event.target.id] = event.target.value;
+
+        // Show error if passwords do not match
+        if (state.inputs.password != state.inputs.confirm
+            && state.inputs.confirm.length != 0)
+            state.errors.password = 'Passwords do not match';
+        else
+            state.errors.password = '';
         this.setState(state);
     }
 
-    // Handles a submit
     handleSubmit(event) {
         event.preventDefault();
+
+        // If passwords do not match, don't continue with sign-up
+        if (this.state.inputs.password != this.state.inputs.confirm)
+            return;
 
         // Start spinner
         let state = this.state;
         state.isLoading = true;
         this.setState(state);
 
-        // Authenticate user with sign-in
-        let email = state.inputs.email
-        let password = state.inputs.password
+        // Get email and passwords from TextFields
+        let email = state.inputs.email;
+        let password = state.inputs.password;
+        let displayName = state.inputs.displayName;
 
-        signIn(email, password)
+        // Authenticate user with sign-up
+        authenticate(email, password, true, displayName)
             .then(result => {
 
                 // If sign-in was successful, close the window
                 if (result.success) window.close()
 
-                
-                else {
+                // Else, update state
+                else {  
                     let data = result.data;
                     let state = this.state;
                     state.isLoading = false;    // Stop spinner
-                    state.errors.password = data.message;   // Update error message
+
+                    state.errors = {    // Update error messages
+                        email: '',
+                        displayName: '',
+                        password: ''
+                    }
+
+                    switch (data.reason) {
+                        case 'BAD_EMAIL':
+                            state.errors.email = data.message;
+                            break;
+                        case 'BAD_DISPLAY_NAME':
+                            state.errors.displayName = data.message;
+                            break;
+                        default:
+                            state.errors.password = data.message;
+                            break;
+                    }
+
                     this.setState(state);
                 }
 
@@ -88,15 +121,21 @@ export default class extends React.Component {
 
             <div style={divStyle}>
                 <Text variant={'xxLarge'} block>
-                    <b>Sign in</b>
+                    <b>Sign up</b>
                 </Text>
 
                 <form>
-                    <Stack 
+                    <Stack
                         style={{ marginTop: '10px' }}
                         tokens={{ childrenGap: 15 }}>
 
                         <Stack style={{ width: 240 }}>
+                            <TextField label='Name' id='displayName'
+                                styles={textFieldStyles}
+                                onChange={this.handleChange}
+                                value={this.state.inputs.displayName}
+                                errorMessage={this.state.errors.displayName}
+                            />
                             <TextField label='Email' id='email'
                                 styles={textFieldStyles}
                                 value={this.state.inputs.email}
@@ -107,6 +146,11 @@ export default class extends React.Component {
                                 styles={textFieldStyles}
                                 value={this.state.inputs.password}
                                 onChange={this.handleChange}
+                            />
+                            <TextField label='Confirm password' type='password' id='confirm'
+                                styles={textFieldStyles}
+                                value={this.state.inputs.confirm}
+                                onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
                             />
                         </Stack>
@@ -115,26 +159,25 @@ export default class extends React.Component {
                             horizontal 
                             verticalAlign='center' 
                             tokens={{ childrenGap: 20 }}>
-
+                                
                             <PrimaryButton
-                                text='Sign in'
+                                text='Sign up'
                                 type='submit'
                                 onClick={this.handleSubmit}
                             />
 
-                            <Link to='/signup'>
-                                <ActionButton> Don't have an account? </ActionButton>
+                            <Link to='/signin'>
+                                <ActionButton> Already have an account? </ActionButton>
                             </Link>
 
                         </Stack>
 
                     </Stack>
                 </form>
-
+                
                 {/* Spinner that shows when loading */}
                 <Dialog hidden={!this.state.isLoading}>
-                    <Spinner 
-                    label='Signing you in' size={SpinnerSize.large} />
+                    <Spinner label='Signing you up' size={SpinnerSize.large} />
                 </Dialog>
 
             </div>

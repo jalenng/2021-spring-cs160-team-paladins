@@ -10,10 +10,10 @@ const { ipcRenderer } = window.require('electron');
 const {
     getAccountStore,
     signOut
- } = require('../storeHelperFunctions');
+} = require('../storeHelperFunctions');
 
  
-export default class YourAccounts extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);
@@ -47,22 +47,21 @@ export default class YourAccounts extends React.Component {
             imageInitials: displayInitials,
 
             onRenderPrimaryText: () => {
-                if (isSignedIn) 
-                    return ( 
-                        <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="center">
-                            <Text variant={'xxLarge'}> {displayName} </Text> 
-                            <IconButton
-                                iconProps={{ iconName: 'Edit' }}
-                            />
-                        </Stack>
-                    );
+                return ( 
+                    <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="center">
+                        <Text variant={'xxLarge'}> {displayName} </Text> 
+                        <IconButton
+                            iconProps={{ iconName: 'Edit' }}
+                        />
+                    </Stack>
+                );
             },
 
             onRenderSecondaryText: () => {
                 if (isSignedIn) {
                     return (
                         <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="center">
-                            <Text> aaaaaaaaaaaa </Text> 
+                            <Text> {email} </Text> 
                             <IconButton
                                 iconProps={{ iconName: 'Edit' }}
                             />
@@ -81,7 +80,9 @@ export default class YourAccounts extends React.Component {
                             tokens={{ childrenGap: 20 }}
                         >
                             <DefaultButton text="Sign out" onClick={signOut} />
-                            <ActionButton> Delete account </ActionButton>
+                            <ActionButton onClick={() => ipcRenderer.invoke('show-delete-account-popup')}> 
+                                Delete account 
+                            </ActionButton>
                         </Stack>
                     )
                 }

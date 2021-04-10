@@ -159,11 +159,6 @@ ipcMain.on('get-account-store', (event) => {
     event.returnValue = store.get('account');
 });
 
-// Handles a request to sign out and clear the account store
-ipcMain.handle('sign-out', () => {
-    store.reset('account');
-})
-
 // Handles a request to authenticate the user (by signing in or signing up)
 ipcMain.handle('authenticate', async (event, email, password, createAccount = false, displayName = '') => {
 
@@ -214,26 +209,60 @@ ipcMain.handle('authenticate', async (event, email, password, createAccount = fa
     }
     // Handle errors
     catch (error) {
-     
-        console.log(error)
+        
+        result.data = {
+            reason: 'RESPONSE_ERR',
+            message: error.toString()
+        }
 
-        // Axios error code?
-        if (error.code) {
-            result.data = {
-                reason: error.code,
-                message: `Error: ${error.code}`
+    }
+    
+    // Return the result object
+    return result;
+})
+
+// Handles a request to clear the account store (by signing out or deletting the account)
+ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
+
+    let result = {
+        success: false,
+        data: {}
+    };
+
+    // Try to delete account
+    try {
+        
+        if (deleteAccount) {
+
+            // Send POST request
+            let url = `${SERVER_URL}/user`
+            let data = {
+                password: password,
             }
+
+            // Await for response
+            let res = await axios.delete(url, data);
+
+            // If sign-in was successful
+            if (res.status === 200) {
+                store.reset('account');
+                result.success = true;
+            }
+            
         }
-        // Response error code?
-        else if (error.response && error.response.data && error.response.data.reason && error.response.data.message) {
-            result.data = error.response.data;
-        }
-        // Generic error
         else {
-            result.data = {
-                reason: 'RESPONSE_ERR',
-                message: error.toString()
-            }
+            store.reset('account');
+            result.success = true;
+        }
+
+    }
+
+    // Handle errors
+    catch (error) {
+
+        result.data = {
+            reason: 'RESPONSE_ERR',
+            message: error.toString()
         }
 
     }

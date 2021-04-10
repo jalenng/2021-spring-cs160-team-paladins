@@ -8,7 +8,7 @@ import { TextField } from '@fluentui/react/lib/TextField';
 import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
-const { authenticate } = require('../storeHelperFunctions');
+const { signUp } = require('../storeHelperFunctions');
 
 const divStyle = {
     MozUserSelect: 'none',
@@ -24,7 +24,7 @@ const textFieldStyles = {
     errorMessage: { color: '#F1707B' }
 }
 
-export default class SignUpScreen extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);
@@ -78,7 +78,7 @@ export default class SignUpScreen extends React.Component {
         let displayName = state.inputs.displayName;
 
         // Authenticate user with sign-up
-        authenticate(email, password, true, displayName)
+        signUp(email, password, displayName)
             .then(result => {
 
                 // If sign-in was successful, close the window

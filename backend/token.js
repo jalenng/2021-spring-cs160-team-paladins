@@ -6,6 +6,11 @@ var atob = require('atob');
 class token {
     constructor() {}
 
+    /**
+     * Creates a token
+     * @param {String} email 
+     * @returns token
+     */
     async createToken(email) {
 
         let secret = 'TOPSECRETTTTT';

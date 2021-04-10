@@ -71,12 +71,10 @@ class db {
             let splits = (JSON.stringify(data)).split('\"', 9);
             if (splits[3] === givenEmail && cryptr.decrypt(splits[7]) === atob(givenPass)) 
             { 
-                console.log(true); 
                 return true 
             }
             else 
             { 
-                console.log(false); 
                 return false 
             }
         }

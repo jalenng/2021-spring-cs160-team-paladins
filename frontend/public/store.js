@@ -10,7 +10,7 @@ const preferencesStoreDefaults = {
     notifications: {
         enableSound: true,
         interval: 20,
-        sound: 'Bell.mp3'
+        sound: '../sounds/Long Expected.mp3'
     },
     dataUsage: {
         trackAppUsageStats: true,
@@ -24,10 +24,36 @@ const preferencesStoreDefaults = {
 
 /* Sounds defaults */
 const soundsStoreDefaults = {
-    defaultSounds: [{
-        key: 'Bell.mp3',
-        text: 'Bell'
-    }],
+    defaultSounds: [
+        {
+            key: '../sounds/Clearly.mp3',
+            text: 'Clearly'
+        },
+        {
+            key: '../sounds/Done For You.mp3',
+            text: 'Done For You'
+        },
+        {
+            key: '../sounds/Insight.mp3',
+            text: 'Insight'
+        },
+        {
+            key: '../sounds/Juntos.mp3',
+            text: 'Juntos'
+        },
+        {
+            key: '../sounds/Long Expected.mp3',
+            text: 'Long Expected'
+        },
+        {
+            key: '../sounds/Pristine.mp3',
+            text: 'Pristine'
+        },
+        {
+            key: '../sounds/When.mp3',
+            text: 'When'
+        },
+    ],
     customSounds: []
 }
 
@@ -49,7 +75,7 @@ const storeOptions = {
     },
     watch: true
 }
-const store = new Store(storeOptions);
+global.store = new Store(storeOptions);
 
 
 /**
@@ -112,14 +138,14 @@ ipcMain.handle('add-custom-sound', (event) => {
 
     // Open file selection dialog box
     dialog.showOpenDialog(mainWindow, {
-            title: 'Choose custom sound',
-            filters: [{
-                name: 'Audio files',
-                extensions: ['wav', 'mp3', 'ogg']
-            }],
-            defaultPath: app.getPath('music'),
-            properties: ['openFile', 'dontAddToRecent']
-        })
+        title: 'Choose custom sound',
+        filters: [{
+            name: 'Audio files',
+            extensions: ['wav', 'mp3']
+        }],
+        defaultPath: app.getPath('music'),
+        properties: ['openFile', 'dontAddToRecent']
+    })
         .then(result => {
             // If user did not cancel the dialog
             if (!result.canceled) {

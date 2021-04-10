@@ -16,6 +16,7 @@ export default class Timer extends React.Component {
       buttonLabel: "",
       state: "",
       key: 0,
+      isAnimate: "true",
     };
 
     ipcRenderer.on("receive-timer-status", (event, timerStatus) => {
@@ -25,6 +26,7 @@ export default class Timer extends React.Component {
       var minutes = Math.floor(milliseconds / 60000);
       var seconds = Math.floor((milliseconds % 60000) / 1000);
       seconds = ("00" + seconds).substr(-2, 2);
+      var isAnimate = state === "running" ? "true" : "false";
 
       this.setState({
         minutes: minutes,
@@ -32,6 +34,7 @@ export default class Timer extends React.Component {
         milliseconds: milliseconds,
         buttonLabel: buttonLabel,
         state: state,
+        isAnimate: isAnimate,
       });
     });
   }
@@ -69,6 +72,11 @@ export default class Timer extends React.Component {
     this.setState({ key: this.state.key + 1 });
   };
 
+  handleEndBtn = () => {
+    ipcRenderer.invoke("timer-end");
+    this.setState({ key: this.state.key - 1 });
+  };
+
   render() {
     let renderTime = () => {
       return (
@@ -92,6 +100,7 @@ export default class Timer extends React.Component {
           </Text>
 
           <PrimaryButton
+            id="startBtn"
             text={this.state.buttonLabel}
             onClick={this.handleClick}
           />
@@ -99,12 +108,13 @@ export default class Timer extends React.Component {
           {/* For development and testing purposes */}
           <DefaultButton
             text="End timer"
-            onClick={() => ipcRenderer.invoke("timer-end")}
+            id="endBtn"
+            onClick={this.handleEndBtn}
           />
 
           <CountdownCircleTimer
             key={this.state.key}
-            isPlaying={this.state.buttonLabel === "STOP"}
+            isPlaying={this.state.isAnimate == "true"}
             duration={60}
             colors={[
               ["#009dff", 0.33],

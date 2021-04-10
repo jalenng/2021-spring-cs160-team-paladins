@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron'); 
+const { app, BrowserWindow, ipcMain, dialog } = require('electron'); 
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
@@ -72,6 +72,20 @@ function createWindow() {
     // Prevent opening new windows
     mainWindow.webContents.on('new-window', (e, url) => {
         e.preventDefault()
+    })
+
+    // Handle closing through a confirmation dialog
+    mainWindow.on('close', (e) => {
+        const closeConfirm = dialog.showMessageBoxSync(mainWindow, {
+            type: 'question',
+            title: 'iCare',
+            message: 'Are you sure you want to close iCare?',
+            detail: 'You will not receive notifications when the app is closed.',
+            buttons: ['Yes', 'No'],
+            defaultId: 1
+        })
+        // Don't close window if selected button is 'Yes'
+        if (closeConfirm === 1) e.preventDefault();
     })
 
 } 

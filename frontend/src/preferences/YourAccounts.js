@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DefaultButton, ActionButton } from '@fluentui/react/lib/Button';
+import { DefaultButton, ActionButton, IconButton } from '@fluentui/react/lib/Button';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
@@ -35,8 +35,9 @@ export default class YourAccounts extends React.Component {
         // Get account store info from account store
         const isSignedIn = this.state.token != null
         const displayName = this.state.accountInfo.displayName
+        const email = this.state.accountInfo.email
 
-        let regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
+        const regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
         let displayInitials = [...displayName.matchAll(regex)] || [];
         displayInitials = (
             (displayInitials.shift()?.[1] || '') + (displayInitials.pop()?.[1] || '')
@@ -44,10 +45,34 @@ export default class YourAccounts extends React.Component {
 
         const yourAccountsPersona = {
             imageInitials: displayInitials,
-            text: displayName,
+
+            onRenderPrimaryText: () => {
+                if (isSignedIn) 
+                    return ( 
+                        <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="center">
+                            <Text variant={'xxLarge'}> {displayName} </Text> 
+                            <IconButton
+                                iconProps={{ iconName: 'Edit' }}
+                            />
+                        </Stack>
+                    );
+            },
+
+            onRenderSecondaryText: () => {
+                if (isSignedIn) {
+                    return (
+                        <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="center">
+                            <Text> aaaaaaaaaaaa </Text> 
+                            <IconButton
+                                iconProps={{ iconName: 'Edit' }}
+                            />
+                        </Stack>
+                    )
+                }
+            },
 
             // Display "Sign out" and "Delete account" button only if signed in
-            onRenderSecondaryText: () => {
+            onRenderTertiaryText: () => {
                 if (isSignedIn) {
                     return (
                         <Stack horizontal

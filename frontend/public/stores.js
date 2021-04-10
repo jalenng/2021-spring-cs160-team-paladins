@@ -88,7 +88,6 @@ store.onDidChange('account', () => {
 
 // Handles a request to retrieve the preferences store
 ipcMain.on('get-prefs-store', (event) => {
-    console.log('get prefs store')
     event.returnValue = store.get('preferences');
 });
 

@@ -1,14 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { Dialog } from '@fluentui/react/lib/Dialog';
 import { Text } from '@fluentui/react/lib/Text';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { TextField } from '@fluentui/react/lib/TextField';
-import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
+import { Separator } from '@fluentui/react/lib/Separator';
 
-const { authenticate } = require('../storeHelperFunctions');
+const { getAccountStore, updateAccountInfo } = require('../storeHelperFunctions');
 
 const divStyle = {
     MozUserSelect: 'none',
@@ -24,7 +24,7 @@ const textFieldStyles = {
     errorMessage: { color: '#F1707B' }
 }
 
-export default class EditAccountScreen extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);
@@ -34,7 +34,6 @@ export default class EditAccountScreen extends React.Component {
                 email: '',
                 displayName: '',
                 password: '',
-                confirm: ''
             },
             errors: {
                 email: '',
@@ -46,39 +45,45 @@ export default class EditAccountScreen extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // Load default values for inputs
+    componentDidMount() {
+        let accountInfo = getAccountStore().accountInfo;
+        let state = this.state;
+        let inputs = {
+            email: accountInfo.email,
+            displayName: accountInfo.displayName,
+        }
+        state.inputs = inputs;
+        this.setState(state);
+    }
+
     // Handles changes to the TextFields by updating the state
     handleChange(event) {
         let state = this.state;
         state.inputs[event.target.id] = event.target.value;
+        this.setState(state);
+    }
 
-        // Show error if passwords do not match
-        if (state.inputs.password != state.inputs.confirm
-            && state.inputs.confirm.length != 0)
-            state.errors.password = 'Passwords do not match';
-        else
-            state.errors.password = '';
+    // Change spinner status
+    setSpinner(isLoading) {
+        let state = this.state;
+        state.isLoading = isLoading;
         this.setState(state);
     }
 
     handleSubmit(event) {
         event.preventDefault();
 
-        // If passwords do not match, don't continue with sign-up
-        if (this.state.inputs.password != this.state.inputs.confirm)
-            return;
-
-        // Start spinner
+        this.setSpinner(true);
         let state = this.state;
-        state.isLoading = true;
-        this.setState(state);
 
         // Get email and passwords from TextFields
         let email = state.inputs.email;
-        let password = state.inputs.password;
         let displayName = state.inputs.displayName;
+        let password = state.inputs.password;
 
-        // Authenticate user with sign-up
-        authenticate(email, password, true, displayName)
+        // Update user account info
+        updateAccountInfo(email, displayName, password)
             .then(result => {
 
                 // If sign-in was successful, close the window
@@ -87,8 +92,6 @@ export default class EditAccountScreen extends React.Component {
                 // Else, update state
                 else {  
                     let data = result.data;
-                    let state = this.state;
-                    state.isLoading = false;    // Stop spinner
 
                     state.errors = {    // Update error messages
                         email: '',
@@ -109,6 +112,8 @@ export default class EditAccountScreen extends React.Component {
                     }
 
                     this.setState(state);
+
+                    this.setSpinner(false);
                 }
 
             });
@@ -116,12 +121,10 @@ export default class EditAccountScreen extends React.Component {
     }
 
     render() {
-
         return (
-
             <div style={divStyle}>
                 <Text variant={'xxLarge'} block>
-                    <b>Sign up</b>
+                    <b>Edit account</b>
                 </Text>
 
                 <form>
@@ -142,14 +145,12 @@ export default class EditAccountScreen extends React.Component {
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.email}
                             />
-                            <TextField label='Password' type='password' id='password'
+
+                            <Separator/>
+
+                            <TextField label='Confirm password' type='password' id='password'
                                 styles={textFieldStyles}
                                 value={this.state.inputs.password}
-                                onChange={this.handleChange}
-                            />
-                            <TextField label='Confirm password' type='password' id='confirm'
-                                styles={textFieldStyles}
-                                value={this.state.inputs.confirm}
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
                             />
@@ -161,14 +162,10 @@ export default class EditAccountScreen extends React.Component {
                             tokens={{ childrenGap: 20 }}>
                                 
                             <PrimaryButton
-                                text='Sign up'
+                                text='Save'
                                 type='submit'
                                 onClick={this.handleSubmit}
                             />
-
-                            <Link to='/signin'>
-                                <ActionButton> Already have an account? </ActionButton>
-                            </Link>
 
                         </Stack>
 
@@ -177,7 +174,7 @@ export default class EditAccountScreen extends React.Component {
                 
                 {/* Spinner that shows when loading */}
                 <Dialog hidden={!this.state.isLoading}>
-                    <Spinner label='Signing you up' size={SpinnerSize.large} />
+                    <Spinner label='Saving your changes' size={SpinnerSize.large} />
                 </Dialog>
 
             </div>

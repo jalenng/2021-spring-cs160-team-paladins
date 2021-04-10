@@ -1,5 +1,7 @@
 const { ipcRenderer } = window.require('electron');
 
+/* ACCOUNT */
+
 /**
  * Helper function to retrieve info about the signed-in account from the account store
  * @returns {Object}
@@ -10,17 +12,22 @@ function getAccountStore() {
 
 /**
  * Helper function to sign into an account.
+ * @param {String} email the email address of the account
+ * @param {String} password the password of the account
  * @returns {Object} the response of the sign-in attempt
  */
- function signIn(email, password) {
+function signIn(email, password) {
     return ipcRenderer.invoke('authenticate', email, password)
 }
 
 /**
  * Helper function to sign up an account.
+ * @param {String} email the email address of the new account
+ * @param {String} password the password of the new account
+ * @param {String} displayName the display name of the new account
  * @returns {Object} the response of the sign-up attempt
  */
- function signUp(email, password, displayName) {
+function signUp(email, password, displayName) {
     return ipcRenderer.invoke('authenticate', email, password, true, displayName)
 }
     
@@ -33,10 +40,23 @@ function signOut() {
 
 /**
  * Helper function to delete account account
+ * @param {String} password The existing password for confirmation
  */
- function deleteAccount(password) {
+function deleteAccount(password) {
     return ipcRenderer.invoke('sign-out', true, password)
 }
+
+/**
+ * Helper function to update account information
+ * @param {String} email The new email
+ * @param {String} displayName The new displayname
+ * @param {String} password The existing password for confirmation
+ */
+function updateAccountInfo(email, displayName, password) {
+    return ipcRenderer.invoke('update-account-info', email, displayName, password)
+}
+
+/* PREFERENCES */
 
 /**
  * Helper function to retrieve all preferences from the preferences store
@@ -48,10 +68,15 @@ function getAllPreferences() {
 
 /**
  * Helper function to update a preference on the preferences store
+ * @param {String} key The key of the preference. e.g. "notifications.sound"
+ * @param {String} value The new value 
  */
 function setPreference(key, value) {
     ipcRenderer.invoke('set-prefs-store-value', key, value)
 }
+
+
+/* SOUNDS */
 
 /**
  * Helper function to retrieve all sounds from the sounds store
@@ -74,8 +99,11 @@ module.exports = {
     signUp: signUp,
     signOut: signOut,
     deleteAccount: deleteAccount,
+    updateAccountInfo: updateAccountInfo,
+
     getAllPreferences: getAllPreferences,
     setPreference: setPreference,
+
     getAllSounds: getAllSounds,
     addCustomSound: addCustomSound
 }

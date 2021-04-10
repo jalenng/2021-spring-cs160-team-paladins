@@ -264,7 +264,7 @@ ipcMain.handle('authenticate', async (event, email, password, createAccount = fa
     return result;
 })
 
-// Handles a request to clear the account store (by signing out or deletting the account)
+// Handles a request to clear the account store (by signing out or deleting the account)
 ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
 
     let result = {
@@ -277,7 +277,7 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
         
         if (deleteAccount) {
 
-            // Send POST request
+            // Send DELETE request
             let url = `${SERVER_URL}/user`
             let data = {
                 password: password,
@@ -325,6 +325,73 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
         }
     }
 
+    // Return the result object
+    return result;
+})
+
+// Handles a request to authenticate the user (by signing in or signing up)
+ipcMain.handle('update-account-info', async (event, email, displayName, password) => {
+
+    let result = {
+        success: false,
+        data: {}
+    };
+
+    // Try to authenticate
+    try {
+        
+        // Send PUT request        
+        let url = `${SERVER_URL}/user`;
+        let data = {
+            email: email,
+            displayName: displayName,
+            password: password,
+        }
+
+        // Await for response
+        let res = await axios.put(url, data);
+
+        // If sign-in was successful
+        if (res.status === 202) {
+            
+            let account = {
+                accountInfo: {
+                    email: res.data.accountInfo.email,
+                    displayName: res.data.accountInfo.displayName
+                }
+            }
+            store.set('account', account)
+
+            result.success = true;
+        }
+
+    }
+    // Handle errors
+    catch (error) {
+
+        // Check if backend returned a reason and message for the error
+        let responseMessageExists = 
+            error.response 
+            && error.response.data 
+            && error.response.data.reason 
+            && error.response.data.message;
+
+        if (responseMessageExists) {
+            result.data = {
+                reason: error.response.data.reason,
+                message: error.response.data.message
+            }
+        }
+        
+        else {
+            // Else, return generic error
+            result.data = {
+                reason: 'RESPONSE_ERR',
+                message: error.toString()
+            }
+        }
+    }
+    
     // Return the result object
     return result;
 })

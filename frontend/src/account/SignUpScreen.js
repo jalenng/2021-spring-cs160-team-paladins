@@ -50,6 +50,13 @@ export default class extends React.Component {
     handleChange(event) {
         let state = this.state;
         state.inputs[event.target.id] = event.target.value;
+        this.setState(state);
+        this.verifyPasswords();
+    }
+
+    // Verify if passwords are the same
+    verifyPasswords() {
+        let state = this.state;
 
         // Show error if passwords do not match
         if (state.inputs.password != state.inputs.confirm
@@ -57,6 +64,14 @@ export default class extends React.Component {
             state.errors.password = 'Passwords do not match';
         else
             state.errors.password = '';
+
+        this.setState(state);
+    }
+
+    // Change spinner status
+    setSpinner(isLoading) {
+        let state = this.state;
+        state.isLoading = isLoading;
         this.setState(state);
     }
 
@@ -67,11 +82,9 @@ export default class extends React.Component {
         if (this.state.inputs.password != this.state.inputs.confirm)
             return;
 
-        // Start spinner
+        this.setSpinner(true);
         let state = this.state;
-        state.isLoading = true;
-        this.setState(state);
-
+        
         // Get email and passwords from TextFields
         let email = state.inputs.email;
         let password = state.inputs.password;
@@ -86,39 +99,33 @@ export default class extends React.Component {
 
                 // Else, update state
                 else {  
-                    let data = result.data;
-                    let state = this.state;
-                    state.isLoading = false;    // Stop spinner
-
                     state.errors = {    // Update error messages
                         email: '',
                         displayName: '',
                         password: ''
                     }
 
-                    switch (data.reason) {
+                    switch (result.data.reason) {
                         case 'BAD_EMAIL':
-                            state.errors.email = data.message;
+                            state.errors.email = result.data.message;
                             break;
                         case 'BAD_DISPLAY_NAME':
-                            state.errors.displayName = data.message;
+                            state.errors.displayName = result.data.message;
                             break;
                         default:
-                            state.errors.password = data.message;
+                            state.errors.password = result.data.message;
                             break;
                     }
 
                     this.setState(state);
+
+                    this.setSpinner(false);
                 }
-
             });
-
     }
 
     render() {
-
         return (
-
             <div style={divStyle}>
                 <Text variant={'xxLarge'} block>
                     <b>Sign up</b>

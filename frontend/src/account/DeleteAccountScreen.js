@@ -47,13 +47,17 @@ export default class extends React.Component {
         this.setState(state);
     }
 
+    // Change spinner status
+    setSpinner(isLoading) {
+        let state = this.state;
+        state.isLoading = isLoading;
+        this.setState(state);
+    }
+
     handleSubmit(event) {
         event.preventDefault();
-
-        // Start spinner
+        this.setSpinner(true);
         let state = this.state;
-        state.isLoading = true;
-        this.setState(state);
 
         // Get passwords from TextField
         let password = state.inputs.password;
@@ -67,23 +71,15 @@ export default class extends React.Component {
 
                 // Else, update state
                 else {  
-                    let data = result.data;
-                    let state = this.state;
-                    state.isLoading = false;    // Stop spinner
-
-                    state.errors.password = data.message;
-
+                    state.errors.password = result.data.message;
                     this.setState(state);
+                    this.setSpinner(false);
                 }
-
             });
-
     }
 
     render() {
-
         return (
-
             <div style={divStyle}>
                 <Text variant={'xxLarge'} block>
                     <b>Delete account</b>
@@ -95,7 +91,7 @@ export default class extends React.Component {
                         tokens={{ childrenGap: 15 }}>
 
                         <Stack style={{ width: 240 }}>
-                            <TextField label='Password' type='password' id='password'
+                            <TextField label='Confirm password' type='password' id='password'
                                 styles={textFieldStyles}
                                 value={this.state.inputs.password}
                                 onChange={this.handleChange}

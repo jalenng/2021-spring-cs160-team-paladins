@@ -50,42 +50,40 @@ export default class extends React.Component {
         this.setState(state);
     }
 
+    // Change spinner status
+    setSpinner(isLoading) {
+        let state = this.state;
+        state.isLoading = isLoading;
+        this.setState(state);
+    }
+
     // Handles a submit
     handleSubmit(event) {
         event.preventDefault();
-
-        // Start spinner
+        this.setSpinner(false);
         let state = this.state;
-        state.isLoading = true;
-        this.setState(state);
-
+        
         // Authenticate user with sign-in
-        let email = state.inputs.email
-        let password = state.inputs.password
+        let email = state.inputs.email;
+        let password = state.inputs.password;
 
         signIn(email, password)
             .then(result => {
 
                 // If sign-in was successful, close the window
                 if (result.success) window.close()
-
                 
                 else {
-                    let data = result.data;
-                    let state = this.state;
-                    state.isLoading = false;    // Stop spinner
-                    state.errors.password = data.message;   // Update error message
+                    state.errors.password = result.data.message;   // Update error message
                     this.setState(state);
+                    this.setSpinner(false);
                 }
 
             });
-
     }
 
     render() {
-
         return (
-
             <div style={divStyle}>
                 <Text variant={'xxLarge'} block>
                     <b>Sign in</b>

@@ -48,24 +48,14 @@ export default class extends React.Component {
 
             onRenderPrimaryText: () => {
                 return ( 
-                    <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="center">
-                        <Text variant={'xxLarge'}> {displayName} </Text> 
-                        <IconButton
-                            iconProps={{ iconName: 'Edit' }}
-                        />
-                    </Stack>
+                    <Text variant={'xxLarge'}> {displayName} </Text> 
                 );
             },
 
             onRenderSecondaryText: () => {
                 if (isSignedIn) {
                     return (
-                        <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="center">
-                            <Text> {email} </Text> 
-                            <IconButton
-                                iconProps={{ iconName: 'Edit' }}
-                            />
-                        </Stack>
+                        <Text> {email} </Text> 
                     )
                 }
             },
@@ -76,7 +66,7 @@ export default class extends React.Component {
                     return (
                         <Stack horizontal
                             verticalAlign="center"
-                            style={{ marginTop: "6px" }}
+                            style={{ marginTop: "12px" }}
                             tokens={{ childrenGap: 20 }}
                         >
                             <DefaultButton text="Sign out" onClick={signOut} />
@@ -93,7 +83,15 @@ export default class extends React.Component {
 
             <Stack id="your_accounts" tokens={{ childrenGap: 10 }}>
 
-                <Text variant={'xLarge'} block> Your account </Text>
+                <Stack horizontal
+                    verticalAlign="center"
+                    tokens={{ childrenGap: 20 }} >
+                    <Text variant={'xLarge'} block> Your account </Text>
+                    <IconButton
+                        iconProps={{ iconName: 'Edit' }}
+                        onClick={() => ipcRenderer.invoke('show-edit-account-popup')}
+                    />
+                </Stack>
 
                 <Persona
                     {...yourAccountsPersona}

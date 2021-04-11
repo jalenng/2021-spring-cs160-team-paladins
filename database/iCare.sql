@@ -15,11 +15,7 @@ CREATE TABLE Users (
 CREATE TABLE UserPreferences (
 	email varchar(50),
     notiInterval int DEFAULT 20,
-<<<<<<< HEAD
     notiSound varchar(200) DEFAULT '/Leaf.ogg',
-=======
-    notiSound varchar(200) DEFAULT './Leaf.ogg',
->>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
     notiSoundOn boolean DEFAULT TRUE,
     dataUsageOn bool DEFAULT TRUE,
     appUsageOn bool DEFAULT TRUE,

@@ -38,26 +38,6 @@ class db {
      * @param {String} givenEmail 
      * @returns hashed password
      */
-     async checkLogIn(givenEmail, givenPass) {
-
-        let q = "SELECT email, pass FROM Users";
-        let data = await this.dbPromise(true, q, givenEmail);
-        if (data != false) {
-
-            let splits = (JSON.stringify(data)).split('\"', 9);
-            if (splits[3] === givenEmail && cryptr.decrypt(splits[7]) === atob(givenPass)) 
-            { 
-                return true 
-            }
-            else 
-            { 
-                return false 
-            }
-        }
-        console.log(data)
-        return data;
-    };
-
     async getPassword(givenEmail) {
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);

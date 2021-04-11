@@ -37,19 +37,6 @@ const { route } = require('./index.js');
       let email = req.body.email;
       let password = req.body.password;
 
-<<<<<<< HEAD
-      //Gets success
-      let success = "";
-      if (email === null || password === null) {
-        success = false;
-      }
-      else {
-        success = await userDB.checkLogIn(email, password).then((res) => {
-          //console.log(res)
-          return res;
-        })
-      }
-=======
       // Checks crypto pass
       let dec_pass = atob(password)
 
@@ -58,7 +45,6 @@ const { route } = require('./index.js');
         if (decryptPass == dec_pass) { return true } 
         else { return false }
       })
->>>>>>> 0ac82f88d93e22ae62a1533802820b3295095028
       
       // Sends result based on login success
       if (success == true) {

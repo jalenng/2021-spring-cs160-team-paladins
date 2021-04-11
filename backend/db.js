@@ -65,8 +65,16 @@ class db {
 
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
+<<<<<<< HEAD
         console.log(data);
         if (data != false) {
+=======
+
+
+        if (data != false) {
+
+            let splits = (JSON.stringify(data)).split('\"', 9);
+>>>>>>> 0ac82f88d93e22ae62a1533802820b3295095028
 
             let splits = (JSON.stringify(data)).split('\"', 9);
             if (splits[3] === givenEmail && cryptr.decrypt(splits[7]) === atob(givenPass)) 
@@ -86,6 +94,7 @@ class db {
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
 
+<<<<<<< HEAD
         if (data != false) {
 
             let splits = (JSON.stringify(data)).split('\"', 9);
@@ -95,6 +104,23 @@ class db {
         return false;
     }
 
+=======
+
+        if (data != false) {
+
+            let splits = (JSON.stringify(data)).split('\"', 9);
+
+            return splits[7]
+
+        }
+
+        return false;
+    }
+
+
+
+
+>>>>>>> 0ac82f88d93e22ae62a1533802820b3295095028
     /**
      * Gets displayName from preferences
      * @param {String} userEmail email (primary key)
@@ -119,7 +145,7 @@ class db {
      * @returns true if no error, false if fails
      */
     async setDisplayName(userEmail, displayName) {
-        let q = "UPDATE userPreferences SET displayName='" + displayName + "'"
+        let q = "UPDATE UserPreferences SET displayName='" + displayName + "'"
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -149,57 +175,38 @@ class db {
      * @returns true if no error, false if fails
      */
     async setNotiInterval(userEmail, newInt) {
-        let q = "UPDATE userPreferences SET notiInterval=" + newInt
+        let q = "UPDATE UserPreferences SET notiInterval=" + newInt
 
         return await this.dbPromise(false, q, userEmail)
     }
 
-
     /**
-     * Gets the path of the notification sound to play the sound!
-     * @param {String} userEmail email (primary key)
-     * @return path if successful, false if failed
+     * Gets the notification sound path
+     * @param {String} userEmail 
+     * @returns sound path of notification sound
      */
     async getNotiSound(userEmail) {
-        let query = "SELECT path FROM notificationSounds WHERE soundName="
-        let q = query + "(SELECT notiSound FROM userPreferences WHERE email='" + userEmail + "')"
+        let q = "SELECT notiSound FROM UserPreferences"
 
-        let path = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
-            if (err) { reject(false) }
-            else {
-                resolve(result)
-            }
-        }));
+        let data = await this.dbPromise(true, q, userEmail);
 
-        return path;
+        if (data != false) {
+            let splits = (JSON.stringify(data)).split('\"');
+            return splits[3];
+        }
+
+        return data;
     }
 
     /**
-     * Sets the notification sound of a user 
+     * Sets the local notification sound path of a user 
      * @param {String} userEmail email (primary key)
      * @param {String} newSound new sound to set to (sound name in database)
      */
     async setNotiSound(userEmail, newSound) {
-        let q = "UPDATE userPreferences SET notiSound='" + newSound + "'";
+        let q = "UPDATE UserPreferences SET notiSound='" + newSound + "'";
 
         return await this.dbPromise(false, q, userEmail);
-    }
-
-    /**
-     * Adds notification sound to database
-     * @param {String} name name of sound file
-     * @param {String} path path of sound file
-     * @return true if no error, false for error (duplicate entry usually)
-     */
-    async addNotiSound(name, path) {
-        let q = "INSERT INTO notificationSounds VALUES ('" + name + "', '" + path + "')";
-
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
-            if (err) { resolve(false) }
-            else { resolve(true) }
-        }));
-
-        return results;
     }
 
     /**

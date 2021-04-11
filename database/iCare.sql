@@ -5,16 +5,9 @@ USE iCare;
 # Table of Users
 CREATE TABLE Users (
 	email varchar(50) NOT NULL,
-	pass varchar(150) NOT NULL,
+	pass varchar(300) NOT NULL,
     dateCreated date,
 	PRIMARY KEY (email)
-);
-
-# Table of Notification Sounds
-CREATE TABLE NotificationSounds (
-	soundName varchar(50) NOT NULL,
-    path varchar(200) NOT NULL,
-    PRIMARY KEY (soundName)
 );
 
 # Table of User Preferences
@@ -22,13 +15,12 @@ CREATE TABLE UserPreferences (
 	email varchar(50),
     displayName varchar(50) DEFAULT "Display Name",
     notiInterval int DEFAULT 20,
-    notiSound varchar(50),				# DEFAULT
+    notiSound varchar(200) DEFAULT '/root/2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg',
     notiSoundOn boolean DEFAULT TRUE,
     dataUsageOn bool DEFAULT TRUE,
     appUsageOn bool DEFAULT TRUE,
     PRIMARY KEY (email),
-    FOREIGN KEY (email) REFERENCES Users (email)  ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (notiSound) REFERENCES NotificationSounds (soundName)
+    FOREIGN KEY (email) REFERENCES Users (email)  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 # Table of Data Usage
@@ -160,12 +152,3 @@ DELIMITER ;
 # mysql --local-infile -u root -p
 # source iCare.sql
 
-# Basic Notification Sound Inserts 
-INSERT INTO NotificationSounds VALUES ('Leaf', '/root/2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg');
-INSERT INTO NotificationSounds VALUES ('Butterfly', '/root/2021-spring-cs160-team-paladins/database/Sounds/Butterfly.ogg');
-INSERT INTO NotificationSounds VALUES ('Party Favor', '/root/2021-spring-cs160-team-paladins/database/Sounds/PartyFavor.ogg');
-
-# Basic Inserts
-INSERT INTO Users (email, pass) VALUES ('default@gmail.com', 'pass');
-INSERT INTO Users (email, pass) VALUES ('hello@gmail.com', 'pass');
-INSERT INTO Users (email, pass) VALUES ('basic@gmail.com', 'pass');

@@ -43,12 +43,18 @@ const { route } = require('./index.js');
       let password = req.body.password;
       let displayName = req.body.displayName;
 
-      // CRYPTO: Encrypt password and store in the database
-      let dec_pass = atob(password);
-      let encrypted_pass = cryptr.encrypt(dec_pass);
-      if (email === null || password === null || displayName === false) { success = false; }
-      else { success = await userDB.createUser(email, encrypted_pass, displayName).then((result) => { return result; }); }
-      
+      let success = true;
+
+      // Checks password length
+      if (password.length < 8) { success = false; }
+      else {
+        // CRYPTO: Encrypt password and store in the database
+        let dec_pass = atob(password);
+        let encrypted_pass = cryptr.encrypt(dec_pass);
+        if (email === null || password === null || displayName === false) { success = false; }
+        else { success = await userDB.createUser(email, encrypted_pass, displayName).then((result) => { return result; }); }
+      }
+
       // Sends results based on create user success
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });

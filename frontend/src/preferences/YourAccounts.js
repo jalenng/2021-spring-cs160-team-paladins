@@ -32,6 +32,7 @@ export default class extends React.Component {
     }
 
     render() {
+
         // Get account store info from account store
         const isSignedIn = this.state.token != null
         const displayName = this.state.accountInfo.displayName
@@ -45,13 +46,9 @@ export default class extends React.Component {
 
         const yourAccountsPersona = {
             imageInitials: displayInitials,
+            text: displayName,
 
-            onRenderPrimaryText: () => {
-                return ( 
-                    <Text variant={'xxLarge'}> {displayName} </Text> 
-                );
-            },
-
+            // Display email address only if signed in
             onRenderSecondaryText: () => {
                 if (isSignedIn) {
                     return (
@@ -87,10 +84,14 @@ export default class extends React.Component {
                     verticalAlign="center"
                     tokens={{ childrenGap: 20 }} >
                     <Text variant={'xLarge'} block> Your account </Text>
-                    <IconButton
-                        iconProps={{ iconName: 'Edit' }}
-                        onClick={() => ipcRenderer.invoke('show-edit-account-popup')}
-                    />
+
+                    {/* Show Edit button only if signed in */}
+                    { isSignedIn && 
+                        <IconButton
+                            iconProps={{ iconName: 'Edit' }}
+                            onClick={() => ipcRenderer.invoke('show-edit-account-popup')}
+                        />
+                    }
                 </Stack>
 
                 <Persona

@@ -60,8 +60,7 @@ const { route } = require('./index.js');
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
         res.status(201).send({ 
           token: tokenValue, 
-          email: email, 
-          displayName: displayName
+          accountInfo: { email: email, displayName: dName }
         });
       }
       else {

@@ -65,16 +65,7 @@ class db {
 
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
-<<<<<<< HEAD
-        console.log(data);
         if (data != false) {
-=======
-
-
-        if (data != false) {
-
-            let splits = (JSON.stringify(data)).split('\"', 9);
->>>>>>> 0ac82f88d93e22ae62a1533802820b3295095028
 
             let splits = (JSON.stringify(data)).split('\"', 9);
             if (splits[3] === givenEmail && cryptr.decrypt(splits[7]) === atob(givenPass)) 
@@ -94,7 +85,6 @@ class db {
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
 
-<<<<<<< HEAD
         if (data != false) {
 
             let splits = (JSON.stringify(data)).split('\"', 9);
@@ -104,23 +94,6 @@ class db {
         return false;
     }
 
-=======
-
-        if (data != false) {
-
-            let splits = (JSON.stringify(data)).split('\"', 9);
-
-            return splits[7]
-
-        }
-
-        return false;
-    }
-
-
-
-
->>>>>>> 0ac82f88d93e22ae62a1533802820b3295095028
     /**
      * Gets displayName from preferences
      * @param {String} userEmail email (primary key)

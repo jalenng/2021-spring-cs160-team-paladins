@@ -21,7 +21,7 @@ const { route } = require('./index.js');
     let userDB = new db("localhost", "newuser", "", "iCare");
 
     // API Methods
-    let apiM = require('/api_methods.js');
+    let apiM = require('./api_methods.js');
     let api_methods = new apiM();
 
     // Crypto Requirements

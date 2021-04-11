@@ -59,15 +59,16 @@ const { route } = require('./index.js');
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
         res.status(201).send({ 
-          status: 201, 
-          data: { token: tokenValue, email: email, displayName: displayName }
+          token: tokenValue, 
+          email: email, 
+          displayName: displayName
         });
       }
       else {
         let array = await api_methods.postCreateUser(displayName, password).then((result) => { return result; }); 
         res.status(401).send({
-          status: 401, 
-          data: { reason: array[0], message: array[1] }
+          reason: array[0], 
+          message: array[1]
         });
       }
     })
@@ -92,8 +93,8 @@ const { route } = require('./index.js');
         dName = await userDB.getDisplayName(email).then((res) => { return res; });
 
         res.status(200).send({
-          status: 200, 
-          data: { token: tokenValue, accountInfo: { email: email, displayName: dName } }
+          token: tokenValue, 
+          accountInfo: { email: email, displayName: dName } 
         });
       }
       else {
@@ -114,8 +115,8 @@ const { route } = require('./index.js');
       // Invalid Token
       if (email == false) {
         res.status(504).send({
-          status: 504, 
-          data: { reason: "INVALID_TOKEN", message: "The token given is invalid" }
+          reason: "INVALID_TOKEN", 
+          message: "The token given is invalid" 
         });
       }
       
@@ -129,16 +130,14 @@ const { route } = require('./index.js');
       // Send to frontend
       if (notiInterval != false && notiSound != false && notiSoundOn != false) {
         res.status(200).send({
-          status: 200, data: {
-            notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
-            dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: dUsageOn }
-          }
+          notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
+          dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: dUsageOn }
         });
       }
       else {
         res.status(504).send({
-          status: 504, 
-          data: { reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }
+          reason: "RETRIEVAL_FAILED", 
+          message: "Couldn't retrieve preferences." 
         });
       }
  
@@ -153,8 +152,8 @@ const { route } = require('./index.js');
       // Invalid Token
       if (email == false) {
         res.status(504).send({
-          status: 504, 
-          data: { reason: "INVALID_TOKEN", message: "The token given is invalid" }
+          reason: "INVALID_TOKEN", 
+          message: "The token given is invalid"
         });
       }
 
@@ -174,12 +173,12 @@ const { route } = require('./index.js');
 
       // Send to frontend
       if (success1 == success2 == success3 == success4 == success5 == true) {
-        res.status(200).send({ status: 200 })
+        res.status(200);
       }
       else {
         res.status(504).send({
-          status: 504, 
-          data: { reason: "SAVE_FAILED", message: "Couldn't save all preferences." }
+          reason: "SAVE_FAILED", 
+          message: "Couldn't save all preferences."
         });
       }
     });
@@ -194,8 +193,8 @@ const { route } = require('./index.js');
       // Invalid Token
       if (email == false) {
         res.status(504).send({
-          status: 504, 
-          data: { reason: "INVALID_TOKEN", message: "The token given is invalid" }
+           reason: "INVALID_TOKEN", 
+           message: "The token given is invalid" 
         });
       }
 
@@ -205,14 +204,14 @@ const { route } = require('./index.js');
 
       if (dUsage != false && aUsage != false) {
         res.status(200).send({ 
-          status: 200,
-          data: { dataUsage: dUsage, appUsage: aUsage }     // Sends JSONs
+          dataUsage: dUsage, 
+          appUsage: aUsage      // Sends JSONs
         })
       }
       else {
         res.status(504).send({
-          status: 504,
-          data: { reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage" }
+          reason: "GET_REQUEST_FAILED", 
+          message: "Couldn't get data usage" 
         })
       }
     });
@@ -225,8 +224,8 @@ const { route } = require('./index.js');
       // Invalid Token
       if (email == false) {
         res.status(504).send({
-          status: 504, 
-          data: { reason: "INVALID_TOKEN", message: "The token given is invalid" }
+          reason: "INVALID_TOKEN", 
+          message: "The token given is invalid" 
         });
       }
 
@@ -246,12 +245,12 @@ const { route } = require('./index.js');
 
 
       if (dusuccess == true && auSuccess == true) {
-        res.status(200).send({ status: 200 })
+        res.status(200);
       }
       else {
         res.status(504).send({
-          status: 504,
-          data: { reason: "UPDATE_FAILED", message: "Couldn't update data usage" }
+          reason: "UPDATE_FAILED", 
+          message: "Couldn't update data usage" 
         })
       }
 
@@ -288,19 +287,19 @@ const { route } = require('./index.js');
       }
       else {
         res.status(401).send({ 
-          status: 401, 
-          data: { reason: "INVALID_CREDENTIALS", message: "Your password is incorrect." } 
+          reason: "INVALID_CREDENTIALS", 
+          message: "Your password is incorrect." 
         });
       }
       
       // Response Code (check changeEmail success)
       if (success == true) {
-        res.status(200).send({ status: 200 });
+        res.status(200);
       }
       else {
         res.status(401).send({ 
-          status: 401, 
-          data: { reason: "BAD_EMAIL", message: "The email is already in use." } 
+          reason: "BAD_EMAIL", 
+          message: "The email is already in use." 
         });
       }
 
@@ -316,8 +315,8 @@ const { route } = require('./index.js');
       // Invalid Token
       if (email == false) {
         res.status(504).send({
-          status: 504, 
-          data: { reason: "INVALID_TOKEN", message: "The token given is invalid" }
+          reason: "INVALID_TOKEN", 
+          message: "The token given is invalid" 
         });
       }
 
@@ -334,12 +333,12 @@ const { route } = require('./index.js');
       
       // Response Code
       if (success == true) {
-        res.status(200).send({ status: 200 });
+        res.status(200);
       }
       else {
         res.status(504).send({
-          status: 504,
-          data: { reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }
+          reason: "INVALID_CREDENTIALS", message: 
+          "Couldn't delete account." 
         });
       }
 

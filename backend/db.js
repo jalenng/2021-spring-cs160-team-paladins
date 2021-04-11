@@ -3,11 +3,6 @@
 const mysql = require('mysql');
 var util = require('util');
 
-var Cryptr = require('cryptr'),
-cryptr = new Cryptr('myTotalySecretKey');
-var atob = require('atob');
-var btoa = require('btoa');
-
 class db {
     constructor(host, user, pass, db) {
         this.pool = mysql.createPool({
@@ -19,47 +14,29 @@ class db {
         })
     }
 
-    // Database Methods--------------------------------------------------
-
     /**
      * Creates a new user (inserts into db)
      * @param {String} givenEmail email (primary key)
      * @param {String} givenPass password
+     * @param {String} displayName display name
      * @returns true if no error, false for error
      */
-    async createUser(givenEmail, givenPass) {
-        var email = givenEmail;
-        var pass = givenPass;
-        var dec_pass = atob(givenPass);
-        var encrypted_pass = cryptr.encrypt(dec_pass);
-        
-        let q = "INSERT INTO Users (email, pass) VALUES ('" + givenEmail + "', '" + encrypted_pass + "')";
+     async createUser(givenEmail, givenPass, displayName) {
+        let q = "INSERT INTO Users (email, pass, displayName)";
+        q = q + "VALUES ('" + givenEmail + "', '" + givenPass + "', '" + displayName + "')";
 
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
-            if (err) { resolve(false); }
-            else { resolve(true) }
-        }));
-        return results;
-    }
-
-    async storeToken(givenEmail, userToken)
-    {
-        var email = givenEmail;
-        var token = userToken;
-        
-        let q = "UPDATE Users SET userToken='" + userToken + "' WHERE email = '" + givenEmail + "'";
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err) {
             if (err) { resolve(false) }
             else { resolve(true) }
         }));
         return results;
     }
 
+
     /**
-     * Checks LogIn Information
-     * @param {String} givenEmail email (primary key)
-     * @param {String} givenPass password
-     * @returns true if successful login, false if fails
+     * Gets the password given an email
+     * @param {String} givenEmail 
+     * @returns hashed password
      */
      async checkLogIn(givenEmail, givenPass) {
 
@@ -86,12 +63,36 @@ class db {
         let data = await this.dbPromise(true, q, givenEmail);
 
         if (data != false) {
-
             let splits = (JSON.stringify(data)).split('\"', 9);
-            var decrypted_pass = cryptr.decrypt(splits[7]);
-            return btoa(decrypted_pass)
+            return splits[7]
         }
+
         return false;
+    }
+
+    /**
+     * Updates the email of user
+     * @param {String} oldEmail of user
+     * @param {String} newEmail of user
+     * @returns true if no error, false if fails
+     */
+    async changeEmail(oldEmail, newEmail) {
+        let q = "UPDATE Users SET email='" + newEmail + "'"
+
+        return await this.dbPromise(false, q, oldEmail);
+    }
+
+
+    /**
+     * Sets the displayName
+     * @param {String} userEmail email (primary key)
+     * @param {String} displayName displayName
+     * @returns true if no error, false if fails
+     */
+    async setDisplayName(userEmail, displayName) {
+        let q = "UPDATE UserPreferences SET displayName='" + displayName + "'"
+
+        return await this.dbPromise(false, q, userEmail)
     }
 
     /**
@@ -100,7 +101,7 @@ class db {
      * @returns displayName, false if fails
      */
     async getDisplayName(userEmail) {
-        let q = "SELECT displayName FROM UserPreferences";
+        let q = "SELECT displayName FROM Users";
         let data = await this.dbPromise(true, q, userEmail);
 
         if (data != false) {
@@ -138,7 +139,6 @@ class db {
         }
 
         return data;
-
     }
 
     /**
@@ -291,7 +291,7 @@ class db {
         }
 
         // Updates the database
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
@@ -302,7 +302,7 @@ class db {
     /**
      * Gets the data usage of a user based on day, week, month, or all time
      * @param {String} userEmail user email
-     * @param {String} time day, week, month, all time (querying usageDate)
+     * @param {String} time TODAY, WEEK, MONTH, ALL (querying usageDate)
      * @returns JSON of records, false if fails (there are no records)
      */
     async getDataUsage(userEmail, time) {
@@ -312,7 +312,7 @@ class db {
         q = q + q2
 
         // Querying Result
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(result) }
         }));
@@ -339,11 +339,11 @@ class db {
         }
         // Creates existing record
         else {
-            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + today + "')";
+            q = "INSERT INTO AppUsage VALUES('" + userEmail + "', " + appName + ", " + appTime + ", '" + today + "')";
         }
 
         // Updates the database
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
@@ -355,12 +355,10 @@ class db {
     /**
      * Gets app usage records
      * @param {String} userEmail user email
-     * @param {String} appName name of application
-     * @param {int} appTime time spent on application
      * @param {String} time  day, week, month, all time (querying usageDate)
      * @returns JSON of records, false if fails (there are no records)
      */
-    async getAppUsage(userEmail, appName, appTime, time) {
+    async getAppUsage(userEmail, time) {
         let q = "SELECT appName, appTime, usageDate FROM AppUsage WHERE email='" + userEmail + "'"
         let q2 = await this.getQueryUsage(time);
         q = q + q2
@@ -460,7 +458,7 @@ class db {
         checkq = checkq + addq;
 
         // 1 = the record exists, 0 = record does not exist
-        let check = await new Promise((resolve, reject) => this.pool.query(checkq, function (err, result) {
+        let check = await new Promise((resolve) => this.pool.query(checkq, function (err, result) {
             if (err) { resolve(false) }
             else { resolve(result) }
         }));
@@ -479,17 +477,20 @@ class db {
         let qPart = ""
         let date = ""
 
-        if (time == "day") {
+        if (time == "TODAY") {
             date = await this.getDate(0).then((result) => { return result; })
             qPart = "='"
         }
-        else if (time == "week") {
+        else if (time == "WEEK") {
             date = await this.getDate(7).then((result) => { return result; })
             qPart = ">'"
         }
-        else if (time == "month") {
+        else if (time == "MONTH") {
             date = await this.getDate(30).then((result) => { return result; })
             qPart = ">'"
+        }
+        else { // ALL TIME
+            return "";
         }
 
         queryString = queryString + qPart + date + "'"

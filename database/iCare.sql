@@ -6,6 +6,7 @@ USE iCare;
 CREATE TABLE Users (
 	email varchar(50) NOT NULL,
 	pass varchar(300) NOT NULL,
+    displayName varchar(50) NOT NULL,
     dateCreated date,
 	PRIMARY KEY (email)
 );
@@ -13,9 +14,12 @@ CREATE TABLE Users (
 # Table of User Preferences
 CREATE TABLE UserPreferences (
 	email varchar(50),
-    displayName varchar(50) DEFAULT "Display Name",
     notiInterval int DEFAULT 20,
-    notiSound varchar(200) DEFAULT '/root/2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg',
+<<<<<<< HEAD
+    notiSound varchar(200) DEFAULT '/Leaf.ogg',
+=======
+    notiSound varchar(200) DEFAULT './Leaf.ogg',
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
     notiSoundOn boolean DEFAULT TRUE,
     dataUsageOn bool DEFAULT TRUE,
     appUsageOn bool DEFAULT TRUE,

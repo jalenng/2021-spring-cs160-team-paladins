@@ -60,7 +60,6 @@ class db {
         let q = "UPDATE Users SET email='" + newEmail + "'"
 
         return await this.dbPromise(false, q, oldEmail);
-
     }
 
 

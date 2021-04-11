@@ -101,6 +101,7 @@ const { route } = require('./index.js');
  
     // Gets preferences of user
     router.get('/pref/:user', async function (req, res) {
+<<<<<<< HEAD
       let token = req.body.auth.token;
  
       let email = await userToken.getEmailFromToken(token);
@@ -114,6 +115,15 @@ const { route } = require('./index.js');
       }
       
       // Get Preferences
+=======
+
+      let token = req.body.auth.token;
+
+      // Gets token from frontend
+      // Somehow convert token to user email to get info out of db
+ 
+      let email = "Convert from token";
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
       let notiInterval = await userDB.getNotiInterval(email).then((result) => { return result; })
       let notiSound = await userDB.getNotiSound(email).then((result) => { return result; })
       let notiSoundOn = await userDB.getNotiSoundOn(email).then((result) => { return result; })
@@ -140,6 +150,7 @@ const { route } = require('./index.js');
  
     // Saves the user preferences (incomplete)
     router.put('/pref/:user', async function (req, res) {
+<<<<<<< HEAD
       let token = req.body.auth.token;
 
       let email = await userToken.getEmailFromToken(token);
@@ -153,6 +164,15 @@ const { route } = require('./index.js');
       }
 
       // Set Preferences
+=======
+ 
+      let token = req.body.auth.token;
+
+      // Get data from frontend (token, notification interval, sound, and boolean (sound on/off))
+      // Somehow convert token to user email to get info out of db
+
+      let email = "Convert from token";
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
       let notiInterval = req.body.data.notifications.interval;
       let notiSound = req.body.data.notifications.sound;
       let notiSoundOn = req.body.data.notifications.enableSound;
@@ -180,6 +200,7 @@ const { route } = require('./index.js');
 
     // Gets data usage (incomplete)
     router.get('/data/:user', async (req, res) => {
+<<<<<<< HEAD
       let token = req.body.auth.token;
       let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
 
@@ -194,6 +215,14 @@ const { route } = require('./index.js');
       }
 
       // Get Usage Data
+=======
+
+      let token = req.body.auth.token;
+      let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
+
+      //dsfafasdfadjsklfjasdklfjasdfasf
+      let email = ""    // get from token
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
       let dUsage = await userDB.getDataUsage(email, timePeriod).then((result) => { return result; });
       let aUsage = await userDB.getAppUsage(email, timePeriod).then((result) => { return result; });
 
@@ -213,6 +242,7 @@ const { route } = require('./index.js');
 
     // Updates the data/app usage of user (incomplete)
     router.put('/data/:user', async (req, res) => {
+<<<<<<< HEAD
       let token = req.body.auth.token;
       
       let email = await userToken.getEmailFromToken(token);
@@ -228,6 +258,16 @@ const { route } = require('./index.js');
       let todayScreenTime = req.body.data.dailyDataUsage.screenTime;
       let todaynumBreaks = req.body.data.dailyDataUsage.numBreaks;
       let todayAppUsage = req.body.data.dailyAppUsage;
+=======
+
+      let token = req.body.auth.token;
+      let todayScreenTime = req.body.data.dailyDataUsage.screenTime;
+      let todaynumBreaks = req.body.data.dailyDataUsage.numBreaks;
+      let todayAppUsage = req.body.data.dailyAppUsage;
+
+      //dsfafasdfadjsklfjasdklfjasdfasf
+      let email = ""    // get from token
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
       
       let duSuccess = await userDB.setDataUsage(email, todayScreenTime, todaynumBreaks);
 
@@ -254,6 +294,7 @@ const { route } = require('./index.js');
     // Change email (incomplete)
     router.put('/user/:user', async (req, res) => {
       let token = req.body.auth.token;
+<<<<<<< HEAD
       let oldEmail = await userToken.getEmailFromToken(token);
 
       // Invalid Token
@@ -265,6 +306,10 @@ const { route } = require('./index.js');
       }
 
       // Set new password
+=======
+      let oldEmail = "Get from token"
+
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
       let newEmail = req.body.data.email;
       let pass = req.body.data.password;
 
@@ -276,9 +321,16 @@ const { route } = require('./index.js');
         else { return false }
       })
       
+<<<<<<< HEAD
       // Response Code (check password)
       if (success == true) {
         success = await userDB.changeEmail(oldEmail, newEmail);
+=======
+
+      // Response Code (check password)
+      if (success == true) {
+        success = userDB.changeEmail(oldEmail, newEmail);
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
       }
       else {
         res.status(401).send({ 
@@ -303,6 +355,7 @@ const { route } = require('./index.js');
 
     // Delete user (incomplete)
     router.delete('/user/:user', async (req, res) => {
+<<<<<<< HEAD
       let token = req.body.auth.token;
 
       let email = await userToken.getEmailFromToken(token);
@@ -316,6 +369,12 @@ const { route } = require('./index.js');
       }
 
       // Delete User
+=======
+
+      let token = req.body.auth.token;
+
+      let email = "GET FROM TOKEN"
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
       let pass = req.body.data.password;
 
       // Checks crypto pass
@@ -331,9 +390,17 @@ const { route } = require('./index.js');
         res.status(200).send({ status: 200 });
       }
       else {
+<<<<<<< HEAD
         res.status(504).send({
           status: 504,
           data: { reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }
+=======
+        let r = ""    // INVALID_CREDENTIALS / INVALID_TOKEN
+
+        res.status(504).send({
+          status: 504,
+          data: { reason: r, message: "Couldn't delete account." }
+>>>>>>> b4e275d92c2cd7a55264cdcae28e090f50b5ed1d
         });
       }
 

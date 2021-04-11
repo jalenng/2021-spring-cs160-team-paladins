@@ -19,17 +19,18 @@ const { route } = require('./index.js');
     let db = require('./db.js')
     let userDB = new db("localhost", "newuser", "", "iCare");
 
+    // Crypto Requirements
+    var atob = require('atob');
+    var Cryptr = require('cryptr'),
+    cryptr = new Cryptr('myTotalySecretKey'); 
+
+    // Token Methods
+    let tokenClass = require('./token.js')
+    let userToken = new tokenClass();
+
     // ---------------------------------
     // Our server listens for POST requests.
     // ---------------------------------
-
-    // Testing get/set for datausage (Works!)
-    //userDB.getDataUsage('basic@gmail.com', 'day').then((result) => { console.log(result); });
-    //userDB.getDataUsage('basic@gmail.com', 'week').then((result) => { console.log(result); });
-    //userDB.getDataUsage('basic@gmail.com', 'month').then((result) => { console.log(result); });
-
-    //userDB.setDataUsage('basic@gmail.com', 20, 3).then((result) => { console.log(result); });
-
 
     // User tries to login (test send)
     router.post('/auth', async function (req, res) {
@@ -43,15 +44,19 @@ const { route } = require('./index.js');
       }
       else {
         success = await userDB.checkLogIn(email, password).then((res) => {
-          console.log(res)
+          //console.log(res)
           return res;
         })
       }
       
       // Sends result based on login success
       if (success == true) {
+
+        // Create token
+        let tokenValue = await userToken.createToken(email).then((res) => { return res });
+
         res.status(200).send({
-          token: "data"
+          token: tokenValue
         });
       }
       else {
@@ -74,8 +79,13 @@ const { route } = require('./index.js');
       })
       
       if (success == true) {
+
+      // Create token
+      let tokenValue = await userToken.createToken(email).then((res) => { return res });
+
+
         res.status(200).send({
-          token: "data"
+          token: tokenValue
         });
       }
       else {

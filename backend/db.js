@@ -3,8 +3,12 @@
 const mysql = require('mysql');
 var util = require('util');
 
-class db {
+var Cryptr = require('cryptr'),
+cryptr = new Cryptr('myTotalySecretKey');
+var atob = require('atob');
+var btoa = require('btoa');
 
+class db {
     constructor(host, user, pass, db) {
         this.pool = mysql.createPool({
             connectionLimit: 10,
@@ -24,8 +28,26 @@ class db {
      * @returns true if no error, false for error
      */
     async createUser(givenEmail, givenPass) {
-        let q = "INSERT INTO Users (email, pass) VALUES ('" + givenEmail + "', '" + givenPass + "')";
+        var email = givenEmail;
+        var pass = givenPass;
+        var dec_pass = atob(givenPass);
+        var encrypted_pass = cryptr.encrypt(dec_pass);
+        
+        let q = "INSERT INTO Users (email, pass) VALUES ('" + givenEmail + "', '" + encrypted_pass + "')";
 
+        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
+            if (err) { resolve(false); }
+            else { resolve(true) }
+        }));
+        return results;
+    }
+
+    async storeToken(givenEmail, userToken)
+    {
+        var email = givenEmail;
+        var token = userToken;
+        
+        let q = "UPDATE Users SET userToken='" + userToken + "' WHERE email = '" + givenEmail + "'";
         let results = await new Promise((resolve, reject) => this.pool.query(q, function (err) {
             if (err) { resolve(false) }
             else { resolve(true) }
@@ -39,21 +61,39 @@ class db {
      * @param {String} givenPass password
      * @returns true if successful login, false if fails
      */
-    async checkLogIn(givenEmail, givenPass) {
+     async checkLogIn(givenEmail, givenPass) {
 
+        let q = "SELECT email, pass FROM Users";
+        let data = await this.dbPromise(true, q, givenEmail);
+        console.log(data);
+        if (data != false) {
+
+            let splits = (JSON.stringify(data)).split('\"', 9);
+            if (splits[3] === givenEmail && cryptr.decrypt(splits[7]) === atob(givenPass)) 
+            { 
+                return true 
+            }
+            else 
+            { 
+                return false 
+            }
+        }
+        console.log(data)
+        return data;
+    };
+
+    async getPassword(givenEmail) {
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
 
         if (data != false) {
+
             let splits = (JSON.stringify(data)).split('\"', 9);
-
-            if (splits[3] == givenEmail && splits[7] == givenPass) { return true }
-            else { return false }
+            var decrypted_pass = cryptr.decrypt(splits[7]);
+            return btoa(decrypted_pass)
         }
-        console.log(data)
-        return data;
-
-    };
+        return false;
+    }
 
     /**
      * Gets displayName from preferences

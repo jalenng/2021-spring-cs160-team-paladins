@@ -5,7 +5,8 @@ import './css/index.css';
 import App from './App';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
-import FullscreenOverlay from './FullscreenOverlay';
+import FullscreenNotification from './notifications/FullscreenNotification';
+import PopupNotification from './notifications/PopupNotification';
 
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { loadTheme } from '@fluentui/react'
@@ -53,7 +54,8 @@ ReactDOM.render(
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />
-          <Route path="/fullscreenNotification" exact component={FullscreenOverlay} />
+          <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
+          <Route path="/popupNotification" exact component={PopupNotification} />
         </div>
       </Switch>
     </HashRouter>

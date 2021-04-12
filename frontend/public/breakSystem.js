@@ -1,6 +1,5 @@
-const { BrowserWindow, ipcMain, screen } = require('electron');
+const { ipcMain, screen } = require('electron');
 const soundPlayer = require('sound-play');
-const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
 /**
@@ -16,8 +15,6 @@ const BREAK_DURATION = 20000;
 var oldMousePos;
 var checkMousePositionInterval;
 var timeout;
-
-global.fsWindows;
 
 const BreakSystem = function(){
 
@@ -86,15 +83,7 @@ const BreakSystem = function(){
                     oldMousePos = newMousePos;
                 }
 
-            }, 100);
-
-            // Get display bounds and create new windows with those bounds
-            const disps = screen.getAllDisplays();
-            global.fsWindows = [];
-        
-            for (var i = 0; i < disps.length; i++) {
-                global.fsWindows.push(createFullscreenWindow(disps[i].bounds));
-            }
+            }, 100);            
 
         }
         
@@ -126,18 +115,11 @@ const BreakSystem = function(){
             clearTimeout(timeout)
             clearInterval(checkMousePositionInterval)
 
-            // Close all fullscreen windows
-            for (var i = 0; i < global.fsWindows.length; i++) {
-                global.fsWindows[i].removeAllListeners('close');
-                global.fsWindows[i].close();
-            }
-
             // Call break-end listeners
             const fireCallbacks = (callback) => callback();
             this._events['break-end'].forEach(fireCallbacks);
 
             this.state = states.NOT_ON_BREAK; 
-            
         }
 
     }
@@ -158,57 +140,6 @@ const BreakSystem = function(){
 
 // Instantiate the break system
 global.breakSystem = new BreakSystem();
-
-
-/**
- * Creates a fullscreen break notification window
- * @param {Rectangle} bounds The bounds of the window
- * @returns a new BrowserWindow with the specified bounds
- */
-
-function createFullscreenWindow(bounds) {
-
-    var fsWin = new BrowserWindow({
-        alwaysOnTop: true,
-        focusable: false,
-        width: 800,
-        height: 500,
-        resizable: false,
-        movable: false,
-        frame: false,
-        parent: global.mainWindow,
-        minimizable: false,
-        maximizable: false,
-        skipTaskbar: true,
-        show: false,
-        title: "iCare Overlay",
-        backgroundColor: '#222222',
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-    })
-
-    fsWin.menuBarVisible = false;
-    
-    fsWin.setBounds(bounds);
-
-    fsWin.on('close', (e) => e.preventDefault())
-
-    fsWin.loadURL(
-        isDev
-        ? 'http://localhost:3000#/fullscreenNotification'
-        : `file://${path.join(__dirname, '../build/index.html#fullscreenNotification')}`
-    ); 
-
-    fsWin.on('ready-to-show', () => {
-        fsWin.show();
-    })
-
-    return fsWin;
-
-}
 
 
 /**

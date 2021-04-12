@@ -1,7 +1,6 @@
 import React from "react";
 
 import { mergeStyles } from '@fluentui/react/lib/Styling';
-import { ProgressIndicator } from '@fluentui/react/lib/ProgressIndicator'
 import { FontIcon } from '@fluentui/react/lib/Icon';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
@@ -15,14 +14,14 @@ const divStyle = {
 };
 
 const iconClass = mergeStyles({
-    fontSize: 128,
-    height: 128,
-    width: 128,
-    margin: '0 25px',
+    fontSize: 24,
+    height: 24,
+    width: 24,
+    marginRight: 12,
     color: 'deepskyblue'
 });
 
-export default class FullscreenOverlay extends React.Component {
+export default class extends React.Component {
 
     constructor(props){
         super(props);
@@ -53,44 +52,30 @@ export default class FullscreenOverlay extends React.Component {
             <div style={divStyle}>
                 
                 <div style={{
-                position: 'absolute', 
-                left: '50%', 
-                top: '50%',
-                transform: 'translate(-50%, -50%)'
+                    position: 'absolute', 
+                    paddingTop: '12px', 
+                    paddingLeft: '18px'
                 }}>
 
-                    <Stack token={{childrenGap: 32}}>
-                        <Stack.Item align="center">
+                    <Stack horizontal token={{childrenGap: 32}}>
+                        <Stack.Item>
                             <FontIcon iconName="RedEye" className={iconClass} />
                         </Stack.Item>
 
-                        <Stack.Item align="center">
-                            <Text variant={"xxLarge"}>
-                                Look at something 20 feet away.
-                            </Text>
+                        <Stack.Item>
+                            <Stack>
+                                <Text variant={"large"}> <b>Time for a break. </b> </Text>
+                                <Text variant={"medium"}> Look at something 20 feet away. </Text>
+                                <Text variant={"medium"} align="center">
+                                    {this.state.remainingTimeString}
+                                </Text>
+                            </Stack>
                         </Stack.Item>
                         
-                        <Stack.Item align="center">
-                            <Text variant={"xLarge"} align="center">
-                                {this.state.remainingTimeString}
-                            </Text>
-                        </Stack.Item>
-
                     </Stack>
 
                 </div>
 
-                <div style={{
-                    position: 'absolute', 
-                    left: '50%', 
-                    top: '90%',
-                    transform: 'translate(-50%, -50%)'
-                }}>
-                    <Text variant={"large"} align="center">
-                        The countdown will reset upon keyboard or mouse input.
-                    </Text>          
-                </div>
-                
             </div>
 
         );

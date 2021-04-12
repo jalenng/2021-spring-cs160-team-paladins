@@ -9,6 +9,7 @@ const soundPlayer = require('sound-play');
 require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
+require('./notificationSystem.js');
 
 const DEFAULT_WINDOW_SIZE = {
     defaultWidth: 800,
@@ -18,7 +19,10 @@ const DEFAULT_WINDOW_SIZE = {
 global.mainWindow; 
 
 timerSystem.on('timer-end', () => breakSystem.start());
+timerSystem.on('timer-end', () => notificationSystem.createWindows());
+
 breakSystem.on('break-end', () => timerSystem.start());
+breakSystem.on('break-end', () => notificationSystem.closeWindows());
 
 /**
  * Functions for creating windows

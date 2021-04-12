@@ -55,7 +55,7 @@ const { route } = require('./index.js');
         else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
       }
 
-      // Sends results based on create user success
+      // Response Codes
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
         res.status(200).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
@@ -79,7 +79,7 @@ const { route } = require('./index.js');
         if (decryptPass == dec_pass) { return true } else { return false }
       })
       
-      // Sends result based on login success
+      // Response Codes
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
         dName = await userDB.getDisplayName(email).then((res) => { return res; });
@@ -113,19 +113,14 @@ const { route } = require('./index.js');
       let dUsageOn = await userDB.getDataUsageOn(email).then((result) => { return result; })
       let aUsageOn = await userDB.getAppUsageOn(email).then((result) => { return result; })
  
-      // Send to frontend
+      // Response Codes
       if (notiInterval != false && notiSound != false && notiSoundOn != false) {
         res.status(200).send({
           notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
           dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: dUsageOn }
         });
       }
-      else {
-        res.status(504).send({
-          reason: "RETRIEVAL_FAILED", 
-          message: "Couldn't retrieve preferences." 
-        });
-      }
+      else { res.status(504).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }); }
  
     });
  
@@ -160,15 +155,8 @@ const { route } = require('./index.js');
       let success5 = await userDB.setAppUsageOn(email, aUsageOn).then((result) => { return result; })
 
       // Send to frontend
-      if (success1 == success2 == success3 == success4 == success5 == true) {
-        res.status(200);
-      }
-      else {
-        res.status(504).send({
-          reason: "SAVE_FAILED", 
-          message: "Couldn't save all preferences."
-        });
-      }
+      if (success1 == success2 == success3 == success4 == success5 == true) { res.status(200); }
+      else { res.status(504).send({ reason: "SAVE_FAILED", message: "Couldn't save all preferences." }); }
     });
 
     // Gets data usage (incomplete)
@@ -192,18 +180,9 @@ const { route } = require('./index.js');
       let dUsage = await userDB.getDataUsage(email, timePeriod).then((result) => { return result; });
       let aUsage = await userDB.getAppUsage(email, timePeriod).then((result) => { return result; });
 
-      if (dUsage != false && aUsage != false) {
-        res.status(200).send({ 
-          dataUsage: dUsage, 
-          appUsage: aUsage      // Sends JSONs
-        })
-      }
-      else {
-        res.status(504).send({
-          reason: "GET_REQUEST_FAILED", 
-          message: "Couldn't get data usage" 
-        })
-      }
+      // Response Codes (Sends JSONs)
+      if (dUsage != false && aUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
+      else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage" }) }
     });
 
     // Updates the data/app usage of user (incomplete)
@@ -236,22 +215,14 @@ const { route } = require('./index.js');
 
 
 
-
-      if (dusuccess == true && auSuccess == true) {
-        res.status(200);
-      }
-      else {
-        res.status(504).send({
-          reason: "UPDATE_FAILED", 
-          message: "Couldn't update data usage" 
-        })
-      }
+      // Response Codes
+      if (dusuccess == true && auSuccess == true) { res.status(200); }
+      else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage" }) }
 
     });
 
     // Change email (incomplete)
     router.put('/user/:user', async (req, res) => {
-
       let token = req.headers.auth.token;
       let oldEmail = ""
  
@@ -279,28 +250,12 @@ const { route } = require('./index.js');
       })
       
       // Response Code (check password)
-      if (success == true) {
-        success = await userDB.changeEmail(oldEmail, newEmail);
-      }
-      else {
-        res.status(401).send({ 
-          reason: "INVALID_CREDENTIALS", 
-          message: "Your password is incorrect." 
-        });
-      }
+      if (success == true) { success = await userDB.changeEmail(oldEmail, newEmail); }
+      else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Your password is incorrect." }); }
       
       // Response Code (check changeEmail success)
-      if (success == true) {
-        res.status(200);
-      }
-      else {
-        res.status(401).send({ 
-          reason: "BAD_EMAIL", 
-          message: "The email is already in use." 
-        });
-      }
-
-    
+      if (success == true) { res.status(200); }
+      else { res.status(401).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
     });
 
     // Delete user (incomplete)

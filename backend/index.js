@@ -58,7 +58,7 @@ const { route } = require('./index.js');
       // Sends results based on create user success
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
-        res.status(201).send({ 
+        res.status(200).send({ 
           token: tokenValue, 
           accountInfo: { email: email, displayName: dName }
         });

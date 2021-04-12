@@ -51,8 +51,8 @@ const { route } = require('./index.js');
         // CRYPTO: Encrypt password and store in the database
         let dec_pass = atob(password);
         let encrypted_pass = cryptr.encrypt(dec_pass);
-        if (email === null || password === null || displayName === false) { success = false; }
-        else { success = await userDB.createUser(email, encrypted_pass, displayName).then((result) => { return result; }); }
+        if (email === null || password === null || dName === false) { success = false; }
+        else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
       }
 
       // Sends results based on create user success
@@ -64,7 +64,7 @@ const { route } = require('./index.js');
         });
       }
       else {
-        let array = await api_methods.postCreateUser(displayName, password).then((result) => { return result; }); 
+        let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
         res.status(401).send({
           reason: array[0], 
           message: array[1]

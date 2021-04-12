@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { IconButton } from '@fluentui/react/lib/Button';
-import { Dropdown } from '@fluentui/react/lib/Dropdown';
+import { Dropdown, DropdownMenuItemType } from '@fluentui/react/lib/Dropdown';
 import { Slider } from '@fluentui/react/lib/Slider';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
@@ -25,7 +25,7 @@ export default class Notifications extends React.Component {
             notifications: getAllPreferences().notifications,
             sounds: getAllSounds()
         };
-    }
+    };
 
     componentDidMount() {
         // Update this component's state when preferences are updated
@@ -36,21 +36,43 @@ export default class Notifications extends React.Component {
         ipcRenderer.on('sounds-store-changed', () => {
             this.updateState();
         })
-    }
+    };
 
     updateState() {
         this.setState({
             notifications: getAllPreferences().notifications,
             sounds: getAllSounds()
         });
-    }
+    };
 
     render() {
 
-        const defaultSounds = this.state.sounds.defaultSounds;
-        const customSounds = this.state.sounds.customSounds;
+        let defaultSoundsHeader = [{ 
+            key: 'defaultSoundsHeader', 
+            text: 'Default', 
+            itemType: DropdownMenuItemType.Header
+        }];
+        let customSoundsHeader = [{ 
+            key: 'customSoundsHeader', 
+            text: 'Custom', 
+            itemType: DropdownMenuItemType.Header
+        }];
 
-        const combinedSoundList = defaultSounds.concat(customSounds);
+        let divider = [{   
+            key: 'div', 
+            text: '-', 
+            itemType: DropdownMenuItemType.Divider 
+        }]
+
+        let defaultSounds = this.state.sounds.defaultSounds;
+        let customSounds = this.state.sounds.customSounds;
+        
+        let combinedSoundList = 
+            defaultSoundsHeader
+            .concat(defaultSounds)
+            .concat(divider)
+            .concat(customSoundsHeader)
+            .concat(customSounds);
         
         return (
 
@@ -83,6 +105,13 @@ export default class Notifications extends React.Component {
                         options={combinedSoundList}
                         onChange={(event, option, index) => {
                             setPreference("notifications.sound", combinedSoundList[index].key)
+                        }}
+                    />
+
+                    <IconButton
+                        iconProps={{ iconName: 'Play' }}
+                        onClick={() => {
+                            ipcRenderer.invoke("play-sound", this.state.notifications.sound);
                         }}
                     />
 

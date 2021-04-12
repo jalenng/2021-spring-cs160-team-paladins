@@ -41,7 +41,7 @@ const { route } = require('./index.js');
     router.post('/user', async function (req, res) {
       let email = req.body.email;
       let password = req.body.password;
-      let displayName = req.body.displayName;
+      let dName = req.body.displayName;
 
       let success = true;
 
@@ -51,28 +51,22 @@ const { route } = require('./index.js');
         // CRYPTO: Encrypt password and store in the database
         let dec_pass = atob(password);
         let encrypted_pass = cryptr.encrypt(dec_pass);
-        if (email === null || password === null || displayName === false) { success = false; }
-        else { success = await userDB.createUser(email, encrypted_pass, displayName).then((result) => { return result; }); }
+        if (email === null || password === null || dName === false) { success = false; }
+        else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
       }
 
-      // Sends results based on create user success
+      // Response Codes
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
-        res.status(201).send({ 
-          token: tokenValue, 
-          accountInfo: { email: email, displayName: dName }
-        });
+        res.status(200).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
       }
       else {
-        let array = await api_methods.postCreateUser(displayName, password).then((result) => { return result; }); 
-        res.status(401).send({
-          reason: array[0], 
-          message: array[1]
-        });
+        let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
+        res.status(401).send({ reason: array[0], message: array[1] });
       }
     })
 
-    // User tries to login (test send)
+    // User tries to login
     router.post('/auth', async function (req, res) {
       let email = req.body.email;
       let password = req.body.password;
@@ -82,42 +76,35 @@ const { route } = require('./index.js');
       let dec_pass = atob(password)
       let success = await userDB.getPassword(email).then((r) => {
         let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } 
-        else { return false }
+        if (decryptPass == dec_pass) { return true } else { return false }
       })
       
-      // Sends result based on login success
+      // Response Codes
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
         dName = await userDB.getDisplayName(email).then((res) => { return res; });
-
-        res.status(200).send({
-          token: tokenValue, 
-          accountInfo: { email: email, displayName: dName } 
-        });
+        
+        res.status(200).send({ token: tokenValue,  accountInfo: { email: email, displayName: dName } });
       }
-      else {
-        res.status(401).send({
-          reason: "INVALID_CREDENTIALS",
-          message: "Authentication invalid"
-        })
-      }
+      else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Authentication invalid" }) }
 
     })
  
     // Gets preferences of user
     router.get('/pref/:user', async function (req, res) {
-      let token = req.body.auth.token;
+      let token = req.headers.auth.token;
+      let email = ""
  
-      let email = await userToken.getEmailFromToken(token);
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
 
-      // Invalid Token
-      if (email == false) {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "The token given is invalid" 
-        });
-      }
+        // Invalid Token
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
+
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
       
       // Get Preferences
       let notiInterval = await userDB.getNotiInterval(email).then((result) => { return result; })
@@ -126,35 +113,32 @@ const { route } = require('./index.js');
       let dUsageOn = await userDB.getDataUsageOn(email).then((result) => { return result; })
       let aUsageOn = await userDB.getAppUsageOn(email).then((result) => { return result; })
  
-      // Send to frontend
+      // Response Codes
       if (notiInterval != false && notiSound != false && notiSoundOn != false) {
         res.status(200).send({
           notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
           dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: dUsageOn }
         });
       }
-      else {
-        res.status(504).send({
-          reason: "RETRIEVAL_FAILED", 
-          message: "Couldn't retrieve preferences." 
-        });
-      }
+      else { res.status(504).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }); }
  
     });
  
     // Saves the user preferences (incomplete)
     router.put('/pref/:user', async function (req, res) {
-      let token = req.body.auth.token;
+      let token = req.headers.auth.token;
+      let email = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
 
-      let email = await userToken.getEmailFromToken(token);
+        // Invalid Token
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
 
-      // Invalid Token
-      if (email == false) {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "The token given is invalid"
-        });
-      }
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
 
       // Set Preferences
       let notiInterval = req.body.data.notifications.interval;
@@ -171,62 +155,51 @@ const { route } = require('./index.js');
       let success5 = await userDB.setAppUsageOn(email, aUsageOn).then((result) => { return result; })
 
       // Send to frontend
-      if (success1 == success2 == success3 == success4 == success5 == true) {
-        res.status(200);
-      }
-      else {
-        res.status(504).send({
-          reason: "SAVE_FAILED", 
-          message: "Couldn't save all preferences."
-        });
-      }
+      if (success1 == success2 == success3 == success4 == success5 == true) { res.status(200); }
+      else { res.status(504).send({ reason: "SAVE_FAILED", message: "Couldn't save all preferences." }); }
     });
 
     // Gets data usage (incomplete)
     router.get('/data/:user', async (req, res) => {
-      let token = req.body.auth.token;
+      let token = req.headers.auth.token;
+      let email = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
+
+        // Invalid Token
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
+
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
       let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
-
-      let email = await userToken.getEmailFromToken(token);
-
-      // Invalid Token
-      if (email == false) {
-        res.status(504).send({
-           reason: "INVALID_TOKEN", 
-           message: "The token given is invalid" 
-        });
-      }
 
       // Get Usage Data
       let dUsage = await userDB.getDataUsage(email, timePeriod).then((result) => { return result; });
       let aUsage = await userDB.getAppUsage(email, timePeriod).then((result) => { return result; });
 
-      if (dUsage != false && aUsage != false) {
-        res.status(200).send({ 
-          dataUsage: dUsage, 
-          appUsage: aUsage      // Sends JSONs
-        })
-      }
-      else {
-        res.status(504).send({
-          reason: "GET_REQUEST_FAILED", 
-          message: "Couldn't get data usage" 
-        })
-      }
+      // Response Codes (Sends JSONs)
+      if (dUsage != false && aUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
+      else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage" }) }
     });
 
     // Updates the data/app usage of user (incomplete)
     router.put('/data/:user', async (req, res) => {
-      let token = req.body.auth.token;
-      
-      let email = await userToken.getEmailFromToken(token);
-      // Invalid Token
-      if (email == false) {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "The token given is invalid" 
-        });
-      }
+      let token = req.headers.auth.token;
+      let email = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
+
+        // Invalid Token
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
+
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
 
       // Sets Update Data
       let todayScreenTime = req.body.data.dailyDataUsage.screenTime;
@@ -242,31 +215,27 @@ const { route } = require('./index.js');
 
 
 
-
-      if (dusuccess == true && auSuccess == true) {
-        res.status(200);
-      }
-      else {
-        res.status(504).send({
-          reason: "UPDATE_FAILED", 
-          message: "Couldn't update data usage" 
-        })
-      }
+      // Response Codes
+      if (dusuccess == true && auSuccess == true) { res.status(200); }
+      else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage" }) }
 
     });
 
     // Change email (incomplete)
     router.put('/user/:user', async (req, res) => {
-      let token = req.body.auth.token;
-      let oldEmail = await userToken.getEmailFromToken(token);
+      let token = req.headers.auth.token;
+      let oldEmail = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        oldEmail = await userToken.getEmailFromToken(token);
 
-      // Invalid Token
-      if (oldEmail == false) {
-        res.status(504).send({
-          status: 504, 
-          data: { reason: "INVALID_TOKEN", message: "The token given is invalid" }
-        });
-      }
+        // Invalid Token
+        if (oldEmail == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
+
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
 
       // Set new password
       let newEmail = req.body.data.email;
@@ -281,44 +250,29 @@ const { route } = require('./index.js');
       })
       
       // Response Code (check password)
-      if (success == true) {
-        success = await userDB.changeEmail(oldEmail, newEmail);
-      }
-      else {
-        res.status(401).send({ 
-          reason: "INVALID_CREDENTIALS", 
-          message: "Your password is incorrect." 
-        });
-      }
+      if (success == true) { success = await userDB.changeEmail(oldEmail, newEmail); }
+      else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Your password is incorrect." }); }
       
       // Response Code (check changeEmail success)
-      if (success == true) {
-        res.status(200);
-      }
-      else {
-        res.status(401).send({ 
-          reason: "BAD_EMAIL", 
-          message: "The email is already in use." 
-        });
-      }
-
-    
+      if (success == true) { res.status(200); }
+      else { res.status(401).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
     });
 
     // Delete user (incomplete)
-    router.delete('/user/:user', async (req, res) => {
-      let token = req.body.auth.token;
+    router.delete('/user', async (req, res) => {
+      let token = req.headers.auth.token;
+      let email = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
 
-      let email = await userToken.getEmailFromToken(token);
+        // Invalid Token
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
 
-      // Invalid Token
-      if (email == false) {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "The token given is invalid" 
-        });
-      }
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
 
+      //------------------------
       // Delete User
       let pass = req.body.data.password;
 
@@ -331,17 +285,8 @@ const { route } = require('./index.js');
       })
       
       // Response Code
-      if (success == true) {
-        res.status(200);
-      }
-      else {
-        res.status(504).send({
-          reason: "INVALID_CREDENTIALS", message: 
-          "Couldn't delete account." 
-        });
-      }
-
-
+      if (success == true) { res.status(200); }
+      else { res.status(504).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
     });
  
     //--------------------------
@@ -353,3 +298,35 @@ const { route } = require('./index.js');
     module.exports = app;
   }()
 );
+
+ // Database Connection
+ let db = require('./db.js');
+ let userDB = new db("localhost", "newuser", "password", "iCare");
+
+ // API Methods
+ let apiM = require('./api_methods.js');
+ let api_methods = new apiM();
+
+ // Crypto Requirements
+ var atob = require('atob');
+ var Cryptr = require('cryptr'),
+ cryptr = new Cryptr('myTotalySecretKey'); 
+
+ // Token Methods
+ let tokenClass = require('./token.js')
+ let userToken = new tokenClass();
+
+
+async function test() {
+  
+  let value;
+  console.log(value)
+
+  if (typeof value !== 'undefined') {
+    console.log("Success")
+  }
+  else {
+  console.log("Fail")
+}
+
+}

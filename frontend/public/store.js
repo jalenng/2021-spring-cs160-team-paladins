@@ -7,10 +7,10 @@ const SERVER_URL = 'http://165.232.156.120:3000'
 
 /* Preferences defaults */
 const preferencesStoreDefaults = {
-        notifications: {
+    notifications: {
         enableSound: true,
         interval: 20,
-        sound: "Bell.mp3"
+        sound: '../sounds/Long Expected.mp3'
     },
     dataUsage: {
         trackAppUsageStats: true,
@@ -26,9 +26,33 @@ const preferencesStoreDefaults = {
 const soundsStoreDefaults = {
     defaultSounds: [
         {
-            key: "Bell.mp3",
-            text: "Bell"
-        }
+            key: '../sounds/Clearly.mp3',
+            text: 'Clearly'
+        },
+        {
+            key: '../sounds/Done For You.mp3',
+            text: 'Done For You'
+        },
+        {
+            key: '../sounds/Insight.mp3',
+            text: 'Insight'
+        },
+        {
+            key: '../sounds/Juntos.mp3',
+            text: 'Juntos'
+        },
+        {
+            key: '../sounds/Long Expected.mp3',
+            text: 'Long Expected'
+        },
+        {
+            key: '../sounds/Pristine.mp3',
+            text: 'Pristine'
+        },
+        {
+            key: '../sounds/When.mp3',
+            text: 'When'
+        },
     ],
     customSounds: []
 }
@@ -51,7 +75,7 @@ const storeOptions = {
     },
     watch: true
 }
-const store = new Store(storeOptions);
+global.store = new Store(storeOptions);
 
 
 /**
@@ -117,7 +141,7 @@ ipcMain.handle('addCustomSound', (event) => {
         title: 'Choose custom sound',
         filters: [{
             name: 'Audio files',
-            extensions: ['wav', 'mp3', 'ogg']
+            extensions: ['wav', 'mp3']
         }],
         defaultPath: app.getPath('music'),
         properties: ['openFile', 'dontAddToRecent']

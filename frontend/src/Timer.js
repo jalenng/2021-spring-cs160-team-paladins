@@ -13,7 +13,7 @@ export default class Timer extends React.Component {
     this.state = {
       minutes: '0',
       seconds: '0',
-      buttonLabel: '',
+      togglePauseLabel: '',
       state: '',
       key: 0,
       isAnimate: 'true',
@@ -21,7 +21,7 @@ export default class Timer extends React.Component {
 
     ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
       var state = timerStatus.state;
-      var buttonLabel = state === 'stopped' ? 'START' : 'RESET';
+      var togglePauseLabel = state !== 'running' ? 'START' : 'PAUSE';
       var milliseconds = timerStatus.remainingTime;
       var minutes = Math.floor(milliseconds / 60000);
       var seconds = Math.floor((milliseconds % 60000) / 1000);
@@ -32,7 +32,7 @@ export default class Timer extends React.Component {
         minutes: minutes,
         seconds: seconds,
         milliseconds: milliseconds,
-        buttonLabel: buttonLabel,
+        togglePauseLabel: togglePauseLabel,
         state: state,
         isAnimate: isAnimate,
       });
@@ -42,7 +42,7 @@ export default class Timer extends React.Component {
   componentDidMount() {
     ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
       var state = timerStatus.state;
-      var buttonLabel = state === 'stopped' ? 'START' : 'RESET';
+      var togglePauseLabel = state !== 'running' ? 'START' : 'PAUSE';
       var milliseconds = timerStatus.remainingTime;
       var minutes = Math.floor(milliseconds / 60000);
       var seconds = Math.floor((milliseconds % 60000) / 1000);
@@ -52,7 +52,7 @@ export default class Timer extends React.Component {
         minutes: minutes,
         seconds: seconds,
         milliseconds: milliseconds,
-        buttonLabel: buttonLabel,
+        togglePauseLabel: togglePauseLabel,
         state: state,
       });
     });
@@ -77,6 +77,10 @@ export default class Timer extends React.Component {
     this.setState({ key: this.state.key - 1 });
   };
 
+  togglePause = () => {
+    ipcRenderer.invoke('pause-toggle')
+  }
+
   render() {
     let renderTime = () => {
       return (
@@ -95,11 +99,11 @@ export default class Timer extends React.Component {
 
             <Stack horizontal tokens={{ childrenGap: 20 }}>
               <PrimaryButton
-                  text={'PAUSE'}
-                  onClick={console.log('paused')}
+                  text={this.state.togglePauseLabel}
+                  onClick={this.togglePause}
               />
               <PrimaryButton
-                    text={this.state.buttonLabel}
+                    text={'RESET'}
                     onClick={this.handleClick}
               />
             </Stack>
@@ -113,8 +117,6 @@ export default class Timer extends React.Component {
         </Stack>
       );
     };
-
-    let duration = parseInt(this.state.minutes) * parseInt(this.state.seconds)
 
     return (
       <div>

@@ -8,6 +8,8 @@ const states = {
     STOPPED: 'stopped',
     RUNNING: 'running',
     RESTING: 'resting',
+
+    PAUSED:  'paused',
 }
 
 var timeout;
@@ -119,6 +121,16 @@ const TimerSystem = function(){
         
     }
 
+    this.togglePause = function() {
+        if (this.state !== states.RUNNING) {
+            this.state = states.RUNNING;
+            this.setupTimes();
+        }
+        else {
+            this.state = states.PAUSED;
+        }
+    }
+
 }
 
 
@@ -149,6 +161,11 @@ ipcMain.handle('timer-end', () => {
 ipcMain.on('get-timer-status', (event) => {
     event.reply('receive-timer-status', global.timerSystem.getStatus());
 });
+
+// Toggle pause
+ipcMain.handle('pause-toggle', () => {
+    global.timerSystem.togglePause();
+})
 
 
 module.exports = {

@@ -58,17 +58,11 @@ const { route } = require('./index.js');
       // Sends results based on create user success
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
-        res.status(200).send({ 
-          token: tokenValue, 
-          accountInfo: { email: email, displayName: dName }
-        });
+        res.status(200).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
       }
       else {
         let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
-        res.status(401).send({
-          reason: array[0], 
-          message: array[1]
-        });
+        res.status(401).send({ reason: array[0], message: array[1] });
       }
     })
 
@@ -82,32 +76,23 @@ const { route } = require('./index.js');
       let dec_pass = atob(password)
       let success = await userDB.getPassword(email).then((r) => {
         let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } 
-        else { return false }
+        if (decryptPass == dec_pass) { return true } else { return false }
       })
       
       // Sends result based on login success
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
         dName = await userDB.getDisplayName(email).then((res) => { return res; });
-
-        res.status(200).send({
-          token: tokenValue, 
-          accountInfo: { email: email, displayName: dName } 
-        });
+        
+        res.status(200).send({ token: tokenValue,  accountInfo: { email: email, displayName: dName } });
       }
-      else {
-        res.status(401).send({
-          reason: "INVALID_CREDENTIALS",
-          message: "Authentication invalid"
-        })
-      }
+      else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Authentication invalid" }) }
 
     })
  
     // Gets preferences of user
     router.get('/pref/:user', async function (req, res) {
-      let token = req.body.auth.token;
+      let token = req.headers.auth.token;
       let email = ""
  
       // Checking the token
@@ -115,19 +100,11 @@ const { route } = require('./index.js');
         email = await userToken.getEmailFromToken(token);
 
         // Invalid Token
-        if (email == false) {
-          res.status(504).send({
-            reason: "INVALID_TOKEN", 
-            message: "The token given is invalid" 
-          });
-        }
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
 
-      } else {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "No token was given." 
-        });
-      }
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
       
       // Get Preferences
       let notiInterval = await userDB.getNotiInterval(email).then((result) => { return result; })
@@ -154,7 +131,7 @@ const { route } = require('./index.js');
  
     // Saves the user preferences (incomplete)
     router.put('/pref/:user', async function (req, res) {
-      let token = req.body.auth.token;
+      let token = req.headers.auth.token;
       let email = ""
  
       // Checking the token
@@ -162,19 +139,11 @@ const { route } = require('./index.js');
         email = await userToken.getEmailFromToken(token);
 
         // Invalid Token
-        if (email == false) {
-          res.status(504).send({
-            reason: "INVALID_TOKEN", 
-            message: "The token given is invalid" 
-          });
-        }
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
 
-      } else {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "No token was given." 
-        });
-      }
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
 
       // Set Preferences
       let notiInterval = req.body.data.notifications.interval;
@@ -204,8 +173,7 @@ const { route } = require('./index.js');
 
     // Gets data usage (incomplete)
     router.get('/data/:user', async (req, res) => {
-      let token = req.body.auth.token;
-      let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
+      let token = req.headers.auth.token;
       let email = ""
  
       // Checking the token
@@ -213,19 +181,12 @@ const { route } = require('./index.js');
         email = await userToken.getEmailFromToken(token);
 
         // Invalid Token
-        if (email == false) {
-          res.status(504).send({
-            reason: "INVALID_TOKEN", 
-            message: "The token given is invalid" 
-          });
-        }
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
 
-      } else {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "No token was given." 
-        });
-      }
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
+      let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
 
       // Get Usage Data
       let dUsage = await userDB.getDataUsage(email, timePeriod).then((result) => { return result; });
@@ -247,7 +208,7 @@ const { route } = require('./index.js');
 
     // Updates the data/app usage of user (incomplete)
     router.put('/data/:user', async (req, res) => {
-      let token = req.body.auth.token;
+      let token = req.headers.auth.token;
       let email = ""
  
       // Checking the token
@@ -255,19 +216,11 @@ const { route } = require('./index.js');
         email = await userToken.getEmailFromToken(token);
 
         // Invalid Token
-        if (email == false) {
-          res.status(504).send({
-            reason: "INVALID_TOKEN", 
-            message: "The token given is invalid" 
-          });
-        }
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
 
-      } else {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "No token was given." 
-        });
-      }
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+
+      //------------------------
 
       // Sets Update Data
       let todayScreenTime = req.body.data.dailyDataUsage.screenTime;
@@ -298,7 +251,8 @@ const { route } = require('./index.js');
 
     // Change email (incomplete)
     router.put('/user/:user', async (req, res) => {
-      let token = req.body.auth.token;
+
+      let token = req.headers.auth.token;
       let oldEmail = ""
  
       // Checking the token
@@ -306,28 +260,11 @@ const { route } = require('./index.js');
         oldEmail = await userToken.getEmailFromToken(token);
 
         // Invalid Token
-        if (oldEmail == false) {
-          res.status(504).send({
-            reason: "INVALID_TOKEN", 
-            message: "The token given is invalid" 
-          });
-        }
+        if (oldEmail == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
 
-      } else {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "No token was given." 
-        });
-      }
-      
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
 
-      // Invalid Token
-      if (oldEmail == false) {
-        res.status(504).send({
-          status: 504, 
-          data: { reason: "INVALID_TOKEN", message: "The token given is invalid" }
-        });
-      }
+      //------------------------
 
       // Set new password
       let newEmail = req.body.data.email;
@@ -368,12 +305,7 @@ const { route } = require('./index.js');
 
     // Delete user (incomplete)
     router.delete('/user', async (req, res) => {
-
-      console.log("In router.delete: ")
-      console.log(req.headers)
-
       let token = req.headers.auth.token;
-     
       let email = ""
  
       // Checking the token
@@ -381,21 +313,11 @@ const { route } = require('./index.js');
         email = await userToken.getEmailFromToken(token);
 
         // Invalid Token
-        if (email == false) {
-          res.status(504).send({
-            reason: "INVALID_TOKEN", 
-            message: "The token given is invalid" 
-          });
-        }
+        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
 
-      } else {
-        res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "No token was given." 
-        });
-      }
+      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
 
-
+      //------------------------
       // Delete User
       let pass = req.body.data.password;
 
@@ -408,17 +330,8 @@ const { route } = require('./index.js');
       })
       
       // Response Code
-      if (success == true) {
-        res.status(200);
-      }
-      else {
-        res.status(504).send({
-          reason: "INVALID_CREDENTIALS", message: 
-          "Couldn't delete account." 
-        });
-      }
-
-
+      if (success == true) { res.status(200); }
+      else { res.status(504).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
     });
  
     //--------------------------

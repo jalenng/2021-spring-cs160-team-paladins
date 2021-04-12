@@ -329,9 +329,15 @@ const { route } = require('./index.js');
   let email = 'test@gmail.com'
   let password = 'passpasspass';
   let dName = 'test';
+<<<<<<< HEAD
 
   let success = true;
 
+=======
+
+  let success = true;
+
+>>>>>>> ca128ad (testing code)
   // Checks password length
   if (password.length < 8) { success = false; }
   else {
@@ -352,6 +358,7 @@ const { route } = require('./index.js');
   }
  }
 
+<<<<<<< HEAD
 
  // WORKING
  async function testLogin() {
@@ -373,6 +380,27 @@ const { route } = require('./index.js');
     let tokenValue = await userToken.createToken(email).then((res) => { return res });
     dName = await userDB.getDisplayName(email).then((res) => { return res; });
 
+=======
+
+ // WORKING
+ async function testLogin() {
+  let email = 'test@gmail.com'
+  let password = 'passpasspass';
+  let dName = '';
+
+  // Checks crypto pass
+  let dec_pass = atob(password)
+  let success = await userDB.getPassword(email).then((r) => {
+    let decryptPass = cryptr.decrypt(r)
+    if (decryptPass == dec_pass) { return true } else { return false }
+  })
+  
+  // Response Codes
+  if (success == true) {
+    let tokenValue = await userToken.createToken(email).then((res) => { return res });
+    dName = await userDB.getDisplayName(email).then((res) => { return res; });
+
+>>>>>>> ca128ad (testing code)
     console.log("Sucessful Login DN: " + dName)
     
   }
@@ -382,10 +410,18 @@ const { route } = require('./index.js');
 
 async function test() {
   
+<<<<<<< HEAD
   //await testCreate()
+=======
+  await testCreate()
+>>>>>>> ca128ad (testing code)
   await testLogin()
 
 }
 
 
+<<<<<<< HEAD
 //test()
+=======
+test();
+>>>>>>> ca128ad (testing code)

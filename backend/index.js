@@ -368,7 +368,7 @@ const { route } = require('./index.js');
 
     // Delete user (incomplete)
     router.delete('/user', async (req, res) => {
-      let token = req.body.auth.token;
+      let token = req.header.auth.token;
      
       let email = ""
  

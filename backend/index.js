@@ -72,7 +72,7 @@ const { route } = require('./index.js');
       }
     })
 
-    // User tries to login (test send)
+    // User tries to login
     router.post('/auth', async function (req, res) {
       let email = req.body.email;
       let password = req.body.password;
@@ -108,14 +108,24 @@ const { route } = require('./index.js');
     // Gets preferences of user
     router.get('/pref/:user', async function (req, res) {
       let token = req.body.auth.token;
+      let email = ""
  
-      let email = await userToken.getEmailFromToken(token);
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
 
-      // Invalid Token
-      if (email == false) {
+        // Invalid Token
+        if (email == false) {
+          res.status(504).send({
+            reason: "INVALID_TOKEN", 
+            message: "The token given is invalid" 
+          });
+        }
+
+      } else {
         res.status(504).send({
           reason: "INVALID_TOKEN", 
-          message: "The token given is invalid" 
+          message: "No token was given." 
         });
       }
       
@@ -145,14 +155,24 @@ const { route } = require('./index.js');
     // Saves the user preferences (incomplete)
     router.put('/pref/:user', async function (req, res) {
       let token = req.body.auth.token;
+      let email = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
 
-      let email = await userToken.getEmailFromToken(token);
+        // Invalid Token
+        if (email == false) {
+          res.status(504).send({
+            reason: "INVALID_TOKEN", 
+            message: "The token given is invalid" 
+          });
+        }
 
-      // Invalid Token
-      if (email == false) {
+      } else {
         res.status(504).send({
           reason: "INVALID_TOKEN", 
-          message: "The token given is invalid"
+          message: "No token was given." 
         });
       }
 
@@ -186,14 +206,24 @@ const { route } = require('./index.js');
     router.get('/data/:user', async (req, res) => {
       let token = req.body.auth.token;
       let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
+      let email = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
 
-      let email = await userToken.getEmailFromToken(token);
+        // Invalid Token
+        if (email == false) {
+          res.status(504).send({
+            reason: "INVALID_TOKEN", 
+            message: "The token given is invalid" 
+          });
+        }
 
-      // Invalid Token
-      if (email == false) {
+      } else {
         res.status(504).send({
-           reason: "INVALID_TOKEN", 
-           message: "The token given is invalid" 
+          reason: "INVALID_TOKEN", 
+          message: "No token was given." 
         });
       }
 
@@ -218,13 +248,24 @@ const { route } = require('./index.js');
     // Updates the data/app usage of user (incomplete)
     router.put('/data/:user', async (req, res) => {
       let token = req.body.auth.token;
-      
-      let email = await userToken.getEmailFromToken(token);
-      // Invalid Token
-      if (email == false) {
+      let email = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
+
+        // Invalid Token
+        if (email == false) {
+          res.status(504).send({
+            reason: "INVALID_TOKEN", 
+            message: "The token given is invalid" 
+          });
+        }
+
+      } else {
         res.status(504).send({
           reason: "INVALID_TOKEN", 
-          message: "The token given is invalid" 
+          message: "No token was given." 
         });
       }
 
@@ -258,7 +299,27 @@ const { route } = require('./index.js');
     // Change email (incomplete)
     router.put('/user/:user', async (req, res) => {
       let token = req.body.auth.token;
-      let oldEmail = await userToken.getEmailFromToken(token);
+      let oldEmail = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        oldEmail = await userToken.getEmailFromToken(token);
+
+        // Invalid Token
+        if (oldEmail == false) {
+          res.status(504).send({
+            reason: "INVALID_TOKEN", 
+            message: "The token given is invalid" 
+          });
+        }
+
+      } else {
+        res.status(504).send({
+          reason: "INVALID_TOKEN", 
+          message: "No token was given." 
+        });
+      }
+      
 
       // Invalid Token
       if (oldEmail == false) {
@@ -309,25 +370,27 @@ const { route } = require('./index.js');
     router.delete('/user', async (req, res) => {
       let token = req.body.auth.token;
      
-     if (typeof token !== 'undefined') {
-      let email = await userToken.getEmailFromToken(token);
-     }
-     else {
-      res.status(504).send({
-          reason: "INVALID_TOKEN", 
-          message: "No token is given" 
-        });
-     }
+      let email = ""
+ 
+      // Checking the token
+      if (typeof token !== 'undefined') {
+        email = await userToken.getEmailFromToken(token);
 
-      
+        // Invalid Token
+        if (email == false) {
+          res.status(504).send({
+            reason: "INVALID_TOKEN", 
+            message: "The token given is invalid" 
+          });
+        }
 
-      // Invalid Token
-      if (email == false) {
+      } else {
         res.status(504).send({
           reason: "INVALID_TOKEN", 
-          message: "The token given is invalid" 
+          message: "No token was given." 
         });
       }
+
 
       // Delete User
       let pass = req.body.data.password;
@@ -363,3 +426,38 @@ const { route } = require('./index.js');
     module.exports = app;
   }()
 );
+
+ // Database Connection
+ let db = require('./db.js');
+ let userDB = new db("localhost", "newuser", "password", "iCare");
+
+ // API Methods
+ let apiM = require('./api_methods.js');
+ let api_methods = new apiM();
+
+ // Crypto Requirements
+ var atob = require('atob');
+ var Cryptr = require('cryptr'),
+ cryptr = new Cryptr('myTotalySecretKey'); 
+
+ // Token Methods
+ let tokenClass = require('./token.js')
+ let userToken = new tokenClass();
+
+
+async function test() {
+  
+  let value;
+  console.log(value)
+
+  if (typeof value !== 'undefined') {
+    console.log("Success")
+  }
+  else {
+  console.log("Fail")
+}
+
+
+}
+
+test();

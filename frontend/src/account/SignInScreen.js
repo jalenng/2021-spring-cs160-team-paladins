@@ -60,7 +60,7 @@ export default class extends React.Component {
     // Handles a submit
     handleSubmit(event) {
         event.preventDefault();
-        this.setSpinner(false);
+        this.setSpinner(true);
         let state = this.state;
         
         // Authenticate user with sign-in

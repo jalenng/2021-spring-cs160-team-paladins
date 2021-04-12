@@ -1,9 +1,7 @@
-const { ipcMain, dialog, app } = require('electron');
+const { ipcMain, dialog, app, systemPreferences } = require('electron');
 const Store = require('electron-store');
 const path = require('path');
 const axios = require('axios');
-
-const SERVER_URL = 'http://165.232.156.120:3000'
 
 /* Preferences defaults */
 const preferencesStoreDefaults = {
@@ -77,6 +75,13 @@ const storeOptions = {
 }
 global.store = new Store(storeOptions);
 
+/* Configure axios */
+axios.defaults.baseURL = 'http://165.232.156.120:3000';
+axios.defaults.timeout = 10000;
+axios.defaults.headers.common['auth'] = {
+    token: store.get('account.token')
+};
+
 
 /**
  * Handler for store change events
@@ -101,8 +106,11 @@ store.onDidChange('sounds', () => {
     global.mainWindow.webContents.send('sounds-store-changed');
 });
 
-// Notifies the main window of account store updates
+// Notifies the main window of account store updates, and updates 
 store.onDidChange('account', () => {
+    axios.defaults.headers.common['auth'] = {
+        token: store.get('account.token')
+    };
     global.mainWindow.webContents.send('account-store-changed');
 });
 
@@ -201,14 +209,14 @@ ipcMain.handle('authenticate', async (event, email, password, createAccount = fa
         let data;
 
         if (createAccount) {
-            url = `${SERVER_URL}/user`
+            url = 'user'
             data = {
                 email: email,
                 password: password,
                 displayName: displayName
             }
         } else {
-            url = `${SERVER_URL}/auth`
+            url = 'auth'
             data = {
                 email: email,
                 password: password
@@ -278,7 +286,7 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
         if (deleteAccount) {
 
             // Send DELETE request
-            let url = `${SERVER_URL}/user`
+            let url = 'user'
             let data = {
                 password: password,
             }
@@ -301,6 +309,7 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
 
     // Handle errors
     catch (error) {
+        console.log(error)
 
         // Check if backend returned a reason and message for the error
         let responseMessageExists = 
@@ -341,7 +350,7 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
     try {
         
         // Send PUT request        
-        let url = `${SERVER_URL}/user`;
+        let url = 'user'
         let data = {
             email: email,
             displayName: displayName,

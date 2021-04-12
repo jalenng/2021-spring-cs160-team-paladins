@@ -14,6 +14,7 @@ const BREAK_DURATION = 20000;
 
 var oldMousePos;
 var checkMousePositionInterval;
+
 var timeout;
 
 const BreakSystem = function(){
@@ -84,7 +85,7 @@ const BreakSystem = function(){
                 }
 
             }, 100);            
-
+            
         }
         
     }

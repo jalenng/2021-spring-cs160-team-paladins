@@ -51,6 +51,22 @@ const NotificationSystem = function() {
     }
 
     /**
+     * Show the fullscreen and hide the popup notification windows
+     */
+    this.maximize = function() {
+        this.fullscreenWindows.map(window => window.show());
+        this.popupWindows.map(window => window.hide());
+    }
+
+    /**
+     * Hide the fullscreen and show the popup notification windows
+     */
+    this.minimize = function() {
+        this.fullscreenWindows.map(window => window.hide());
+        this.popupWindows.map(window => window.show());
+    }
+
+    /**
      * Pushes a fullscreen notification window
      * @param {Display} display the display to bound the window to
      */
@@ -80,10 +96,6 @@ const NotificationSystem = function() {
             ? 'http://localhost:3000#/fullscreenNotification'
             : `file://${path.join(__dirname, '../build/index.html#fullscreenNotification')}`
         ); 
-
-        window.on('ready-to-show', () => {
-            window.show();
-        })
 
         this.fullscreenWindows.push(window);
 
@@ -121,10 +133,6 @@ const NotificationSystem = function() {
             ? 'http://localhost:3000#/popupNotification'
             : `file://${path.join(__dirname, '../build/index.html#popupNotification')}`
         ); 
-
-        window.on('ready-to-show', () => {
-            window.show();
-        })
 
         this.popupWindows.push(window);
 

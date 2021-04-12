@@ -1,6 +1,4 @@
-require ('hazardous');
-
-const { app, BrowserWindow, ipcMain } = require('electron'); 
+const { app, BrowserWindow, ipcMain, dialog } = require('electron'); 
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
@@ -9,6 +7,7 @@ const soundPlayer = require('sound-play');
 require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
+require('./accountPopups');
 
 const DEFAULT_WINDOW_SIZE = {
     defaultWidth: 800,
@@ -40,6 +39,7 @@ function createWindow() {
         maximizable: false,
         title: "iCare",
         backgroundColor: '#222222', 
+        show: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -58,9 +58,25 @@ function createWindow() {
         : `file://${path.join(__dirname, '../build/index.html')}`
     ); 
 
+    global.mainWindow.on('ready-to-show', () => global.mainWindow.show());
+
     // Prevent opening new windows
     mainWindow.webContents.on('new-window', (e, url) => {
         e.preventDefault()
+    })
+
+    // Handle closing through a confirmation dialog
+    mainWindow.on('close', (e) => {
+        const closeConfirm = dialog.showMessageBoxSync(mainWindow, {
+            type: 'question',
+            title: 'iCare',
+            message: 'Close iCare?',
+            detail: 'You will not receive notifications when the app is closed.',
+            buttons: ['Yes', 'No'],
+            defaultId: 1
+        })
+        // Don't close window if selected button is 'Yes'
+        if (closeConfirm === 1) e.preventDefault();
     })
 
 } 
@@ -101,37 +117,6 @@ app.on('window-all-closed', function () {
 // Log to main process's console
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
-})
-
-// Show sign-in window when account button is clicked
-ipcMain.handle('show-sign-in-popup', event => {
-
-    // Sign in Window
-    const signInWindow = new BrowserWindow({
-        width: 380,
-        height: 380,
-        // modal: true,
-        resizable: false,
-        minimizable: false,
-        maximizable: false,
-        title: "Sign in",
-        backgroundColor: '#222222',
-        parent: global.mainWindow,
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-
-    })
-    signInWindow.menuBarVisible = false
-    
-    signInWindow.loadURL( 
-        isDev
-        ? 'http://localhost:3000#/signin'
-        : `file://${path.join(__dirname, '../build/index.html#signin')}`
-    ); 
-
 })
 
 // Play sound file

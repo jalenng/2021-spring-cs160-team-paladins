@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DefaultButton, ActionButton } from '@fluentui/react/lib/Button';
+import { DefaultButton, ActionButton, IconButton } from '@fluentui/react/lib/Button';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
@@ -10,10 +10,10 @@ const { ipcRenderer } = window.require('electron');
 const {
     getAccountStore,
     signOut
- } = require('../storeHelperFunctions');
+} = require('../storeHelperFunctions');
 
  
-export default class YourAccounts extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);
@@ -32,11 +32,13 @@ export default class YourAccounts extends React.Component {
     }
 
     render() {
+
         // Get account store info from account store
         const isSignedIn = this.state.token != null
         const displayName = this.state.accountInfo.displayName
+        const email = this.state.accountInfo.email
 
-        let regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
+        const regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
         let displayInitials = [...displayName.matchAll(regex)] || [];
         displayInitials = (
             (displayInitials.shift()?.[1] || '') + (displayInitials.pop()?.[1] || '')
@@ -46,17 +48,28 @@ export default class YourAccounts extends React.Component {
             imageInitials: displayInitials,
             text: displayName,
 
-            // Display "Sign out" and "Delete account" button only if signed in
+            // Display email address only if signed in
             onRenderSecondaryText: () => {
+                if (isSignedIn) {
+                    return (
+                        <Text> {email} </Text> 
+                    )
+                }
+            },
+
+            // Display "Sign out" and "Delete account" button only if signed in
+            onRenderTertiaryText: () => {
                 if (isSignedIn) {
                     return (
                         <Stack horizontal
                             verticalAlign="center"
-                            style={{ marginTop: "6px" }}
+                            style={{ marginTop: "12px" }}
                             tokens={{ childrenGap: 20 }}
                         >
                             <DefaultButton text="Sign out" onClick={signOut} />
-                            <ActionButton> Delete account </ActionButton>
+                            <ActionButton onClick={() => ipcRenderer.invoke('show-delete-account-popup')}> 
+                                Delete account 
+                            </ActionButton>
                         </Stack>
                     )
                 }
@@ -67,7 +80,19 @@ export default class YourAccounts extends React.Component {
 
             <Stack id="your_accounts" tokens={{ childrenGap: 10 }}>
 
-                <Text variant={'xLarge'} block> Your account </Text>
+                <Stack horizontal
+                    verticalAlign="center"
+                    tokens={{ childrenGap: 20 }} >
+                    <Text variant={'xLarge'} block> Your account </Text>
+
+                    {/* Show Edit button only if signed in */}
+                    { isSignedIn && 
+                        <IconButton
+                            iconProps={{ iconName: 'Edit' }}
+                            onClick={() => ipcRenderer.invoke('show-edit-account-popup')}
+                        />
+                    }
+                </Stack>
 
                 <Persona
                     {...yourAccountsPersona}

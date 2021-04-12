@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import './css/index.css';
 
 import App from './App';
-import SignInScreen from './SignInScreen';
-import SignUpScreen from './SignUpScreen';
+import DeleteAccountScreen from './account/DeleteAccountScreen';
+import EditAccountScreen from './account/EditAccountScreen';
+import SignInScreen from './account/SignInScreen';
+import SignUpScreen from './account/SignUpScreen';
 import FullscreenOverlay from './FullscreenOverlay';
 
 import { HashRouter, Route, Switch } from "react-router-dom";
@@ -53,6 +55,8 @@ ReactDOM.render(
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />
+          <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
+          <Route path="/editAccount" exact component={EditAccountScreen} />
           <Route path="/fullscreenNotification" exact component={FullscreenOverlay} />
         </div>
       </Switch>

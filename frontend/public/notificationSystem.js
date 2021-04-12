@@ -37,8 +37,10 @@ const NotificationSystem = function() {
      */
     this.createWindows = function() {
         // Get displays and create notification windows
+        this.fullscreenWindows = [];
+        this.popupWindows = [];
         const displays = screen.getAllDisplays();
-        // displays.map(this.createFullscreenWindow.bind(this));
+        displays.map(this.createFullscreenWindow.bind(this));
         displays.map(this.createPopupWindow.bind(this));    
     }
 
@@ -62,8 +64,13 @@ const NotificationSystem = function() {
      * Hide the fullscreen and show the popup notification windows
      */
     this.minimize = function() {
-        this.fullscreenWindows.map(window => window.hide());
-        this.popupWindows.map(window => window.show());
+        try {
+            this.fullscreenWindows.map(window => window.hide());
+            this.popupWindows.map(window => window.show());
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
 
     /**

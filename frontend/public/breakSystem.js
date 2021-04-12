@@ -11,11 +11,13 @@ const states = {
 }
 
 const BREAK_DURATION = 20000;
+const POPUP_NOTIF_DURATION = 5000;
 
 var oldMousePos;
 var checkMousePositionInterval;
 
-var timeout;
+var mainTimeout;
+var intermediateTimeout;
 
 const BreakSystem = function(){
 
@@ -94,13 +96,25 @@ const BreakSystem = function(){
      * Initializes the end time and timeout
      */
     this.setupTimes = function() {
+
+        // Call break-times-set listeners
+        const fireCallbacks = (callback) => callback();
+        this._events['break-times-set'].forEach(fireCallbacks);
+
         this.endTime = new Date();
         this.endTime.setMilliseconds(this.endTime.getMilliseconds() + BREAK_DURATION);
         
         this.totalDuration = BREAK_DURATION;
         
-        clearTimeout(timeout)
-        timeout = setTimeout(this.end.bind(this), BREAK_DURATION);
+        clearTimeout(mainTimeout)
+        clearTimeout(intermediateTimeout)
+
+        mainTimeout = setTimeout(this.end.bind(this), BREAK_DURATION);
+        intermediateTimeout = setTimeout(() => {
+            // Call break-intermediate listeners after POPUP_NOTIF_DURATION
+            const fireCallbacks = (callback) => callback();
+            this._events['break-intermediate'].forEach(fireCallbacks);
+        }, POPUP_NOTIF_DURATION);
     }
 
     /**
@@ -113,7 +127,8 @@ const BreakSystem = function(){
             if (global.store.get('preferences.notifications.enableSound') === true) 
                 this.playSound();
 
-            clearTimeout(timeout)
+            clearTimeout(mainTimeout)
+            clearTimeout(intermediateTimeout)
             clearInterval(checkMousePositionInterval)
 
             // Call break-end listeners

@@ -17,11 +17,27 @@ const DEFAULT_WINDOW_SIZE = {
 
 global.mainWindow; 
 
-timerSystem.on('timer-end', () => breakSystem.start());
-timerSystem.on('timer-end', () => notificationSystem.createWindows());
+/**
+ * Configure event listeners and connect the various systems
+ */
+// Start break when timer ends
+timerSystem.on('timer-end', () => breakSystem.start()); 
 
+// Create notification windows when timer ends
+timerSystem.on('timer-end', () => notificationSystem.createWindows());  
+
+// Minimize notification when the break time is set/reset
+breakSystem.on('break-times-set', () => notificationSystem.minimize()); 
+
+// Expand notification when the break time is past the intermediate point
+breakSystem.on('break-intermediate', () => notificationSystem.maximize());
+
+// Start timer when break ends
 breakSystem.on('break-end', () => timerSystem.start());
+
+// Close notification windows when break ends
 breakSystem.on('break-end', () => notificationSystem.closeWindows());
+
 
 /**
  * Functions for creating windows

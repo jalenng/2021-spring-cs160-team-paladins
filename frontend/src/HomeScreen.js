@@ -9,24 +9,18 @@ const divStyle = {
   WebkitUserSelect: "none",
   msUserSelect: "none",
 
-  paddingTop: '10px',
-  paddingLeft: '30px',
-  justifyContent: 'center',
-  alignItems: 'center'
+  paddingTop: '30px',
+  paddingLeft: '50px',
+  textAlign: 'center',
+  alignItems: 'center',
 };
 
 export default class HomeScreen extends React.Component {
   render() {
     return (    
       <div style={divStyle}>
-        <Text variant={'xxLarge'} block>
-          iCare
-        </Text>
-        <div>
-        <Timer/>
-        </div>
+        <Timer />
       </div>
-      
     );
   }
 }

@@ -3,8 +3,12 @@ import ReactDOM from 'react-dom';
 import './css/index.css';
 
 import App from './App';
-import SignInScreen from './SignInScreen';
-import SignUpScreen from './SignUpScreen';
+
+import SignInScreen from './account/SignInScreen';
+import SignUpScreen from './account/SignUpScreen';
+import DeleteAccountScreen from './account/DeleteAccountScreen';
+import EditAccountScreen from './account/EditAccountScreen';
+
 import FullscreenNotification from './notifications/FullscreenNotification';
 import PopupNotification from './notifications/PopupNotification';
 
@@ -54,6 +58,9 @@ ReactDOM.render(
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />
+          <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
+          <Route path="/editAccount" exact component={EditAccountScreen} />
+
           <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
           <Route path="/popupNotification" exact component={PopupNotification} />
         </div>

@@ -8,7 +8,7 @@ import PreferencesScreen from './preferences/PreferencesScreen'
 import { Text } from '@fluentui/react/lib/Text';
 import { Pivot, PivotItem } from '@fluentui/react/lib/Pivot';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
-import { PrimaryButton } from '@fluentui/react/lib/Button';
+import { DefaultButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
 
 const { ipcRenderer } = window.require('electron');
@@ -65,37 +65,10 @@ export default class App extends React.Component {
     let displayInitials = [...displayName.matchAll(regex)] || [];
     displayInitials = (
         (displayInitials.shift()?.[1] || '') + (displayInitials.pop()?.[1] || '')
-    ).toUpperCase();
-
-    // Choose what to show on the top right corner based on sign-in status
-    let topRightCorner;
-
-    if (isSignedIn) {
-      // If signed in, show PFP and display name
-      topRightCorner =  <Stack {...topRightCornerProps}>
-                            
-                          <Text>{displayName}</Text>
-                          <Persona
-                            imageInitials={displayInitials}
-                            size= {PersonaSize.size40}
-                            hidePersonaDetails={true}
-                          />
-
-                        </Stack>
-    }
-    else {
-      // Otherwise, simply show a sign-in button
-      topRightCorner =  <Stack {...topRightCornerProps}>
-
-                          <PrimaryButton text='Sign in'
-                            onClick={() => ipcRenderer.invoke('show-sign-in-popup')}
-                          /> 
-
-                        </Stack>
-    }
+    ).toUpperCase();      
 
     return (
-      <div style={divStyle}>
+      <div style={divStyle}>  
 
         <Pivot aria-label='Basic Pivot Example' linkSize='large'>
           <PivotItem itemIcon='Home'>
@@ -111,8 +84,27 @@ export default class App extends React.Component {
             <PreferencesScreen/>
           </PivotItem>
         </Pivot>
-            
-        {topRightCorner}
+
+        {/* If signed in: show display name and persona */}
+        {isSignedIn && (
+          <Stack {...topRightCornerProps}>
+            <Text>{displayName}</Text>
+            <Persona
+              imageInitials={displayInitials}
+              size= {PersonaSize.size40}
+              hidePersonaDetails={true}
+            />
+          </Stack>
+        )}
+
+        {/* If not signed in: show sign in button */}
+        {!isSignedIn && (
+          <Stack {...topRightCornerProps}>
+            <DefaultButton text='Sign in'
+              onClick={() => ipcRenderer.invoke('show-sign-in-popup')}
+            /> 
+          </Stack>
+        )}     
 
       </div>
     );

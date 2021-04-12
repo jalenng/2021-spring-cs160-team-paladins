@@ -34,6 +34,7 @@ function createWindow() {
         y: mainWindowState.y,
         width: mainWindowState.width, 
         height: mainWindowState.height,
+        center: true,
         minHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
         maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
         maximizable: false,

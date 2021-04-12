@@ -9,9 +9,10 @@ const divStyle = {
   WebkitUserSelect: "none",
   msUserSelect: "none",
 
-  paddingTop: '10px',
-  paddingLeft: '30px',
+  paddingTop: '30px',
+  paddingLeft: '50px',
   textAlign: 'center',
+  alignItems: 'center',
 };
 
 export default class HomeScreen extends React.Component {

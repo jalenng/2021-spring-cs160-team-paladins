@@ -101,7 +101,7 @@ export default class Timer extends React.Component {
 
             {/* For development and testing purposes */}
             <DefaultButton
-                text="End timer"
+                text="Start break"
                 id="endBtn"
                 onClick={this.handleEndBtn}
             />

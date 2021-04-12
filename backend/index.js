@@ -308,8 +308,18 @@ const { route } = require('./index.js');
     // Delete user (incomplete)
     router.delete('/user', async (req, res) => {
       let token = req.body.auth.token;
-
+     
+     if (token != undefined) {
       let email = await userToken.getEmailFromToken(token);
+     }
+     else {
+      res.status(504).send({
+          reason: "INVALID_TOKEN", 
+          message: "No token is given" 
+        });
+     }
+
+      
 
       // Invalid Token
       if (email == false) {

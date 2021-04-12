@@ -41,7 +41,7 @@ const { route } = require('./index.js');
     router.post('/user', async function (req, res) {
       let email = req.body.email;
       let password = req.body.password;
-      let displayName = req.body.displayName;
+      let dName = req.body.displayName;
 
       let success = true;
 

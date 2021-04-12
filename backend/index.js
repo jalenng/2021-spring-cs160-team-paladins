@@ -309,7 +309,7 @@ const { route } = require('./index.js');
     router.delete('/user', async (req, res) => {
       let token = req.body.auth.token;
      
-     if (token != undefined) {
+     if (typeof token !== 'undefined') {
       let email = await userToken.getEmailFromToken(token);
      }
      else {

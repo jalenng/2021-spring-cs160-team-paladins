@@ -26,7 +26,7 @@ class db {
         q = q + "VALUES ('" + givenEmail + "', '" + givenPass + "', '" + displayName + "')";
 
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { resolve(true) }
         }));
         return results;

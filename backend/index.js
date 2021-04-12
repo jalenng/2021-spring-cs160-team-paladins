@@ -317,19 +317,66 @@ const { route } = require('./index.js');
  let userToken = new tokenClass();
 
 
-async function test() {
-  
-  let value;
-  console.log(value)
+ // WORKING 
+ async function testCreate() {
+  let email = 'test@gmail.com'
+  let password = 'passpasspass';
+  let dName = 'test';
 
-  if (typeof value !== 'undefined') {
-    console.log("Success")
+  let success = true;
+
+  // Checks password length
+  if (password.length < 8) { success = false; }
+  else {
+    // CRYPTO: Encrypt password and store in the database
+    let dec_pass = atob(password);
+    let encrypted_pass = cryptr.encrypt(dec_pass);
+    if (email === null || password === null || dName === false) { success = false; }
+    else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
+  }
+
+  // Response Codes
+  if (success == true) {
+    console.log("Successful Creation")
   }
   else {
-  console.log("Fail")
+    let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
+    console.log(array)
+  }
+ }
+
+
+ // WORKING
+ async function testLogin() {
+  let email = 'test@gmail.com'
+  let password = 'passpasspass';
+  let dName = '';
+
+  // Checks crypto pass
+  let dec_pass = atob(password)
+  let success = await userDB.getPassword(email).then((r) => {
+    let decryptPass = cryptr.decrypt(r)
+    if (decryptPass == dec_pass) { return true } else { return false }
+  })
+  
+  // Response Codes
+  if (success == true) {
+    let tokenValue = await userToken.createToken(email).then((res) => { return res });
+    dName = await userDB.getDisplayName(email).then((res) => { return res; });
+
+    console.log("Sucessful Login DN: " + dName)
+    
+  }
+  else { console.log("Failed Login") }
+ }
+
+
+async function test() {
+  
+  await testCreate()
+  await testLogin()
+
 }
 
 
-}
-
-//test();
+test();

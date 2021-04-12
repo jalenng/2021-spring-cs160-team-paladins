@@ -93,18 +93,11 @@ export default class Timer extends React.Component {
                 {this.state.state}
             </Text>
 
-            <Stack horizontal tokens={{ childrenGap: 20 }}>
-              <PrimaryButton
-                    id='startBtn'
-                    text='PAUSE'
-                    onClick={console.log('paused')}
-              />              
-              <PrimaryButton
-                    id='startBtn'
-                    text={this.state.buttonLabel}
-                    onClick={this.handleClick}
-              />
-            </Stack>
+            <PrimaryButton
+                  id='startBtn'
+                  text={this.state.buttonLabel}
+                  onClick={this.handleClick}
+            />
 
             {/* For development and testing purposes */}
             <DefaultButton

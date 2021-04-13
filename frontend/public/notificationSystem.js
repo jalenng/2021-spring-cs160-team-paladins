@@ -14,6 +14,7 @@ const sharedWindowOptions = {
     maximizable: false,
     skipTaskbar: true,
     show: false,
+    title: "iCare Notification",
     backgroundColor: '#222222',
     webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
@@ -37,11 +38,9 @@ const NotificationSystem = function() {
      */
     this.createWindows = function() {
         // Get displays and create notification windows
-        this.fullscreenWindows = [];
-        this.popupWindows = [];
         const displays = screen.getAllDisplays();
-        displays.map(this.createFullscreenWindow.bind(this));
-        displays.map(this.createPopupWindow.bind(this));    
+        this.fullscreenWindows = displays.map(this.createFullscreenWindow.bind(this));
+        this.popupWindows = displays.map(this.createPopupWindow.bind(this));    
     }
 
     /**
@@ -50,6 +49,8 @@ const NotificationSystem = function() {
     this.closeWindows = function() {
         this.fullscreenWindows.map(this.closeNotificationWindow);
         this.popupWindows.map(this.closeNotificationWindow);
+        this.fullscreenWindows = [];
+        this.popupWindows = [];
     }
 
     /**
@@ -80,13 +81,17 @@ const NotificationSystem = function() {
     this.createFullscreenWindow = function(display) {
 
         const window = new BrowserWindow({
-            ...sharedWindowOptions,
-            parent: global.mainWindow,
-            title: "iCare Notification",
+            ...sharedWindowOptions
         })
 
-        window.menuBarVisible = false;
-        
+        // Load URL
+        window.loadURL(
+            isDev
+            ? 'http://localhost:3000#/fullscreenNotification'
+            : `file://${path.join(__dirname, '../build/index.html#fullscreenNotification')}`
+        ); 
+
+        // Configure bounds and visibility
         const bounds = display.bounds;
         const screenRect = screen.dipToScreenRect(null, bounds);
         newBounds = {
@@ -95,16 +100,13 @@ const NotificationSystem = function() {
             height: bounds.height
         }
         window.setBounds(newBounds);
+        window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })   
+        window.menuBarVisible = false;
 
+        // Configure event listeners
         window.on('close', (e) => e.preventDefault())
 
-        window.loadURL(
-            isDev
-            ? 'http://localhost:3000#/fullscreenNotification'
-            : `file://${path.join(__dirname, '../build/index.html#fullscreenNotification')}`
-        ); 
-
-        this.fullscreenWindows.push(window);
+        return window;
 
     }
 
@@ -115,13 +117,17 @@ const NotificationSystem = function() {
     this.createPopupWindow = function(display) {
 
         const window = new BrowserWindow({
-            ...sharedWindowOptions,
-            parent: global.mainWindow,
-            title: "iCare Notification",
+            ...sharedWindowOptions
         })
 
-        window.menuBarVisible = false;
-        
+        // Load URL
+        window.loadURL(
+            isDev
+            ? 'http://localhost:3000#/popupNotification'
+            : `file://${path.join(__dirname, '../build/index.html#popupNotification')}`
+        ); 
+
+        // Configure bounds and visibility
         const displayScaling = display.scaleFactor;
         const workArea = display.workArea;
         const screenRect = screen.dipToScreenRect(null, workArea);
@@ -131,17 +137,15 @@ const NotificationSystem = function() {
             width: POPUP_SIZE.width,
             height: POPUP_SIZE.height
         }
-        window.setBounds(newBounds);
+        window.setBounds(newBounds);   
+        window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+        window.menuBarVisible = false;
 
+        // Configure event listeners
         window.on('close', (e) => e.preventDefault())
+        window.on('ready-to-show', () => window.show());
 
-        window.loadURL(
-            isDev
-            ? 'http://localhost:3000#/popupNotification'
-            : `file://${path.join(__dirname, '../build/index.html#popupNotification')}`
-        ); 
-
-        this.popupWindows.push(window);
+        return window;
 
     }
 

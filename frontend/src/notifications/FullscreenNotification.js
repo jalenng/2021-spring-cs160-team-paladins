@@ -43,6 +43,7 @@ export default class extends React.Component {
     }
     
     componentDidMount() {
+        document.body.style.backgroundColor = '#000000';
         ipcRenderer.send('get-break-status');
         setInterval(() => {ipcRenderer.send('get-break-status')}, 1000);
     }
@@ -86,7 +87,7 @@ export default class extends React.Component {
                     transform: 'translate(-50%, -50%)'
                 }}>
                     <Text variant={"large"} align="center">
-                        The countdown will reset upon keyboard or mouse input.
+                        The timer will reset upon mouse movement.
                     </Text>          
                 </div>
                 

@@ -43,11 +43,10 @@ const myTheme = createTheme({
     white: '#1b1a19',
   }
 });
-
-document.body.style = 'background: #222222;';
-
 loadTheme(myTheme);
 initializeIcons();
+
+document.body.style = 'background: #222222;';
 
 
 ReactDOM.render(

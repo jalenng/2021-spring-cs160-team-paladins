@@ -78,9 +78,7 @@ global.store = new Store(storeOptions);
 /* Configure axios */
 axios.defaults.baseURL = 'http://165.232.156.120:3000';
 axios.defaults.timeout = 10000;
-axios.defaults.headers.common['auth'] = {
-    token: store.get('account.token')
-};
+axios.defaults.headers.common['auth'] = store.get('account.token');
 
 
 /**
@@ -108,9 +106,7 @@ store.onDidChange('sounds', () => {
 
 // Notifies the main window of account store updates, and updates 
 store.onDidChange('account', () => {
-    axios.defaults.headers.common['auth'] = {
-        token: store.get('account.token')
-    };
+    axios.defaults.headers.common['auth'] = store.get('account.token');
     global.mainWindow.webContents.send('account-store-changed');
 });
 

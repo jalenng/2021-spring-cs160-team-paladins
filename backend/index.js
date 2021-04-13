@@ -94,7 +94,7 @@ const { route } = require('./index.js');
  
     // Gets preferences of user
     router.get('/pref/:user', async function (req, res) {
-      let token = req.headers.auth.token;
+      let token = req.headers.auth;
       let email = ""
  
       // Checking the token
@@ -128,7 +128,7 @@ const { route } = require('./index.js');
  
     // Saves the user preferences (incomplete)
     router.put('/pref/:user', async function (req, res) {
-      let token = req.headers.auth.token;
+      let token = req.headers.auth;
       let email = ""
  
       // Checking the token
@@ -163,7 +163,7 @@ const { route } = require('./index.js');
 
     // Gets data usage (incomplete)
     router.get('/data/:user', async (req, res) => {
-      let token = req.headers.auth.token;
+      let token = req.headers.auth;
       let email = ""
  
       // Checking the token
@@ -189,7 +189,7 @@ const { route } = require('./index.js');
 
     // Updates the data/app usage of user (incomplete)
     router.put('/data/:user', async (req, res) => {
-      let token = req.headers.auth.token;
+      let token = req.headers.auth;
       let email = ""
  
       // Checking the token
@@ -225,7 +225,7 @@ const { route } = require('./index.js');
 
     // Change email (incomplete)
     router.put('/user/:user', async (req, res) => {
-      let token = req.headers.auth.token;
+      let token = req.headers.auth;
       let oldEmail = ""
  
       // Checking the token
@@ -262,8 +262,8 @@ const { route } = require('./index.js');
 
     // Delete user (incomplete)
     router.delete('/user', async (req, res) => {
-      let token = req.headers.auth.token;
-     console.log(req)
+
+      let token = req.headers.auth;
       let email = ""
  
       // Checking the token
@@ -277,14 +277,15 @@ const { route } = require('./index.js');
 
       //------------------------
       // Delete User
-      let pass = req.body.data.password;
+      let password = req.body.password;
 
       // Checks crypto pass
-      let dec_pass = atob(pass)
+      let dec_pass = atob(password)
       let success = await userDB.getPassword(email).then((r) => {
-        let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } 
-        else { return false }
+        if (r != false) {
+          let decryptPass = cryptr.decrypt(r)
+        if (decryptPass == dec_pass) { return true } else { return false }
+        }
       })
       
       // Response Code

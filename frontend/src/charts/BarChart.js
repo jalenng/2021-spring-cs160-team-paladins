@@ -43,7 +43,11 @@ const BarChart = () => {
         height={150}
         width={30}
         options={{
-          maintainAspectRatio: false,
+          title: {
+            display: true,
+            text: "Weekly Icare Usage and Break Time",
+            fontColor: "#FFFFFF",
+          },
           scales: {
             yAxes: [
               {

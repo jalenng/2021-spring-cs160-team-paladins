@@ -43,6 +43,11 @@ const PieChart = () => {
         height={200}
         width={300}
         options={{
+          title: {
+            display: true,
+            text: "Different App Usage Percentage",
+            fontColor: "#FFFFFF",
+          },
           maintainAspectRatio: false,
           legend: {
             labels: {

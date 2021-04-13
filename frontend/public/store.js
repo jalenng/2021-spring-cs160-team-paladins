@@ -288,7 +288,7 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
             }
 
             // Await for response
-            let res = await axios.delete(url, data);
+            let res = await axios.delete(url, {data});
 
             // If sign-in was successful
             if (res.status === 200) {

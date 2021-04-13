@@ -1,6 +1,9 @@
+require ('hazardous');
+const path = require('path'); 
+
 const { ipcMain, screen } = require('electron');
 const soundPlayer = require('sound-play');
-const path = require('path'); 
+
 
 /**
  * Break states
@@ -167,6 +170,10 @@ ipcMain.on('get-break-status', (event) => {
     event.reply('receive-break-status', global.breakSystem.getStatus());
 });
 
+// Play sound file
+ipcMain.handle('play-sound', (event) => {
+    breakSystem.playSound();
+});
 
 module.exports = {
     BreakStates: states

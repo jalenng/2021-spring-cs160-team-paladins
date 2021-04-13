@@ -2,7 +2,6 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
-const soundPlayer = require('sound-play');
 
 require('./store');
 require('./timerSystem.js');
@@ -138,14 +137,6 @@ app.on('window-all-closed', function () {
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
 })
-
-// Play sound file
-ipcMain.handle('play-sound', (event, filepath) => {
-    let fullFilepath = path.isAbsolute(filepath)
-        ? filepath
-        : path.join(__dirname, filepath);
-    soundPlayer.play(fullFilepath);
-});
 
 // Get app info
 ipcMain.on('get-app-info', (event) => {

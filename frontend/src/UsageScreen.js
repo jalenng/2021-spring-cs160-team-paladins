@@ -1,26 +1,26 @@
 import React from "react";
- 
-import { Text } from '@fluentui/react/lib/Text';
+
+import { Text } from "@fluentui/react/lib/Text";
+import BarChart from "./charts/BarChart";
 
 const divStyle = {
   MozUserSelect: "none",
   WebkitUserSelect: "none",
   msUserSelect: "none",
 
-  paddingTop: '10px',
-  paddingLeft: '30px',
+  paddingTop: "10px",
+  paddingLeft: "30px",
 };
-
 
 export default class UsageScreen extends React.Component {
   render() {
-    return (    
+    return (
       <div style={divStyle}>
-        <Text variant={'xxLarge'} block>
+        <Text variant={"xxLarge"} block>
           <b>Usage Statistics</b>
         </Text>
+        <BarChart />
       </div>
     );
   }
 }
-

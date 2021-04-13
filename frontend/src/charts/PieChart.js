@@ -19,7 +19,7 @@ const PieChart = () => {
           ],
           datasets: [
             {
-              data: [0.2, 0.1, 0.1, 0.3, 0.2, 0.1],
+              data: [200, 1000, 410, 300, 520, 700],
               backgroundColor: [
                 "rgba(255, 99, 132, 0.2)",
                 "rgba(54, 162, 235, 0.2)",
@@ -45,8 +45,10 @@ const PieChart = () => {
         options={{
           title: {
             display: true,
-            text: "Different App Usage Percentage",
+            text: "Weekly Different App Hour Usage",
             fontColor: "#FFFFFF",
+            fontSize: 15,
+            padding: 10,
           },
           maintainAspectRatio: false,
           legend: {

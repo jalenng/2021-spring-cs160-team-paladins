@@ -21,7 +21,7 @@ const BarChart = () => {
           datasets: [
             {
               label: "Total time usage",
-              data: [300, 500, 600, 600, 1000, 300, 1000],
+              data: [5, 6, 6.5, 6, 8, 3, 5],
               backgroundColor: [
                 "rgba(72, 121, 240, 1)",
                 "rgba(72, 121, 240, 1)",
@@ -35,7 +35,7 @@ const BarChart = () => {
             },
             {
               label: "Number of break",
-              data: [47, 52, 67, 58, 60, 50, 45],
+              data: [15, 18, 20, 20, 24, 9, 15],
               backgroundColor: "lightblue",
             },
           ],
@@ -45,15 +45,23 @@ const BarChart = () => {
         options={{
           title: {
             display: true,
-            text: "Weekly Icare Usage and Break Time",
+            text: "Weekly Icare Hour Usage and Number of Break Time",
             fontColor: "#FFFFFF",
+            fontSize: 15,
+            padding: 10,
           },
           scales: {
             yAxes: [
               {
                 ticks: {
                   beginAtZero: true,
+                  fontColor: "#FFFFFF",
                 },
+              },
+            ],
+            xAxes: [
+              {
+                ticks: { fontColor: "#FFFFFF" },
               },
             ],
           },

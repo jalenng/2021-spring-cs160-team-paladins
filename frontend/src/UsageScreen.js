@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Text } from "@fluentui/react/lib/Text";
+import PieChart from "./charts/PieChart";
 import BarChart from "./charts/BarChart";
 
 const divStyle = {
@@ -20,6 +21,7 @@ export default class UsageScreen extends React.Component {
           <b>Usage Statistics</b>
         </Text>
         <BarChart />
+        <PieChart />
       </div>
     );
   }

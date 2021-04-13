@@ -1,5 +1,5 @@
 import React from "react";
-import { Pie, defaults } from "react-chartjs-2";
+import { Bar, defaults } from "react-chartjs-2";
 
 defaults.global.tooltips.enabled = true;
 defaults.global.legend.position = "right";
@@ -7,42 +7,52 @@ defaults.global.legend.position = "right";
 const BarChart = () => {
   return (
     <div>
-      <Pie
+      <Bar
         data={{
           labels: [
-            "Zoom",
-            "Spotify",
-            "Netflix",
-            "VS Code",
-            "Google Chrome",
-            "Others",
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
           ],
           datasets: [
             {
-              data: [0.2, 0.1, 0.1, 0.3, 0.2, 0.1],
+              label: "Total time usage",
+              data: [300, 500, 600, 600, 1000, 300, 1000],
               backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(255, 206, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(255, 159, 64, 0.2)",
+                "rgba(72, 121, 240, 1)",
+                "rgba(72, 121, 240, 1)",
+                "rgba(72, 121, 240, 1)",
+                "rgba(72, 121, 240, 1)",
+                "rgba(72, 121, 240, 1)",
+                "rgba(72, 121, 240, 1)",
+                "rgba(72, 121, 240, 1)",
+                "rgba(72, 121, 240, 1)",
               ],
-              borderColor: [
-                "rgba(255, 99, 132, 1)",
-                "rgba(54, 162, 235, 1)",
-                "rgba(255, 206, 86, 1)",
-                "rgba(75, 192, 192, 1)",
-                "rgba(153, 102, 255, 1)",
-                "rgba(255, 159, 64, 1)",
-              ],
-              borderWidth: 1,
+            },
+            {
+              label: "Number of break",
+              data: [47, 52, 67, 58, 60, 50, 45],
+              backgroundColor: "lightblue",
             },
           ],
         }}
-        height={200}
-        width={300}
+        height={150}
+        width={30}
         options={{
+          maintainAspectRatio: false,
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            ],
+          },
           maintainAspectRatio: false,
           legend: {
             labels: {

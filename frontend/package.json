@@ -48,8 +48,10 @@
     "concurrently": "^6.0.0",
     "electron": "^12.0.1",
     "electron-builder": "^22.10.5",
+    "mocha": "^8.3.2",
     "nodemon": "^2.0.7",
     "react-scripts": "4.0.3",
+    "spectron": "^14.0.0",
     "wait-on": "^5.3.0"
   },
   "main": "./public/electron.js",
@@ -62,8 +64,10 @@
     "electron-build": "electron-builder",
     "electron-start": "electron .",
     "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron-start",
+    "electron-test": "mocha",
     "build": "npm run react-build && npm run electron-build",
-    "dev": "concurrently \"npm:react-start\" \"npm:electron-watch\""
+    "dev": "concurrently \"npm:react-start\" \"npm:electron-watch\"",
+    "test": "concurrently \"npm:react-start\" \"npm:electron-test\""
   },
   "browserslist": {
     "production": [

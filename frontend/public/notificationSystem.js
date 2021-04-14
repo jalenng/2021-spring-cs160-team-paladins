@@ -99,7 +99,7 @@ const NotificationSystem = function() {
             width: bounds.width,
             height: bounds.height
         }
-        window.setBounds(newBounds);
+        window.setBounds(bounds);
         window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })   
         window.menuBarVisible = false;
 
@@ -128,16 +128,17 @@ const NotificationSystem = function() {
         ); 
 
         // Configure bounds and visibility
-        const displayScaling = display.scaleFactor;
-        const workArea = display.workArea;
-        const screenRect = screen.dipToScreenRect(null, workArea);
+        const bounds = display.workArea;
+        const screenRect = screen.dipToScreenRect(null, bounds);
+        const trueScaling = display.scaleFactor / screen.getPrimaryDisplay().scaleFactor;
+
         newBounds = {
-            x: screenRect.x + screenRect.width - (POPUP_SIZE.width * displayScaling),
-            y: screenRect.y + screenRect.height - (POPUP_SIZE.height * displayScaling),
+            x: screenRect.x + ((bounds.width - POPUP_SIZE.width) * trueScaling),
+            y: screenRect.y + ((bounds.height - POPUP_SIZE.height) * trueScaling),
             width: POPUP_SIZE.width,
             height: POPUP_SIZE.height
         }
-        window.setBounds(newBounds);   
+        window.setBounds(newBounds); 
         window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
         window.menuBarVisible = false;
 

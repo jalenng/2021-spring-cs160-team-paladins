@@ -4,6 +4,7 @@ import { DefaultButton, ActionButton, IconButton } from '@fluentui/react/lib/But
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
+import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -87,10 +88,13 @@ export default class extends React.Component {
 
                     {/* Show Edit button only if signed in */}
                     { isSignedIn && 
-                        <IconButton
-                            iconProps={{ iconName: 'Edit' }}
-                            onClick={() => ipcRenderer.invoke('show-edit-account-popup')}
-                        />
+                        <TooltipHost content="Edit account details">
+                            <IconButton
+                                iconProps={{ iconName: 'Edit' }}
+                                onClick={() => ipcRenderer.invoke('show-edit-account-popup')}
+                            />
+                        </TooltipHost>
+                        
                     }
                 </Stack>
 

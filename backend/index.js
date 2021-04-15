@@ -49,10 +49,12 @@ const { route } = require('./index.js');
       if (password.length < 8) { success = false; }
       else {
         // CRYPTO: Encrypt password and store in the database
-        let dec_pass = atob(password);
-        let encrypted_pass = cryptr.encrypt(dec_pass);
         if (email === null || password === null || dName === false) { success = false; }
-        else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
+        else { 
+          let dec_pass = atob(password);
+          let encrypted_pass = cryptr.encrypt(dec_pass);
+          success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
+        }
       }
 
       // Response Codes
@@ -79,6 +81,7 @@ const { route } = require('./index.js');
           let decryptPass = cryptr.decrypt(r)
         if (decryptPass == dec_pass) { return true } else { return false }
         }
+        return false;
       })
       
       // Response Codes
@@ -314,6 +317,7 @@ const { route } = require('./index.js');
  let apiM = require('./api_methods.js');
  let api_methods = new apiM();
 
+<<<<<<< HEAD
  // Crypto Requirements
  var atob = require('atob');
  var Cryptr = require('cryptr'),
@@ -408,20 +412,53 @@ const { route } = require('./index.js');
  }
 
 
+=======
+
+ // WORKS!
+ async function testDataUsage() {
+
+  let email = "basic@gmail.com"
+  //let duSuccess = await userDB.setDataUsage(email, 270, 5);
+  //console.log("Success? " + duSuccess);
+
+  let value = await userDB.getDataUsage(email, "ALL TIME")
+  let listofvalues = await api_methods.getStatistics(value).then((res) => { return res; })
+
+  console.log("Average Screen Time: " + listofvalues[0]);
+  console.log("Min Screen Time Spend: " + listofvalues[1]);
+  console.log("Max Screen Time Spend: " + listofvalues[2]);
+  console.log();
+  console.log("Average Timer Count: " + listofvalues[3]);
+  console.log("Min Timer Count: " + listofvalues[4]);
+  console.log("Max Timer Count: " + listofvalues[5]);
+ }
+
+
+
+>>>>>>> 0e70f85 (mocha testing and data usage aggregation)
 async function test() {
+
+  testDataUsage()
   
+<<<<<<< HEAD
 <<<<<<< HEAD
   //await testCreate()
 =======
   await testCreate()
 >>>>>>> ca128ad (testing code)
   await testLogin()
+=======
+>>>>>>> 0e70f85 (mocha testing and data usage aggregation)
 
 }
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //test()
 =======
 test();
 >>>>>>> ca128ad (testing code)
+=======
+test()
+>>>>>>> 0e70f85 (mocha testing and data usage aggregation)

@@ -275,15 +275,10 @@ const { route } = require('./index.js');
       let dec_pass = atob(pass)
       let success = await userDB.getPassword(oldEmail).then((r) => {
         let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { 
-
-          // Change email
-          return await userDB.changeEmail(oldEmail, newEmail);
-
-         } 
+        if (decryptPass == dec_pass) { return true; } 
         else { return false }
       })
-      
+
       // Response Code (check password)
       if (success == true) { success = await userDB.changeEmail(oldEmail, newEmail); }
       else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Your password is incorrect." }); }
@@ -332,12 +327,13 @@ const { route } = require('./index.js');
       let dec_pass = atob(pass)
       let success = await userDB.getPassword(email).then((r) => {
         let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { 
-          return await userDB.deleteAccount(email);
-        } 
+        if (decryptPass == dec_pass) { return true } 
         else { return false }
 >>>>>>> 99978f9 (updated token and 200 response code)
       })
+
+      if (success == true) { success =await userDB.deleteAccount(email); }
+      else { res.status(504).send({ reason: "BAD_PASSWORD", message: "Wrong password was given." }); }
       
       // Response Code
       if (success == true) { 

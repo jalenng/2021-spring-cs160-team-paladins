@@ -1,0 +1,261 @@
+// Assertions
+let assert = require('assert')
+
+// Database Connection
+let db = require('./db.js')
+const userDB = new db("localhost", "newuser", "password", "iCare");
+
+// Crypto Requirements
+var atob = require('atob');
+var Cryptr = require('cryptr'),
+cryptr = new Cryptr('myTotalySecretKey'); 
+
+// Mocha Tests --------------------------------
+
+let goodEmail = "good@gmail.com";       // Reuse for create, login, delete
+let goodDisplay = "goodDisplay"
+let badEmail = 'bad@gmail.com';
+let newEmail = "newEmail@gmail.com"     // Use for change email
+let goodPass = "password12345";         // Reuse for create, login, delete
+let failEmail = "idontexist@gmail.com"  // Reuse for failing
+let success = "";
+
+// Create Account Test (works for both existing/non-existing email)
+describe('Create new account: ', async () => {
+
+    let dec_pass = atob(goodPass);
+    let encrypted_pass = cryptr.encrypt(dec_pass);
+
+    // Bad Email (Email already in use)
+    describe('(Fail) Email already in use [' + badEmail + ']: ', async() => {
+        it('should return false as email already exists', async () => {
+            success = await userDB.createUser(badEmail, encrypted_pass, goodDisplay).then((result) => { return result; });
+            assert.strictEqual(success, false, 'success is false');
+        });
+    });
+
+    // Good Email (Email not in use)
+    describe('(Success) Email not in use [' + goodEmail + ']: ', async() => {
+        it('should return true as email does not exists', async () => {
+            success = await userDB.createUser(goodEmail, encrypted_pass, goodDisplay).then((result) => { return result; });
+            assert.strictEqual(success, true, 'success is true');
+        });
+    });
+
+});
+
+// Get Password
+describe('Get password with email', async () => {
+
+    // Get password with non-existent email
+    describe('(Fail) Non-existent account [' + failEmail + ']: ', async () => {
+        it('should return false as there is no such email', async () => {
+            success = await userDB.getPassword(failEmail).then((r) => {
+                if (r != false) { return true; }
+                return false;
+            });
+
+            assert.strictEqual(success, false, 'success is false');
+        });
+    });
+
+    // Get password with existing email
+    describe('(Success) Existing account [' + goodEmail + ']: ', async () => {
+        it('should return false as there is no such email', async () => {
+            let dec_pass = atob(goodPass)
+            success = await userDB.getPassword(goodEmail).then((r) => {
+                let decryptPass = cryptr.decrypt(r);
+                if (decryptPass == dec_pass) { return true; } else { return false; }
+            });
+
+            assert.strictEqual(success, true, 'success is true');
+        });
+    });
+
+});
+
+// Change Email
+describe('Change email', async () => {
+
+    // Change email [already used email]
+    describe('(Fail) Already used email [' + badEmail + ']: ', async () => {
+        it('should return false as email is already in use', async () => {
+            success = await userDB.changeEmail(goodEmail, badEmail);
+            assert.strictEqual(success, false, 'success is false');
+        });
+    });
+
+    // Change email [good email]
+    describe('(Success) Existing email [' + goodEmail + ']: ', async () => {
+        it ('should return true as email does exist', async () => {
+            success = await userDB.changeEmail(goodEmail, newEmail);
+            assert.strictEqual(success, true, 'success is true');
+        });
+    });
+
+    // Change email [non-existent email]
+    describe('(Success) Non-existent email [' + failEmail + ']: ', async () => {
+        it('should return true as email does not exist and changes nothing', async () => {
+            success = await userDB.changeEmail("idontexist@gmail.com", newEmail);
+            assert.strictEqual(success, true, 'success is true');
+        });
+    });
+
+});
+
+// Get/Set Display Name
+describe('Display name', async () => {
+
+    let newDisplay = "newDisplay";
+
+    // Get Display Name of newEmail
+    describe('(Success) Get display name from [' + newEmail + ']', async () => {
+        it('should return ' + goodDisplay, async () => {
+            success = await userDB.getDisplayName(newEmail).then((r) => { return r; });
+            assert.strictEqual(success, goodDisplay, 'success is true');
+        })
+    })
+
+    // Set Display Name of newEmail
+    describe('(Success) Set display name of [' + newEmail + '] to [' + newDisplay + ']', async () => {
+        it('should return true as it changes display name', async () => {
+            success = await userDB.setDisplayName(newEmail, newDisplay).then((r) => { return r; });
+            assert.strictEqual(success, true, 'success is true');
+        })
+    })
+
+    // Get Display Name of newEmail
+    describe('(Success) Get new display name from [' + newEmail + ']', async () => {
+        it('should return ' + newDisplay, async () => {
+            success = await userDB.getDisplayName(newEmail).then((r) => { return r; });
+            assert.strictEqual(success, newDisplay, 'success is true');
+        })
+    })
+
+});
+
+// Get/Set Notification Interval
+
+
+
+/**
+ * Get/Set notification interval
+ * Get/Set notification sound
+ * Get/Set notification sound on
+ * Get/Set data usage on
+ * Get/Set app usage on
+ * Get/Set data usage
+ * Get/Set app usage
+ */
+
+
+/**
+ * What I have done since last scrum:
+ * -Get/Set display name
+ */
+
+
+
+
+
+
+
+
+
+
+// Delete Account Test
+describe('Delete account', async() => {
+
+    // Deletes a non-existent account
+    describe('(Success) Non-existent account [' + failEmail + ']: ', async() => {
+        it('should return false as email does not exist', async () => {
+            success = await userDB.deleteAccount(failEmail);
+            assert.strictEqual(success, true, 'success is true');
+        });
+    });
+
+    // Deletes an account [Good Password]
+    describe('(Success) Good Password [' + newEmail + ']', async() => {
+        it('should return true as email and password match', async () => {
+            success = await userDB.deleteAccount(newEmail);
+            assert.strictEqual(success, true, 'success is true');
+        });
+    });
+
+});
+
+
+
+
+/**
+ * 
+test('get timer length in minutes (success)', async () => {
+    let notiInt = await userDB.getNotiInterval('hello@gmail.com');
+    expect(notiInt).toBe(30);
+});
+
+test('set timer length in minutes (success)', async () => {
+    let setNI = await userDB.setDisplayName('default@gmail.com', 50)
+    if (setNI == true) { expect(setNI).toBe(true) }         
+    else { expect(setNI).not.toBe(true) }
+})
+
+test('get notiSoundOn - boolean (success)', async () => {
+    let soundBool = await userDB.getNotiSoundOn('basic@gmail.com');
+    expect(soundBool).toBe(true);
+});
+
+test('set notiSoundOn - boolean (success)', async () => {
+    let setNSBool = await userDB.setNotiSoundOn('default@gmail.com', false)
+    if (setNSBool == true) { expect(setNSBool).toBe(true) }         
+    else { expect(setNSBool).not.toBe(true) }
+})
+
+test('get dataUsageOn - boolean (success)', async () => {
+    let dataUsageBool = await userDB.getDataUsageOn('basic@gmail.com');
+    expect(dataUsageBool).toBe(true);
+});
+
+test('set dataUsageOn false - boolean (success)', async () => {
+    await userDB.setDataUsageOn('default@gmail.com', false).then((result) => {
+        if (result == true) { expect(result).toBe(true) }
+        else { expect(result).not.toBe(true) }
+    })
+})
+
+test('set dataUsageOn true - boolean (success)', async () => {
+    await userDB.setDataUsageOn('default@gmail.com', true).then((result) => {
+        if (result == true) { expect(result).toBe(true) }
+        else { expect(result).not.toBe(true) }
+    })
+})
+
+// -------Testing Notification Sounds-------------------------
+test ('add notification sound input into database', async () => {
+    let name = "Leaf"
+    let soundPath = "2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg"
+    await userDB.addNotiSound(name, soundPath).then((result) => {
+        if (result == true) { expect(result).toBe(true) }           // Fails after it is inputted
+        else { expect(result).not.toBE(true) }
+    })
+})
+
+test ('change notification sound preference of user', async () => {
+    await userDB.setNotiSound("basic@gmail.com", "Leaf").then((result) => {
+        if (result == true) { expect(result).toBe(true) }
+        else { expect(result).not.toBE(true) }
+    });
+
+})
+
+test ('getting notification sound path of user', async () => {
+    await userDB.getNotiSound('basic@gmail.com').then((result) => {
+        if (result == true) { expect(result).toBe(true) }
+        else { expect(result).not.toBE(true) }
+    });
+
+})
+
+
+
+ */

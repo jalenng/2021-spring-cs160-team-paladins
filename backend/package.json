@@ -4,7 +4,8 @@
   "description": "iCare Backend",
   "scripts": {
     "start": "node index",
-    "watch": "nodemon index"
+    "watch": "nodemon index",
+    "test": "mocha"
   },
   "main": "index.js",
   "author": "",

@@ -49,10 +49,12 @@ const { route } = require('./index.js');
       if (password.length < 8) { success = false; }
       else {
         // CRYPTO: Encrypt password and store in the database
-        let dec_pass = atob(password);
-        let encrypted_pass = cryptr.encrypt(dec_pass);
         if (email === null || password === null || dName === false) { success = false; }
-        else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
+        else { 
+          let dec_pass = atob(password);
+          let encrypted_pass = cryptr.encrypt(dec_pass);
+          success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
+        }
       }
 
       // Response Codes
@@ -79,6 +81,7 @@ const { route } = require('./index.js');
           let decryptPass = cryptr.decrypt(r)
         if (decryptPass == dec_pass) { return true } else { return false }
         }
+        return false;
       })
       
       // Response Codes
@@ -312,77 +315,34 @@ const { route } = require('./index.js');
  let apiM = require('./api_methods.js');
  let api_methods = new apiM();
 
- // Crypto Requirements
- var atob = require('atob');
- var Cryptr = require('cryptr'),
- cryptr = new Cryptr('myTotalySecretKey'); 
 
- // Token Methods
- let tokenClass = require('./token.js')
- let userToken = new tokenClass();
+ // WORKS!
+ async function testDataUsage() {
 
+  let email = "basic@gmail.com"
+  //let duSuccess = await userDB.setDataUsage(email, 270, 5);
+  //console.log("Success? " + duSuccess);
 
- // WORKING 
- async function testCreate() {
-  let email = 'test@gmail.com'
-  let password = 'passpasspass';
-  let dName = 'test';
+  let value = await userDB.getDataUsage(email, "ALL TIME")
+  let listofvalues = await api_methods.getStatistics(value).then((res) => { return res; })
 
-  let success = true;
-
-  // Checks password length
-  if (password.length < 8) { success = false; }
-  else {
-    // CRYPTO: Encrypt password and store in the database
-    let dec_pass = atob(password);
-    let encrypted_pass = cryptr.encrypt(dec_pass);
-    if (email === null || password === null || dName === false) { success = false; }
-    else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
-  }
-
-  // Response Codes
-  if (success == true) {
-    console.log("Successful Creation")
-  }
-  else {
-    let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
-    console.log(array)
-  }
+  console.log("Average Screen Time: " + listofvalues[0]);
+  console.log("Min Screen Time Spend: " + listofvalues[1]);
+  console.log("Max Screen Time Spend: " + listofvalues[2]);
+  console.log();
+  console.log("Average Timer Count: " + listofvalues[3]);
+  console.log("Min Timer Count: " + listofvalues[4]);
+  console.log("Max Timer Count: " + listofvalues[5]);
  }
 
 
- // WORKING
- async function testLogin() {
-  let email = 'te@gmail.com'
-  let password = 'passpasspass';
-  let dName = '';
-
-  // Checks crypto pass
-  let dec_pass = atob(password)
-  let success = await userDB.getPassword(email).then((r) => {
-    if (r != false) {
-      let decryptPass = cryptr.decrypt(r)
-    if (decryptPass == dec_pass) { return true } else { return false }
-    }
-  })
-  
-  // Response Codes
-  if (success == true) {
-    let tokenValue = await userToken.createToken(email).then((res) => { return res });
-    dName = await userDB.getDisplayName(email).then((res) => { return res; });
-
-    console.log("Sucessful Login DN: " + dName)
-    
-  }
-  else { console.log("Failed Login") }
- }
 
 async function test() {
+
+  testDataUsage()
   
-  //await testCreate()
-  await testLogin()
 
 }
 
 
-//test()
+test()

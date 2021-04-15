@@ -63,17 +63,15 @@ class db {
         return await this.dbPromise(false, q, oldEmail);
     }
 
-
     /**
-     * Sets the displayName
-     * @param {String} userEmail email (primary key)
-     * @param {String} displayName displayName
+     * Deletes a user given the email
+     * @param {String} userEmail 
      * @returns true if no error, false if fails
      */
-    async setDisplayName(userEmail, displayName) {
-        let q = "UPDATE UserPreferences SET displayName='" + displayName + "'"
+    async deleteAccount(userEmail) {
+        let q = "DELETE FROM Users"
 
-        return await this.dbPromise(false, q, userEmail)
+        return await this.dbPromise(false, q, userEmail);
     }
 
     /**
@@ -100,9 +98,9 @@ class db {
      * @returns true if no error, false if fails
      */
     async setDisplayName(userEmail, displayName) {
-        let q = "UPDATE UserPreferences SET displayName='" + displayName + "'"
+        let q = "UPDATE Users SET displayName='" + displayName + "'"
 
-        return await this.dbPromise(false, q, userEmail)
+        return await this.dbPromise(false, q, userEmail);
     }
 
     /**
@@ -273,7 +271,7 @@ class db {
 
         // Updates the database
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { resolve(true) }
         }));
 
@@ -294,7 +292,7 @@ class db {
 
         // Querying Result
         let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { resolve(result) }
         }));
 
@@ -325,7 +323,7 @@ class db {
 
         // Updates the database
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { resolve(true) }
         }));
 
@@ -345,13 +343,15 @@ class db {
         q = q + q2
 
         // Querying Result
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
-            if (err) { console.log(err); resolve(false) }
+        let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
+            if (err) { resolve(false) }
             else { resolve(result) }
         }));
 
         return results; // JSON.stringify(results); to get the string format
     }
+
+
 
 
 
@@ -374,7 +374,7 @@ class db {
     async dbPromise(isGet, str, userEmail) {
         let q = str + " WHERE email='" + userEmail + "'"
 
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
             if (err) { resolve(false) }
             else {
                 if (isGet) { resolve(result) }      // For Getter Methods

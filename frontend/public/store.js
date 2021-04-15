@@ -305,7 +305,6 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
 
     // Handle errors
     catch (error) {
-        console.log(error)
 
         // Check if backend returned a reason and message for the error
         let responseMessageExists = 

@@ -1,13 +1,12 @@
+const { ThemeSettingName } = require('@fluentui/style-utilities');
 const { ipcMain } = require('electron');
 
 /**
  * Timer states
  */
 const states = {
-    BLOCKED: 'blocked',
-    STOPPED: 'stopped',
-    RUNNING: 'running',
-    RESTING: 'resting',
+    RUNNING: 'Running',
+    PAUSED:  'Paused',
 }
 
 var timeout;
@@ -16,9 +15,10 @@ const TimerSystem = function(){
 
     this._events = {};
 
-    this.state = states.STOPPED;
-    this.totalDuration = 0;
-    this.endTime = new Date();
+    this.state = states.PAUSED;
+
+    this.endDate = new Date();
+    this.remainingTime = 0;
 
     /**
      * Registers an event listener
@@ -37,59 +37,53 @@ const TimerSystem = function(){
      * @returns an object
      */
     this.getStatus = function() {
-        let remainingTime;
 
-        if (this.state === states.RUNNING)
-            remainingTime = this.endTime - new Date()
-        else 
-            remainingTime = this.totalDuration;
-
-        let timerStatus = {
-            state: this.state,
-            endTime: this.endTime,
-            duration: this.totalDuration,
-            remainingTime: remainingTime
+        if (this.state === states.RUNNING) {
+            this.remainingTime = this.endDate - new Date();
         }
 
-        return timerStatus;
+        return {
+            state: this.state,
+            remainingTime: this.remainingTime,
+        }
     };
 
     /**
-     * Starts the timer. Calls this.setupTimes in the process.
+     * Starts the timer. Calls this.setupTimer in the process.
      */
     this.start = function() {
         if (this.state != states.RUNNING) {
             this.state = states.RUNNING;
-            this.setupTimes();
+            this.setupTimer();
         }
     };
 
     /**
-     * Initializes the end time and timeout
+     * Initializes the timer.
      */
-    this.setupTimes = function() {
-        let timerDuration = global.store.get('preferences.notifications.interval') * 60000;
-        
-        this.endTime = new Date();
-        this.endTime.setMilliseconds(this.endTime.getMilliseconds() + timerDuration);
-        this.totalDuration = timerDuration;
-        
-        clearTimeout(timeout)
-        timeout = setTimeout(this.end.bind(this), timerDuration);
+    this.setupTimer = function() {
+        this.remainingTime = global.store.get('preferences.notifications.interval') * 60000;
+        this.updateTimer();
     }
 
     /**
-     * Stops the timer
+     * Updates the timer.
+     * 
+     * Triggers when 
+     *  1. starting timer after pausing.
+     *  2. timer is initialized.
+     *  
      */
-    this.stop = function() {
-        this.endTime = 0;
-        clearTimeout(timeout);
-        this.state = states.STOPPED;
-    };
+    this.updateTimer = function() {
+        this.endDate = new Date();
+        let ms_left = this.endDate.getMilliseconds() + this.remainingTime;
+        this.endDate.setMilliseconds(ms_left);
+        clearTimeout(timeout)
+        timeout = setTimeout(this.end.bind(this), this.remainingTime);
+    }
 
     /**
      * Ends the timer and emits the 'timer-end' event.
-     * This brings the timer state to RESTING to indicate a rest.
      */
     this.end = function() {
         clearTimeout(timeout);
@@ -97,30 +91,21 @@ const TimerSystem = function(){
          // Call timer-end listeners
         const fireCallbacks = (callback) => callback();
         this._events['timer-end'].forEach(fireCallbacks);
-        
-        this.state = states.RESTING;        
+        this.state = states.PAUSED;        
     };
 
-    /**
-     * Starts or stops the timer depending on its current state
-     */
-    this.toggle = function() {
-        
-        switch (this.state) {
-            case states.RUNNING:
-            case states.RESTING:
-                this.stop();
-                break;
-            case states.STOPPED:
-            case states.BLOCKED:
-                this.start();
-                break;
+    this.togglePause = function() {
+        if (this.state === states.PAUSED) {
+            this.state = states.RUNNING;
+            this.updateTimer();
+        } 
+        else if (this.state === states.RUNNING) {
+            this.state = states.PAUSED;
+            this.remainingTime = this.endDate - new Date();
+
         }
-        
     }
-
 }
-
 
 // Instantiate the timer system
 global.timerSystem = new TimerSystem();
@@ -129,15 +114,14 @@ global.timerSystem = new TimerSystem();
 if (global.store.get('preferences.startup.startTimerOnAppStartup'))
     global.timerSystem.start();
 
-
 /**
  * Timer-related IPC event handlers 
  * These event handlers retrieve and update the timer on behalf of the renderer.
  */
 
 // Toggle timer
-ipcMain.handle('timer-toggle', () => {
-    global.timerSystem.toggle();
+ipcMain.handle('timer-reset', () => {
+    global.timerSystem.setupTimer();
 })
 
 // Toggle timer
@@ -149,6 +133,11 @@ ipcMain.handle('timer-end', () => {
 ipcMain.on('get-timer-status', (event) => {
     event.reply('receive-timer-status', global.timerSystem.getStatus());
 });
+
+// Toggle pause/play
+ipcMain.handle('pause-toggle', () => {
+    global.timerSystem.togglePause();
+})
 
 
 module.exports = {

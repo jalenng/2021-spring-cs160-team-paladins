@@ -13,47 +13,30 @@ export default class Timer extends React.Component {
     this.state = {
       minutes: '0',
       seconds: '0',
-      buttonLabel: '',
+      togglePauseLabel: '',
       state: '',
       key: 0,
       isAnimate: 'true',
     };
-
-    ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
-      var state = timerStatus.state;
-      var buttonLabel = state === 'stopped' ? 'START' : 'RESET';
-      var milliseconds = timerStatus.remainingTime;
-      var minutes = Math.floor(milliseconds / 60000);
-      var seconds = Math.floor((milliseconds % 60000) / 1000);
-      seconds = ('00' + seconds).substr(-2, 2);
-      var isAnimate = state === 'running' ? 'true' : 'false';
-
-      this.setState({
-        minutes: minutes,
-        seconds: seconds,
-        milliseconds: milliseconds,
-        buttonLabel: buttonLabel,
-        state: state,
-        isAnimate: isAnimate,
-      });
-    });
   }
 
   componentDidMount() {
     ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
       var state = timerStatus.state;
-      var buttonLabel = state === 'stopped' ? 'START' : 'RESET';
+      var togglePauseLabel = state !== 'Running' ? 'START' : 'PAUSE';
       var milliseconds = timerStatus.remainingTime;
       var minutes = Math.floor(milliseconds / 60000);
       var seconds = Math.floor((milliseconds % 60000) / 1000);
       seconds = ('00' + seconds).substr(-2, 2);
+      var isAnimate = state === 'Running' ? 'true' : 'false';
 
       this.setState({
         minutes: minutes,
         seconds: seconds,
         milliseconds: milliseconds,
-        buttonLabel: buttonLabel,
+        togglePauseLabel: togglePauseLabel,
         state: state,
+        isAnimate: isAnimate,
       });
     });
 
@@ -67,18 +50,22 @@ export default class Timer extends React.Component {
     this.setState(getAccountStore());
   }
 
-  handleClick = () => {
-    ipcRenderer.invoke('timer-toggle');
+  resetBtnClick = () => {
+    ipcRenderer.invoke('timer-reset');
     this.setState({ key: this.state.key + 1 });
-  };
+  }
 
   handleEndBtn = () => {
     ipcRenderer.invoke('timer-end');
     this.setState({ key: this.state.key - 1 });
   };
 
+  togglePause = () => {
+    ipcRenderer.invoke('pause-toggle')
+  }
+
   render() {
-    let renderTime = () => {
+    let timerComponents = () => {
       return (
         <Stack vertical tokens={{ childrenGap: 20 }}>
             {/* Remaining Timer Duration */}
@@ -93,30 +80,32 @@ export default class Timer extends React.Component {
                 {this.state.state}
             </Text>
 
-            <PrimaryButton
-                  id='startBtn'
-                  text={this.state.buttonLabel}
-                  onClick={this.handleClick}
-            />
+            <Stack horizontal tokens={{ childrenGap: 20 }}>
+              <PrimaryButton
+                  text={this.state.togglePauseLabel}
+                  onClick={this.togglePause}
+              />
+              <PrimaryButton
+                    text={'RESET'}
+                    onClick={this.resetBtnClick}
+              />
+            </Stack>
 
             {/* For development and testing purposes */}
             <DefaultButton
                 text='Start break'
-                id='endBtn'
                 onClick={this.handleEndBtn}
             />
         </Stack>
       );
     };
 
-    let duration = parseInt(this.state.minutes) * parseInt(this.state.seconds)
-
     return (
       <div>
           <CountdownCircleTimer
             key={this.state.key}
             isPlaying={this.state.isAnimate == 'true'}
-            duration={0}
+            duration={60}
             colors={[
               ['#009dff', 0.33],
               ['#F7B801', 0.33],
@@ -126,7 +115,7 @@ export default class Timer extends React.Component {
             size={330}
             onComplete={() => [true, 100]}
           >
-            {renderTime}
+            {timerComponents}
           </CountdownCircleTimer>
       </div>
     );

@@ -2,11 +2,11 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
-const soundPlayer = require('sound-play');
 
 require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
+require('./notificationSystem.js');
 require('./accountPopups');
 
 const DEFAULT_WINDOW_SIZE = {
@@ -16,8 +16,27 @@ const DEFAULT_WINDOW_SIZE = {
 
 global.mainWindow; 
 
-timerSystem.on('timer-end', () => breakSystem.start());
+/**
+ * Configure event listeners and connect the various systems
+ */
+// Start break when timer ends
+timerSystem.on('timer-end', () => breakSystem.start()); 
+
+// Create notification windows when timer ends
+timerSystem.on('timer-end', () => notificationSystem.createWindows());  
+
+// Minimize notification when the break time is set/reset
+breakSystem.on('break-times-set', () => notificationSystem.minimize()); 
+
+// Expand notification when the break time is past the intermediate point
+breakSystem.on('break-intermediate', () => notificationSystem.maximize());
+
+// Start timer when break ends
 breakSystem.on('break-end', () => timerSystem.start());
+
+// Close notification windows when break ends
+breakSystem.on('break-end', () => notificationSystem.closeWindows());
+
 
 /**
  * Functions for creating windows
@@ -124,14 +143,6 @@ app.on('window-all-closed', function () {
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
 })
-
-// Play sound file
-ipcMain.handle('play-sound', (event, filepath) => {
-    let fullFilepath = path.isAbsolute(filepath)
-        ? filepath
-        : path.join(__dirname, filepath);
-    soundPlayer.play(fullFilepath);
-});
 
 // Get app info
 ipcMain.on('get-app-info', (event) => {

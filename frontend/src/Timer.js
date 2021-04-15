@@ -67,10 +67,10 @@ export default class Timer extends React.Component {
     this.setState(getAccountStore());
   }
 
-  handleClick = () => {
-    ipcRenderer.invoke('timer-toggle');
+  resetBtnClick = () => {
+    ipcRenderer.invoke('timer-reset');
     this.setState({ key: this.state.key + 1 });
-  };
+  }
 
   handleEndBtn = () => {
     ipcRenderer.invoke('timer-end');
@@ -104,7 +104,7 @@ export default class Timer extends React.Component {
               />
               <PrimaryButton
                     text={'RESET'}
-                    onClick={this.handleClick}
+                    onClick={this.resetBtnClick}
               />
             </Stack>
 

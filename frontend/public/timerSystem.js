@@ -1,3 +1,4 @@
+const { ThemeSettingName } = require('@fluentui/style-utilities');
 const { ipcMain } = require('electron');
 
 /**
@@ -8,7 +9,6 @@ const states = {
     STOPPED: 'stopped',
     RUNNING: 'running',
     RESTING: 'resting',
-
     PAUSED:  'paused',
 }
 
@@ -19,8 +19,10 @@ const TimerSystem = function(){
     this._events = {};
 
     this.state = states.STOPPED;
+
     this.totalDuration = 0;
-    this.endTime = new Date();
+    this.endDate = new Date();
+    this.remainingTime = 0;
 
     /**
      * Registers an event listener
@@ -39,55 +41,62 @@ const TimerSystem = function(){
      * @returns an object
      */
     this.getStatus = function() {
-        let remainingTime;
 
-        if (this.state === states.RUNNING)
-            remainingTime = this.endTime - new Date()
-        else 
-            remainingTime = this.totalDuration;
+        if (this.state === states.RUNNING) {
+            this.remainingTime = this.endDate - new Date();
+        }
+        else if (this.state === states.STOPPED) {
+            this.remainingTime = this.totalDuration;
+        }
 
         let timerStatus = {
             state: this.state,
-            endTime: this.endTime,
-            duration: this.totalDuration,
-            remainingTime: remainingTime
+            totalDuration: this.totalDuration,
+            remainingTime: this.remainingTime,
         }
+
+        console.log('Remaining time ' + this.remainingTime/1000);
+        // console.log('Total time ' + this.totalDuration);
+        // console.log();
+        // console.log('End time ' + this.endDate);
+        // console.log();
 
         return timerStatus;
     };
 
     /**
-     * Starts the timer. Calls this.setupTimes in the process.
+     * Starts the timer. Calls this.setupTimer in the process.
      */
     this.start = function() {
         if (this.state != states.RUNNING) {
             this.state = states.RUNNING;
-            this.setupTimes();
+            this.setupTimer();
         }
     };
 
+
+
     /**
-     * Initializes the end time and timeout
+     * Initializes the timer.
      */
-    this.setupTimes = function() {
-        let timerDuration = global.store.get('preferences.notifications.interval') * 60000;
-        
-        this.endTime = new Date();
-        this.endTime.setMilliseconds(this.endTime.getMilliseconds() + timerDuration);
-        this.totalDuration = timerDuration;
-        
-        clearTimeout(timeout)
-        timeout = setTimeout(this.end.bind(this), timerDuration);
+    this.setupTimer = function() {
+        this.totalDuration = global.store.get('preferences.notifications.interval') * 60000;
+        this.remainingTime = this.totalDuration;
+        this.updateTimer();
     }
 
     /**
-     * Stops the timer
+     * Updates the timer.
+     * Called when timer started after a pause & also when timer initialized.
+     *  
      */
-    this.stop = function() {
-        this.endTime = 0;
-        clearTimeout(timeout);
-        this.state = states.STOPPED;
-    };
+    this.updateTimer = function() {
+        this.endDate = new Date();
+        let ms_left = this.endDate.getMilliseconds() + this.remainingTime;
+        this.endDate.setMilliseconds(ms_left);
+        clearTimeout(timeout)
+        timeout = setTimeout(this.end.bind(this), this.remainingTime);
+    }
 
     /**
      * Ends the timer and emits the 'timer-end' event.
@@ -122,13 +131,25 @@ const TimerSystem = function(){
     }
 
     this.togglePause = function() {
-        if (this.state !== states.RUNNING) {
+        // if started after pausing, update the endTime & remainingTime.
+        if (this.state === states.PAUSED) {
+            this.endDate = new Date();
+            let ms_left = this.endDate.getMilliseconds() + this.remainingTime;
+            this.endDate.setMilliseconds(ms_left);
             this.state = states.RUNNING;
-            this.setupTimes();
-        }
-        else {
+
+            clearTimeout(timeout)
+            timeout = setTimeout(this.end.bind(this), this.remainingTime);
+        } 
+        else if (this.state === states.RUNNING) {
+            this.remainingTime = this.endDate - new Date();
             this.state = states.PAUSED;
+
         }
+
+        // clearTimeout(timeout)
+        // let timerDuration = global.store.get('preferences.notifications.interval') * 60000;
+        // timeout = setTimeout(this.end.bind(this), timerDuration);
     }
 
 }
@@ -148,8 +169,8 @@ if (global.store.get('preferences.startup.startTimerOnAppStartup'))
  */
 
 // Toggle timer
-ipcMain.handle('timer-toggle', () => {
-    global.timerSystem.toggle();
+ipcMain.handle('timer-reset', () => {
+    global.timerSystem.setupTimer();
 })
 
 // Toggle timer
@@ -162,7 +183,7 @@ ipcMain.on('get-timer-status', (event) => {
     event.reply('receive-timer-status', global.timerSystem.getStatus());
 });
 
-// Toggle pause
+// Toggle pause/play
 ipcMain.handle('pause-toggle', () => {
     global.timerSystem.togglePause();
 })

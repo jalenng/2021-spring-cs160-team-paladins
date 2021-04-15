@@ -3,3 +3,9 @@ frontend/node_modules
 
 # Back-end
 backend/node_modules
+
+# Vscode files.
+.vscode
+
+# Mac specific
+.DS_Store

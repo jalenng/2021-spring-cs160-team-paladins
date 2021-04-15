@@ -8,9 +8,11 @@ Starts the React development environment and Electron process together.
 ### `npm run build`
 Creates a distributable build of the whole app.
 
----
+### `npm run test`
+Starts the React development environemtn and Spection to test the Electron app.
 
 ## Helper/advanced commands
+**Normally, you won't need to call these commands.**
 
 ### `npm run react-start`
 Starts the React development environment only.
@@ -26,3 +28,6 @@ Starts the Electron process only.
 
 ### `npm run electron-watch`
 Starts the Electron process with nodemon. Updating Electron source files will automatically reload Electron.
+
+### `npm run electron-test`
+Starts Spectron to test the Electrion app only.

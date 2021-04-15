@@ -63,7 +63,10 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: true,
+
+            // Allow dev tools (for dev) and remote module (for testing) if isDev
+            devTools: isDev,
+            enableRemoteModule: isDev
         },
     });
 
@@ -86,6 +89,9 @@ function createWindow() {
 
     // Handle closing through a confirmation dialog
     mainWindow.on('close', (e) => {
+        if (isDev) return;  // Don't show confirmation dialog if isDev
+
+        e.preventDefault();
         const closeConfirm = dialog.showMessageBoxSync(mainWindow, {
             type: 'question',
             title: 'iCare',
@@ -94,8 +100,8 @@ function createWindow() {
             buttons: ['Yes', 'No'],
             defaultId: 1
         })
-        // Don't close window if selected button is 'Yes'
-        if (closeConfirm === 1) e.preventDefault();
+        
+        if (closeConfirm === 0) app.exit(); // Exit app if selected button is 'Yes'
     })
 
 } 

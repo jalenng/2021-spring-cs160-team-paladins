@@ -302,7 +302,9 @@ const { route } = require('./index.js');
       })
       
       // Response Code
-      if (success == true) { res.status(200); }
+      if (success == true) { 
+        res.status(200).send({ reason: "SUCCESS", message: "Deleted account" }); 
+      }
       else { res.status(504).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
     });
  

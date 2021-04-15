@@ -118,7 +118,7 @@ describe('Display name', async () => {
 
     // Set Display Name of newEmail
     describe('(Success) Set display name of [' + newEmail + '] to [' + newDisplay + ']', async () => {
-        it('should return true as it changes display name', async () => {
+        it('should return true (set works)', async () => {
             success = await userDB.setDisplayName(newEmail, newDisplay).then((r) => { return r; });
             assert.strictEqual(success, true, 'success is true');
         })
@@ -150,7 +150,7 @@ describe('Notification Interval (user preferences)', async () => {
 
     // Set default notification interval of newEmail (30 minutes)
     describe('(Success) Set notification interval of [' + newEmail + '] to 30 minutes', async () => {
-        it('should return true', async () => {
+        it('should return true (set works)', async () => {
             success = await userDB.setNotiInterval(newEmail, newInterval).then((r) => { return r; });
             assert.strictEqual(success, true,  'success is true')
         })
@@ -172,62 +172,133 @@ describe('Notification Sound (user preferences)', async () => {
     let notiSound = "";
     let newSound = "newSound";
     
-    // Get default notification interval of newEmail (20 minutes)
-    describe('(Success) Get notification interval from [' + newEmail + ']', async () => {
-        it('should return 20 (default timer)', async () => {
+    // Get default notification sound of newEmail (Leaf)
+    describe('(Success) Get notification sound from [' + newEmail + ']', async () => {
+        it('should return Leaf', async () => {
             notiSound = await userDB.getNotiSound(newEmail).then((r) => { return r; });
             assert.strictEqual(notiSound, "Leaf",  'default notification sound is Leaf')
         })
     });
 
-    // Set default notification interval of newEmail (30 minutes)
-    describe('(Success) Set notification interval of [' + newEmail + '] to 30 minutes', async () => {
-        it('should return true', async () => {
+    // Set notification sound of newEmail (30 minutes)
+    describe('(Success) Set notification sound of [' + newEmail + '] to 30 minutes', async () => {
+        it('should return true (set works)', async () => {
             success = await userDB.setNotiSound(newEmail, newSound).then((r) => { return r; });
             assert.strictEqual(success, true,  'success is true')
         })
     });
 
-    // Get default notification interval of newEmail (20 minutes)
-    describe('(Success) Get notification interval from [' + newEmail + ']', async () => {
-        it('should return 30 (new timer)', async () => {
-            notiSound = await userDB.getNotiInterval(newEmail).then((r) => { return r; });
+    // Get notification sound of newEmail (newSound)
+    describe('(Success) Get notification sound from [' + newEmail + ']', async () => {
+        it('should return newSound', async () => {
+            notiSound = await userDB.getNotiSound(newEmail).then((r) => { return r; });
             assert.strictEqual(notiSound, newSound,  'new notification sound is newSound')
         })
     });
 
 });
 
+// Get/Set Notification Sound On
+describe('Notification Sound  On (user preferences)', async () => {
+
+    let notiSoundOn = "";
+    
+    // Get default 'notification sound on' boolean of newEmail (true)
+    describe('(Success) Get notification sound on from [' + newEmail + ']', async () => {
+        it('should return true', async () => {
+            notiSoundOn = await userDB.getNotiSoundOn(newEmail).then((r) => { return r; });
+            assert.strictEqual(notiSoundOn, true,  'notification sound on = true')
+        })
+    });
+
+    // Set 'notification sound on' boolean of newEmail (false)
+    describe('(Success) Set notification sound on of [' + newEmail + '] to false', async () => {
+        it('should return true (set works)', async () => {
+            success = await userDB.setNotiSoundOn(newEmail, false).then((r) => { return r; });
+            assert.strictEqual(success, true,  'success is true')
+        })
+    });
+
+    // Get 'notification sound on' boolean of newEmail (false)
+    describe('(Success) Get notification sound on from [' + newEmail + ']', async () => {
+        it('should return false', async () => {
+            notiSoundOn = await userDB.getNotiSoundOn(newEmail).then((r) => { return r; });
+            assert.strictEqual(notiSoundOn, false,  'notification sound on = false')
+        })
+    });
+
+});
+
+// Get/Set Data Usage On
+describe('Data Usage  On (user preferences)', async () => {
+
+    let dataUsageOn = "";
+    
+    // Get default 'data usage on' boolean of newEmail (true)
+    describe('(Success) Get data usage on from [' + newEmail + ']', async () => {
+        it('should return true', async () => {
+            dataUsageOn = await userDB.getDataUsageOn(newEmail).then((r) => { return r; });
+            assert.strictEqual(dataUsageOn, true,  'data usage on = true')
+        })
+    });
+
+    // Set 'data usage on' boolean of newEmail (false)
+    describe('(Success) Set data usage  on of [' + newEmail + '] to false', async () => {
+        it('should return true (set works)', async () => {
+            success = await userDB.setDataUsageOn(newEmail, false).then((r) => { return r; });
+            assert.strictEqual(success, true,  'success is true')
+        })
+    });
+
+    // Get 'data usage on' boolean of newEmail (false)
+    describe('(Success) Get data usage on from [' + newEmail + ']', async () => {
+        it('should return false', async () => {
+            dataUsageOn = await userDB.getDataUsageOn(newEmail).then((r) => { return r; });
+            assert.strictEqual(dataUsageOn, false,  'data usage on = false')
+        })
+    });
+
+});
+
+// Get/Set App Usage On
+describe('Data Usage  On (user preferences)', async () => {
+
+    let appUsageOn = "";
+    
+    // Get default 'app usage on' boolean of newEmail (true)
+    describe('(Success) Get app usage on from [' + newEmail + ']', async () => {
+        it('should return true', async () => {
+            appUsageOn = await userDB.getAppUsageOn(newEmail).then((r) => { return r; });
+            assert.strictEqual(appUsageOn, true,  'app usage on = true')
+        })
+    });
+
+    // Set 'app usage on' boolean of newEmail (false)
+    describe('(Success) Set app usage  on of [' + newEmail + '] to false', async () => {
+        it('should return true (set works)', async () => {
+            success = await userDB.setAppUsageOn(newEmail, false).then((r) => { return r; });
+            assert.strictEqual(success, true,  'success is true')
+        })
+    });
+
+    // Get 'app usage on' boolean of newEmail (false)
+    describe('(Success) Get app usage on from [' + newEmail + ']', async () => {
+        it('should return false', async () => {
+            appUsageOn = await userDB.getAppUsageOn(newEmail).then((r) => { return r; });
+            assert.strictEqual(appUsageOn, false,  'app usage on = false')
+        })
+    });
+
+});
+
+
+
 
 /**
- * 
 
- */
-
-
-
-/**
- * Get/Set notification sound
- * Get/Set notification sound on
- * Get/Set data usage on
- * Get/Set app usage on
  * Get/Set data usage
  * Get/Set app usage
  */
-
-
-/**
- * What I have done since last scrum:
- * -Get/Set display name
- * -Get/Set notification interval
- */
-
-
-
-
-
-
-
 
 
 
@@ -251,79 +322,3 @@ describe('Delete account', async() => {
     });
 
 });
-
-
-
-
-/**
- * 
-test('get timer length in minutes (success)', async () => {
-    let notiInt = await userDB.getNotiInterval('hello@gmail.com');
-    expect(notiInt).toBe(30);
-});
-
-test('set timer length in minutes (success)', async () => {
-    let setNI = await userDB.setDisplayName('default@gmail.com', 50)
-    if (setNI == true) { expect(setNI).toBe(true) }         
-    else { expect(setNI).not.toBe(true) }
-})
-
-test('get notiSoundOn - boolean (success)', async () => {
-    let soundBool = await userDB.getNotiSoundOn('basic@gmail.com');
-    expect(soundBool).toBe(true);
-});
-
-test('set notiSoundOn - boolean (success)', async () => {
-    let setNSBool = await userDB.setNotiSoundOn('default@gmail.com', false)
-    if (setNSBool == true) { expect(setNSBool).toBe(true) }         
-    else { expect(setNSBool).not.toBe(true) }
-})
-
-test('get dataUsageOn - boolean (success)', async () => {
-    let dataUsageBool = await userDB.getDataUsageOn('basic@gmail.com');
-    expect(dataUsageBool).toBe(true);
-});
-
-test('set dataUsageOn false - boolean (success)', async () => {
-    await userDB.setDataUsageOn('default@gmail.com', false).then((result) => {
-        if (result == true) { expect(result).toBe(true) }
-        else { expect(result).not.toBe(true) }
-    })
-})
-
-test('set dataUsageOn true - boolean (success)', async () => {
-    await userDB.setDataUsageOn('default@gmail.com', true).then((result) => {
-        if (result == true) { expect(result).toBe(true) }
-        else { expect(result).not.toBe(true) }
-    })
-})
-
-// -------Testing Notification Sounds-------------------------
-test ('add notification sound input into database', async () => {
-    let name = "Leaf"
-    let soundPath = "2021-spring-cs160-team-paladins/database/Sounds/Leaf.ogg"
-    await userDB.addNotiSound(name, soundPath).then((result) => {
-        if (result == true) { expect(result).toBe(true) }           // Fails after it is inputted
-        else { expect(result).not.toBE(true) }
-    })
-})
-
-test ('change notification sound preference of user', async () => {
-    await userDB.setNotiSound("basic@gmail.com", "Leaf").then((result) => {
-        if (result == true) { expect(result).toBe(true) }
-        else { expect(result).not.toBE(true) }
-    });
-
-})
-
-test ('getting notification sound path of user', async () => {
-    await userDB.getNotiSound('basic@gmail.com').then((result) => {
-        if (result == true) { expect(result).toBe(true) }
-        else { expect(result).not.toBE(true) }
-    });
-
-})
-
-
-
- */

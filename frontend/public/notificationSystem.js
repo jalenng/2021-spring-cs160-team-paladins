@@ -94,7 +94,7 @@ const NotificationSystem = function() {
         // Configure bounds and visibility
         const bounds = display.bounds;
         const screenRect = isWindows ? screen.dipToScreenRect(null, bounds) : bounds;
-        newBounds = {
+        const newBounds = {
             ...screenRect,
             width: bounds.width,
             height: bounds.height
@@ -129,15 +129,27 @@ const NotificationSystem = function() {
 
         // Configure bounds and visibility
         const bounds = display.workArea;
-        const screenRect = isWindows ? screen.dipToScreenRect(null, bounds) : bounds;
-        const trueScaling = display.scaleFactor / screen.getPrimaryDisplay().scaleFactor;
+        let newBounds;
 
-        newBounds = {
-            x: screenRect.x + ((bounds.width - POPUP_SIZE.width) * trueScaling),
-            y: screenRect.y + ((bounds.height - POPUP_SIZE.height) * trueScaling),
-            width: POPUP_SIZE.width,
-            height: POPUP_SIZE.height
+        if (isWindows) {
+            const screenRect = isWindows ? screen.dipToScreenRect(null, bounds) : bounds;
+            const trueScaling = display.scaleFactor / screen.getPrimaryDisplay().scaleFactor;
+            newBounds = {
+                x: screenRect.x + ((bounds.width - POPUP_SIZE.width) * trueScaling),
+                y: screenRect.y + ((bounds.height - POPUP_SIZE.height) * trueScaling),
+                width: POPUP_SIZE.width,
+                height: POPUP_SIZE.height
+            }
         }
+        else {
+            newBounds = {
+                x: bounds.x + bounds.width - POPUP_SIZE.width,
+                y: bounds.y + bounds.height - POPUP_SIZE.height,
+                width: POPUP_SIZE.width,
+                height: POPUP_SIZE.height
+            }
+        }
+
         window.setBounds(newBounds); 
         window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
         window.menuBarVisible = false;

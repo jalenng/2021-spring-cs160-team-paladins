@@ -1,7 +1,6 @@
 import React from "react";
 
 import { mergeStyles } from '@fluentui/react/lib/Styling';
-import { ProgressIndicator } from '@fluentui/react/lib/ProgressIndicator'
 import { FontIcon } from '@fluentui/react/lib/Icon';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
@@ -22,7 +21,7 @@ const iconClass = mergeStyles({
     color: 'deepskyblue'
 });
 
-export default class FullscreenOverlay extends React.Component {
+export default class extends React.Component {
 
     constructor(props){
         super(props);
@@ -44,6 +43,7 @@ export default class FullscreenOverlay extends React.Component {
     }
     
     componentDidMount() {
+        document.body.style.backgroundColor = '#000000';
         ipcRenderer.send('get-break-status');
         setInterval(() => {ipcRenderer.send('get-break-status')}, 1000);
     }
@@ -87,7 +87,7 @@ export default class FullscreenOverlay extends React.Component {
                     transform: 'translate(-50%, -50%)'
                 }}>
                     <Text variant={"large"} align="center">
-                        The countdown will reset upon keyboard or mouse input.
+                        The timer will reset upon mouse movement.
                     </Text>          
                 </div>
                 

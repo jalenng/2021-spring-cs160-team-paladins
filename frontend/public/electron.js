@@ -2,11 +2,11 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
-const soundPlayer = require('sound-play');
 
 require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
+require('./notificationSystem.js');
 require('./accountPopups');
 
 const DEFAULT_WINDOW_SIZE = {
@@ -16,8 +16,27 @@ const DEFAULT_WINDOW_SIZE = {
 
 global.mainWindow; 
 
-timerSystem.on('timer-end', () => breakSystem.start());
+/**
+ * Configure event listeners and connect the various systems
+ */
+// Start break when timer ends
+timerSystem.on('timer-end', () => breakSystem.start()); 
+
+// Create notification windows when timer ends
+timerSystem.on('timer-end', () => notificationSystem.createWindows());  
+
+// Minimize notification when the break time is set/reset
+breakSystem.on('break-times-set', () => notificationSystem.minimize()); 
+
+// Expand notification when the break time is past the intermediate point
+breakSystem.on('break-intermediate', () => notificationSystem.maximize());
+
+// Start timer when break ends
 breakSystem.on('break-end', () => timerSystem.start());
+
+// Close notification windows when break ends
+breakSystem.on('break-end', () => notificationSystem.closeWindows());
+
 
 /**
  * Functions for creating windows
@@ -44,7 +63,10 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: true,
+
+            // Allow dev tools (for dev) and remote module (for testing) if isDev
+            devTools: isDev,
+            enableRemoteModule: isDev
         },
     });
 
@@ -67,6 +89,9 @@ function createWindow() {
 
     // Handle closing through a confirmation dialog
     mainWindow.on('close', (e) => {
+        if (isDev) return;  // Don't show confirmation dialog if isDev
+
+        e.preventDefault();
         const closeConfirm = dialog.showMessageBoxSync(mainWindow, {
             type: 'question',
             title: 'iCare',
@@ -75,8 +100,8 @@ function createWindow() {
             buttons: ['Yes', 'No'],
             defaultId: 1
         })
-        // Don't close window if selected button is 'Yes'
-        if (closeConfirm === 1) e.preventDefault();
+        
+        if (closeConfirm === 0) app.exit(); // Exit app if selected button is 'Yes'
     })
 
 } 
@@ -118,14 +143,6 @@ app.on('window-all-closed', function () {
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
 })
-
-// Play sound file
-ipcMain.handle('play-sound', (event, filepath) => {
-    let fullFilepath = path.isAbsolute(filepath)
-        ? filepath
-        : path.join(__dirname, filepath);
-    soundPlayer.play(fullFilepath);
-});
 
 // Get app info
 ipcMain.on('get-app-info', (event) => {

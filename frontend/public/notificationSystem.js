@@ -1,7 +1,7 @@
-
 const { BrowserWindow, screen } = require('electron');
 const path = require('path'); 
 const isDev = require('electron-is-dev'); 
+const isWindows = process.platform == 'win32';
 
 // Shared notification window options
 const sharedWindowOptions = {
@@ -93,7 +93,7 @@ const NotificationSystem = function() {
 
         // Configure bounds and visibility
         const bounds = display.bounds;
-        const screenRect = screen.dipToScreenRect(null, bounds);
+        const screenRect = isWindows ? screen.dipToScreenRect(null, bounds) : bounds;
         newBounds = {
             ...screenRect,
             width: bounds.width,
@@ -129,7 +129,7 @@ const NotificationSystem = function() {
 
         // Configure bounds and visibility
         const bounds = display.workArea;
-        const screenRect = screen.dipToScreenRect(null, bounds);
+        const screenRect = isWindows ? screen.dipToScreenRect(null, bounds) : bounds;
         const trueScaling = display.scaleFactor / screen.getPrimaryDisplay().scaleFactor;
 
         newBounds = {

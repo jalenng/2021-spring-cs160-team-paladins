@@ -5,10 +5,7 @@ const { ipcMain } = require('electron');
  * Timer states
  */
 const states = {
-    BLOCKED: 'blocked',
-    STOPPED: 'stopped',
     RUNNING: 'running',
-    RESTING: 'resting',
     PAUSED:  'paused',
 }
 
@@ -18,7 +15,7 @@ const TimerSystem = function(){
 
     this._events = {};
 
-    this.state = states.STOPPED;
+    this.state = states.PAUSED;
 
     this.totalDuration = 0;
     this.endDate = new Date();
@@ -45,23 +42,12 @@ const TimerSystem = function(){
         if (this.state === states.RUNNING) {
             this.remainingTime = this.endDate - new Date();
         }
-        else if (this.state === states.STOPPED) {
-            this.remainingTime = this.totalDuration;
-        }
 
-        let timerStatus = {
+        return {
             state: this.state,
             totalDuration: this.totalDuration,
             remainingTime: this.remainingTime,
         }
-
-        console.log('Remaining time ' + this.remainingTime/1000);
-        // console.log('Total time ' + this.totalDuration);
-        // console.log();
-        // console.log('End time ' + this.endDate);
-        // console.log();
-
-        return timerStatus;
     };
 
     /**
@@ -74,8 +60,6 @@ const TimerSystem = function(){
         }
     };
 
-
-
     /**
      * Initializes the timer.
      */
@@ -87,7 +71,10 @@ const TimerSystem = function(){
 
     /**
      * Updates the timer.
-     * Called when timer started after a pause & also when timer initialized.
+     * 
+     * Triggers when 
+     *  1. starting timer after pausing.
+     *  2. timer is initialized.
      *  
      */
     this.updateTimer = function() {
@@ -100,7 +87,6 @@ const TimerSystem = function(){
 
     /**
      * Ends the timer and emits the 'timer-end' event.
-     * This brings the timer state to RESTING to indicate a rest.
      */
     this.end = function() {
         clearTimeout(timeout);
@@ -108,48 +94,19 @@ const TimerSystem = function(){
          // Call timer-end listeners
         const fireCallbacks = (callback) => callback();
         this._events['timer-end'].forEach(fireCallbacks);
-        
-        this.state = states.RESTING;        
+        this.state = states.PAUSED;        
     };
 
-    /**
-     * Starts or stops the timer depending on its current state
-     */
-    this.toggle = function() {
-        
-        switch (this.state) {
-            case states.RUNNING:
-            case states.RESTING:
-                this.stop();
-                break;
-            case states.STOPPED:
-            case states.BLOCKED:
-                this.start();
-                break;
-        }
-        
-    }
-
     this.togglePause = function() {
-        // if started after pausing, update the endTime & remainingTime.
         if (this.state === states.PAUSED) {
-            this.endDate = new Date();
-            let ms_left = this.endDate.getMilliseconds() + this.remainingTime;
-            this.endDate.setMilliseconds(ms_left);
             this.state = states.RUNNING;
-
-            clearTimeout(timeout)
-            timeout = setTimeout(this.end.bind(this), this.remainingTime);
+            this.updateTimer();
         } 
         else if (this.state === states.RUNNING) {
-            this.remainingTime = this.endDate - new Date();
             this.state = states.PAUSED;
+            this.remainingTime = this.endDate - new Date();
 
         }
-
-        // clearTimeout(timeout)
-        // let timerDuration = global.store.get('preferences.notifications.interval') * 60000;
-        // timeout = setTimeout(this.end.bind(this), timerDuration);
     }
 
 }

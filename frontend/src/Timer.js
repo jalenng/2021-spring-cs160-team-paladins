@@ -17,6 +17,7 @@ export default class Timer extends React.Component {
       state: '',
       key: 0,
       isAnimate: 'true',
+      totalDuration: '0',
     };
 
     ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
@@ -47,6 +48,7 @@ export default class Timer extends React.Component {
       var minutes = Math.floor(milliseconds / 60000);
       var seconds = Math.floor((milliseconds % 60000) / 1000);
       seconds = ('00' + seconds).substr(-2, 2);
+      var totalDuration = timerStatus.totalDuration;
 
       this.setState({
         minutes: minutes,
@@ -54,6 +56,7 @@ export default class Timer extends React.Component {
         milliseconds: milliseconds,
         togglePauseLabel: togglePauseLabel,
         state: state,
+        totalDuration: totalDuration,
       });
     });
 
@@ -82,7 +85,7 @@ export default class Timer extends React.Component {
   }
 
   render() {
-    let renderTime = () => {
+    let timerComponents = () => {
       return (
         <Stack vertical tokens={{ childrenGap: 20 }}>
             {/* Remaining Timer Duration */}
@@ -108,7 +111,6 @@ export default class Timer extends React.Component {
               />
             </Stack>
 
-
             {/* For development and testing purposes */}
             <DefaultButton
                 text='Start break'
@@ -123,7 +125,7 @@ export default class Timer extends React.Component {
           <CountdownCircleTimer
             key={this.state.key}
             isPlaying={this.state.isAnimate == 'true'}
-            duration={0}
+            duration={60}
             colors={[
               ['#009dff', 0.33],
               ['#F7B801', 0.33],
@@ -133,7 +135,7 @@ export default class Timer extends React.Component {
             size={330}
             onComplete={() => [true, 100]}
           >
-            {renderTime}
+            {timerComponents}
           </CountdownCircleTimer>
       </div>
     );

@@ -1,7 +1,9 @@
-const { BrowserWindow, ipcMain, screen } = require('electron');
-const soundPlayer = require('sound-play');
-const isDev = require('electron-is-dev'); 
+require ('hazardous');
 const path = require('path'); 
+
+const { ipcMain, screen } = require('electron');
+const soundPlayer = require('sound-play');
+
 
 /**
  * Break states
@@ -12,12 +14,13 @@ const states = {
 }
 
 const BREAK_DURATION = 20000;
+const POPUP_NOTIF_DURATION = 5000;
 
 var oldMousePos;
 var checkMousePositionInterval;
-var timeout;
 
-global.fsWindows;
+var mainTimeout;
+var intermediateTimeout;
 
 const BreakSystem = function(){
 
@@ -86,16 +89,8 @@ const BreakSystem = function(){
                     oldMousePos = newMousePos;
                 }
 
-            }, 100);
-
-            // Get display bounds and create new windows with those bounds
-            const disps = screen.getAllDisplays();
-            global.fsWindows = [];
-        
-            for (var i = 0; i < disps.length; i++) {
-                global.fsWindows.push(createFullscreenWindow(disps[i].bounds));
-            }
-
+            }, 100);            
+            
         }
         
     }
@@ -104,13 +99,25 @@ const BreakSystem = function(){
      * Initializes the end time and timeout
      */
     this.setupTimes = function() {
+
+        // Call break-times-set listeners
+        const fireCallbacks = (callback) => callback();
+        this._events['break-times-set'].forEach(fireCallbacks);
+
         this.endTime = new Date();
         this.endTime.setMilliseconds(this.endTime.getMilliseconds() + BREAK_DURATION);
         
         this.totalDuration = BREAK_DURATION;
         
-        clearTimeout(timeout)
-        timeout = setTimeout(this.end.bind(this), BREAK_DURATION);
+        clearTimeout(mainTimeout)
+        clearTimeout(intermediateTimeout)
+
+        mainTimeout = setTimeout(this.end.bind(this), BREAK_DURATION);
+        intermediateTimeout = setTimeout(() => {
+            // Call break-intermediate listeners after POPUP_NOTIF_DURATION
+            const fireCallbacks = (callback) => callback();
+            this._events['break-intermediate'].forEach(fireCallbacks);
+        }, POPUP_NOTIF_DURATION);
     }
 
     /**
@@ -123,21 +130,15 @@ const BreakSystem = function(){
             if (global.store.get('preferences.notifications.enableSound') === true) 
                 this.playSound();
 
-            clearTimeout(timeout)
+            clearTimeout(mainTimeout)
+            clearTimeout(intermediateTimeout)
             clearInterval(checkMousePositionInterval)
-
-            // Close all fullscreen windows
-            for (var i = 0; i < global.fsWindows.length; i++) {
-                global.fsWindows[i].removeAllListeners('close');
-                global.fsWindows[i].close();
-            }
 
             // Call break-end listeners
             const fireCallbacks = (callback) => callback();
             this._events['break-end'].forEach(fireCallbacks);
 
             this.state = states.NOT_ON_BREAK; 
-            
         }
 
     }
@@ -161,57 +162,6 @@ global.breakSystem = new BreakSystem();
 
 
 /**
- * Creates a fullscreen break notification window
- * @param {Rectangle} bounds The bounds of the window
- * @returns a new BrowserWindow with the specified bounds
- */
-
-function createFullscreenWindow(bounds) {
-
-    var fsWin = new BrowserWindow({
-        alwaysOnTop: true,
-        focusable: false,
-        width: 800,
-        height: 500,
-        resizable: false,
-        movable: false,
-        frame: false,
-        parent: global.mainWindow,
-        minimizable: false,
-        maximizable: false,
-        skipTaskbar: true,
-        show: false,
-        title: "iCare Overlay",
-        backgroundColor: '#222222',
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-    })
-
-    fsWin.menuBarVisible = false;
-    
-    fsWin.setBounds(bounds);
-
-    fsWin.on('close', (e) => e.preventDefault())
-
-    fsWin.loadURL(
-        isDev
-        ? 'http://localhost:3000#/fullscreenNotification'
-        : `file://${path.join(__dirname, '../build/index.html#fullscreenNotification')}`
-    ); 
-
-    fsWin.on('ready-to-show', () => {
-        fsWin.show();
-    })
-
-    return fsWin;
-
-}
-
-
-/**
  * Break-related IPC event handlers 
  * These event handlers retrieve and update the break system on behalf of the renderer.
  */
@@ -220,6 +170,10 @@ ipcMain.on('get-break-status', (event) => {
     event.reply('receive-break-status', global.breakSystem.getStatus());
 });
 
+// Play sound file
+ipcMain.handle('play-sound', (event) => {
+    breakSystem.playSound();
+});
 
 module.exports = {
     BreakStates: states

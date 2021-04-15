@@ -199,12 +199,13 @@ class db {
     async getDataUsageOn(userEmail) {
         let q = "SELECT dataUsageOn FROM UserPreferences"
         let data = await this.dbPromise(true, q, userEmail);
+
         if (data != false) {
             let bVal = await this.gettingInteger(data)
             return Boolean(Number(bVal))
         }
 
-        return data
+        return data;
     }
 
     /**

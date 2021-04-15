@@ -129,17 +129,84 @@ describe('Display name', async () => {
         it('should return ' + newDisplay, async () => {
             success = await userDB.getDisplayName(newEmail).then((r) => { return r; });
             assert.strictEqual(success, newDisplay, 'success is true');
-        })
-    })
+        });
+    });
 
 });
 
 // Get/Set Notification Interval
+describe('Notification Interval (user preferences)', async () => {
+
+    let notiInterval = "";
+    let newInterval = 30;
+    
+    // Get default notification interval of newEmail (20 minutes)
+    describe('(Success) Get notification interval from [' + newEmail + ']', async () => {
+        it('should return 20 (default timer)', async () => {
+            notiInterval = await userDB.getNotiInterval(newEmail).then((r) => { return r; });
+            assert.strictEqual(notiInterval, 20,  'default notification interval is 20 minutes')
+        })
+    });
+
+    // Set default notification interval of newEmail (30 minutes)
+    describe('(Success) Set notification interval of [' + newEmail + '] to 30 minutes', async () => {
+        it('should return true', async () => {
+            success = await userDB.setNotiInterval(newEmail, newInterval).then((r) => { return r; });
+            assert.strictEqual(success, true,  'success is true')
+        })
+    });
+
+    // Get default notification interval of newEmail (20 minutes)
+    describe('(Success) Get notification interval from [' + newEmail + ']', async () => {
+        it('should return 30 (new timer)', async () => {
+            notiInterval = await userDB.getNotiInterval(newEmail).then((r) => { return r; });
+            assert.strictEqual(notiInterval, newInterval,  'new notification interval is 30 minutes')
+        })
+    });
+
+});
+
+// Get/Set Notification Sound
+describe('Notification Sound (user preferences)', async () => {
+
+    let notiSound = "";
+    let newSound = "newSound";
+    
+    // Get default notification interval of newEmail (20 minutes)
+    describe('(Success) Get notification interval from [' + newEmail + ']', async () => {
+        it('should return 20 (default timer)', async () => {
+            notiSound = await userDB.getNotiSound(newEmail).then((r) => { return r; });
+            assert.strictEqual(notiSound, "Leaf",  'default notification sound is Leaf')
+        })
+    });
+
+    // Set default notification interval of newEmail (30 minutes)
+    describe('(Success) Set notification interval of [' + newEmail + '] to 30 minutes', async () => {
+        it('should return true', async () => {
+            success = await userDB.setNotiSound(newEmail, newSound).then((r) => { return r; });
+            assert.strictEqual(success, true,  'success is true')
+        })
+    });
+
+    // Get default notification interval of newEmail (20 minutes)
+    describe('(Success) Get notification interval from [' + newEmail + ']', async () => {
+        it('should return 30 (new timer)', async () => {
+            notiSound = await userDB.getNotiInterval(newEmail).then((r) => { return r; });
+            assert.strictEqual(notiSound, newSound,  'new notification sound is newSound')
+        })
+    });
+
+});
+
+
+/**
+ * 
+
+ */
 
 
 
 /**
- * Get/Set notification interval
  * Get/Set notification sound
  * Get/Set notification sound on
  * Get/Set data usage on
@@ -152,6 +219,7 @@ describe('Display name', async () => {
 /**
  * What I have done since last scrum:
  * -Get/Set display name
+ * -Get/Set notification interval
  */
 
 

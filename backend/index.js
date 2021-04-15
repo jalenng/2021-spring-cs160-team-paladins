@@ -96,7 +96,11 @@ const { route } = require('./index.js');
     })
  
     // Gets preferences of user
+<<<<<<< HEAD
     router.get('/pref/:user', async function (req, res) {
+=======
+    router.get('/pref', async function (req, res) {
+>>>>>>> 99978f9 (updated token and 200 response code)
       let token = req.headers.auth;
       let email = ""
  
@@ -130,7 +134,11 @@ const { route } = require('./index.js');
     });
  
     // Saves the user preferences (incomplete)
+<<<<<<< HEAD
     router.put('/pref/:user', async function (req, res) {
+=======
+    router.put('/pref', async function (req, res) {
+>>>>>>> 99978f9 (updated token and 200 response code)
       let token = req.headers.auth;
       let email = ""
  
@@ -160,12 +168,18 @@ const { route } = require('./index.js');
       let success5 = await userDB.setAppUsageOn(email, aUsageOn).then((result) => { return result; })
 
       // Send to frontend
-      if (success1 == success2 == success3 == success4 == success5 == true) { res.status(200); }
+      if (success1 == success2 == success3 == success4 == success5 == true) { 
+        res.status(200).send({ reason: "SUCCESS", message: "Saved new user preferences" }); 
+      }
       else { res.status(504).send({ reason: "SAVE_FAILED", message: "Couldn't save all preferences." }); }
     });
 
     // Gets data usage (incomplete)
+<<<<<<< HEAD
     router.get('/data/:user', async (req, res) => {
+=======
+    router.get('/data', async (req, res) => {
+>>>>>>> 99978f9 (updated token and 200 response code)
       let token = req.headers.auth;
       let email = ""
  
@@ -191,7 +205,11 @@ const { route } = require('./index.js');
     });
 
     // Updates the data/app usage of user (incomplete)
+<<<<<<< HEAD
     router.put('/data/:user', async (req, res) => {
+=======
+    router.put('/data', async (req, res) => {
+>>>>>>> 99978f9 (updated token and 200 response code)
       let token = req.headers.auth;
       let email = ""
  
@@ -221,13 +239,20 @@ const { route } = require('./index.js');
 
 
       // Response Codes
-      if (dusuccess == true && auSuccess == true) { res.status(200); }
+      if (dusuccess == true && auSuccess == true) { 
+        res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
+      }
       else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage" }) }
 
     });
 
+<<<<<<< HEAD
     // Change email (incomplete)
     router.put('/user/:user', async (req, res) => {
+=======
+    // Change email
+    router.put('/user', async (req, res) => {
+>>>>>>> 99978f9 (updated token and 200 response code)
       let token = req.headers.auth;
       let oldEmail = ""
  
@@ -248,9 +273,14 @@ const { route } = require('./index.js');
 
       // Checks password
       let dec_pass = atob(pass)
-      let success = await userDB.getPassword(email).then((r) => {
+      let success = await userDB.getPassword(oldEmail).then((r) => {
         let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } 
+        if (decryptPass == dec_pass) { 
+
+          // Change email
+          return await userDB.changeEmail(oldEmail, newEmail);
+
+         } 
         else { return false }
       })
       
@@ -259,13 +289,18 @@ const { route } = require('./index.js');
       else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Your password is incorrect." }); }
       
       // Response Code (check changeEmail success)
-      if (success == true) { res.status(200); }
+      if (success == true) { 
+        res.status(200).send({ reason: "SUCCESS", message: "Changed email" });  
+      }
       else { res.status(401).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
     });
 
-    // Delete user (incomplete)
+    // Delete user
     router.delete('/user', async (req, res) => {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 99978f9 (updated token and 200 response code)
       let token = req.headers.auth;
       let email = ""
  
@@ -279,6 +314,7 @@ const { route } = require('./index.js');
       } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
 
       //------------------------
+<<<<<<< HEAD
       // Delete User
       let password = req.body.password;
 
@@ -289,6 +325,18 @@ const { route } = require('./index.js');
           let decryptPass = cryptr.decrypt(r)
         if (decryptPass == dec_pass) { return true } else { return false }
         }
+=======
+      
+      // Checks crypto pass and deletes user
+      let pass = req.body.data.password;
+      let dec_pass = atob(pass)
+      let success = await userDB.getPassword(email).then((r) => {
+        let decryptPass = cryptr.decrypt(r)
+        if (decryptPass == dec_pass) { 
+          return await userDB.deleteAccount(email);
+        } 
+        else { return false }
+>>>>>>> 99978f9 (updated token and 200 response code)
       })
       
       // Response Code

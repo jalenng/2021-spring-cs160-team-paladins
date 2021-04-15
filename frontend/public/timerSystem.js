@@ -14,9 +14,10 @@ var timeout;
 const TimerSystem = function(){
 
     this._events = {};
+
     this.state = states.PAUSED;
+
     this.endDate = new Date();
-    this.totalDuration = 0;
     this.remainingTime = 0;
 
     /**
@@ -61,8 +62,7 @@ const TimerSystem = function(){
      * Initializes the timer.
      */
     this.setupTimer = function() {
-        this.totalDuration = global.store.get('preferences.notifications.interval') * 60000;
-        this.remainingTime = this.totalDuration;
+        this.remainingTime = global.store.get('preferences.notifications.interval') * 60000;
         this.updateTimer();
     }
 

@@ -18,7 +18,7 @@ const { route } = require('./index.js');
  
     // Database Connection
     let db = require('./db.js');
-    let userDB = new db("localhost", "newuser", "", "iCare");
+    let userDB = new db("localhost", "newuser", "password", "iCare");
 
     // API Methods
     let apiM = require('./api_methods.js');
@@ -43,18 +43,18 @@ const { route } = require('./index.js');
       let password = req.body.password;
       let dName = req.body.displayName;
 
-      let success = true;
+      let success = false;
 
       // Checks password length
-      if (password.length < 8) { success = false; }
-      else {
-        // CRYPTO: Encrypt password and store in the database
-        if (email === null || password === null || dName === false) { success = false; }
-        else { 
-          let dec_pass = atob(password);
-          let encrypted_pass = cryptr.encrypt(dec_pass);
-          success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
-        }
+      if (typeof password === 'undefined') {
+        res.status(401).send({ reason: "BAD_PASS", message: "Password is undefined." });
+        return;
+      }
+      else if (email === null || password === null || dName === false) { success = false; }
+      else if (password.length > 8) { 
+        let dec_pass = atob(password);
+        let encrypted_pass = cryptr.encrypt(dec_pass);
+        success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
       }
 
       // Response Codes
@@ -73,6 +73,8 @@ const { route } = require('./index.js');
       let email = req.body.email;
       let password = req.body.password;
       let dName = ""
+
+      console.log(req.body)
 
       // Checks crypto pass
       let dec_pass = atob(password)
@@ -354,7 +356,7 @@ const { route } = require('./index.js');
 
 //-------------------------------------
 
-
+/*
  // Database Connection
  let db = require('./db.js');
  let userDB = new db("localhost", "newuser", "password", "iCare");
@@ -501,6 +503,7 @@ async function test() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 //test()
 =======
 test();
@@ -508,3 +511,7 @@ test();
 =======
 test()
 >>>>>>> 0e70f85 (mocha testing and data usage aggregation)
+=======
+//test()
+*/
+>>>>>>> 1430444 (fixed create user bugs)

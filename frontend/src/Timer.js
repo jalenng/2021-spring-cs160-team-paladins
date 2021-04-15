@@ -17,20 +17,18 @@ export default class Timer extends React.Component {
       state: '',
       key: 0,
       isAnimate: 'true',
-      totalDuration: '0',
     };
   }
 
   componentDidMount() {
     ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
       var state = timerStatus.state;
-      var togglePauseLabel = state !== 'running' ? 'START' : 'PAUSE';
+      var togglePauseLabel = state !== 'Running' ? 'START' : 'PAUSE';
       var milliseconds = timerStatus.remainingTime;
       var minutes = Math.floor(milliseconds / 60000);
       var seconds = Math.floor((milliseconds % 60000) / 1000);
       seconds = ('00' + seconds).substr(-2, 2);
-      var isAnimate = state === 'running' ? 'true' : 'false';
-      var totalDuration = timerStatus.totalDuration;
+      var isAnimate = state === 'Running' ? 'true' : 'false';
 
       this.setState({
         minutes: minutes,
@@ -39,7 +37,6 @@ export default class Timer extends React.Component {
         togglePauseLabel: togglePauseLabel,
         state: state,
         isAnimate: isAnimate,
-        totalDuration: totalDuration,
       });
     });
 

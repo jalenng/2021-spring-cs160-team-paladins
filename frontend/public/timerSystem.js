@@ -5,8 +5,8 @@ const { ipcMain } = require('electron');
  * Timer states
  */
 const states = {
-    RUNNING: 'running',
-    PAUSED:  'paused',
+    RUNNING: 'Running',
+    PAUSED:  'Paused',
 }
 
 var timeout;
@@ -14,11 +14,9 @@ var timeout;
 const TimerSystem = function(){
 
     this._events = {};
-
     this.state = states.PAUSED;
-
-    this.totalDuration = 0;
     this.endDate = new Date();
+    this.totalDuration = 0;
     this.remainingTime = 0;
 
     /**
@@ -45,7 +43,6 @@ const TimerSystem = function(){
 
         return {
             state: this.state,
-            totalDuration: this.totalDuration,
             remainingTime: this.remainingTime,
         }
     };
@@ -108,9 +105,7 @@ const TimerSystem = function(){
 
         }
     }
-
 }
-
 
 // Instantiate the timer system
 global.timerSystem = new TimerSystem();
@@ -118,7 +113,6 @@ global.timerSystem = new TimerSystem();
 // Start timer automatically based on user preference
 if (global.store.get('preferences.startup.startTimerOnAppStartup'))
     global.timerSystem.start();
-
 
 /**
  * Timer-related IPC event handlers 

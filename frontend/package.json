@@ -33,7 +33,6 @@
     "npm": "^7.8.0",
     "react": "^17.0.2",
     "react-countdown-circle-timer": "^2.5.1",
-    "react-countdown-timer": "^1.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",

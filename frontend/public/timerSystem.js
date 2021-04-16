@@ -7,6 +7,7 @@ const { ipcMain } = require('electron');
 const states = {
     RUNNING: 'Running',
     PAUSED:  'Paused',
+    BREAK_TIME: 'Break Time',
 }
 
 var timeout;
@@ -60,10 +61,13 @@ const TimerSystem = function(){
 
     /**
      * Initializes the timer.
+     * Also used for reset.
      */
     this.setupTimer = function() {
-        this.remainingTime = global.store.get('preferences.notifications.interval') * 60000;
-        this.updateTimer();
+        if (this.state !== states.BREAK_TIME) {
+            this.remainingTime = global.store.get('preferences.notifications.interval') * 60000;
+            this.updateTimer();
+        }
     }
 
     /**
@@ -86,12 +90,15 @@ const TimerSystem = function(){
      * Ends the timer and emits the 'timer-end' event.
      */
     this.end = function() {
+        if (this.state === states.BREAK_TIME) {
+            return;
+        }
         clearTimeout(timeout);
 
          // Call timer-end listeners
         const fireCallbacks = (callback) => callback();
         this._events['timer-end'].forEach(fireCallbacks);
-        this.state = states.PAUSED;        
+        this.state = states.BREAK_TIME;        
     };
 
     this.togglePause = function() {

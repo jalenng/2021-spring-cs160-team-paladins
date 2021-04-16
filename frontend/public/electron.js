@@ -11,7 +11,7 @@ require('./accountPopups');
 
 const DEFAULT_WINDOW_SIZE = {
     defaultWidth: 800,
-    defaultHeight: 500
+    defaultHeight: 550,
 }
 
 global.mainWindow; 

@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import './css/index.css';
 
 import App from './App';
-import DeleteAccountScreen from './account/DeleteAccountScreen';
-import EditAccountScreen from './account/EditAccountScreen';
+
 import SignInScreen from './account/SignInScreen';
 import SignUpScreen from './account/SignUpScreen';
-import FullscreenOverlay from './FullscreenOverlay';
+import DeleteAccountScreen from './account/DeleteAccountScreen';
+import EditAccountScreen from './account/EditAccountScreen';
+
+import FullscreenNotification from './notifications/FullscreenNotification';
+import PopupNotification from './notifications/PopupNotification';
 
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { loadTheme } from '@fluentui/react'
@@ -40,11 +43,10 @@ const myTheme = createTheme({
     white: '#1b1a19',
   }
 });
-
-document.body.style = 'background: #222222;';
-
 loadTheme(myTheme);
 initializeIcons();
+
+document.body.style = 'background: #222222;';
 
 
 ReactDOM.render(
@@ -57,7 +59,9 @@ ReactDOM.render(
           <Route path="/signup" exact component={SignUpScreen} />
           <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
           <Route path="/editAccount" exact component={EditAccountScreen} />
-          <Route path="/fullscreenNotification" exact component={FullscreenOverlay} />
+
+          <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
+          <Route path="/popupNotification" exact component={PopupNotification} />
         </div>
       </Switch>
     </HashRouter>

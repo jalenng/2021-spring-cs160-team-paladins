@@ -42,7 +42,8 @@ class db {
         let q = "SELECT email, pass FROM Users";
         let data = await this.dbPromise(true, q, givenEmail);
 
-        if (data != false) {
+        if (data.length === 0) { return false; }
+        else if (data != false) {
             let splits = (JSON.stringify(data)).split('\"', 9);
             return splits[7]
         }

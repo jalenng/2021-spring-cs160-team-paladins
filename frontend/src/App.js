@@ -72,7 +72,9 @@ export default class App extends React.Component {
 
         <Pivot aria-label='Basic Pivot Example' linkSize='large'>
           <PivotItem itemIcon='Home'>
-            <HomeScreen/>
+            <HomeScreen 
+              style={{justifyContent: 'center', alignItems: 'center',}}
+            />
           </PivotItem>
           <PivotItem itemIcon='BarChartVertical'>
             <UsageScreen/>

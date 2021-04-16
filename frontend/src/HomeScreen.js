@@ -19,7 +19,7 @@ const homeStyle = {
 
 const titleStyle = {
   color: 'white',
-  paddingBottom: '20px',
+  marginBottom: '20px',
 }
 
 let Title = () => {

@@ -18,7 +18,7 @@ const { route } = require('./index.js');
  
     // Database Connection
     let db = require('./db.js');
-    let userDB = new db("localhost", "newuser", "password", "iCare");
+    let userDB = new db("localhost", "newuser", "", "iCare");
 
     // API Methods
     let apiM = require('./api_methods.js');
@@ -255,7 +255,24 @@ const { route } = require('./index.js');
 
     // Get Insights
     router.get('/data/insights', async (req, res) => {
+      let token = req.headers.auth;
+      let email = ""
+ 
+      // Checks Token
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else { email = r; return true; }
+      })
+      if (checkToken == false) { return; }
 
+      // Get Insights
+      let insight = await api_methods.generateInsights();
+
+      // Response Codes
+      if (insight != false) { 
+        res.status(200).send({ header: insight[0], content: insight[1] });  
+      }
+      else { res.status(504).send({ reason: "RETRIEVE_FAILED", message: "Insights could not be generated." }) }
     });
 
     //--------------------------

@@ -5,7 +5,7 @@
 
  // Database Connection
  let db = require('./db.js');
- let userDB = new db("localhost", "newuser", "password", "iCare");
+ let userDB = new db("localhost", "newuser", "", "iCare");
 
  // Token Methods
  let tokenClass = require('./token.js')
@@ -92,7 +92,6 @@
      */
     async getStatistics(data) {
         // Screen Time, Timer Count - Min, Max, Average
-        let firstTime = true;
         let notZero = false;
         let minSC = 0; let maxSC = 0; let aveSC = 0;
         let minTC = 0; let maxTC = 0; let aveTC = 0;
@@ -100,8 +99,6 @@
         // Get Values
         let i = 0; let count = data.length;
         for (i = 0; i < count; i++) {
-
-            let notZero = true;
 
             // Get one row data
             let row = JSON.parse(JSON.stringify(data[i]));
@@ -117,6 +114,7 @@
 
             // Totals to calculate averages
             aveSC += rST;  aveTC += rTC;
+            notZero = true;
         }
 
         // Averages
@@ -125,6 +123,14 @@
         }
         
         return [aveSC, minSC, maxSC, aveTC, minTC, maxTC];
+    }
+
+    async generateInsights() {
+
+        // Return array [header, content] if you were able to generate insights
+
+        // Return false if fail to generate insights
+        return false;
     }
 
 

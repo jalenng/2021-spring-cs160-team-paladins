@@ -1,62 +1,86 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron'); 
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
-const soundPlayer = require('sound-play');
 
 require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
+require('./notificationSystem.js');
 require('./accountPopups');
 
 const DEFAULT_WINDOW_SIZE = {
     defaultWidth: 800,
-    defaultHeight: 500
+    defaultHeight: 550,
 }
 
-global.mainWindow; 
+global.mainWindow;
 
-timerSystem.on('timer-end', () => breakSystem.start());
+/**
+ * Configure event listeners and connect the various systems
+ */
+// Start break when timer ends
+timerSystem.on('timer-end', () => breakSystem.start()); 
+
+// Create notification windows when timer ends
+timerSystem.on('timer-end', () => notificationSystem.createWindows());  
+
+// Minimize notification when the break time is set/reset
+breakSystem.on('break-times-set', () => notificationSystem.minimize()); 
+
+// Expand notification when the break time is past the intermediate point
+breakSystem.on('break-intermediate', () => notificationSystem.maximize());
+
+// Start timer when break ends
 breakSystem.on('break-end', () => timerSystem.start());
+
+// Close notification windows when break ends
+breakSystem.on('break-end', () => notificationSystem.closeWindows());
+
 
 /**
  * Functions for creating windows
  */
 // Main window
-function createWindow() { 
+function createWindow() {
 
     // Main window
     let mainWindowState = windowStateKeeper(DEFAULT_WINDOW_SIZE);
 
-    mainWindow = new BrowserWindow({ 
+    mainWindow = new BrowserWindow({
         x: mainWindowState.x,
         y: mainWindowState.y,
-        width: mainWindowState.width, 
+        width: mainWindowState.width,
         height: mainWindowState.height,
         center: true,
+        minWidth: DEFAULT_WINDOW_SIZE.defaultWidth,
         minHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
-        maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
+        // minWidth: DEFAULT_WINDOW_SIZE.defaultWidth,
+        // maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
         maximizable: false,
         title: "iCare",
-        backgroundColor: '#222222', 
+        backgroundColor: '#222222',
         show: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: true,
+
+            // Allow dev tools (for dev) and remote module (for testing) if isDev
+            devTools: isDev,
+            enableRemoteModule: isDev
         },
     });
 
     mainWindowState.manage(mainWindow);
-    
+
     mainWindow.menuBarVisible = false;
-    
+
     mainWindow.loadURL(
         isDev
-        ? 'http://localhost:3000'
-        : `file://${path.join(__dirname, '../build/index.html')}`
-    ); 
+            ? 'http://localhost:3000'
+            : `file://${path.join(__dirname, '../build/index.html')}`
+    );
 
     global.mainWindow.on('ready-to-show', () => global.mainWindow.show());
 
@@ -67,6 +91,12 @@ function createWindow() {
 
     // Handle closing through a confirmation dialog
     mainWindow.on('close', (e) => {
+        if (isDev) {    // Just exit the app if isDev
+            app.exit();
+            return;
+        }
+
+        e.preventDefault();
         const closeConfirm = dialog.showMessageBoxSync(mainWindow, {
             type: 'question',
             title: 'iCare',
@@ -75,22 +105,37 @@ function createWindow() {
             buttons: ['Yes', 'No'],
             defaultId: 1
         })
-        // Don't close window if selected button is 'Yes'
-        if (closeConfirm === 1) e.preventDefault();
+        
+        if (closeConfirm === 0) app.exit(); // Exit app if selected button is 'Yes'
     })
 
-} 
+}
 
+
+/**
+ * Ensure that only one instance of iCare is open at a time
+ */
+const gotSingleInstanceLock = app.requestSingleInstanceLock()
+if (!gotSingleInstanceLock) app.quit()
+
+/**
+ * Show first instance if a second instance is requested
+ */
+ app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+})
 
 /**
  * App settings for when user logs in
  */
- app.setLoginItemSettings({
+app.setLoginItemSettings({
     openAtLogin: global.store.get('preferences.startup.startAppOnLogin'),
     enabled: global.store.get('preferences.startup.startAppOnLogin'),
     path: app.getPath('exe')
 })
-
 
 /**
  * Application event handlers
@@ -104,8 +149,18 @@ app.whenReady().then(() => {
 
 })
 
+/**
+ * Handle closing all windows behavior for macOS
+ */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
+})
+
+// Prevent loading of new websitess
+app.on('web-contents-created', (event, contents) => {
+    contents.on('will-navigate', (event, navigationUrl) => {
+        event.preventDefault()
+    })
 })
 
 
@@ -118,14 +173,6 @@ app.on('window-all-closed', function () {
 ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
 })
-
-// Play sound file
-ipcMain.handle('play-sound', (event, filepath) => {
-    let fullFilepath = path.isAbsolute(filepath)
-        ? filepath
-        : path.join(__dirname, filepath);
-    soundPlayer.play(fullFilepath);
-});
 
 // Get app info
 ipcMain.on('get-app-info', (event) => {

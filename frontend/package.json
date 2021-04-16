@@ -26,15 +26,15 @@
   "dependencies": {
     "@fluentui/react": "^8.8.0",
     "axios": "^0.21.1",
+    "chart.js": "^2.9.4",
     "electron-is-dev": "^2.0.0",
-    "electron-overlay-window": "^1.0.4",
     "electron-store": "^7.0.2",
     "electron-window-state": "^5.0.3",
     "hazardous": "^0.3.0",
     "npm": "^7.8.0",
     "react": "^17.0.2",
+    "react-chartjs-2": "^2.11.1",
     "react-countdown-circle-timer": "^2.5.1",
-    "react-countdown-timer": "^1.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
@@ -48,8 +48,10 @@
     "concurrently": "^6.0.0",
     "electron": "^12.0.1",
     "electron-builder": "^22.10.5",
+    "mocha": "^8.3.2",
     "nodemon": "^2.0.7",
     "react-scripts": "4.0.3",
+    "spectron": "^14.0.0",
     "wait-on": "^5.3.0"
   },
   "main": "./public/electron.js",
@@ -62,8 +64,10 @@
     "electron-build": "electron-builder",
     "electron-start": "electron .",
     "electron-watch": "wait-on tcp:3000 && nodemon --exec npm run electron-start",
+    "electron-test": "mocha",
     "build": "npm run react-build && npm run electron-build",
-    "dev": "concurrently \"npm:react-start\" \"npm:electron-watch\""
+    "dev": "concurrently \"npm:react-start\" \"npm:electron-watch\"",
+    "test": "concurrently \"npm:react-start\" \"npm:electron-test\""
   },
   "browserslist": {
     "production": [

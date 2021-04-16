@@ -64,23 +64,69 @@ const accountStoreDefaults = {
     }
 }
 
+/* Data usage defaults */
+const insightsDefaults = {
+    cards: [
+        {
+            header: 'Test insight 1',
+            content: 'Insight message.'
+        },
+        {
+            header: 'Insight card!',
+            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
+        },
+        {
+            header: 'Test insight 1',
+            content: 'Insight message.'
+        },
+        {
+            header: 'Insight card!',
+            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
+        },
+        {
+            header: 'Test insight 1',
+            content: 'Insight message.'
+        },
+        {
+            header: 'Insight card!',
+            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
+        },
+        {
+            header: 'Test insight 1',
+            content: 'Insight message.'
+        },
+        {
+            header: 'Insight card!',
+            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
+        },
+        {
+            header: 'Test insight 1',
+            content: 'Insight message.'
+        },
+        {
+            header: 'Insight card!',
+            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
+        },
+    ]
+}
+
 /* Create the store */
 const storeOptions = {
     defaults: {
         preferences: preferencesStoreDefaults,
         sounds: soundsStoreDefaults,
         account: accountStoreDefaults,
+        insights: insightsDefaults
     },
     watch: true
 }
 global.store = new Store(storeOptions);
+// store.clear();
 
 /* Configure axios */
 axios.defaults.baseURL = 'http://165.232.156.120:3000';
 axios.defaults.timeout = 10000;
-axios.defaults.headers.common['auth'] = {
-    token: store.get('account.token')
-};
+axios.defaults.headers.common['auth'] = store.get('account.token');
 
 
 /**
@@ -108,10 +154,13 @@ store.onDidChange('sounds', () => {
 
 // Notifies the main window of account store updates, and updates 
 store.onDidChange('account', () => {
-    axios.defaults.headers.common['auth'] = {
-        token: store.get('account.token')
-    };
+    axios.defaults.headers.common['auth'] = store.get('account.token');
     global.mainWindow.webContents.send('account-store-changed');
+});
+
+// Notifies the main window of insights store updates
+store.onDidChange('insights', () => {
+    global.mainWindow.webContents.send('insights-store-changed');
 });
 
 
@@ -292,7 +341,7 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
             }
 
             // Await for response
-            let res = await axios.delete(url, data);
+            let res = await axios.delete(url, {data});
 
             // If sign-in was successful
             if (res.status === 200) {
@@ -309,7 +358,6 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
 
     // Handle errors
     catch (error) {
-        console.log(error)
 
         // Check if backend returned a reason and message for the error
         let responseMessageExists = 
@@ -404,3 +452,13 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
     // Return the result object
     return result;
 })
+
+
+/**
+ * Insights store-related IPC event handlers
+ * These event handlers retrieve and update the data usage store on behalf of the renderer.
+ */
+// Handles a request to retrieve the insights store
+ipcMain.on('get-insights-store', (event) => {
+    event.returnValue = store.get('insights');
+});

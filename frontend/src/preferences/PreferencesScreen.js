@@ -47,7 +47,7 @@ export default class PreferencesScreen extends React.Component {
           top: "60px",
           left: "260px",
           paddingBottom: "260px",
-          right: "40px"
+          paddingRight: "40px"
         }}>
 
           {preferencesPage}

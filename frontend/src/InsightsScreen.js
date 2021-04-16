@@ -5,105 +5,139 @@ import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 import { ImageFit } from '@fluentui/react/lib/Image';
-import { 
-  DocumentCard, 
-  DocumentCardImage,
-  DocumentCardActions 
+import {
+    DocumentCard,
+    DocumentCardImage,
+    DocumentCardActions
 } from '@fluentui/react/lib/DocumentCard';
+import { TooltipHost } from '@fluentui/react/lib/Tooltip';
+
+const { ipcRenderer } = window.require('electron');
+
+const { getAllInsights } = require('./storeHelperFunctions');
 
 
 const divStyle = {
-  MozUserSelect: "none",
-  WebkitUserSelect: "none",
-  msUserSelect: "none",
+    MozUserSelect: "none",
+    WebkitUserSelect: "none",
+    msUserSelect: "none",
 
-  paddingTop: '10px',
-  paddingLeft: '30px'
+    paddingTop: '10px',
+    paddingLeft: '30px'
 };
 
 const cardStyles = {
-  root: { 
-    display: 'inline-block',
-    width: 300,
-    marginRight: '16px',
-    marginBottom: '16px'
-  }
+    root: {
+        display: 'inline-block',
+        width: 240,
+        marginRight: '16px',
+        marginBottom: '16px'
+    }
 }
 
 const cardStackStyle = {
-  marginTop: "8px",
-  marginLeft: "16px",
-  marginRight: "16px",
-  height: "auto"
+    marginTop: "8px",
+    marginLeft: "16px",
+    marginRight: "16px",
+    height: "auto"
 }
 
-const iconProps = {
-  iconName: 'RedEye',
-  styles: { root: { color: '#ffffff', fontSize: '96px', width: '96px', height: '96px' } },
-};
+export default class InsightsScreen extends React.Component {
 
-export default class InsightsScreen extends React.Component {  
+    constructor(props) {
+        super(props);
+        this.state = {
+            cards: getAllInsights().cards
+        };
+    };
 
-  render() {
+    componentDidMount() {
+        // Update this component's state when insights are updated
+        ipcRenderer.on('insights-store-changed', () => {
+            this.updateState();
+        })
+    };
+
+    updateState() {
+        this.setState({
+            cards: getAllInsights().cards
+        });
+    };
+
+    render() {
+
+        // Map all card objects in the state to React components
+        const cards = this.state.cards.map( card => {
+            return (
+                <DocumentCard styles={cardStyles} >
     
-    var card = (
-      <DocumentCard styles={cardStyles} >
+                    {/* Card image */}
+                    <DocumentCardImage 
+                        height={100} 
+                        imageFit={ImageFit.cover} 
+                        iconProps={{
+                            iconName: 'RedEye',
+                            styles: { root: { color: '#ffffff', fontSize: '96px', width: '96px', height: '96px' } }
+                        }}
+                    />
+    
+                    {/* Card contents/stack */}
+                    <Stack style={cardStackStyle} tokens={{ childrenGap: 8 }}>
+                        <Text variant="large" block> {card.header} </Text>
+                        <Text block> {card.content} </Text>
+                    </Stack>
+    
+                    {/* Card action buttons */}
+                    <DocumentCardActions actions={[
+                        {
+                            iconProps: { iconName: 'Like' },
+                            onClick: () => { alert('Like clicked') }
+                        },
+                        {
+                            iconProps: { iconName: 'Dislike' },
+                            onClick: () => { alert('Dislike clicked') }
+                        }
+                    ]} />
+    
+                </DocumentCard>
+            );
+        });     
 
-        {/* Card image */}
-        <DocumentCardImage height={100} imageFit={ImageFit.cover} iconProps={iconProps} />
+        // Create the Insights screen
+        return (
 
-        {/* Card contents/stack */}
-        <Stack style={cardStackStyle} tokens={{ childrenGap: 8 }}>
+            <div style={divStyle}>
 
-          <Text variant="large" block> 
-            Insight card! 
-          </Text>
-          <Text block> 
-            This is an insight card. Let's pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights. 
-          </Text>
+                {/* Insights screen header */}
+                <Stack horizontal
+                    verticalAlign="center"
+                    tokens={{ childrenGap: 16 }} >
+                    <Text variant={'xxLarge'} block> <b>Insights</b> </Text>
 
-        </Stack>
+                    <TooltipHost content="Refresh">
+                        <IconButton
+                            iconProps={{ iconName: 'Refresh' }}
+                            onClick={() => alert('Refresh clicked') }
+                        />
+                    </TooltipHost>
+                </Stack>
 
-        {/* Card action buttons */}
-        <DocumentCardActions actions={[
-            {
-              iconProps: { iconName: 'Cancel' },
-              onClick: () => {alert('clicked')}
-            }
-          ]}/>
+                {/* Insights contents */}
+                <ScrollablePane style={{
+                    position: "absolute",
+                    top: "105px",
+                    left: "30px",
+                    paddingBottom: "260px",
+                    paddingRight: "40px"
+                }}>
 
-      </DocumentCard>
-    );
+                    {cards}
 
-    return (
+                </ScrollablePane>
 
-      <div style={divStyle}>
+            </div>
 
-        <Text variant={'xxLarge'} block>
-          <b>Insights</b>
-        </Text>
-
-        <ScrollablePane style={{
-          position: "absolute",
-          top: "105px",
-          left: "30px",
-          paddingBottom: "260px",
-          paddingRight: "40px"
-        }}>
-
-          {card}
-          {card}
-          {card}
-          {card}
-          {card}
-          {card}
-          {card}
-
-        </ScrollablePane>
-
-      </div>
-        
-    );
-  }
+        );
+    }
 }
 

@@ -83,7 +83,7 @@ export default class extends React.Component {
 
                 <Stack horizontal
                     verticalAlign="center"
-                    tokens={{ childrenGap: 20 }} >
+                    tokens={{ childrenGap: 16 }} >
                     <Text variant={'xLarge'} block> Your account </Text>
 
                     {/* Show Edit button only if signed in */}

@@ -11,8 +11,8 @@ require('./accountPopups');
 
 const DEFAULT_WINDOW_SIZE = {
     defaultWidth: 800,
-    defaultHeight: 500
-};
+    defaultHeight: 550,
+}
 
 global.mainWindow;
 
@@ -91,7 +91,10 @@ function createWindow() {
 
     // Handle closing through a confirmation dialog
     mainWindow.on('close', (e) => {
-        if (isDev) return;  // Don't show confirmation dialog if isDev
+        if (isDev) {    // Just exit the app if isDev
+            app.exit();
+            return;
+        }
 
         e.preventDefault();
         const closeConfirm = dialog.showMessageBoxSync(mainWindow, {
@@ -110,6 +113,22 @@ function createWindow() {
 
 
 /**
+ * Ensure that only one instance of iCare is open at a time
+ */
+const gotSingleInstanceLock = app.requestSingleInstanceLock()
+if (!gotSingleInstanceLock) app.quit()
+
+/**
+ * Show first instance if a second instance is requested
+ */
+ app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+})
+
+/**
  * App settings for when user logs in
  */
 app.setLoginItemSettings({
@@ -117,7 +136,6 @@ app.setLoginItemSettings({
     enabled: global.store.get('preferences.startup.startAppOnLogin'),
     path: app.getPath('exe')
 })
-
 
 /**
  * Application event handlers
@@ -131,6 +149,9 @@ app.whenReady().then(() => {
 
 })
 
+/**
+ * Handle closing all windows behavior for macOS
+ */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })

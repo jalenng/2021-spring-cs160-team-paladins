@@ -6,6 +6,7 @@ import { Slider } from '@fluentui/react/lib/Slider';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 import { Toggle } from '@fluentui/react/lib/Toggle';
+import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -108,17 +109,21 @@ export default class Notifications extends React.Component {
                         }}
                     />
 
-                    <IconButton
-                        iconProps={{ iconName: 'Play' }}
-                        onClick={() => {
-                            ipcRenderer.invoke("play-sound");
-                        }}
-                    />
+                    <TooltipHost content="Preview">
+                        <IconButton
+                            iconProps={{ iconName: 'Play' }}
+                            onClick={() => {
+                                ipcRenderer.invoke("play-sound");
+                            }}
+                        />
+                    </TooltipHost>
 
-                    <IconButton
-                        iconProps={{ iconName: 'Add' }}
-                        onClick={addCustomSound}
-                    />
+                    <TooltipHost content="Import">
+                        <IconButton
+                            iconProps={{ iconName: 'Add' }}
+                            onClick={addCustomSound}
+                        />
+                    </TooltipHost>
 
                 </Stack>
 

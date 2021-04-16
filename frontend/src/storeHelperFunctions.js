@@ -89,9 +89,23 @@ function getAllSounds() {
 /**
  * Helper function to open a file selection dialog for adding a custom sound to the sounds store
  */
-function addCustomSound() {
+ function addCustomSound() {
     ipcRenderer.invoke('add-custom-sound')
 }
+
+
+/* INSIGHTS */
+
+/**
+ * Helper function to retrieve insights from the data usage store
+ * @returns {Object}
+ */
+ function getAllInsights() {
+    return ipcRenderer.sendSync('get-insights-store')
+}
+
+
+
 
 module.exports = {
     getAccountStore: getAccountStore,
@@ -105,5 +119,7 @@ module.exports = {
     setPreference: setPreference,
 
     getAllSounds: getAllSounds,
-    addCustomSound: addCustomSound
+    addCustomSound: addCustomSound,
+
+    getAllInsights: getAllInsights
 }

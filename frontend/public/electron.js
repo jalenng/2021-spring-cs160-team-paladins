@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron'); 
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
@@ -14,7 +14,7 @@ const DEFAULT_WINDOW_SIZE = {
     defaultHeight: 550,
 }
 
-global.mainWindow; 
+global.mainWindow;
 
 /**
  * Configure event listeners and connect the various systems
@@ -42,22 +42,24 @@ breakSystem.on('break-end', () => notificationSystem.closeWindows());
  * Functions for creating windows
  */
 // Main window
-function createWindow() { 
+function createWindow() {
 
     // Main window
     let mainWindowState = windowStateKeeper(DEFAULT_WINDOW_SIZE);
 
-    mainWindow = new BrowserWindow({ 
+    mainWindow = new BrowserWindow({
         x: mainWindowState.x,
         y: mainWindowState.y,
-        width: mainWindowState.width, 
+        width: mainWindowState.width,
         height: mainWindowState.height,
         center: true,
+        minWidth: DEFAULT_WINDOW_SIZE.defaultWidth,
         minHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
-        maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
+        // minWidth: DEFAULT_WINDOW_SIZE.defaultWidth,
+        // maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
         maximizable: false,
         title: "iCare",
-        backgroundColor: '#222222', 
+        backgroundColor: '#222222',
         show: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -71,14 +73,14 @@ function createWindow() {
     });
 
     mainWindowState.manage(mainWindow);
-    
+
     mainWindow.menuBarVisible = false;
-    
+
     mainWindow.loadURL(
         isDev
-        ? 'http://localhost:3000'
-        : `file://${path.join(__dirname, '../build/index.html')}`
-    ); 
+            ? 'http://localhost:3000'
+            : `file://${path.join(__dirname, '../build/index.html')}`
+    );
 
     global.mainWindow.on('ready-to-show', () => global.mainWindow.show());
 
@@ -107,7 +109,7 @@ function createWindow() {
         if (closeConfirm === 0) app.exit(); // Exit app if selected button is 'Yes'
     })
 
-} 
+}
 
 
 /**
@@ -152,6 +154,13 @@ app.whenReady().then(() => {
  */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
+})
+
+// Prevent loading of new websitess
+app.on('web-contents-created', (event, contents) => {
+    contents.on('will-navigate', (event, navigationUrl) => {
+        event.preventDefault()
+    })
 })
 
 

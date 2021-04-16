@@ -1,6 +1,6 @@
 const { time } = require('console');
 const { route } = require('./index.js');
- 
+
 (
   function () {
     "use strict";
@@ -45,22 +45,17 @@ const { route } = require('./index.js');
 
       let success = false;
 
-      // Checks password length
-      if (typeof password === 'undefined') {
-        res.status(401).send({ reason: "BAD_PASS", message: "Password is undefined." });
-        return;
-      }
-      else if (email === null || password === null || dName === false) { success = false; }
+      // Checks password length, email, and display name
+      if (!email || !password || !dName) { success = false; }
       else if (password.length > 8) { 
-        let dec_pass = atob(password);
-        let encrypted_pass = cryptr.encrypt(dec_pass);
+        let encrypted_pass = await api_methods.encryptPass(password);
         success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
       }
 
       // Response Codes
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
-        res.status(200).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
+        res.status(201).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
       }
       else {
         let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
@@ -72,44 +67,35 @@ const { route } = require('./index.js');
     router.post('/auth', async function (req, res) {
       let email = req.body.email;
       let password = req.body.password;
-      let dName = ""
-
-      console.log(req.body)
 
       // Checks crypto pass
-      let dec_pass = atob(password)
-      let success = await userDB.getPassword(email).then((r) => {
-        if (r != false) {
-          let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } else { return false }
-        }
-        return false;
-      })
+      let success = await api_methods.checkPass(password, email);
       
       // Response Codes
       if (success == true) {
         let tokenValue = await userToken.createToken(email).then((res) => { return res });
-        dName = await userDB.getDisplayName(email).then((res) => { return res; });
+        let dName = await userDB.getDisplayName(email).then((res) => { return res; });
         
         res.status(200).send({ token: tokenValue,  accountInfo: { email: email, displayName: dName } });
       }
       else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Authentication invalid" }) }
 
     })
+
+
+    ///------------------------------------------------------------------------
  
     // Gets preferences of user
     router.get('/pref', async function (req, res) {
       let token = req.headers.auth;
       let email = ""
  
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
-
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else {  oldEmail = r; return true; }
+      })
+      if (checkToken == false) { return; }
 
       //------------------------
       
@@ -136,14 +122,12 @@ const { route } = require('./index.js');
       let token = req.headers.auth;
       let email = ""
  
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
-
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else {  oldEmail = r; return true; }
+      })
+      if (checkToken == false) { return; }
 
       //------------------------
 
@@ -173,14 +157,12 @@ const { route } = require('./index.js');
       let token = req.headers.auth;
       let email = ""
  
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
-
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else {  oldEmail = r; return true; }
+      })
+      if (checkToken == false) { return; }
 
       //------------------------
       let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
@@ -199,14 +181,12 @@ const { route } = require('./index.js');
       let token = req.headers.auth;
       let email = ""
  
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
-
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+      // Checks Token
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else { email = r; return true; }
+      })
+      if (checkToken == false) { return; }
 
       //------------------------
 
@@ -232,78 +212,59 @@ const { route } = require('./index.js');
 
     });
 
+    ///------------------------------------------------------------------------
+
     // Change email
     router.put('/user', async (req, res) => {
       let token = req.headers.auth;
       let oldEmail = ""
- 
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        oldEmail = await userToken.getEmailFromToken(token);
 
-        // Invalid Token
-        if (oldEmail == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else {  oldEmail = r; return true; }
+      })
+      if (checkToken == false) { return; }
 
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
-
-      //------------------------
-
-      // Set new password
+      // Checks crypto pass and changes email -------------------------
       let newEmail = req.body.data.email;
       let pass = req.body.data.password;
+      let checkPass = await api_methods.checkPass(pass, oldEmail).then((r) => { return r; });
 
-      // Checks password
-      let dec_pass = atob(pass)
-      let success = await userDB.getPassword(oldEmail).then((r) => {
-        let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true; } 
-        else { return false }
-      })
-
-      // Response Code (check password)
-      if (success == true) { success = await userDB.changeEmail(oldEmail, newEmail); }
-      else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Your password is incorrect." }); }
-      
-      // Response Code (check changeEmail success)
-      if (success == true) { 
-        res.status(200).send({ reason: "SUCCESS", message: "Changed email" });  
+      if (checkPass == true) {
+        let success = await userDB.changeEmail(oldEmail, newEmail).then((r) => { return r; });
+        if (success == true) { 
+          let tokenValue = await userToken.createToken(newEmail).then((r) => { return r; });
+          res.status(200).send({ token: tokenValue, reason: "SUCCESS", message: "Changed email" });  
+        }
+        else { res.status(409).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
       }
-      else { res.status(401).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
+      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
+
     });
 
     // Delete user
     router.delete('/user', async (req, res) => {
       let token = req.headers.auth;
       let email = ""
- 
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
 
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
-
-      //------------------------
-      
-      // Checks crypto pass and deletes user
-      let pass = req.body.data.password;
-      let dec_pass = atob(pass)
-      let success = await userDB.getPassword(email).then((r) => {
-        let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } 
-        else { return false }
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else { email = r; return true; }
       })
+      if (checkToken == false) { return; }
 
-      if (success == true) { success =await userDB.deleteAccount(email); }
-      else { res.status(504).send({ reason: "BAD_PASSWORD", message: "Wrong password was given." }); }
-      
-      // Response Code
-      if (success == true) { 
-        res.status(200).send({ reason: "SUCCESS", message: "Deleted account" }); 
+      // Checks crypto pass and deletes user -------------------------
+      let pass = req.body.data.password;
+      let checkPass = await api_methods.checkPass(pass, email).then((r) => { return r; });
+
+      if (checkPass == true) { 
+        let success = await userDB.deleteAccount(email).then((r) => { return r; }); 
+        if (success == true) { res.status(200).send({ reason: "SUCCESS", message: "Deleted account" }); }
+        else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
       }
-      else { res.status(504).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
+      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
     });
  
     //--------------------------

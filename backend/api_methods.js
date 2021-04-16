@@ -1,4 +1,17 @@
-  class api_methods {
+ // Crypto Requirements
+ var atob = require('atob');
+ var Cryptr = require('cryptr'),
+ cryptr = new Cryptr('myTotalySecretKey'); 
+
+ // Database Connection
+ let db = require('./db.js');
+ let userDB = new db("localhost", "newuser", "password", "iCare");
+
+ // Token Methods
+ let tokenClass = require('./token.js')
+ let userToken = new tokenClass();
+
+ class api_methods {
     constructor() {}
 
     /**
@@ -16,6 +29,61 @@
 
         return [r, m];
     }
+
+    /**
+     * Encrypts the given value
+     * @param {String} password 
+     * @returns encrypted password
+     */
+    async encryptPass(password) {
+        let dec_pass = atob(password);
+        let encrypted_pass = cryptr.encrypt(dec_pass);
+        return encrypted_pass;
+    }
+
+    /**
+     * Checks if the given password is correct for the given email.
+     * @param {String} password 
+     * @param {String} email 
+     * @returns true if correct password, false otherwise
+     */
+    async checkPass(password, email) {
+
+        let dec_pass = atob(password)
+        let decryptPass = await userDB.getPassword(email).then((r) => { 
+            if (r != false) { return cryptr.decrypt(r) }
+            return false;
+        });
+
+        if (dec_pass == decryptPass) { return true; }
+        else { return ["BAD_PASSWORD", "Wrong password was given."] }
+    }
+
+    /**
+     * Checks if the token is valid
+     * @param {String} token 
+     * @returns email or error message
+     */
+    async checkToken(token) {
+        let r = ""; let m = ""
+
+        if (typeof token !== 'undefined') {
+            let email = await userToken.getEmailFromToken(token);
+            if (email == false) {
+                r = "INVALID_TOKEN";
+                m = "The token given is invalid."
+            } else {
+                return email;
+            }
+        }
+        else {
+            r = "INVALID_TOKEN";
+            m = "No token was given.";
+        }
+
+        return [r, m];
+    }
+
 
     /**
      * Gets statistical values from data usage records

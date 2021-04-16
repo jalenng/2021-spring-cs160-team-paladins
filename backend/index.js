@@ -24,11 +24,6 @@ const { route } = require('./index.js');
     let apiM = require('./api_methods.js');
     let api_methods = new apiM();
 
-    // Crypto Requirements
-    var atob = require('atob');
-    var Cryptr = require('cryptr'),
-    cryptr = new Cryptr('myTotalySecretKey'); 
-
     // Token Methods
     let tokenClass = require('./token.js')
     let userToken = new tokenClass();
@@ -42,7 +37,6 @@ const { route } = require('./index.js');
       let email = req.body.email;
       let password = req.body.password;
       let dName = req.body.displayName;
-
       let success = false;
 
       // Checks password length, email, and display name
@@ -54,11 +48,11 @@ const { route } = require('./index.js');
 
       // Response Codes
       if (success == true) {
-        let tokenValue = await userToken.createToken(email).then((res) => { return res });
+        let tokenValue = await userToken.createToken(email).then((r) => { return r; });
         res.status(201).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
       }
       else {
-        let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
+        let array = await api_methods.postCreateUser(dName, password).then((r) => { return r; }); 
         res.status(401).send({ reason: array[0], message: array[1] });
       }
     })
@@ -69,27 +63,24 @@ const { route } = require('./index.js');
       let password = req.body.password;
 
       // Checks crypto pass
-      let success = await api_methods.checkPass(password, email);
+      let success = await api_methods.checkPass(password, email).then((r) => { return r; });
       
       // Response Codes
       if (success == true) {
-        let tokenValue = await userToken.createToken(email).then((res) => { return res });
-        let dName = await userDB.getDisplayName(email).then((res) => { return res; });
+        let tokenValue = await userToken.createToken(email).then((r) => { return r; });
+        let dName = await userDB.getDisplayName(email).then((r) => { return r; });
         
         res.status(200).send({ token: tokenValue,  accountInfo: { email: email, displayName: dName } });
       }
       else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Authentication invalid" }) }
 
-    })
+    });
 
-
-    ///------------------------------------------------------------------------
- 
-    // Gets preferences of user
-    router.get('/pref', async function (req, res) {
+    // Change email
+    router.put('/user', async (req, res) => {
       let token = req.headers.auth;
-      let email = ""
- 
+      let oldEmail = ""
+
       // Checks Token -------------------------
       let checkToken = await api_methods.checkToken(token).then((r) => {
         if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
@@ -97,9 +88,64 @@ const { route } = require('./index.js');
       })
       if (checkToken == false) { return; }
 
-      //------------------------
+      // Checks crypto pass and changes email -------------------------
+      let newEmail = req.body.data.email;
+      let pass = req.body.data.password;
+      let checkPass = await api_methods.checkPass(pass, oldEmail).then((r) => { return r; });
+
+      if (checkPass == true) {
+        let success = await userDB.changeEmail(oldEmail, newEmail).then((r) => { return r; });
+        if (success == true) { 
+          let tokenValue = await userToken.createToken(newEmail).then((r) => { return r; });
+          res.status(200).send({ token: tokenValue, reason: "SUCCESS", message: "Changed email" });  
+        }
+        else { res.status(409).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
+      }
+      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
+
+    });
+    
+    // Delete user
+    router.delete('/user', async (req, res) => {
+      let token = req.headers.auth;
+      let email = ""
+
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else { email = r; return true; }
+      })
+      if (checkToken == false) { return; }
+
+      // Checks crypto pass and deletes user -------------------------
+      let pass = req.body.data.password;
+      let checkPass = await api_methods.checkPass(pass, email).then((r) => { return r; });
+
+      if (checkPass == true) { 
+        let success = await userDB.deleteAccount(email).then((r) => { return r; }); 
+        if (success == true) { res.status(200).send({ reason: "SUCCESS", message: "Deleted account" }); }
+        else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
+      }
+      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
+    });
+     
+
+
+    ///------------------------------------------------------------------------
+ 
+    // Gets preferences of user
+    router.get('/prefs', async function (req, res) {
+      let token = req.headers.auth;
+      let email = ""
+ 
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then((r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else { oldEmail = r; return true; }
+      })
+      if (checkToken == false) { return; }
       
-      // Get Preferences
+      // Get Preferences -------------------------
       let notiInterval = await userDB.getNotiInterval(email).then((result) => { return result; })
       let notiSound = await userDB.getNotiSound(email).then((result) => { return result; })
       let notiSoundOn = await userDB.getNotiSoundOn(email).then((result) => { return result; })
@@ -118,7 +164,7 @@ const { route } = require('./index.js');
     });
  
     // Saves the user preferences (incomplete)
-    router.put('/pref', async function (req, res) {
+    router.put('/prefs', async function (req, res) {
       let token = req.headers.auth;
       let email = ""
  
@@ -129,21 +175,18 @@ const { route } = require('./index.js');
       })
       if (checkToken == false) { return; }
 
-      //------------------------
-
-      // Set Preferences
+      // Save user preferences in database -------------------------
       let notiInterval = req.body.data.notifications.interval;
       let notiSound = req.body.data.notifications.sound;
       let notiSoundOn = req.body.data.notifications.enableSound;
       let dUsageOn = req.body.dataUsage.enableWeeklyUsageStats;
       let aUsageOn = eq.body.dataUsage.trackAppUsageStats;
  
-      // Save user preferences in database
-      let success1 = await userDB.setNotiInterval(email, notiInterval).then((result) => { return result; })
-      let success2 = await userDB.setNotiSound(email, notiSound).then((result) => { return result; })
-      let success3 = await userDB.setNotiSoundOn(email, notiSoundOn).then((result) => { return result; })
-      let success4 = await userDB.setDataUsageOn(email, dUsageOn).then((result) => { return result; })
-      let success5 = await userDB.setAppUsageOn(email, aUsageOn).then((result) => { return result; })
+      let success1 = await userDB.setNotiInterval(email, notiInterval).then((r) => { return r; })
+      let success2 = await userDB.setNotiSound(email, notiSound).then((r) => { return r; })
+      let success3 = await userDB.setNotiSoundOn(email, notiSoundOn).then((r) => { return r; })
+      let success4 = await userDB.setDataUsageOn(email, dUsageOn).then((r) => { return r; })
+      let success5 = await userDB.setAppUsageOn(email, aUsageOn).then((r) => { return r; })
 
       // Send to frontend
       if (success1 == success2 == success3 == success4 == success5 == true) { 
@@ -164,12 +207,10 @@ const { route } = require('./index.js');
       })
       if (checkToken == false) { return; }
 
-      //------------------------
+      // Get Usage Data -------------------------
       let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
-
-      // Get Usage Data
-      let dUsage = await userDB.getDataUsage(email, timePeriod).then((result) => { return result; });
-      let aUsage = await userDB.getAppUsage(email, timePeriod).then((result) => { return result; });
+      let dUsage = await userDB.getDataUsage(email, timePeriod).then((r) => { return r; });
+      let aUsage = await userDB.getAppUsage(email, timePeriod).then((r) => { return r; });
 
       // Response Codes (Sends JSONs)
       if (dUsage != false && aUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
@@ -212,61 +253,11 @@ const { route } = require('./index.js');
 
     });
 
-    ///------------------------------------------------------------------------
-
-    // Change email
-    router.put('/user', async (req, res) => {
-      let token = req.headers.auth;
-      let oldEmail = ""
-
-      // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
-        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else {  oldEmail = r; return true; }
-      })
-      if (checkToken == false) { return; }
-
-      // Checks crypto pass and changes email -------------------------
-      let newEmail = req.body.data.email;
-      let pass = req.body.data.password;
-      let checkPass = await api_methods.checkPass(pass, oldEmail).then((r) => { return r; });
-
-      if (checkPass == true) {
-        let success = await userDB.changeEmail(oldEmail, newEmail).then((r) => { return r; });
-        if (success == true) { 
-          let tokenValue = await userToken.createToken(newEmail).then((r) => { return r; });
-          res.status(200).send({ token: tokenValue, reason: "SUCCESS", message: "Changed email" });  
-        }
-        else { res.status(409).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
-      }
-      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
+    // Get Insights
+    router.get('/data/insights', async (req, res) => {
 
     });
 
-    // Delete user
-    router.delete('/user', async (req, res) => {
-      let token = req.headers.auth;
-      let email = ""
-
-      // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
-        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else { email = r; return true; }
-      })
-      if (checkToken == false) { return; }
-
-      // Checks crypto pass and deletes user -------------------------
-      let pass = req.body.data.password;
-      let checkPass = await api_methods.checkPass(pass, email).then((r) => { return r; });
-
-      if (checkPass == true) { 
-        let success = await userDB.deleteAccount(email).then((r) => { return r; }); 
-        if (success == true) { res.status(200).send({ reason: "SUCCESS", message: "Deleted account" }); }
-        else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
-      }
-      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
-    });
- 
     //--------------------------
  
     let server = app.listen(3000, function () {

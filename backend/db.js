@@ -32,7 +32,6 @@ class db {
         return results;
     }
 
-
     /**
      * Gets the password given an email
      * @param {String} givenEmail 

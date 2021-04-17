@@ -109,7 +109,7 @@ const TimerSystem = function(){
         else if (this.state === states.RUNNING) {
             this.state = states.PAUSED;
             this.remainingTime = this.endDate - new Date();
-
+            clearTimeout(timeout)
         }
     }
 }

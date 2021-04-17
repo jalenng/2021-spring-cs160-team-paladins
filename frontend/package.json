@@ -42,6 +42,7 @@
     "react-switch": "^6.0.0",
     "sound-play": "^1.1.0",
     "styled-components": "^4.3.2",
+    "tasklist": "^4.0.1",
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {

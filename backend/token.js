@@ -7,11 +7,11 @@ class token {
     constructor() {}
 
     /**
-     * Creates a token
-     * @param {String} email 
+     * Creates a token based on user id
+     * @param {String} id 
      * @returns token
      */
-    async createToken(email) {
+    async createToken(id) {
 
         let secret = 'TOPSECRETTTTT';
         let  now = Math.floor(Date.now() / 1000),
@@ -24,7 +24,7 @@ class token {
             iat: iat,
             jwtid : jwtId,
             audience : 'TEST',
-            data : email
+            data : id
         };    
 
         return new Promise((resolve) => {
@@ -38,9 +38,9 @@ class token {
     /**
      * Gets the email value from a token
      * @param {String} userToken 
-     * @returns email
+     * @returns id
      */
-     async getEmailFromToken(userToken)
+     async getIDFromToken(userToken)
      {
          try {
              let parsed_token = JSON.parse(atob(userToken.split('.')[1]));
@@ -51,21 +51,8 @@ class token {
          }
      }
 }
+
 module.exports = token;
-
-/*
-async function test() {
-    let d = new token();
-    let tt = await d.createToken('basic@gmail.com').then((res) => { return res });
-    console.log('TOKNE: ' + tt)    
-    console.log('')
-
-    let ttt = await d.getEmailFromToken(tt).then((res) => { return res });
-    console.log('Email: ' + ttt)
-}
-
-test()
-*/
 
 
 

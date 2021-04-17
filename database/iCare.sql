@@ -4,11 +4,12 @@ USE iCare;
 
 # Table of Users
 CREATE TABLE Users (
-	email varchar(50) NOT NULL,
+	id int NOT NULL AUTO_INCREMENT,
+	email varchar(50) NOT NULL UNIQUE,
 	pass varchar(300) NOT NULL,
     displayName varchar(50) NOT NULL,
     dateCreated date,
-	PRIMARY KEY (email)
+	PRIMARY KEY (id)
 );
 
 # Table of User Preferences
@@ -152,3 +153,5 @@ DELIMITER ;
 # mysql --local-infile -u root -p
 # source iCare.sql
 
+ALTER TABLE Users AUTO_INCREMENT = 1000;
+INSERT INTO Users(email, pass, displayName) VALUES ('exist@gmail.com', 'randompass', 'exist display');

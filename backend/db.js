@@ -33,6 +33,42 @@ class db {
     }
 
     /**
+     * Gets the user id from the database
+     * @param {String} givenEmail 
+     * @returns user id (int)
+     */
+    async getID(givenEmail) {
+        let q = "SELECT id FROM Users"
+        let data = await this.dbPromise(true, q, givenEmail);
+
+        if (data.length === 0) { return false; }
+        else if (data != false) {
+            let intValue = await this.gettingInteger(data)
+            return intValue;
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets email from id
+     * @param {int} id 
+     * @returns email associated with user id
+     */
+    async getEmail(id) {
+        let q = "SELECT email FROM Users WHERE id=" + id 
+
+        // Querying Result
+        return await new Promise((resolve) => this.pool.query(q, function (err, result) {
+            if (err) { resolve(false) }
+            else { 
+                let splits = (JSON.stringify(result)).split('\"', 5);                
+                resolve(splits[3])
+             }
+        }));
+    }
+
+    /**
      * Gets the password given an email
      * @param {String} givenEmail 
      * @returns hashed password

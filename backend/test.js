@@ -14,7 +14,7 @@ cryptr = new Cryptr('myTotalySecretKey');
 
 let goodEmail = "good@gmail.com";       // Reuse for create, login, delete
 let goodDisplay = "goodDisplay"
-let badEmail = 'bad@gmail.com';
+let badEmail = 'existing@gmail.com';
 let newEmail = "newEmail@gmail.com"     // Use for change email
 let goodPass = "password12345";         // Reuse for create, login, delete
 let failEmail = "idontexist@gmail.com"  // Reuse for failing

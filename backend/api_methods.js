@@ -62,18 +62,18 @@
     /**
      * Checks if the token is valid
      * @param {String} token 
-     * @returns email or error message
+     * @returns id or error message
      */
     async checkToken(token) {
         let r = ""; let m = ""
 
         if (typeof token !== 'undefined') {
-            let email = await userToken.getEmailFromToken(token);
-            if (email == false) {
+            let id = await userToken.getIDFromToken(token);
+            if (id == false) {
                 r = "INVALID_TOKEN";
                 m = "The token given is invalid."
             } else {
-                return email;
+                return id;
             }
         }
         else {

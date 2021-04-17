@@ -40,7 +40,9 @@ const { route } = require('./index.js');
       let success = false;
 
       // Checks password length, email, and display name
-      if (!email || !password || !dName) { success = false; }
+      if (email === null || password === null || dName === null || dName == "") { 
+        success = false; 
+      }
       else if (password.length > 8) { 
         let encrypted_pass = await api_methods.encryptPass(password);
         success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
@@ -48,7 +50,8 @@ const { route } = require('./index.js');
 
       // Response Codes
       if (success == true) {
-        let tokenValue = await userToken.createToken(email).then((r) => { return r; });
+        let userID = await userDB.getID(email).then((r) => { return r; });
+        let tokenValue = await userToken.createToken(userID).then((r) => { return r; });
         res.status(201).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
       }
       else {
@@ -67,7 +70,8 @@ const { route } = require('./index.js');
       
       // Response Codes
       if (success == true) {
-        let tokenValue = await userToken.createToken(email).then((r) => { return r; });
+        let userID = await userDB.getID(email).then((r) => { return r; });
+        let tokenValue = await userToken.createToken(userID).then((r) => { return r; });
         let dName = await userDB.getDisplayName(email).then((r) => { return r; });
         
         res.status(200).send({ token: tokenValue,  accountInfo: { email: email, displayName: dName } });
@@ -76,30 +80,39 @@ const { route } = require('./index.js');
 
     });
 
-    // Change email
+    // Change email and display name
     router.put('/user', async (req, res) => {
       let token = req.headers.auth;
       let oldEmail = ""
 
       // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
+      let checkToken = await api_methods.checkToken(token).then(async (r) => {
         if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else {  oldEmail = r; return true; }
+        else { oldEmail = await userDB.getEmail(r).then((res) => { return res; }); return true; }
       })
-      if (checkToken == false) { return; }
+      if (checkToken == false) { return; };
 
-      // Checks crypto pass and changes email -------------------------
-      let newEmail = req.body.data.email;
-      let pass = req.body.data.password;
-      let checkPass = await api_methods.checkPass(pass, oldEmail).then((r) => { return r; });
+      // Checks crypto pass and changes email and display name -------------------------
+      let newEmail = req.body.email;
+      let newDisplay = req.body.displayName;
+      let pass = req.body.password;
+
+      // Checks password length, email, and display name
+      if (newDisplay === null || newDisplay == "") { 
+        res.status(409).send({ reason: "BAD_DISPLAY_NAME", message: "Display name cannot be empty." });
+        return;
+      }
+
+      let checkPass = await api_methods.checkPass(pass, oldEmail)
 
       if (checkPass == true) {
-        let success = await userDB.changeEmail(oldEmail, newEmail).then((r) => { return r; });
-        if (success == true) { 
-          let tokenValue = await userToken.createToken(newEmail).then((r) => { return r; });
-          res.status(200).send({ token: tokenValue, reason: "SUCCESS", message: "Changed email" });  
+        let dnSuccess = await userDB.setDisplayName(oldEmail, newDisplay)
+        let ceSuccess = await userDB.changeEmail(oldEmail, newEmail)
+        
+        if (dnSuccess == ceSuccess == true) { 
+          res.status(200).send({ reason: "SUCCESS", message: "Changed email and display name." }); 
         }
-        else { res.status(409).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
+        else { res.status(401).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
       }
       else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
 
@@ -111,14 +124,14 @@ const { route } = require('./index.js');
       let email = ""
 
       // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
+      let checkToken = await api_methods.checkToken(token).then(async (r) => {
         if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else { email = r; return true; }
+        else { email = await userDB.getEmail(r).then((res) => { return res; }); return true; }
       })
-      if (checkToken == false) { return; }
+      if (checkToken == false) { return; };
 
       // Checks crypto pass and deletes user -------------------------
-      let pass = req.body.data.password;
+      let pass = req.body.password;
       let checkPass = await api_methods.checkPass(pass, email).then((r) => { return r; });
 
       if (checkPass == true) { 
@@ -139,11 +152,11 @@ const { route } = require('./index.js');
       let email = ""
  
       // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
+      let checkToken = await api_methods.checkToken(token).then(async (r) => {
         if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else { oldEmail = r; return true; }
+        else { email = await userDB.getEmail(r).then((res) => { return res; }); return true; }
       })
-      if (checkToken == false) { return; }
+      if (checkToken == false) { return; };
       
       // Get Preferences -------------------------
       let notiInterval = await userDB.getNotiInterval(email).then((result) => { return result; })
@@ -169,11 +182,11 @@ const { route } = require('./index.js');
       let email = ""
  
       // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
+      let checkToken = await api_methods.checkToken(token).then(async (r) => {
         if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else {  oldEmail = r; return true; }
+        else { email = await userDB.getEmail(r).then((res) => { return res; }); return true; }
       })
-      if (checkToken == false) { return; }
+      if (checkToken == false) { return; };
 
       // Save user preferences in database -------------------------
       let notiInterval = req.body.data.notifications.interval;
@@ -201,14 +214,14 @@ const { route } = require('./index.js');
       let email = ""
  
       // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
+      let checkToken = await api_methods.checkToken(token).then(async (r) => {
         if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else {  oldEmail = r; return true; }
+        else { email = await userDB.getEmail(r).then((res) => { return res; }); return true; }
       })
-      if (checkToken == false) { return; }
+      if (checkToken == false) { return; };
 
       // Get Usage Data -------------------------
-      let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
+      let timePeriod = req.body.timePeriod;    // TODAY, WEEK, MONTH, ALL
       let dUsage = await userDB.getDataUsage(email, timePeriod).then((r) => { return r; });
       let aUsage = await userDB.getAppUsage(email, timePeriod).then((r) => { return r; });
 
@@ -222,19 +235,19 @@ const { route } = require('./index.js');
       let token = req.headers.auth;
       let email = ""
  
-      // Checks Token
-      let checkToken = await api_methods.checkToken(token).then((r) => {
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then(async (r) => {
         if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else { email = r; return true; }
+        else { email = await userDB.getEmail(r).then((res) => { return res; }); return true; }
       })
-      if (checkToken == false) { return; }
+      if (checkToken == false) { return; };
 
       //------------------------
 
       // Sets Update Data
-      let todayScreenTime = req.body.data.dailyDataUsage.screenTime;
-      let todaynumBreaks = req.body.data.dailyDataUsage.numBreaks;
-      let todayAppUsage = req.body.data.dailyAppUsage;
+      let todayScreenTime = req.body.dailyDataUsage.screenTime;
+      let todaynumBreaks = req.body.dailyDataUsage.numBreaks;
+      let todayAppUsage = req.body.dailyAppUsage;
       
       let duSuccess = await userDB.setDataUsage(email, todayScreenTime, todaynumBreaks);
 
@@ -258,12 +271,12 @@ const { route } = require('./index.js');
       let token = req.headers.auth;
       let email = ""
  
-      // Checks Token
-      let checkToken = await api_methods.checkToken(token).then((r) => {
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then(async (r) => {
         if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else { email = r; return true; }
+        else { email = await userDB.getEmail(r).then((res) => { return res; }); return true; }
       })
-      if (checkToken == false) { return; }
+      if (checkToken == false) { return; };
 
       // Get Insights
       let insight = await api_methods.generateInsights();
@@ -286,8 +299,8 @@ const { route } = require('./index.js');
 );
 
 //-------------------------------------
-
 /*
+
  // Database Connection
  let db = require('./db.js');
  let userDB = new db("localhost", "newuser", "password", "iCare");
@@ -296,7 +309,7 @@ const { route } = require('./index.js');
  let apiM = require('./api_methods.js');
  let api_methods = new apiM();
 
-
+/*
  // WORKS!
  async function testDataUsage() {
 
@@ -328,3 +341,4 @@ async function test() {
 
 //test()
 */
+

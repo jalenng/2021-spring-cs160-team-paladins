@@ -8,6 +8,7 @@ require('./timerSystem.js');
 require('./breakSystem.js');
 require('./notificationSystem.js');
 require('./accountPopups');
+require('./dataUsageSystem');
 
 const DEFAULT_WINDOW_SIZE = {
     defaultWidth: 800,

@@ -64,7 +64,7 @@ const accountStoreDefaults = {
     }
 }
 
-/* Data usage defaults */
+/* Insights defaults */
 const insightsDefaults = {
     cards: [
         {
@@ -110,13 +110,20 @@ const insightsDefaults = {
     ]
 }
 
+/* Data usage defaults */
+const dataUsageDefaults = {
+    appUsage: {},
+    timerUsage: {}
+}
+
 /* Create the store */
 const storeOptions = {
     defaults: {
         preferences: preferencesStoreDefaults,
         sounds: soundsStoreDefaults,
         account: accountStoreDefaults,
-        insights: insightsDefaults
+        insights: insightsDefaults,
+        dataUsage: dataUsageDefaults
     },
     watch: true
 }
@@ -346,12 +353,16 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
             // If sign-in was successful
             if (res.status === 200) {
                 store.reset('account');
+                store.reset('insights');
+                store.reset('dataUsage');
                 result.success = true;
             }
             
         }
         else {
             store.reset('account');
+            store.reset('insights');
+            store.reset('dataUsage');
             result.success = true;
         }
     }

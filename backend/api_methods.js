@@ -5,7 +5,7 @@
 
  // Database Connection
  let db = require('./db.js');
- let userDB = new db("localhost", "newuser", "", "iCare");
+ let userDB = new db("localhost", "newuser", "password", "iCare");
 
  // Token Methods
  let tokenClass = require('./token.js')
@@ -125,12 +125,28 @@
         return [aveSC, minSC, maxSC, aveTC, minTC, maxTC];
     }
 
+    /**
+     * Generate insights for user based on data/app usage statistics
+     * @returns array of two arrays [[header], [content]]
+     */
     async generateInsights() {
 
-        // Return array [header, content] if you were able to generate insights
+        // Return array [[header], [content]] if you were able to generate insights
 
         // Return false if fail to generate insights
         return false;
+    }
+
+
+    /**
+     * Gets the integer value of a string from data/app usage for test comparison
+     * @param {String} string 
+     * @returns integer
+     */
+    async getIntValue(string) {
+        let remove1 = string.replace(':', '')
+        let remove2 = remove1.replace(',', '')
+        return parseInt(remove2)
     }
 
 

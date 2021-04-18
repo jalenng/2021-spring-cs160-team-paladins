@@ -18,7 +18,7 @@ const { route } = require('./index.js');
  
     // Database Connection
     let db = require('./db.js');
-    let userDB = new db("localhost", "newuser", "", "iCare");
+    let userDB = new db("localhost", "newuser", "password", "iCare");
 
     // API Methods
     let apiM = require('./api_methods.js');
@@ -166,7 +166,7 @@ const { route } = require('./index.js');
       let aUsageOn = await userDB.getAppUsageOn(email).then((result) => { return result; })
  
       // Response Codes
-      if (notiInterval != false && notiSound != false && notiSoundOn != false) {
+      if (notiInterval != false && notiSound != false) {
         res.status(200).send({
           notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
           dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: dUsageOn }
@@ -189,11 +189,11 @@ const { route } = require('./index.js');
       if (checkToken == false) { return; };
 
       // Save user preferences in database -------------------------
-      let notiInterval = req.body.data.notifications.interval;
-      let notiSound = req.body.data.notifications.sound;
-      let notiSoundOn = req.body.data.notifications.enableSound;
+      let notiInterval = req.body.notifications.interval;
+      let notiSound = req.body.notifications.sound;
+      let notiSoundOn = req.body.notifications.enableSound;
       let dUsageOn = req.body.dataUsage.enableWeeklyUsageStats;
-      let aUsageOn = eq.body.dataUsage.trackAppUsageStats;
+      let aUsageOn = req.body.dataUsage.trackAppUsageStats;
  
       let success1 = await userDB.setNotiInterval(email, notiInterval).then((r) => { return r; })
       let success2 = await userDB.setNotiSound(email, notiSound).then((r) => { return r; })
@@ -208,7 +208,7 @@ const { route } = require('./index.js');
       else { res.status(504).send({ reason: "SAVE_FAILED", message: "Couldn't save all preferences." }); }
     });
 
-    // Gets data usage (incomplete)
+    // Gets data usage
     router.get('/data', async (req, res) => {
       let token = req.headers.auth;
       let email = ""
@@ -226,11 +226,11 @@ const { route } = require('./index.js');
       let aUsage = await userDB.getAppUsage(email, timePeriod).then((r) => { return r; });
 
       // Response Codes (Sends JSONs)
-      if (dUsage != false && aUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
+      if (dUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
       else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage" }) }
     });
 
-    // Updates the data/app usage of user (incomplete)
+    // Updates the data/app usage of user
     router.put('/data', async (req, res) => {
       let token = req.headers.auth;
       let email = ""
@@ -243,27 +243,24 @@ const { route } = require('./index.js');
       if (checkToken == false) { return; };
 
       //------------------------
+      // Update Data Usage
+      let screenTime = req.body.dailyDataUsage.screenTime;
+      let numBreaks = req.body.dailyDataUsage.numBreaks;
+      let duSuccess = await userDB.setDataUsage(email, screenTime, numBreaks);
 
-      // Sets Update Data
-      let todayScreenTime = req.body.dailyDataUsage.screenTime;
-      let todaynumBreaks = req.body.dailyDataUsage.numBreaks;
-      let todayAppUsage = req.body.dailyAppUsage;
-      
-      let duSuccess = await userDB.setDataUsage(email, todayScreenTime, todaynumBreaks);
-
-
-      let ausuccess = ""
-      // For app usage, use dictionary key-value pairing in a for loop to insert into the database
-      // If one fails, success == false
-
-
+      // Update App Usage
+      let appList = req.body.dailyAppUsage.appList;
+      let appTime = req.body.dailyAppUsage.appTime;
+      let auSuccess = true;
+      await appList.forEach(async (appName, index) => {
+        auSuccess = await userDB.setAppUsage(email, appName, appTime[index]);
+      });
 
       // Response Codes
-      if (dusuccess == true && auSuccess == true) { 
+      if (duSuccess == true && auSuccess == true) { 
         res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
       }
-      else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage" }) }
-
+      else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data/app usage" }) }
     });
 
     // Get Insights
@@ -299,8 +296,8 @@ const { route } = require('./index.js');
 );
 
 //-------------------------------------
-/*
 
+/*
  // Database Connection
  let db = require('./db.js');
  let userDB = new db("localhost", "newuser", "password", "iCare");
@@ -328,17 +325,15 @@ const { route } = require('./index.js');
   console.log("Min Timer Count: " + listofvalues[4]);
   console.log("Max Timer Count: " + listofvalues[5]);
  }
+*/
 
-
-
+/*
 async function test() {
 
-  testDataUsage()
-  
 
 }
 
 
-//test()
+test()
 */
 

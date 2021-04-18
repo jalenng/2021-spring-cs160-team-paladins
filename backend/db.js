@@ -344,17 +344,17 @@ class db {
      */
     async setAppUsage(userEmail, appName, appTime) {
         let today = await this.getDate(0).then((result) => { return result; })
-        let check = await this.check("AppUsage", userEmail, appName, today);
+        let check = await this.check("AppUsage", userEmail, appName, today).then((result) => { return result; })
         let q = "";
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE AppUsage SET appTime=" + appTime + ", timerCount=" + timerCount +
+            q = "UPDATE AppUsage SET appTime=" + appTime +
                 " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
         }
         // Creates existing record
         else {
-            q = "INSERT INTO AppUsage VALUES('" + userEmail + "', " + appName + ", " + appTime + ", '" + today + "')";
+            q = "INSERT INTO AppUsage VALUES('" + userEmail + "', '" + appName + "', " + appTime + ", '" + today + "')";
         }
 
         // Updates the database
@@ -386,10 +386,6 @@ class db {
 
         return results; // JSON.stringify(results); to get the string format
     }
-
-
-
-
 
     /**
      * Closes the database pool
@@ -469,7 +465,7 @@ class db {
         if (table == "DataUsage") {
             addq = table + " WHERE email='" + userEmail + "' AND usageDate='" + today + "')";
         }
-        else if (table == "App Usage") {
+        else if (table == "AppUsage") {
             addq = table + " WHERE email='" + userEmail + "' AND appName='" + appName + "' AND usageDate='" + today + "')";
         }
         checkq = checkq + addq;

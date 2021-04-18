@@ -18,7 +18,7 @@ const { route } = require('./index.js');
  
     // Database Connection
     let db = require('./db.js');
-    let userDB = new db("localhost", "newuser", "password", "iCare");
+    let userDB = new db("localhost", "newuser", "", "iCare");
 
     // API Methods
     let apiM = require('./api_methods.js');

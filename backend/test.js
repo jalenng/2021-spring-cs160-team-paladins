@@ -3,10 +3,15 @@ let assert = require('assert')
 
 // Database Connection
 let db = require('./db.js')
-const userDB = new db("localhost", "newuser", "", "iCare");
+const userDB = new db("localhost", "newuser", "password", "iCare");
+
+// API Methods
+let apiM = require('./api_methods.js');
+let api_methods = new apiM();
 
 // Crypto Requirements
 var atob = require('atob');
+const { AssertionError, strict } = require('assert');
 var Cryptr = require('cryptr'),
 cryptr = new Cryptr('myTotalySecretKey'); 
 
@@ -14,11 +19,15 @@ cryptr = new Cryptr('myTotalySecretKey');
 
 let goodEmail = "good@gmail.com";       // Reuse for create, login, delete
 let goodDisplay = "goodDisplay"
-let badEmail = 'existing@gmail.com';
+let badEmail = 'exist@gmail.com';
 let newEmail = "newEmail@gmail.com"     // Use for change email
 let goodPass = "password12345";         // Reuse for create, login, delete
 let failEmail = "idontexist@gmail.com"  // Reuse for failing
 let success = "";
+let timePeriod = "TODAY"
+let appList = ["Discord", "Visual Studio Code", "Zoom"];
+let appTime = [30, 30, 30];
+
 
 // Create Account Test (works for both existing/non-existing email)
 describe('Create new account: ', async () => {
@@ -72,6 +81,29 @@ describe('Get password with email', async () => {
         });
     });
 
+});
+
+// Get Email and ID 
+describe('Get user ID and email', async () => {
+
+    let id = await userDB.getID(badEmail);
+    let success = false;
+    if (id != false) { success = true; }
+
+    // Checks if user id is returned (changes for every test so we only test creation)
+    describe('Get ID from email [' + badEmail + ']: ', () => {
+        it('should return user id', async () => {
+            assert.strictEqual(success, true, 'id exists')
+        });
+    });
+
+    // Gets email
+    describe('Get email from ID', () => {
+        it('should return user id', async () => {
+            let idEmail = await userDB.getEmail(id);
+            assert.strictEqual(idEmail, badEmail, 'email linked to id: ' + badEmail )
+        });
+    });
 });
 
 // Change Email
@@ -229,6 +261,90 @@ describe('Notification Sound  On (user preferences)', async () => {
 
 });
 
+// Get/Set Data Usage
+describe('Data Usage', async() => {
+
+    let dataUsage = "";
+    let timePeriod = "TODAY"
+
+    // Gets the default data usage (0, 0) of newEmail
+    describe('(Success) Get data usage of [' + newEmail + ']', async () => {
+        it('should return screenTime (0), timerCount (0)', async () => {
+            dataUsage = await userDB.getDataUsage(newEmail, timePeriod).then(async (r) => { 
+                let splits = (JSON.stringify(r)).split('\"');   
+                let stValue =  await api_methods.getIntValue(splits[2]);
+                let tcValue =  await api_methods.getIntValue(splits[4]);
+                return [stValue, tcValue]; 
+            });
+            assert.strictEqual(dataUsage[0], 0,  'screen time = 0')
+            assert.strictEqual(dataUsage[1], 0,  'timer count = 0')
+        });
+    });
+
+    // Sets the data usage of newEmail
+    describe('(Success) Sets data usage of [' + newEmail + ']', async () => {
+        it('should return true (set works)', async () => {
+            let success = await userDB.setDataUsage(newEmail, 1800, 7);
+            assert.strictEqual(success, true,  'success is true')
+        })
+    });
+
+    // Gets the data usage (1800, 7) of newEmail
+    describe('(Success) Get data usage of [' + newEmail + ']', async () => {
+        it('should return screenTime (1800), timerCount (7)', async () => {
+            dataUsage = await userDB.getDataUsage(newEmail, timePeriod).then(async (r) => { 
+                let splits = (JSON.stringify(r)).split('\"');   
+                let stValue =  await api_methods.getIntValue(splits[2]);
+                let tcValue =  await api_methods.getIntValue(splits[4]);
+                return [stValue, tcValue]; 
+            });
+            assert.strictEqual(dataUsage[0], 1800,  'screen time = 1800')
+            assert.strictEqual(dataUsage[1], 7,  'timer count = 7')
+        });
+    });
+
+});
+
+// Get/Set App Usage
+describe('Set App Usage', async() => {
+    // Sets some app usage data of newEmail
+    appList.forEach(async (app, index) => {
+        describe('(Success) Sets app usage of [' + app + ']', async () => {
+            it('should return true (set works)', async () => {
+                success = await userDB.setAppUsage(newEmail, app, appTime[index]);
+                assert.strictEqual(success, true, 'success is true')
+            })
+        });
+    });
+
+});
+
+
+
+describe('Get App Usage Data', async () => {
+    describe('(Success) Get app usage', async () => {
+        let dataRow = [];
+
+        await userDB.getAppUsage(newEmail, timePeriod).then((r) => {
+            r.forEach(async (row) => {
+                let splits = (JSON.stringify(row)).split('\"');
+                let appTime = await api_methods.getIntValue(splits[6]);
+                let appName = splits[3]
+                dataRow.push([appName, appTime])
+            });
+        });
+
+        dataRow.forEach(async (app, index) => {
+            describe('(Success) Gets app usage of [' + app[0] + ']', async () => {
+                it('should return [' + app[0] + ']: ' + app[1].toString(), async () => {
+                    assert.strictEqual(app[0], appList[index],  app[0] + ' = ' + appList[index])
+                    assert.strictEqual(app[1], appTime[index],  app[1].toString() + ' = ' + appTime[index])
+                });
+            });
+        });
+    })
+})
+
 // Get/Set Data Usage On
 describe('Data Usage  On (user preferences)', async () => {
 
@@ -290,17 +406,6 @@ describe('Data Usage  On (user preferences)', async () => {
     });
 
 });
-
-
-
-
-/**
-
- * Get/Set data usage
- * Get/Set app usage
- */
-
-
 
 // Delete Account Test
 describe('Delete account', async() => {

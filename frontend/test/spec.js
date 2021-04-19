@@ -46,7 +46,7 @@ describe("Application launch", function () {
     }
   });
 
-  // test window is visible with default height
+  // test window default height
   it("window default height is set", function () {
     try {
       const isVisible = this.app.browserWindow.isVisible();
@@ -58,7 +58,7 @@ describe("Application launch", function () {
     }
   });
 
-  // test window is wisible default width
+  // test window default width
   it("window default width is set", function () {
     try {
       const isVisible = this.app.browserWindow.isVisible();
@@ -83,12 +83,24 @@ describe("Application launch", function () {
   });
 
   // test window maximizable option
-  it("window maximizable is set to false", function () {
+  it("window maximizable option is false", function () {
     try {
       const isVisible = this.app.browserWindow.isVisible();
       assert.strictEqual(isVisible, true);
-      const isMaximizable = this.app.client.browserWindow.isMaximized();
+      const isMaximizable = this.app.client.browserWindow.isMaximizable();
       assert.strictEqual(isMaximizable, "false");
+    } catch (error) {
+      console.error("Test failed", error.message);
+    }
+  });
+
+  // test window minimizable option
+  it("window minimizable option is true", function () {
+    try {
+      const isVisible = this.app.browserWindow.isVisible();
+      assert.strictEqual(isVisible, true);
+      const isMinimizable = this.app.client.browserWindow.isMinimizable();
+      assert.strictEqual(isMinimizable, "true");
     } catch (error) {
       console.error("Test failed", error.message);
     }
@@ -113,6 +125,18 @@ describe("Application launch", function () {
       assert.strictEqual(isVisible, true);
       const isDevToolOpened = this.app.client.browserWindow.isDevToolsOpened();
       assert.strictEqual(isDevToolOpened, "true");
+    } catch (error) {
+      console.error("Test failed", error.message);
+    }
+  });
+
+  // test if dev tool open
+  it("window is closable", function () {
+    try {
+      const isVisible = this.app.browserWindow.isVisible();
+      assert.strictEqual(isVisible, true);
+      const isClosed = this.app.client.browserWindow.isClosable();
+      assert.strictEqual(isClosed, "true");
     } catch (error) {
       console.error("Test failed", error.message);
     }

@@ -59,7 +59,7 @@ const soundsStoreDefaults = {
 const accountStoreDefaults = {
     token: null,
     accountInfo: {
-        email: null,
+        email: '',
         displayName: 'iCare Guest',
     }
 }
@@ -121,6 +121,7 @@ const storeOptions = {
     watch: true
 }
 global.store = new Store(storeOptions);
+// store.set('preferences.notifications.interval', 0.1)
 // store.clear();
 
 /* Configure axios */

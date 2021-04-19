@@ -5,10 +5,6 @@ import PieChart from "./charts/PieChart";
 import BarChart from "./charts/BarChart";
 
 const divStyle = {
-  MozUserSelect: "none",
-  WebkitUserSelect: "none",
-  msUserSelect: "none",
-
   paddingTop: "10px",
   paddingLeft: "30px",
 };

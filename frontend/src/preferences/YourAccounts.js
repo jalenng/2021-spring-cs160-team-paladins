@@ -36,46 +36,8 @@ export default class extends React.Component {
 
         // Get account store info from account store
         const isSignedIn = this.state.token != null
-        const displayName = this.state.accountInfo.displayName
-        const email = this.state.accountInfo.email
-
-        const regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
-        let displayInitials = [...displayName.matchAll(regex)] || [];
-        displayInitials = (
-            (displayInitials.shift()?.[1] || '') + (displayInitials.pop()?.[1] || '')
-        ).toUpperCase();
-
-        const yourAccountsPersona = {
-            imageInitials: displayInitials,
-            text: displayName,
-
-            // Display email address only if signed in
-            onRenderSecondaryText: () => {
-                if (isSignedIn) {
-                    return (
-                        <Text> {email} </Text> 
-                    )
-                }
-            },
-
-            // Display "Sign out" and "Delete account" button only if signed in
-            onRenderTertiaryText: () => {
-                if (isSignedIn) {
-                    return (
-                        <Stack horizontal
-                            verticalAlign="center"
-                            style={{ marginTop: "12px" }}
-                            tokens={{ childrenGap: 20 }}
-                        >
-                            <DefaultButton text="Sign out" onClick={signOut} />
-                            <ActionButton onClick={() => ipcRenderer.invoke('show-delete-account-popup')}> 
-                                Delete account 
-                            </ActionButton>
-                        </Stack>
-                    )
-                }
-            }
-        };
+        const displayName = this.state.accountInfo.displayName.toString()
+        const email = this.state.accountInfo.email.toString()
 
         return (
 
@@ -99,8 +61,35 @@ export default class extends React.Component {
                 </Stack>
 
                 <Persona
-                    {...yourAccountsPersona}
+                    text = {displayName}
                     size={PersonaSize.size100}
+
+                    // Display email address only if signed in
+                    onRenderSecondaryText={ () => {
+                        if (isSignedIn) {
+                            return (
+                                <Text> {email} </Text> 
+                            )
+                        }
+                    }}
+        
+                    // Display "Sign out" and "Delete account" button only if signed in
+                    onRenderTertiaryText = { () => {
+                        if (isSignedIn) {
+                            return (
+                                <Stack horizontal
+                                    verticalAlign="center"
+                                    style={{ marginTop: "12px" }}
+                                    tokens={{ childrenGap: 20 }}
+                                >
+                                    <DefaultButton text="Sign out" onClick={signOut} />
+                                    <ActionButton onClick={() => ipcRenderer.invoke('show-delete-account-popup')}> 
+                                        Delete account 
+                                    </ActionButton>
+                                </Stack>
+                            )
+                        }
+                    }}
                 />
 
             </Stack>

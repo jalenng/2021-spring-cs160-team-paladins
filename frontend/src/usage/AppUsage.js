@@ -3,7 +3,7 @@ import { Pie, defaults } from "react-chartjs-2";
 
 defaults.global.tooltips.enabled = true;
 
-export default class BarChart extends React.Component {
+export default class AppUsage extends React.Component {
   render() {
     return (
       <div>
@@ -40,12 +40,12 @@ export default class BarChart extends React.Component {
               },
             ],
           }}
-          height={200}
-          width={300}
+          height={400}
+          width={800}
           options={{
             title: {
               display: true,
-              text: "Weekly Different App Hour Usage",
+              text: "Total Hourly App Usage",
               fontColor: "#FFFFFF",
               fontSize: 15,
               padding: 10,

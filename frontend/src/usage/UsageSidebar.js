@@ -18,25 +18,26 @@ const groups = [
   {
     links: [
       {
+        name: 'App Usage',
+        icon: 'BarChartVertical',
+        key: 'app_usage'
+      },
+      {
         name: 'Daily Usage',
-        icon: 'ContactInfo',
+        icon: 'BarChartVertical',
         key: 'daily_usage'
       },
       {
         name: 'Weekly Usage',
-        icon: 'CannedChat',
+        icon: 'BarChartVertical',
         key: 'weekly_usage'
       },
       {
-        name: 'Monthly Usage',
-        icon: 'PowerButton',
-        key: 'monthly_usage'
-      },
-      {
-        name: 'App Usage',
+        name: 'Total Usage',
         icon: 'BarChartVertical',
-        key: 'data_usage'
+        key: 'total_usage'
       },
+
     ],
   },
 ];
@@ -46,6 +47,7 @@ export default class UsageSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    console.log()
   }
 
 

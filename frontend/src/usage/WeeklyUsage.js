@@ -1,10 +1,12 @@
 import React from "react";
-import { Bar, defaults } from "react-chartjs-2";
+import { Bar, defaults } from "react-chartjs-2"
 
 defaults.global.tooltips.enabled = true;
 
 export default class BarChart extends React.Component {
+
   render() {
+
     return (
       <div>
         <Bar
@@ -20,7 +22,7 @@ export default class BarChart extends React.Component {
             ],
             datasets: [
               {
-                label: "Total time usage",
+                label: "Total usage (hours)",
                 data: [5, 6, 6.5, 6, 8, 3, 5],
                 backgroundColor: [
                   "rgba(72, 121, 240, 1)",
@@ -34,13 +36,13 @@ export default class BarChart extends React.Component {
                 ],
               },
               {
-                label: "Number of break",
+                label: "Total # of breaks",
                 data: [15, 18, 20, 20, 24, 9, 15],
                 backgroundColor: "lightblue",
               },
             ],
           }}
-          height={150}
+          height={400}
           width={30}
           options={{
             title: {

@@ -2,8 +2,12 @@ import React from 'react';
 
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 
-import UsageSidebar from './charts/UsageSidebar';
-import BarChart from './charts/BarChart';
+import UsageSidebar from './usage/UsageSidebar';
+import AppUsage from './usage/AppUsage';
+import DailyUsage from './usage/DailyUsage'
+import WeeklyUsage from './usage/WeeklyUsage';
+import TotalUsage from './usage/TotalUsage';
+
 
 const divStyle = {
   MozUserSelect: "none",
@@ -17,17 +21,17 @@ const divStyle = {
 };
 
 const usagePages = {
-  daily_usage: <BarChart/>,
-  weekly_usage: <BarChart/>,
-  monthly_usage: <BarChart/>,
-  app_usage: <BarChart/>,
+  app_usage: <AppUsage/>,
+  daily_usage: <DailyUsage/>,
+  weekly_usage: <WeeklyUsage/>,
+  total_usage: <TotalUsage/>,
 }
 
 export default class UsageScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { selectedKey: 'daily_usage' };
+    this.state = { selectedKey: 'app_usage' };
   }
 
   render() {

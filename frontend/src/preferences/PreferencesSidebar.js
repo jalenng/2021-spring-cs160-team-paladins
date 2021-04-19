@@ -24,7 +24,7 @@ const navLinkGroups = [
       },
       {
         name: 'Notifications',
-        icon: 'CannedChat',
+        icon: 'Ringer',
         key: 'notifications'
       },
       {

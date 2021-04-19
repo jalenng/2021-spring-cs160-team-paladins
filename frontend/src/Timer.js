@@ -19,23 +19,34 @@ export default class Timer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            minutes: "0",
-            seconds: "0",
+            remainingTimeString: "",
+            totalDuration: "",
+            remainingTime: "",
+            endTimeString: "",
             state: ""
         };
     }
 
     componentDidMount() {
         ipcRenderer.on("receive-timer-status", (event, timerStatus) => {
-            let minutes = Math.floor(timerStatus.remainingTime / 60000);
-            let seconds = Math.floor((timerStatus.remainingTime % 60000) / 1000);
-            seconds = ("00" + seconds).substr(-2, 2);
+            let remainingMinutes = Math.floor(timerStatus.remainingTime / 60000).toString();
+            let remainingSeconds = Math.floor((timerStatus.remainingTime % 60000) / 1000);
+            remainingSeconds = ("00" + remainingSeconds).substr(-2, 2);
+
+            let endHours = timerStatus.endDate.getHours()
+            endHours = endHours === 0
+                     ? "12"
+                     : endHours > 12
+                     ? (endHours % 12).toString()
+                     : endHours.toString(); 
+            let endMinutes = timerStatus.endDate.getMinutes();
+            endMinutes = ("00" + endMinutes).substr(-2, 2);
 
             this.setState({
-                minutes: minutes,
-                seconds: seconds,
+                remainingTimeString: `${remainingMinutes}:${remainingSeconds}`,
                 totalDuration: timerStatus.totalDuration,
                 remainingTime: timerStatus.remainingTime,
+                endTimeString: `${endHours}:${endMinutes}`,
                 state: timerStatus.state,
             });
         });
@@ -43,8 +54,6 @@ export default class Timer extends React.Component {
         ipcRenderer.send("get-timer-status");
         setInterval(() => { ipcRenderer.send("get-timer-status") }, 1000);
     }
-
-    updateState() { this.setState(getAccountStore()) }
 
     resetBtnClick() { ipcRenderer.invoke("timer-reset") };
 
@@ -58,7 +67,7 @@ export default class Timer extends React.Component {
 
         return (
             <div>
-                <Stack vertical tokens={{ childrenGap: 8 }} horizontalAlign="center" >
+                <Stack vertical tokens={{ childrenGap: 8 }} horizontalAlign="center">
 
                     {/* Timer display */}
                     <div style={{
@@ -79,11 +88,27 @@ export default class Timer extends React.Component {
                             showPercentage={false} 
                         />
 
-                        {/* Remaining time */}
+                        {/* Timer information */}
                         <div className="time" style={{  position: "absolute" }}>
-                            <Text variant={"xxLarge"} style={{ fontSize: "4rem" }} block>
-                                {this.state.minutes}:{this.state.seconds}
-                            </Text>
+                            <Stack vertical horizontalAlign="center">
+
+                                {/* Remaining time */}
+                                <Text variant={"xxLarge"} style={{ fontSize: "4rem" }} block>
+                                    {this.state.remainingTimeString}
+                                </Text>
+
+                                {/* End time - show only if the timer is running*/}
+                                { this.state.state === "running" && 
+                                    <TooltipHost content="End time">
+                                        <DefaultButton
+                                            style={{...buttonStyle, height: "28px"}}
+                                            iconProps={{ iconName: 'Ringer' }}
+                                            text={this.state.endTimeString}
+                                            disabled
+                                        />
+                                    </TooltipHost>
+                                }
+                            </Stack>
                         </div>
 
                     </div>                   
@@ -94,7 +119,7 @@ export default class Timer extends React.Component {
                         {/* Toggle button */}
                         <TooltipHost content={this.state.state === "running" ? "Pause" : "Start"}>
                             <PrimaryButton
-                                disabled = {this.state.state === "idle"}
+                                disabled={this.state.state === "idle"}
                                 onClick={this.togglePause}
                                 style={buttonStyle}
                                 onRenderText={() => {

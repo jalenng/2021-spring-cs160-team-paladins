@@ -58,7 +58,7 @@ export default class DailyUsage extends React.Component {
           options={{
             title: {
               display: true,
-              text: "Weekly Icare Hour Usage and Number of Break Time",
+              text: "Daily Timer Usage",
               fontColor: "#FFFFFF",
               fontSize: 15,
               padding: 10,

@@ -44,7 +44,7 @@ export default class TotalUsage extends React.Component {
           options={{
             title: {
               display: true,
-              text: "Weekly Icare Hour Usage and Number of Break Time",
+              text: "Total Timer Usage",
               fontColor: "#FFFFFF",
               fontSize: 15,
               padding: 10,

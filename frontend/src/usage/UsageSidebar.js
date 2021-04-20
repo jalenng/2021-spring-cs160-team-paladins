@@ -62,8 +62,8 @@ export default class UsageSidebar extends React.Component {
         tokens={{ childrenGap: 12 }} 
         styles={navStyles}>
 
-        <Text variant={'xxLarge'} block>
-          <b>Usage Statistics</b>
+        <Text variant={'xxLarge'}>
+          <b>Statistics</b>
         </Text>
     
         <Nav

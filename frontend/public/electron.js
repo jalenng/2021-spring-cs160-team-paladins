@@ -180,11 +180,35 @@ ipcMain.handle('log-to-console', (event, message) => {
     console.log(message);
 })
 
-// Get app info
-ipcMain.on('get-app-info', (event) => {
-    let appInfo = {
-        name: app.getName(),
-        version: app.getVersion()
+// Get info about the app
+ipcMain.on('get-about-info', (event) => {
+    let aboutInfo = {
+        appInfo: {
+            name: app.getName(),
+            version: app.getVersion()
+        },
+        contributors: [
+            "Elise Hoang",
+            "Jalen Ng",
+            "Julie Loi",
+            "Shiyun Lian",
+            "Zuby Javed"
+        ],
+        openSourceLibraries: [
+            "axios",
+            "chart.js",
+            "electron",
+            "electron-builder",
+            "electron-is-dev",
+            "electron-store",
+            "electron-window-state",
+            "hazardous",
+            "react",
+            "react-chart",
+            "react-charts",
+            "react-circle",
+            "sound-play"
+        ]
     }
-    event.reply('receive-app-info', appInfo);
+    event.reply('receive-about-info', aboutInfo);
 })

@@ -47,6 +47,13 @@ function deleteAccount(password) {
 }
 
 /**
+ * Helper function to fetch the latest account information
+ */
+function getAccountInfo() {
+    return ipcRenderer.invoke('get-account-info')
+}
+
+/**
  * Helper function to update account information
  * @param {String} email The new email
  * @param {String} displayName The new displayname
@@ -113,6 +120,7 @@ module.exports = {
     signUp: signUp,
     signOut: signOut,
     deleteAccount: deleteAccount,
+    getAccountInfo: getAccountInfo,
     updateAccountInfo: updateAccountInfo,
 
     getAllPreferences: getAllPreferences,

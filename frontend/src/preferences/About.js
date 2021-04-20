@@ -13,21 +13,21 @@ export default class About extends React.Component {
             appInfo: {
                 name: "",
                 version: ""
-            }
+            },
+            contributors: [],
+            openSourceLibraries: []
         }
     }
 
     componentDidMount() {
-        ipcRenderer.send('get-app-info');
+        ipcRenderer.send('get-about-info');
 
-        ipcRenderer.on('receive-app-info', (event, appInfo) => {
-            this.setState({appInfo});
+        ipcRenderer.on('receive-about-info', (event, aboutInfo) => {
+            this.setState(aboutInfo);
         })
     }
 
     render() {
-
-        let appInfo = this.state.appInfo
 
         return (
             <Stack id="about" tokens={{ childrenGap: 16 }}>
@@ -35,18 +35,16 @@ export default class About extends React.Component {
                 <Text variant={'xLarge'} block> About </Text>
 
                 <Text variant={'xxLarge'} block>  
-                    {`${appInfo.name} ${appInfo.version}`}
+                    {`${this.state.appInfo.name} ${this.state.appInfo.version}`}
                 </Text>
 
                 <Stack tokens={{ childrenGap: 8 }}>
                     <Text variant={'large'} block> Contributors </Text>
 
                     <Stack>
-                        <Text variant={'medium'} block> Elise Hoang </Text>
-                        <Text variant={'medium'} block> Jalen Ng </Text>
-                        <Text variant={'medium'} block> Julie Loi </Text>
-                        <Text variant={'medium'} block> Shiyun Lian </Text>
-                        <Text variant={'medium'} block> Zuby Javed </Text>
+                        {this.state.contributors.map( contributor => {
+                            return ( <Text variant={'medium'} block> {contributor} </Text> )
+                        })}
                     </Stack>
                 </Stack>
 
@@ -54,7 +52,9 @@ export default class About extends React.Component {
                     <Text variant={'large'} block> Open-source libraries </Text>
 
                     <Stack>
-                        <Text variant={'medium'} block> TODO </Text>
+                        {this.state.openSourceLibraries.map( libName => {
+                            return ( <Text variant={'medium'} block> {libName} </Text> )
+                        })}
                     </Stack>
                 </Stack>
 

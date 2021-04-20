@@ -11,11 +11,10 @@ import { Pivot, PivotItem } from '@fluentui/react/lib/Pivot';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DefaultButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
-import { Link } from '@fluentui/react/lib/Link';
 
 const { ipcRenderer } = window.require('electron');
 
-const { getAccountStore } = require('./storeHelperFunctions');
+const { getAccountInfo, getAccountStore } = require('./storeHelperFunctions');
 
 const topRightCornerProps = {
   horizontal: true,
@@ -40,10 +39,26 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
+    
     // Update this component's state when account is updated
     ipcRenderer.on('account-store-changed', () => {
         this.updateAccountState();
     })
+
+    // Get the latest account info 
+    const isSignedIn = this.state.account.token != null
+    if (isSignedIn) {
+      getAccountInfo().then(result => {
+
+        // If information retrieval was not successful, show error message
+        if (!result.success) this.addMessage({
+          type: MessageBarType.error,
+          contents: `Failed to retrieve account information: ${result.data.message}`
+        })
+          
+      });
+    }
+    
   }
 
   updateAccountState() {

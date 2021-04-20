@@ -18,12 +18,6 @@ describe("Application launch", function () {
     return this.app.start();
   });
 
-  afterEach(function () {
-    if (this.app && this.app.isRunning()) {
-      return this.app.stop();
-    }
-  });
-
   // Test case
   it("shows an initial window", function () {
     console.log(this.app);
@@ -107,7 +101,7 @@ describe("Application launch", function () {
   });
 
   // test window default background color
-  it("window default background color", function () {
+  it("window default background color is set", function () {
     try {
       const isVisible = this.app.browserWindow.isVisible();
       assert.strictEqual(isVisible, true);
@@ -118,19 +112,7 @@ describe("Application launch", function () {
     }
   });
 
-  // test if dev tool open
-  it("del tool is open", function () {
-    try {
-      const isVisible = this.app.browserWindow.isVisible();
-      assert.strictEqual(isVisible, true);
-      const isDevToolOpened = this.app.client.browserWindow.isDevToolsOpened();
-      assert.strictEqual(isDevToolOpened, "true");
-    } catch (error) {
-      console.error("Test failed", error.message);
-    }
-  });
-
-  // test if dev tool open
+  // test window is closable
   it("window is closable", function () {
     try {
       const isVisible = this.app.browserWindow.isVisible();
@@ -139,6 +121,12 @@ describe("Application launch", function () {
       assert.strictEqual(isClosed, "true");
     } catch (error) {
       console.error("Test failed", error.message);
+    }
+  });
+
+  afterEach(function () {
+    if (this.app && this.app.isRunning()) {
+      return this.app.stop();
     }
   });
 });

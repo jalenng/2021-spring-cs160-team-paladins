@@ -408,7 +408,6 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
 
         // Await for response
         let res = await axios.put(url, data);
-        console.log(res)
 
         // If sign-in was successful
         if (res.status === 202) {
@@ -425,7 +424,6 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
     }
     // Handle errors
     catch (error) {
-        console.log(error)
 
         // Check if backend returned a reason and message for the error
         let responseMessageExists = 

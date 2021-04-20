@@ -46,9 +46,9 @@ const myTheme = createTheme({
   }
 });
 loadTheme(myTheme);
-initializeIcons();
-
 document.body.style = 'background: #222222;';
+
+initializeIcons();
 
 const unselectableTextStyle = {
   MozUserSelect: "none",

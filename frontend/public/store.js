@@ -408,17 +408,16 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
 
         // Await for response
         let res = await axios.put(url, data);
+        console.log(res)
 
         // If sign-in was successful
         if (res.status === 202) {
             
-            let account = {
-                accountInfo: {
-                    email: res.data.accountInfo.email,
-                    displayName: res.data.accountInfo.displayName
-                }
+            let accountInfo = {
+                email: res.data.email,
+                displayName: res.data.displayName
             }
-            store.set('account', account)
+            store.set('account.accountInfo', accountInfo)
 
             result.success = true;
         }
@@ -426,6 +425,7 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
     }
     // Handle errors
     catch (error) {
+        console.log(error)
 
         // Check if backend returned a reason and message for the error
         let responseMessageExists = 

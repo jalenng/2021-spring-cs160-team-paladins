@@ -289,25 +289,27 @@ class db {
      * @param {String} userEmail user email
      * @param {int} screenTime screen time spent on computer
      * @param {int} timerCount amount of times counter has been called
+     * @param {date} usageDate number of days the usageDate is away from today
      * @returns true if success in updating datausage records, false if fails
      */
-    async setDataUsage(userEmail, screenTime, timerCount) {
-        let today = await this.getDate(0).then((result) => { return result; })
-        let check = await this.check("DataUsage", userEmail, "", today);
+    async setDataUsage(userEmail, screenTime, timerCount, usageDate) {
+        //let days = await this.getDate(numofDates).then((result) => { return result; })
+        let check = await this.check("DataUsage", userEmail, "", usageDate);
         let q = "";
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE DataUsage SET screenTime=" + screenTime + ", timerCount=" + timerCount + " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
+            q = "UPDATE DataUsage SET screenTime=" + screenTime + ", timerCount=" + timerCount + 
+                " WHERE email='" + userEmail + "' AND usageDate='" + usageDate + "'";
         }
         // Creates existing record
         else {
-            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + today + "')";
+            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + usageDate + "')";
         }
 
         // Updates the database
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { resolve(false) }
+            if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
 
@@ -340,21 +342,22 @@ class db {
      * @param {String} userEmail user email
      * @param {String} appName name of the application
      * @param {int} appTime time spent on the application
+     * @param {date} date usageDate
      * @returns true if success in updating appusage records, false if fails
      */
-    async setAppUsage(userEmail, appName, appTime) {
-        let today = await this.getDate(0).then((result) => { return result; })
-        let check = await this.check("AppUsage", userEmail, appName, today).then((result) => { return result; })
+    async setAppUsage(userEmail, appName, appTime, date) {
+        //let today = await this.getDate(0).then((result) => { return result; })
+        let check = await this.check("AppUsage", userEmail, appName, date).then((result) => { return result; })
         let q = "";
 
         // Updates existing record
         if (check == "1") {
             q = "UPDATE AppUsage SET appTime=" + appTime +
-                " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
+                " WHERE email='" + userEmail + "' AND usageDate='" + date + "'";
         }
-        // Creates existing record
+        // Creates a new record
         else {
-            q = "INSERT INTO AppUsage VALUES('" + userEmail + "', '" + appName + "', " + appTime + ", '" + today + "')";
+            q = "INSERT INTO AppUsage VALUES('" + userEmail + "', '" + appName + "', " + appTime + ", '" + date + "')";
         }
 
         // Updates the database

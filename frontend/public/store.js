@@ -59,7 +59,7 @@ const soundsStoreDefaults = {
 const accountStoreDefaults = {
     token: null,
     accountInfo: {
-        email: null,
+        email: '',
         displayName: 'iCare Guest',
     }
 }
@@ -128,6 +128,7 @@ const storeOptions = {
     watch: true
 }
 global.store = new Store(storeOptions);
+// store.set('preferences.notifications.interval', 0.1)
 // store.clear();
 
 /* Configure axios */
@@ -422,13 +423,11 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
         // If sign-in was successful
         if (res.status === 202) {
             
-            let account = {
-                accountInfo: {
-                    email: res.data.accountInfo.email,
-                    displayName: res.data.accountInfo.displayName
-                }
+            let accountInfo = {
+                email: res.data.email,
+                displayName: res.data.displayName
             }
-            store.set('account', account)
+            store.set('account.accountInfo', accountInfo)
 
             result.success = true;
         }

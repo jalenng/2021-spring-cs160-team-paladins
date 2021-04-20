@@ -18,10 +18,6 @@ const { getAllInsights } = require('./storeHelperFunctions');
 
 
 const divStyle = {
-    MozUserSelect: "none",
-    WebkitUserSelect: "none",
-    msUserSelect: "none",
-
     paddingTop: '10px',
     paddingLeft: '30px'
 };

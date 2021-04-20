@@ -7,12 +7,18 @@ require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
 require('./notificationSystem.js');
-require('./accountPopups');
+require('./popupWindows');
 
 const DEFAULT_WINDOW_SIZE = {
-    defaultWidth: 800,
+    defaultWidth: 860,
     defaultHeight: 550,
 }
+
+const MAX_WINDOW_SIZE = {
+    width: 1280,
+    height: 800,
+}
+
 
 global.mainWindow;
 
@@ -55,8 +61,8 @@ function createWindow() {
         center: true,
         minWidth: DEFAULT_WINDOW_SIZE.defaultWidth,
         minHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
-        // minWidth: DEFAULT_WINDOW_SIZE.defaultWidth,
-        // maxHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
+        maxWidth: MAX_WINDOW_SIZE.width,
+        maxHeight: MAX_WINDOW_SIZE.height,
         maximizable: false,
         title: "iCare",
         backgroundColor: '#222222',
@@ -182,4 +188,3 @@ ipcMain.on('get-app-info', (event) => {
     }
     event.reply('receive-app-info', appInfo);
 })
-

@@ -15,13 +15,7 @@ const { ipcRenderer } = window.require('electron');
 
 const { getAccountStore } = require('./storeHelperFunctions');
 
-const divStyle = {
-  MozUserSelect: 'none',
-  WebkitUserSelect: 'none',
-  msUserSelect: 'none',
-};
-
-const signInDivStyle = {
+const topRightDivStyle = {
   position: 'fixed',
   top: '3px',
   right: '3px',
@@ -30,7 +24,7 @@ const signInDivStyle = {
 const topRightCornerProps = {
   horizontal: true,
   verticalAlign: 'center', 
-  style: signInDivStyle,
+  style: topRightDivStyle,
   styles: { root: { height: 42} },
   tokens: { childrenGap: 16 }
 }
@@ -58,23 +52,14 @@ export default class App extends React.Component {
   render() {
 
     const isSignedIn = this.state.account.token != null
-    const displayName = this.state.account.accountInfo.displayName
-
-    // Extract initials from display name. 
-    let regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
-    let displayInitials = [...displayName.matchAll(regex)] || [];
-    displayInitials = (
-        (displayInitials.shift()?.[1] || '') + (displayInitials.pop()?.[1] || '')
-    ).toUpperCase();      
+    const displayName = this.state.account.accountInfo.displayName.toString()
 
     return (
-      <div style={divStyle}>  
+      <div>  
 
-        <Pivot aria-label='Basic Pivot Example' linkSize='large'>
+        <Pivot linkSize='large'>
           <PivotItem itemIcon='Home'>
-            <HomeScreen 
-              style={{justifyContent: 'center', alignItems: 'center',}}
-            />
+            <HomeScreen/>
           </PivotItem>
           <PivotItem itemIcon='BarChartVertical'>
             <UsageScreen/>
@@ -92,9 +77,9 @@ export default class App extends React.Component {
           <Stack {...topRightCornerProps}>
             <Text>{displayName}</Text>
             <Persona
-              imageInitials={displayInitials}
               size= {PersonaSize.size40}
               hidePersonaDetails={true}
+              text={displayName}
             />
           </Stack>
         )}

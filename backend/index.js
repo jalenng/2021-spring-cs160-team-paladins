@@ -18,7 +18,7 @@ const { route } = require('./index.js');
  
     // Database Connection
     let db = require('./db.js');
-    let userDB = new db("localhost", "newuser", "", "iCare");
+    let userDB = new db("localhost", "newuser", "password", "iCare");
 
     // API Methods
     let apiM = require('./api_methods.js');
@@ -110,11 +110,32 @@ const { route } = require('./index.js');
         let ceSuccess = await userDB.changeEmail(oldEmail, newEmail)
         
         if (dnSuccess == ceSuccess == true) { 
-          res.status(200).send({ reason: "SUCCESS", message: "Changed email and display name." }); 
+          res.status(202).send({ email: newEmail, displayName: newDisplay }); 
         }
         else { res.status(401).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
       }
       else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
+
+    });
+
+    // Gets email and display name
+    router.get('/user', async (req, res) => {
+      let token = req.headers.auth;
+      let email = ""
+
+      // Checks Token -------------------------
+      let checkToken = await api_methods.checkToken(token).then(async (r) => {
+        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
+        else { email = await userDB.getEmail(r).then((res) => { return res; }); return true; }
+      })
+      if (checkToken == false) { return; };
+
+      let success = await userDB.getDisplayName(email).then((r) => { return r; })
+
+      if (success != false && email ) {
+
+      }
+
 
     });
     
@@ -141,8 +162,6 @@ const { route } = require('./index.js');
       }
       else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
     });
-     
-
 
     ///------------------------------------------------------------------------
  
@@ -245,7 +264,7 @@ const { route } = require('./index.js');
       if (checkToken == false) { return; };
 
       // Get Usage Data -------------------------
-      let timePeriod = req.body.timePeriod;    // TODAY, WEEK, MONTH, ALL
+      let timePeriod = "WEEK";    // TODAY, WEEK, MONTH, ALL
       let dUsage = await userDB.getDataUsage(email, timePeriod).then((r) => { return r; });
       let aUsage = await userDB.getAppUsage(email, timePeriod).then((r) => { return r; });
 
@@ -276,23 +295,29 @@ const { route } = require('./index.js');
 
       //------------------------
       // Update Data Usage
-      let screenTime = req.body.dailyDataUsage.screenTime;
-      let numBreaks = req.body.dailyDataUsage.numBreaks;
-      let duSuccess = await userDB.setDataUsage(email, screenTime, numBreaks);
+      let dataUsageObjects = req.body.dataUsage;
+      let duSuccess = false;
+
+      for (const duObject of dataUsageObjects) {
+        let row = JSON.parse(JSON.stringify(duObject));
+        duSuccess = await userDB.setDataUsage(email, row.screenTime, row.numBreaks, row.usageDate)
+      }
 
       // Update App Usage
-      let appList = req.body.dailyAppUsage.appList;
-      let appTime = req.body.dailyAppUsage.appTime;
-      let auSuccess = true;
-      await appList.forEach(async (appName, index) => {
-        auSuccess = await userDB.setAppUsage(email, appName, appTime[index]);
-      });
+      let appUsageObjects = req.body.appUsage;
+      let auSuccess = false;
+
+      for (const auObject of appUsageObjects) {
+        let row = JSON.parse(JSON.stringify(auObject));
+        auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
+      }
 
       // Response Codes
       if (duSuccess == true && auSuccess == true) { 
         res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
       }
       else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data/app usage" }) }
+
     });
 
 <<<<<<< HEAD

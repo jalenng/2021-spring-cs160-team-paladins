@@ -3,7 +3,7 @@ let assert = require('assert')
 
 // Database Connection
 let db = require('./db.js')
-const userDB = new db("localhost", "newuser", "", "iCare");
+const userDB = new db("localhost", "newuser", "password", "iCare");
 
 // API Methods
 let apiM = require('./api_methods.js');
@@ -24,27 +24,26 @@ let newEmail = "newEmail@gmail.com"     // Use for change email
 let goodPass = "password12345";         // Reuse for create, login, delete
 let failEmail = "idontexist@gmail.com"  // Reuse for failing
 let success = "";
-let timePeriod = "TODAY"
-let appList = ["Discord", "Visual Studio Code", "Zoom"];
-let appTime = [30, 30, 30];
 
 
 // Create Account Test (works for both existing/non-existing email)
-describe('Create new account: ', async () => {
+describe('Create new account: ', () => {
 
     let dec_pass = atob(goodPass);
     let encrypted_pass = cryptr.encrypt(dec_pass);
+    
 
     // Bad Email (Email already in use)
-    describe('(Fail) Email already in use [' + badEmail + ']: ', async() => {
-        it('should return false as email already exists', async () => {
+    describe('(Fail) Email already in use [' + badEmail + ']: ', () => {
+        it ('should return false as email already exists', async () => {
+            await userDB.createUser(badEmail, encrypted_pass, goodDisplay).then((result) => { return result; });
             success = await userDB.createUser(badEmail, encrypted_pass, goodDisplay).then((result) => { return result; });
             assert.strictEqual(success, false, 'success is false');
         });
     });
 
     // Good Email (Email not in use)
-    describe('(Success) Email not in use [' + goodEmail + ']: ', async() => {
+    describe('(Success) Email not in use [' + goodEmail + ']: ', () => {
         it('should return true as email does not exists', async () => {
             success = await userDB.createUser(goodEmail, encrypted_pass, goodDisplay).then((result) => { return result; });
             assert.strictEqual(success, true, 'success is true');
@@ -54,22 +53,21 @@ describe('Create new account: ', async () => {
 });
 
 // Get Password
-describe('Get password with email', async () => {
+describe('Get password with email',  () => {
 
     // Get password with non-existent email
-    describe('(Fail) Non-existent account [' + failEmail + ']: ', async () => {
+    describe('(Fail) Non-existent account [' + failEmail + ']: ',  () => {
         it('should return false as there is no such email', async () => {
             success = await userDB.getPassword(failEmail).then((r) => {
                 if (r != false) { return true; }
                 return false;
             });
-
             assert.strictEqual(success, false, 'success is false');
         });
     });
 
     // Get password with existing email
-    describe('(Success) Existing account [' + goodEmail + ']: ', async () => {
+    describe('(Success) Existing account [' + goodEmail + ']: ',  () => {
         it('should return false as there is no such email', async () => {
             let dec_pass = atob(goodPass)
             success = await userDB.getPassword(goodEmail).then((r) => {
@@ -84,15 +82,13 @@ describe('Get password with email', async () => {
 });
 
 // Get Email and ID 
-describe('Get user ID and email', async () => {
-
-    let id = await userDB.getID(badEmail);
-    let success = false;
-    if (id != false) { success = true; }
+describe('Get user ID and email', () => {
 
     // Checks if user id is returned (changes for every test so we only test creation)
     describe('Get ID from email [' + badEmail + ']: ', () => {
         it('should return user id', async () => {
+            let id = await userDB.getID(badEmail);
+            if (id != false) { success = true; } else { success = false }
             assert.strictEqual(success, true, 'id exists')
         });
     });
@@ -100,17 +96,19 @@ describe('Get user ID and email', async () => {
     // Gets email
     describe('Get email from ID', () => {
         it('should return user id', async () => {
+            let id = await userDB.getID(badEmail);
             let idEmail = await userDB.getEmail(id);
             assert.strictEqual(idEmail, badEmail, 'email linked to id: ' + badEmail )
         });
     });
 });
 
+
 // Change Email
-describe('Change email', async () => {
+describe('Change email', () => {
 
     // Change email [already used email]
-    describe('(Fail) Already used email [' + badEmail + ']: ', async () => {
+    describe('(Fail) Already used email [' + badEmail + ']: ', () => {
         it('should return false as email is already in use', async () => {
             success = await userDB.changeEmail(goodEmail, badEmail);
             assert.strictEqual(success, false, 'success is false');
@@ -118,15 +116,16 @@ describe('Change email', async () => {
     });
 
     // Change email [good email]
-    describe('(Success) Existing email [' + goodEmail + ']: ', async () => {
+    describe('(Success) Existing email [' + goodEmail + ']: ', () => {
         it ('should return true as email does exist', async () => {
             success = await userDB.changeEmail(goodEmail, newEmail);
+            console.log(success)
             assert.strictEqual(success, true, 'success is true');
         });
     });
 
     // Change email [non-existent email]
-    describe('(Success) Non-existent email [' + failEmail + ']: ', async () => {
+    describe('(Success) Non-existent email [' + failEmail + ']: ', () => {
         it('should return true as email does not exist and changes nothing', async () => {
             success = await userDB.changeEmail("idontexist@gmail.com", newEmail);
             assert.strictEqual(success, true, 'success is true');
@@ -135,13 +134,14 @@ describe('Change email', async () => {
 
 });
 
+
 // Get/Set Display Name
-describe('Display name', async () => {
+describe('Display name', () => {
 
     let newDisplay = "newDisplay";
 
     // Get Display Name of newEmail
-    describe('(Success) Get display name from [' + newEmail + ']', async () => {
+    describe('(Success) Get display name from [' + newEmail + ']', () => {
         it('should return ' + goodDisplay, async () => {
             success = await userDB.getDisplayName(newEmail).then((r) => { return r; });
             assert.strictEqual(success, goodDisplay, 'success is true');
@@ -149,7 +149,7 @@ describe('Display name', async () => {
     })
 
     // Set Display Name of newEmail
-    describe('(Success) Set display name of [' + newEmail + '] to [' + newDisplay + ']', async () => {
+    describe('(Success) Set display name of [' + newEmail + '] to [' + newDisplay + ']', () => {
         it('should return true (set works)', async () => {
             success = await userDB.setDisplayName(newEmail, newDisplay).then((r) => { return r; });
             assert.strictEqual(success, true, 'success is true');
@@ -157,7 +157,7 @@ describe('Display name', async () => {
     })
 
     // Get Display Name of newEmail
-    describe('(Success) Get new display name from [' + newEmail + ']', async () => {
+    describe('(Success) Get new display name from [' + newEmail + ']', () => {
         it('should return ' + newDisplay, async () => {
             success = await userDB.getDisplayName(newEmail).then((r) => { return r; });
             assert.strictEqual(success, newDisplay, 'success is true');
@@ -166,14 +166,15 @@ describe('Display name', async () => {
 
 });
 
+
 // Get/Set Notification Interval
-describe('Notification Interval (user preferences)', async () => {
+describe('Notification Interval (user preferences)', () => {
 
     let notiInterval = "";
     let newInterval = 30;
     
     // Get default notification interval of newEmail (20 minutes)
-    describe('(Success) Get notification interval from [' + newEmail + ']', async () => {
+    describe('(Success) Get notification interval from [' + newEmail + ']', () => {
         it('should return 20 (default timer)', async () => {
             notiInterval = await userDB.getNotiInterval(newEmail).then((r) => { return r; });
             assert.strictEqual(notiInterval, 20,  'default notification interval is 20 minutes')
@@ -181,7 +182,7 @@ describe('Notification Interval (user preferences)', async () => {
     });
 
     // Set default notification interval of newEmail (30 minutes)
-    describe('(Success) Set notification interval of [' + newEmail + '] to 30 minutes', async () => {
+    describe('(Success) Set notification interval of [' + newEmail + '] to 30 minutes', () => {
         it('should return true (set works)', async () => {
             success = await userDB.setNotiInterval(newEmail, newInterval).then((r) => { return r; });
             assert.strictEqual(success, true,  'success is true')
@@ -189,7 +190,7 @@ describe('Notification Interval (user preferences)', async () => {
     });
 
     // Get default notification interval of newEmail (20 minutes)
-    describe('(Success) Get notification interval from [' + newEmail + ']', async () => {
+    describe('(Success) Get notification interval from [' + newEmail + ']', () => {
         it('should return 30 (new timer)', async () => {
             notiInterval = await userDB.getNotiInterval(newEmail).then((r) => { return r; });
             assert.strictEqual(notiInterval, newInterval,  'new notification interval is 30 minutes')
@@ -198,22 +199,23 @@ describe('Notification Interval (user preferences)', async () => {
 
 });
 
+
 // Get/Set Notification Sound
-describe('Notification Sound (user preferences)', async () => {
+describe('Notification Sound (user preferences)', () => {
 
     let notiSound = "";
-    let newSound = "newSound";
+    let newSound = "/newSound.ogg";
     
     // Get default notification sound of newEmail (Leaf)
-    describe('(Success) Get notification sound from [' + newEmail + ']', async () => {
+    describe('(Success) Get notification sound from [' + newEmail + ']', () => {
         it('should return Leaf', async () => {
             notiSound = await userDB.getNotiSound(newEmail).then((r) => { return r; });
-            assert.strictEqual(notiSound, "Leaf",  'default notification sound is Leaf')
+            assert.strictEqual(notiSound, "/Leaf.ogg",  'default notification sound is /Leaf.ogg')
         })
     });
 
     // Set notification sound of newEmail (30 minutes)
-    describe('(Success) Set notification sound of [' + newEmail + '] to 30 minutes', async () => {
+    describe('(Success) Set notification sound of [' + newEmail + '] to 30 minutes', () => {
         it('should return true (set works)', async () => {
             success = await userDB.setNotiSound(newEmail, newSound).then((r) => { return r; });
             assert.strictEqual(success, true,  'success is true')
@@ -221,22 +223,22 @@ describe('Notification Sound (user preferences)', async () => {
     });
 
     // Get notification sound of newEmail (newSound)
-    describe('(Success) Get notification sound from [' + newEmail + ']', async () => {
+    describe('(Success) Get notification sound from [' + newEmail + ']', () => {
         it('should return newSound', async () => {
             notiSound = await userDB.getNotiSound(newEmail).then((r) => { return r; });
-            assert.strictEqual(notiSound, newSound,  'new notification sound is newSound')
+            assert.strictEqual(notiSound, newSound,  'new notification sound is ' + newSound)
         })
     });
 
 });
 
 // Get/Set Notification Sound On
-describe('Notification Sound  On (user preferences)', async () => {
+describe('Notification Sound  On (user preferences)', () => {
 
     let notiSoundOn = "";
     
     // Get default 'notification sound on' boolean of newEmail (true)
-    describe('(Success) Get notification sound on from [' + newEmail + ']', async () => {
+    describe('(Success) Get notification sound on from [' + newEmail + ']', () => {
         it('should return true', async () => {
             notiSoundOn = await userDB.getNotiSoundOn(newEmail).then((r) => { return r; });
             assert.strictEqual(notiSoundOn, true,  'notification sound on = true')
@@ -244,7 +246,7 @@ describe('Notification Sound  On (user preferences)', async () => {
     });
 
     // Set 'notification sound on' boolean of newEmail (false)
-    describe('(Success) Set notification sound on of [' + newEmail + '] to false', async () => {
+    describe('(Success) Set notification sound on of [' + newEmail + '] to false', () => {
         it('should return true (set works)', async () => {
             success = await userDB.setNotiSoundOn(newEmail, false).then((r) => { return r; });
             assert.strictEqual(success, true,  'success is true')
@@ -252,7 +254,7 @@ describe('Notification Sound  On (user preferences)', async () => {
     });
 
     // Get 'notification sound on' boolean of newEmail (false)
-    describe('(Success) Get notification sound on from [' + newEmail + ']', async () => {
+    describe('(Success) Get notification sound on from [' + newEmail + ']', () => {
         it('should return false', async () => {
             notiSoundOn = await userDB.getNotiSoundOn(newEmail).then((r) => { return r; });
             assert.strictEqual(notiSoundOn, false,  'notification sound on = false')
@@ -261,97 +263,106 @@ describe('Notification Sound  On (user preferences)', async () => {
 
 });
 
-// Get/Set Data Usage
-describe('Data Usage', async() => {
 
-    let dataUsage = "";
-    let timePeriod = "TODAY"
+
+let timePeriod = "WEEK"
+
+let dataUsageObjects = [
+    {
+        "screenTime": 50,
+        "numBreaks": 4,
+        "usageDate": '2021-04-19'
+    },
+    {
+        "screenTime": 48,
+        "numBreaks": 2,
+        "usageDate": '2021-04-10'
+    }
+]
+
+describe('Data Usage', () => {
 
     // Gets the default data usage (0, 0) of newEmail
-    describe('(Success) Get data usage of [' + newEmail + ']', async () => {
+    describe('(Success) Get data usage of [' + newEmail + ']', () => {
         it('should return screenTime (0), timerCount (0)', async () => {
-            dataUsage = await userDB.getDataUsage(newEmail, timePeriod).then(async (r) => { 
-                let splits = (JSON.stringify(r)).split('\"');   
-                let stValue =  await api_methods.getIntValue(splits[2]);
-                let tcValue =  await api_methods.getIntValue(splits[4]);
-                return [stValue, tcValue]; 
-            });
-            assert.strictEqual(dataUsage[0], 0,  'screen time = 0')
-            assert.strictEqual(dataUsage[1], 0,  'timer count = 0')
+
+            let today = await userDB.getDate(0);
+
+            let duo = await userDB.getDataUsage(newEmail, timePeriod);
+            for (const duObject of duo) {
+                let row = JSON.parse(JSON.stringify(duObject));
+                assert.strictEqual(row.screenTime, 0,  'screen time = 0')
+                assert.strictEqual(row.timerCount, 0,  'timer count = 0')
+                assert.strictEqual(row.usageDate, today + "T07:00:00.000Z", "usageDate")
+            }
+            
         });
     });
+
 
     // Sets the data usage of newEmail
-    describe('(Success) Sets data usage of [' + newEmail + ']', async () => {
-        it('should return true (set works)', async () => {
-            let success = await userDB.setDataUsage(newEmail, 1800, 7);
-            assert.strictEqual(success, true,  'success is true')
-        })
-    });
-
-    // Gets the data usage (1800, 7) of newEmail
-    describe('(Success) Get data usage of [' + newEmail + ']', async () => {
-        it('should return screenTime (1800), timerCount (7)', async () => {
-            dataUsage = await userDB.getDataUsage(newEmail, timePeriod).then(async (r) => { 
-                let splits = (JSON.stringify(r)).split('\"');   
-                let stValue =  await api_methods.getIntValue(splits[2]);
-                let tcValue =  await api_methods.getIntValue(splits[4]);
-                return [stValue, tcValue]; 
-            });
-            assert.strictEqual(dataUsage[0], 1800,  'screen time = 1800')
-            assert.strictEqual(dataUsage[1], 7,  'timer count = 7')
+    for (const duObject of dataUsageObjects) {
+        let row = JSON.parse(JSON.stringify(duObject));
+        
+        describe('(Success) Sets data usage of [' + newEmail + ']', () => {
+            it('should return true for ' + JSON.stringify(duObject), async () => {
+                success = await userDB.setDataUsage(newEmail, row.screenTime, row.numBreaks, row.usageDate)            
+                assert.strictEqual(success, true,  'success is true')
+            })
         });
-    });
-
+    }
 });
 
+
+
+let appUsageObjects = [
+    {
+        "appName": "Discord",
+        "appTime": 40,
+        "usageDate": "2021-04-19"
+    },
+    {
+        "appName": "Zoom",
+        "appTime": 37,
+        "usageDate": "2021-04-19"
+    },
+    {
+        "appName": "Discord",
+        "appTime": 431,
+        "usageDate": "2021-04-01"
+    },
+    {
+        "appName": "Zoom",
+        "appTime": 87,
+        "usageDate": "2021-04-13"
+    }
+]
+
 // Get/Set App Usage
-describe('Set App Usage', async() => {
-    // Sets some app usage data of newEmail
-    appList.forEach(async (app, index) => {
-        describe('(Success) Sets app usage of [' + app + ']', async () => {
-            it('should return true (set works)', async () => {
-                success = await userDB.setAppUsage(newEmail, app, appTime[index]);
+describe('Set App Usage', () => {
+
+    // Sets the data usage of newEmail
+    for (const auObject of appUsageObjects) {
+        let row = JSON.parse(JSON.stringify(auObject));
+        
+        describe('(Success) Sets app usage of [' + newEmail + ']', () => {
+            it('should return true for ' + JSON.stringify(auObject), async () => {
+                success = await userDB.setAppUsage(newEmail, row.appName, row.appTime, row.usageDate)
                 assert.strictEqual(success, true, 'success is true')
             })
         });
-    });
+    }
 
 });
 
 
-
-describe('Get App Usage Data', async () => {
-    describe('(Success) Get app usage', async () => {
-        let dataRow = [];
-
-        await userDB.getAppUsage(newEmail, timePeriod).then((r) => {
-            r.forEach(async (row) => {
-                let splits = (JSON.stringify(row)).split('\"');
-                let appTime = await api_methods.getIntValue(splits[6]);
-                let appName = splits[3]
-                dataRow.push([appName, appTime])
-            });
-        });
-
-        dataRow.forEach(async (app, index) => {
-            describe('(Success) Gets app usage of [' + app[0] + ']', async () => {
-                it('should return [' + app[0] + ']: ' + app[1].toString(), async () => {
-                    assert.strictEqual(app[0], appList[index],  app[0] + ' = ' + appList[index])
-                    assert.strictEqual(app[1], appTime[index],  app[1].toString() + ' = ' + appTime[index])
-                });
-            });
-        });
-    })
-})
-
 // Get/Set Data Usage On
-describe('Data Usage  On (user preferences)', async () => {
+describe('Data Usage  On (user preferences)', () => {
 
     let dataUsageOn = "";
     
     // Get default 'data usage on' boolean of newEmail (true)
-    describe('(Success) Get data usage on from [' + newEmail + ']', async () => {
+    describe('(Success) Get data usage on from [' + newEmail + ']', () => {
         it('should return true', async () => {
             dataUsageOn = await userDB.getDataUsageOn(newEmail).then((r) => { return r; });
             assert.strictEqual(dataUsageOn, true,  'data usage on = true')
@@ -359,7 +370,7 @@ describe('Data Usage  On (user preferences)', async () => {
     });
 
     // Set 'data usage on' boolean of newEmail (false)
-    describe('(Success) Set data usage  on of [' + newEmail + '] to false', async () => {
+    describe('(Success) Set data usage  on of [' + newEmail + '] to false', () => {
         it('should return true (set works)', async () => {
             success = await userDB.setDataUsageOn(newEmail, false).then((r) => { return r; });
             assert.strictEqual(success, true,  'success is true')
@@ -367,7 +378,7 @@ describe('Data Usage  On (user preferences)', async () => {
     });
 
     // Get 'data usage on' boolean of newEmail (false)
-    describe('(Success) Get data usage on from [' + newEmail + ']', async () => {
+    describe('(Success) Get data usage on from [' + newEmail + ']', () => {
         it('should return false', async () => {
             dataUsageOn = await userDB.getDataUsageOn(newEmail).then((r) => { return r; });
             assert.strictEqual(dataUsageOn, false,  'data usage on = false')
@@ -376,13 +387,14 @@ describe('Data Usage  On (user preferences)', async () => {
 
 });
 
+
 // Get/Set App Usage On
-describe('Data Usage  On (user preferences)', async () => {
+describe('Data Usage  On (user preferences)', () => {
 
     let appUsageOn = "";
     
     // Get default 'app usage on' boolean of newEmail (true)
-    describe('(Success) Get app usage on from [' + newEmail + ']', async () => {
+    describe('(Success) Get app usage on from [' + newEmail + ']', () => {
         it('should return true', async () => {
             appUsageOn = await userDB.getAppUsageOn(newEmail).then((r) => { return r; });
             assert.strictEqual(appUsageOn, true,  'app usage on = true')
@@ -390,7 +402,7 @@ describe('Data Usage  On (user preferences)', async () => {
     });
 
     // Set 'app usage on' boolean of newEmail (false)
-    describe('(Success) Set app usage  on of [' + newEmail + '] to false', async () => {
+    describe('(Success) Set app usage  on of [' + newEmail + '] to false', () => {
         it('should return true (set works)', async () => {
             success = await userDB.setAppUsageOn(newEmail, false).then((r) => { return r; });
             assert.strictEqual(success, true,  'success is true')
@@ -398,7 +410,7 @@ describe('Data Usage  On (user preferences)', async () => {
     });
 
     // Get 'app usage on' boolean of newEmail (false)
-    describe('(Success) Get app usage on from [' + newEmail + ']', async () => {
+    describe('(Success) Get app usage on from [' + newEmail + ']', () => {
         it('should return false', async () => {
             appUsageOn = await userDB.getAppUsageOn(newEmail).then((r) => { return r; });
             assert.strictEqual(appUsageOn, false,  'app usage on = false')
@@ -407,11 +419,12 @@ describe('Data Usage  On (user preferences)', async () => {
 
 });
 
+
 // Delete Account Test
-describe('Delete account', async() => {
+describe('Delete account', () => {
 
     // Deletes a non-existent account
-    describe('(Success) Non-existent account [' + failEmail + ']: ', async() => {
+    describe('(Success) Non-existent account [' + failEmail + ']: ', () => {
         it('should return false as email does not exist', async () => {
             success = await userDB.deleteAccount(failEmail);
             assert.strictEqual(success, true, 'success is true');
@@ -419,10 +432,11 @@ describe('Delete account', async() => {
     });
 
     // Deletes an account [Good Password]
-    describe('(Success) Good Password [' + newEmail + ']', async() => {
+    describe('(Success) Good Password [' + newEmail + ']', () => {
         it('should return true as email and password match', async () => {
             success = await userDB.deleteAccount(newEmail);
             assert.strictEqual(success, true, 'success is true');
+            await userDB.deleteAccount(badEmail);
         });
     });
 

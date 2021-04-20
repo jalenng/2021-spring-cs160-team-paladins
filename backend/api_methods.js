@@ -5,7 +5,7 @@
 
  // Database Connection
  let db = require('./db.js');
- let userDB = new db("localhost", "newuser", "", "iCare");
+ let userDB = new db("localhost", "newuser", "password", "iCare");
 
  // Token Methods
  let tokenClass = require('./token.js')
@@ -83,7 +83,6 @@
 
         return [r, m];
     }
-
 
     /**
      * Gets statistical values from data usage records

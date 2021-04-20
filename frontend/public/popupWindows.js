@@ -78,3 +78,25 @@ ipcMain.handle('show-edit-account-popup', event => {
     editAccountWindow.on('ready-to-show', () => editAccountWindow.show());
 
 })
+
+
+// Timer popup
+ipcMain.handle('show-timer-popup', event => {
+
+    const timerPopupWindow = new BrowserWindow({
+        ...sharedWindowOptions,
+        width: 320,
+        height: 400,
+        title: "iCare",
+        alwaysOnTop: true
+    })
+    timerPopupWindow.loadURL( 
+        isDev
+        ? 'http://localhost:3000#/popupTimer'
+        : `file://${path.join(__dirname, '../build/index.html#popupTimer')}`
+    ); 
+    
+    timerPopupWindow.menuBarVisible = false;
+    timerPopupWindow.on('ready-to-show', () => timerPopupWindow.show());
+    
+})

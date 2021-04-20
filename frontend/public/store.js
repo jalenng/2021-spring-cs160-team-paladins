@@ -243,38 +243,62 @@ ipcMain.on('get-account-store', (event) => {
     event.returnValue = store.get('account');
 });
 
-// Handles a request to authenticate the user (by signing in or signing up)
-ipcMain.handle('authenticate', async (event, email, password, createAccount = false, displayName = '') => {
+// Handles a request to retrieve the latest account info.
+// Involves backend communication.
+ipcMain.handle('get-account-info', async (event) => {
 
-    let result = {
-        success: false,
-        data: {}
-    };
+    let result = { success: false, data: {} };
 
     // Try to authenticate
     try {
-        
-        // Send POST request        
-        let url;
-        let data;
 
-        if (createAccount) {
-            url = 'user'
-            data = {
+        // Send GET request and await for response
+        let res = await axios.get('user');
+
+        // If information retrieval was successful
+        if (res.status === 200) {
+
+            let accountInfo = {
+                email: res.data.email,
+                displayName: res.data.displayName
+            }
+            store.set('account.accountInfo', accountInfo)
+
+            result.success = true;
+        }
+    }
+    // Handle errors
+    catch (error) { result.data = handleRequestError(error) }
+    
+    // Return the result object
+    return result;
+})
+
+// Handles a request to authenticate the user (by signing in or signing up).
+// Involves backend communication.
+ipcMain.handle('authenticate', async (event, email, password, createAccount = false, displayName = '') => {
+
+    let result = { success: false, data: {} };
+
+    // Try to authenticate
+    try {
+
+        // Send POST request and await for response
+        let res;
+
+        if (createAccount) {    // Sign up
+            res = await axios.post('user', {
                 email: email,
                 password: password,
                 displayName: displayName
-            }
-        } else {
-            url = 'auth'
-            data = {
+            })
+        }
+        else {  // Sign in
+            res = await axios.post('auth', {
                 email: email,
                 password: password
-            }
+            });
         }
-
-        // Await for response
-        let res = await axios.post(url, data);
 
         // If sign-in was successful
         if (res.status === 200 || res.status === 201) {
@@ -293,56 +317,29 @@ ipcMain.handle('authenticate', async (event, email, password, createAccount = fa
         }
     }
     // Handle errors
-    catch (error) {
-
-        // Check if backend returned a reason and message for the error
-        let responseMessageExists = 
-            error.response 
-            && error.response.data 
-            && error.response.data.reason 
-            && error.response.data.message;
-
-        if (responseMessageExists) {
-            result.data = {
-                reason: error.response.data.reason,
-                message: error.response.data.message
-            }
-        }
-        
-        else {
-            // Else, return generic error
-            result.data = {
-                reason: 'RESPONSE_ERR',
-                message: error.toString()
-            }
-        }
-    }
+    catch (error) { result.data = handleRequestError(error) }
     
     // Return the result object
     return result;
 })
 
-// Handles a request to clear the account store (by signing out or deleting the account)
+// Handles a request to clear the account store (by signing out or deleting the account).
+// Involves backend communication.
 ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
 
-    let result = {
-        success: false,
-        data: {}
-    };
+    let result = { success: false, data: {} };
 
     // Try to delete account
     try {
         
         if (deleteAccount) {
 
-            // Send DELETE request
-            let url = 'user'
-            let data = {
-                password: password,
-            }
-
-            // Await for response
-            let res = await axios.delete(url, {data});
+            // Send DELETE request and await for response
+            let res = await axios.delete('user', { // Second arg is a config object with property data
+                data: {
+                    password: password,
+                }
+            });
 
             // If sign-in was successful
             if (res.status === 200) {
@@ -356,62 +353,32 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
             result.success = true;
         }
     }
-
     // Handle errors
-    catch (error) {
-
-        // Check if backend returned a reason and message for the error
-        let responseMessageExists = 
-            error.response 
-            && error.response.data 
-            && error.response.data.reason 
-            && error.response.data.message;
-
-        if (responseMessageExists) {
-            result.data = {
-                reason: error.response.data.reason,
-                message: error.response.data.message
-            }
-        }
-        
-        else {
-            // Else, return generic error
-            result.data = {
-                reason: 'RESPONSE_ERR',
-                message: error.toString()
-            }
-        }
-    }
+    catch (error) { result.data = handleRequestError(error) }
 
     // Return the result object
     return result;
 })
 
-// Handles a request to authenticate the user (by signing in or signing up)
+// Handles a request to authenticate the user (by signing in or signing up).
+// Involves backend communication.
 ipcMain.handle('update-account-info', async (event, email, displayName, password) => {
 
-    let result = {
-        success: false,
-        data: {}
-    };
+    let result = { success: false, data: {} };
 
     // Try to authenticate
     try {
         
-        // Send PUT request        
-        let url = 'user'
-        let data = {
+        // Send PUT request and await for response
+        let res = await axios.put('user', {
             email: email,
             displayName: displayName,
             password: password,
-        }
-
-        // Await for response
-        let res = await axios.put(url, data);
+        });
 
         // If sign-in was successful
         if (res.status === 202) {
-            
+
             let accountInfo = {
                 email: res.data.email,
                 displayName: res.data.displayName
@@ -423,34 +390,50 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
 
     }
     // Handle errors
-    catch (error) {
-
-        // Check if backend returned a reason and message for the error
-        let responseMessageExists = 
-            error.response 
-            && error.response.data 
-            && error.response.data.reason 
-            && error.response.data.message;
-
-        if (responseMessageExists) {
-            result.data = {
-                reason: error.response.data.reason,
-                message: error.response.data.message
-            }
-        }
-        
-        else {
-            // Else, return generic error
-            result.data = {
-                reason: 'RESPONSE_ERR',
-                message: error.toString()
-            }
-        }
-    }
+    catch (error) { result.data = handleRequestError(error) }
     
     // Return the result object
     return result;
 })
+
+
+/**
+ * Helper functions
+ */
+
+/**
+ * Handle an exception from making an API call via axios
+ * @param {Error} error 
+ * @returns an object with the reason and message of the error
+ */
+function handleRequestError(error) {
+
+    let resultData;
+
+    // Check if backend returned a reason and message for the error
+    let responseMessageExists = 
+        error.response 
+        && error.response.data 
+        && error.response.data.reason 
+        && error.response.data.message;
+
+    if (responseMessageExists) {
+        resultData = {
+            reason: error.response.data.reason,
+            message: error.response.data.message
+        }
+    }
+
+    else {
+        // Else, return generic error
+        resultData = {
+            reason: 'RESPONSE_ERR',
+            message: error.toString()
+        }
+    }
+    return resultData;
+
+}
 
 
 /**

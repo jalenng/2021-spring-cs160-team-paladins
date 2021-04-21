@@ -79,7 +79,7 @@ function createWindow() {
     mainWindowState.manage(mainWindow);
 
     mainWindow.menuBarVisible = false;
-    if (isDev) mainWindow.removeMenu()
+    if (!isDev) mainWindow.removeMenu()
 
     mainWindow.loadURL(
         isDev
@@ -186,6 +186,7 @@ ipcMain.on('get-about-info', (event) => {
             name: app.getName(),
             version: app.getVersion()
         },
+        versions: process.versions,
         contributors: [
             'Elise Hoang',
             'Jalen Ng',

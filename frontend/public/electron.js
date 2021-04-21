@@ -58,7 +58,6 @@ function createWindow() {
         y: mainWindowState.y,
         width: mainWindowState.width,
         height: mainWindowState.height,
-        center: true,
         minWidth: DEFAULT_WINDOW_SIZE.defaultWidth,
         minHeight: DEFAULT_WINDOW_SIZE.defaultHeight,
         maxWidth: MAX_WINDOW_SIZE.width,
@@ -80,12 +79,12 @@ function createWindow() {
     mainWindowState.manage(mainWindow);
 
     mainWindow.menuBarVisible = false;
-    mainWindow.removeMenu()
+    if (isDev) mainWindow.removeMenu()
 
     mainWindow.loadURL(
         isDev
-            ? 'http://localhost:3000'
-            : `file://${path.join(__dirname, '../build/index.html')}`
+        ? 'http://localhost:3000'
+        : `file://${path.join(__dirname, '../build/index.html')}`
     );
 
     global.mainWindow.on('ready-to-show', () => global.mainWindow.show());

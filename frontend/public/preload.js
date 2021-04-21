@@ -1,10 +1,25 @@
+/**
+ * The purpose of this preload script is to provide a set of methods for the 
+ * renderer (React code) to interact with the main process (Electron). 
+ * 
+ * This compartmentalization ensures that logic is handled exclusively by Electron,
+ * and displaying UI elements is handled exclusively by React.
+ */
+
 const { ipcRenderer } = require('electron');
+
 
 /**
  * Event system
  */
 const EventSystem = function() {
+
     this._events = {}
+    /**
+     * Register an event listener
+     * @param {string} name 
+     * @param {} listener 
+     */
     this.on = (name, listener) => {
         if (!this._events[name]) {
             this._events[name] = [];
@@ -18,7 +33,6 @@ const EventSystem = function() {
  * Store helper functions
  */
 window.store = {
-
     accounts: {
         /**
          * Retrieve info about the signed-in account from the account store
@@ -74,7 +88,6 @@ window.store = {
         /* Event system */
         eventSystem: new EventSystem()
     },
-
     preferences: {
         /**
          * Retrieve all preferences from the preferences store
@@ -92,7 +105,6 @@ window.store = {
         /* Event system */
         eventSystem: new EventSystem()
     },
-
     sounds: {
         /**
          * Retrieve all sounds from the sounds store
@@ -108,7 +120,6 @@ window.store = {
         /* Event system */
         eventSystem: new EventSystem()        
     },
-
     insights: {
         /**
          * Retrieve insights from the data usage store
@@ -119,16 +130,28 @@ window.store = {
         /* Event system */
         eventSystem: new EventSystem()
     },
-
 }
+
 
 /**
  * Popup window helper functions
  */
 window.showPopup = {
+    /**
+     * Open the "Sign in" popup window
+     */
     signIn: () => { ipcRenderer.invoke('show-sign-in-popup') },
+    /**
+     * Open the "Delete account" popup window
+     */
     deleteAccount: () => { ipcRenderer.invoke('show-delete-account-popup') },
+    /**
+     * Open the "Edit account" popup window
+     */
     editAccount: () => { ipcRenderer.invoke('show-edit-account-popup') },
+    /**
+     * Open the popup timer window
+     */
     timer: () => { ipcRenderer.invoke('show-timer-popup') }
 }
 
@@ -156,6 +179,7 @@ window.breakSys = {
 window.playSound = () => { ipcRenderer.invoke('play-sound') }
 window.getAboutInfo = () => { return ipcRenderer.sendSync('get-about-info') }
 
+
 /**
  * Listen for events from ipcRenderer, then relay them accordingly.
  */
@@ -169,22 +193,7 @@ ipcRenderer.on('receive-break-status', (event, breakStatus) => {
     window.breakSys.eventSystem._events['update'].forEach(fireCallbacks);
 })
 
-ipcRenderer.on('account-store-changed', () => {
+ipcRenderer.on('store-changed', (event, category) => {
     const fireCallbacks = (callback) => callback();
-    window.store.accounts.eventSystem._events['changed'].forEach(fireCallbacks);
-})
-
-ipcRenderer.on('preferences-store-changed', () => {
-    const fireCallbacks = (callback) => callback(event, timerStatus);
-    window.store.preferences.eventSystem._events['changed'].forEach(fireCallbacks);
-})
-
-ipcRenderer.on('sounds-store-changed', () => {
-    const fireCallbacks = (callback) => callback(event, timerStatus);
-    window.store.sounds.eventSystem._events['changed'].forEach(fireCallbacks);
-})
-
-ipcRenderer.on('insights-store-changed', () => {
-    const fireCallbacks = (callback) => callback(event, timerStatus);
-    window.store.insights.eventSystem._events['changed'].forEach(fireCallbacks);
+    window.store[category].eventSystem._events['changed'].forEach(fireCallbacks);
 })

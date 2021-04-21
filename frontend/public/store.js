@@ -1,4 +1,4 @@
-const { ipcMain, dialog, app, systemPreferences } = require('electron');
+const { ipcMain, dialog, app } = require('electron');
 const Store = require('electron-store');
 const path = require('path');
 const axios = require('axios');
@@ -144,25 +144,23 @@ store.onDidChange('preferences.startup.startAppOnLogin', (newVal, oldVal) => {
     })
 });
 
-// Notifies the main window of preference store updates
+// Notify the main window when any section of the store updates
 store.onDidChange('preferences', () => {
-    global.mainWindow.webContents.send('preferences-store-changed');
+    global.mainWindow.webContents.send('store-changed', 'preferences');
 });
 
-// Notifies the main window of sound store updates
 store.onDidChange('sounds', () => {
-    global.mainWindow.webContents.send('sounds-store-changed');
+    global.mainWindow.webContents.send('store-changed', 'sounds');
 });
 
-// Notifies the main window of account store updates, and updates 
 store.onDidChange('account', () => {
+    // Configure axios to make requests with the token
     axios.defaults.headers.common['auth'] = store.get('account.token');
-    global.mainWindow.webContents.send('account-store-changed');
+    global.mainWindow.webContents.send('store-changed', 'accounts');
 });
 
-// Notifies the main window of insights store updates
 store.onDidChange('insights', () => {
-    global.mainWindow.webContents.send('insights-store-changed');
+    global.mainWindow.webContents.send('store-changed', 'insights');
 });
 
 
@@ -399,6 +397,16 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
 
 
 /**
+ * Insights store-related IPC event handlers
+ * These event handlers retrieve and update the data usage store on behalf of the renderer.
+ */
+// Handles a request to retrieve the insights store
+ipcMain.on('get-insights-store', (event) => {
+    event.returnValue = store.get('insights');
+});
+
+
+/**
  * Helper functions
  */
 
@@ -435,13 +443,3 @@ function handleRequestError(error) {
     return resultData;
 
 }
-
-
-/**
- * Insights store-related IPC event handlers
- * These event handlers retrieve and update the data usage store on behalf of the renderer.
- */
-// Handles a request to retrieve the insights store
-ipcMain.on('get-insights-store', (event) => {
-    event.returnValue = store.get('insights');
-});

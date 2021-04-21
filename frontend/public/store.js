@@ -179,6 +179,55 @@ ipcMain.handle('set-prefs-store-value', (event, key, value) => {
     store.set(`preferences.${key}`, value);
 });
 
+// Handles a request to upload the user's preferences.
+// Involves backend communication.
+ipcMain.handle('push-prefs', async (event) => {
+
+    let result = { success: false, data: {} };
+
+    try {
+        // Send PUT request and await for response
+        let res = await axios.put('prefs', {
+            notifications: store.get('preferences.notifications'),
+            dataUsage: store.get('preferences.dataUsage')
+        });
+
+        // If preferences was received by the backend successful
+        if (res.status === 200) {
+            result.success = true;
+        }
+    }
+    // Handle errors
+    catch (error) { result.data = handleRequestError(error) }
+    
+    // Return the result object
+    return result;
+})
+
+// Handles a request to retrieve the user's preferences.
+// Involves backend communication.
+ipcMain.handle('fetch-prefs', async (event) => {
+
+    let result = { success: false, data: {} };
+
+    try {
+        // Send GET request and await for response
+        let res = await axios.get('prefs');
+
+        // If preferences retrieval was successful
+        if (res.status === 200) {
+            store.set('preferences.notifications', res.data.notifications);
+            store.set('preferences.dataUsage', res.data.dataUsage);
+
+            result.success = true;
+        }
+    }
+    // Handle errors
+    catch (error) { result.data = handleRequestError(error) }
+    
+    // Return the result object
+    return result;
+})
 
 /**
  * Sounds-related IPC event handlers 
@@ -244,7 +293,7 @@ ipcMain.on('get-account-store', (event) => {
 
 // Handles a request to retrieve the latest account info.
 // Involves backend communication.
-ipcMain.handle('get-account-info', async (event) => {
+ipcMain.handle('fetch-account-info', async (event) => {
 
     let result = { success: false, data: {} };
 

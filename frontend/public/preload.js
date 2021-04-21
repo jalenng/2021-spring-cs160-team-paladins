@@ -73,7 +73,7 @@ window.store = {
         /**
          * Fetch the latest account information
          */
-        getLatestInfo: () => { return ipcRenderer.invoke('get-account-info') },
+        getLatestInfo: () => { return ipcRenderer.invoke('fetch-account-info') },
 
         /**
          * Update account information

@@ -10,8 +10,6 @@ import { getTheme } from '@fluentui/react';
 
 import Circle from 'react-circle';
 
-const { ipcRenderer } = window.require("electron");
-
 const buttonStyle = { borderRadius: '20px', width: '40px', height: '40px' };
 const buttonIconClass = mergeStyles({ fontSize: 24, height: 24, width: 24 });
 
@@ -28,7 +26,7 @@ export default class Timer extends React.Component {
     }
 
     componentDidMount() {
-        ipcRenderer.on("receive-timer-status", (event, timerStatus) => {
+        timer.eventSystem.on("update", (event, timerStatus) => {
             let remainingMinutes = Math.floor(timerStatus.remainingTime / 60000).toString();
             let remainingSeconds = Math.floor((timerStatus.remainingTime % 60000) / 1000);
             remainingSeconds = ("00" + remainingSeconds).substr(-2, 2);
@@ -51,17 +49,17 @@ export default class Timer extends React.Component {
             });
         });
 
-        ipcRenderer.send("get-timer-status");
-        setInterval(() => { ipcRenderer.send("get-timer-status") }, 1000);
+        timer.getStatus();
+        setInterval(timer.getStatus, 100);
     }
 
-    resetBtnClick() { ipcRenderer.invoke("timer-reset") };
+    resetBtnClick() { timer.reset() };
 
-    popOutBtnClick() { ipcRenderer.invoke("show-timer-popup") };
+    popOutBtnClick() { showPopup.timer() };
 
-    handleEndBtn() { ipcRenderer.invoke("timer-end") };
+    handleEndBtn() { timer.end() };
 
-    togglePause() { ipcRenderer.invoke("timer-toggle") };
+    togglePause() { timer.toggle() };
 
     render() {
 

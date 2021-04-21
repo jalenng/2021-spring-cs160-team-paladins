@@ -64,12 +64,11 @@ function createWindow() {
         maxWidth: MAX_WINDOW_SIZE.width,
         maxHeight: MAX_WINDOW_SIZE.height,
         maximizable: false,
-        title: "iCare",
+        title: 'iCare',
         backgroundColor: '#222222',
         show: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
             contextIsolation: false,
 
             // Allow dev tools (for dev) and remote module (for testing) if isDev
@@ -81,6 +80,7 @@ function createWindow() {
     mainWindowState.manage(mainWindow);
 
     mainWindow.menuBarVisible = false;
+    mainWindow.removeMenu()
 
     mainWindow.loadURL(
         isDev
@@ -188,27 +188,27 @@ ipcMain.on('get-about-info', (event) => {
             version: app.getVersion()
         },
         contributors: [
-            "Elise Hoang",
-            "Jalen Ng",
-            "Julie Loi",
-            "Shiyun Lian",
-            "Zuby Javed"
+            'Elise Hoang',
+            'Jalen Ng',
+            'Julie Loi',
+            'Shiyun Lian',
+            'Zuby Javed'
         ],
         openSourceLibraries: [
-            "axios",
-            "chart.js",
-            "electron",
-            "electron-builder",
-            "electron-is-dev",
-            "electron-store",
-            "electron-window-state",
-            "hazardous",
-            "react",
-            "react-chart",
-            "react-charts",
-            "react-circle",
-            "sound-play"
+            'axios',
+            'chart.js',
+            'electron',
+            'electron-builder',
+            'electron-is-dev',
+            'electron-store',
+            'electron-window-state',
+            'hazardous',
+            'react',
+            'react-chart',
+            'react-charts',
+            'react-circle',
+            'sound-play'
         ]
     }
-    event.reply('receive-about-info', aboutInfo);
+    event.returnValue = aboutInfo;
 })

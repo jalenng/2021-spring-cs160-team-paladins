@@ -12,7 +12,7 @@ import About from './About'
 const divStyle = {
   paddingTop: '10px',
   paddingLeft: '30px',
-  display: "grid"
+  display: 'grid'
 };
 
 const preferencePages = {
@@ -39,11 +39,10 @@ export default class PreferencesScreen extends React.Component {
       <div style={divStyle}>
 
         <ScrollablePane style={{
-          position: "absolute",
-          top: "60px",
-          left: "260px",
-          paddingBottom: "260px",
-          paddingRight: "40px"
+          position: 'absolute',
+          top: '60px',
+          left: '260px',
+          paddingRight: '40px'
         }}>
 
           {preferencesPage}

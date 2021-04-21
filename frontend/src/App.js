@@ -12,8 +12,6 @@ import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DefaultButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
 
-const { ipcRenderer } = window.require('electron');
-
 const topRightCornerProps = {
   horizontal: true,
   verticalAlign: 'center', 
@@ -32,21 +30,21 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       messages: [],
-      account: storeFunctions.accounts.getAll()
+      account: store.accounts.getAll()
     }
   }
 
   componentDidMount() {
     
     // Update this component's state when account is updated
-    ipcRenderer.on('account-store-changed', () => {
+    store.accounts.eventSystem.on('changed', () => {
         this.updateAccountState();
     })
 
     // Get the latest account info 
     const isSignedIn = this.state.account.token != null
     if (isSignedIn) {
-      storeFunctions.accounts.getLatestInfo().then(result => {
+      store.accounts.getLatestInfo().then(result => {
 
         // If information retrieval was not successful, show error message
         if (!result.success) this.addMessage({
@@ -61,7 +59,7 @@ export default class App extends React.Component {
 
   updateAccountState() {
     let state = this.state;
-    state.account = storeFunctions.accounts.getAll();
+    state.account = store.accounts.getAll();
     this.setState(state);
   }
 
@@ -127,7 +125,7 @@ export default class App extends React.Component {
         {!isSignedIn && (
           <Stack {...topRightCornerProps}>
             <DefaultButton text='Sign in'
-              onClick={() => ipcRenderer.invoke('show-sign-in-popup')}
+              onClick={ showPopup.signIn }
             /> 
           </Stack>
         )}     

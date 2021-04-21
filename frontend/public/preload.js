@@ -1,7 +1,23 @@
 const { ipcRenderer } = require('electron');
 
-// Store helper functions
-window.storeFunctions = {
+/**
+ * Event system
+ */
+const EventSystem = function() {
+    this._events = {}
+    this.on = (name, listener) => {
+        if (!this._events[name]) {
+            this._events[name] = [];
+        }
+        this._events[name].push(listener);
+    }
+}
+
+
+/**
+ * Store helper functions
+ */
+window.store = {
 
     accounts: {
         /**
@@ -53,8 +69,10 @@ window.storeFunctions = {
          */
         updateInfo: (email, displayName, password) => {
             return ipcRenderer.invoke('update-account-info', email, displayName, password)
-        }
+        },
 
+        /* Event system */
+        eventSystem: new EventSystem()
     },
 
     preferences: {
@@ -66,10 +84,13 @@ window.storeFunctions = {
 
         /**
          * Update a preference on the preferences store
-         * @param {String} key The key of the preference. e.g. "notifications.sound"
+         * @param {String} key The key of the preference. e.g. 'notifications.sound'
          * @param {String} value The new value 
          */
-        set: (key, value) => { ipcRenderer.invoke('set-prefs-store-value', key, value) }
+        set: (key, value) => { ipcRenderer.invoke('set-prefs-store-value', key, value) },
+
+        /* Event system */
+        eventSystem: new EventSystem()
     },
 
     sounds: {
@@ -82,8 +103,10 @@ window.storeFunctions = {
         /**
          * Open a file selection dialog for adding a custom sound to the sounds store
          */
-        add: () => { ipcRenderer.invoke('add-custom-sound') }
-        
+        add: () => { ipcRenderer.invoke('add-custom-sound') },
+
+        /* Event system */
+        eventSystem: new EventSystem()        
     },
 
     insights: {
@@ -91,7 +114,77 @@ window.storeFunctions = {
          * Retrieve insights from the data usage store
          * @returns {Object}
          */
-        getAll: () => { return ipcRenderer.sendSync('get-insights-store') }
-    }
+        getAll: () => { return ipcRenderer.sendSync('get-insights-store') },
+
+        /* Event system */
+        eventSystem: new EventSystem()
+    },
 
 }
+
+/**
+ * Popup window helper functions
+ */
+window.showPopup = {
+    signIn: () => { ipcRenderer.invoke('show-sign-in-popup') },
+    deleteAccount: () => { ipcRenderer.invoke('show-delete-account-popup') },
+    editAccount: () => { ipcRenderer.invoke('show-edit-account-popup') },
+    timer: () => { ipcRenderer.invoke('show-timer-popup') }
+}
+
+/**
+ * Timer helper functions 
+ */
+
+window.timer = {
+    toggle: () => { ipcRenderer.invoke('timer-toggle') },
+    end: () => { ipcRenderer.invoke('timer-end') },
+    reset: () => { ipcRenderer.invoke('timer-reset') },
+    getStatus: () => { ipcRenderer.send('get-timer-status') },
+    eventSystem: new EventSystem()
+}
+
+window.breakSys = {
+    getStatus: () => { ipcRenderer.send('get-break-status') },
+    eventSystem: new EventSystem()
+}
+
+
+/**
+ * Other functions
+ */
+window.playSound = () => { ipcRenderer.invoke('play-sound') }
+window.getAboutInfo = () => { return ipcRenderer.sendSync('get-about-info') }
+
+/**
+ * Listen for events from ipcRenderer, then relay them accordingly.
+ */
+ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
+    const fireCallbacks = (callback) => callback(event, timerStatus);
+    window.timer.eventSystem._events['update'].forEach(fireCallbacks);
+})
+
+ipcRenderer.on('receive-break-status', (event, breakStatus) => {
+    const fireCallbacks = (callback) => callback(event, breakStatus);
+    window.breakSys.eventSystem._events['update'].forEach(fireCallbacks);
+})
+
+ipcRenderer.on('account-store-changed', () => {
+    const fireCallbacks = (callback) => callback();
+    window.store.accounts.eventSystem._events['changed'].forEach(fireCallbacks);
+})
+
+ipcRenderer.on('preferences-store-changed', () => {
+    const fireCallbacks = (callback) => callback(event, timerStatus);
+    window.store.preferences.eventSystem._events['changed'].forEach(fireCallbacks);
+})
+
+ipcRenderer.on('sounds-store-changed', () => {
+    const fireCallbacks = (callback) => callback(event, timerStatus);
+    window.store.sounds.eventSystem._events['changed'].forEach(fireCallbacks);
+})
+
+ipcRenderer.on('insights-store-changed', () => {
+    const fireCallbacks = (callback) => callback(event, timerStatus);
+    window.store.insights.eventSystem._events['changed'].forEach(fireCallbacks);
+})

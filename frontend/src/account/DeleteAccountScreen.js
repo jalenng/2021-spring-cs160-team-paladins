@@ -61,7 +61,7 @@ export default class extends React.Component {
         let password = state.inputs.password;
 
         // Delete account
-        storeFunctions.accounts.delete(password)
+        store.accounts.delete(password)
             .then(result => {
                 console.log(result);
                 // If deletion was successful, close the window

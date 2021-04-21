@@ -3,16 +3,14 @@ import React from 'react';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 
-const { ipcRenderer } = window.require('electron');
-
 export default class About extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             appInfo: {
-                name: "",
-                version: ""
+                name: '',
+                version: ''
             },
             contributors: [],
             openSourceLibraries: []
@@ -20,17 +18,13 @@ export default class About extends React.Component {
     }
 
     componentDidMount() {
-        ipcRenderer.send('get-about-info');
-
-        ipcRenderer.on('receive-about-info', (event, aboutInfo) => {
-            this.setState(aboutInfo);
-        })
+        this.setState(getAboutInfo());
     }
 
     render() {
 
         return (
-            <Stack id="about" tokens={{ childrenGap: 16 }}>
+            <Stack id='about' tokens={{ childrenGap: 16 }} style={{ paddingBottom: '20px' }}>
 
                 <Text variant={'xLarge'} block> About </Text>
 

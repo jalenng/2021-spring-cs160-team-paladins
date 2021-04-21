@@ -65,7 +65,7 @@ export default class extends React.Component {
         let email = state.inputs.email;
         let password = state.inputs.password;
 
-        storeFunctions.accounts.signIn(email, password)
+        store.accounts.signIn(email, password)
             .then(result => {
 
                 // If sign-in was successful, close the window

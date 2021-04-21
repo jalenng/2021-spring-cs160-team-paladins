@@ -45,7 +45,7 @@ export default class extends React.Component {
 
     // Load default values for inputs
     componentDidMount() {
-        let accountInfo = storeFunctions.accounts.getAll().accountInfo;
+        let accountInfo = store.accounts.getAll().accountInfo;
         let state = this.state;
         let inputs = {
             email: accountInfo.email,
@@ -81,7 +81,7 @@ export default class extends React.Component {
         let password = state.inputs.password;
 
         // Update user account info
-        storeFunctions.accounts.updateInfo(email, displayName, password)
+        store.accounts.updateInfo(email, displayName, password)
             .then(result => {
 
                 // If sign-in was successful, close the window

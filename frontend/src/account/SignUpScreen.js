@@ -89,7 +89,7 @@ export default class extends React.Component {
         let displayName = state.inputs.displayName;
 
         // Authenticate user with sign-up
-        storeFunctions.accounts.signUp(email, password, displayName)
+        store.accounts.signUp(email, password, displayName)
             .then(result => {
 
                 // If sign-in was successful, close the window

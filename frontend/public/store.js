@@ -182,7 +182,6 @@ ipcMain.handle('set-prefs-store-value', (event, key, value) => {
 // Handles a request to upload the user's preferences.
 // Involves backend communication.
 ipcMain.handle('push-prefs', async (event) => {
-
     let result = { success: false, data: {} };
 
     try {
@@ -200,14 +199,12 @@ ipcMain.handle('push-prefs', async (event) => {
     // Handle errors
     catch (error) { result.data = handleRequestError(error) }
     
-    // Return the result object
     return result;
 })
 
 // Handles a request to retrieve the user's preferences.
 // Involves backend communication.
 ipcMain.handle('fetch-prefs', async (event) => {
-
     let result = { success: false, data: {} };
 
     try {
@@ -222,12 +219,11 @@ ipcMain.handle('fetch-prefs', async (event) => {
             result.success = true;
         }
     }
-    // Handle errors
     catch (error) { result.data = handleRequestError(error) }
     
-    // Return the result object
     return result;
 })
+
 
 /**
  * Sounds-related IPC event handlers 
@@ -294,10 +290,8 @@ ipcMain.on('get-account-store', (event) => {
 // Handles a request to retrieve the latest account info.
 // Involves backend communication.
 ipcMain.handle('fetch-account-info', async (event) => {
-
     let result = { success: false, data: {} };
 
-    // Try to authenticate
     try {
 
         // Send GET request and await for response
@@ -315,22 +309,17 @@ ipcMain.handle('fetch-account-info', async (event) => {
             result.success = true;
         }
     }
-    // Handle errors
     catch (error) { result.data = handleRequestError(error) }
     
-    // Return the result object
     return result;
 })
 
 // Handles a request to authenticate the user (by signing in or signing up).
 // Involves backend communication.
 ipcMain.handle('authenticate', async (event, email, password, createAccount = false, displayName = '') => {
-
     let result = { success: false, data: {} };
 
-    // Try to authenticate
     try {
-
         // Send POST request and await for response
         let res;
 
@@ -364,22 +353,17 @@ ipcMain.handle('authenticate', async (event, email, password, createAccount = fa
 
         }
     }
-    // Handle errors
     catch (error) { result.data = handleRequestError(error) }
-    
-    // Return the result object
+
     return result;
 })
 
 // Handles a request to clear the account store (by signing out or deleting the account).
 // Involves backend communication.
 ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
-
     let result = { success: false, data: {} };
 
-    // Try to delete account
     try {
-        
         if (deleteAccount) {
 
             // Send DELETE request and await for response
@@ -401,22 +385,17 @@ ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
             result.success = true;
         }
     }
-    // Handle errors
     catch (error) { result.data = handleRequestError(error) }
 
-    // Return the result object
     return result;
 })
 
 // Handles a request to authenticate the user (by signing in or signing up).
 // Involves backend communication.
 ipcMain.handle('update-account-info', async (event, email, displayName, password) => {
-
     let result = { success: false, data: {} };
 
-    // Try to authenticate
     try {
-        
         // Send PUT request and await for response
         let res = await axios.put('user', {
             email: email,
@@ -437,10 +416,8 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
         }
 
     }
-    // Handle errors
     catch (error) { result.data = handleRequestError(error) }
     
-    // Return the result object
     return result;
 })
 
@@ -453,6 +430,26 @@ ipcMain.handle('update-account-info', async (event, email, displayName, password
 ipcMain.on('get-insights-store', (event) => {
     event.returnValue = store.get('insights');
 });
+
+// Handles a request to retrieve the latest insights.
+// Involves backend communication.
+ipcMain.handle('fetch-insights', async (event) => {
+    let result = { success: false, data: {} };
+
+    try {
+        // Send GET request and await for response
+        let res = await axios.get('data/insights');
+
+        // If insights retrieval was successful
+        if (res.status === 200) {
+            store.set('insights.cards', res.data.cards);
+            result.success = true;
+        }
+    }
+    catch (error) { result.data = handleRequestError(error) }
+    
+    return result;
+})
 
 
 /**

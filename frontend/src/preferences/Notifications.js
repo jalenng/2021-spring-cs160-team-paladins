@@ -10,21 +10,14 @@ import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
 const { ipcRenderer } = window.require('electron');
 
-const {
-    getAllPreferences,
-    setPreference,
-    getAllSounds, 
-    addCustomSound
-} = require('../storeHelperFunctions');
-
 
 export default class Notifications extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            notifications: getAllPreferences().notifications,
-            sounds: getAllSounds()
+            notifications: storeFunctions.preferences.getAll().notifications,
+            sounds: storeFunctions.sounds.getAll()
         };
     };
 
@@ -41,8 +34,8 @@ export default class Notifications extends React.Component {
 
     updateState() {
         this.setState({
-            notifications: getAllPreferences().notifications,
-            sounds: getAllSounds()
+            notifications: storeFunctions.preferences.getAll().notifications,
+            sounds: storeFunctions.sounds.getAll()
         });
     };
 
@@ -88,14 +81,14 @@ export default class Notifications extends React.Component {
                     valueFormat={(number) => `${number} minutes`}
                     styles={{ root: { maxWidth: 300 } }}
                     value={this.state.notifications.interval}
-                    onChange={number => setPreference("notifications.interval", number)}
+                    onChange={number => storeFunctions.preferences.set("notifications.interval", number)}
                 /> 
 
                 <Toggle
                     label="Enable sound notifications"
                     onText="On" offText="Off"
                     checked={this.state.notifications.enableSound}
-                    onChange={(event, checked) => setPreference("notifications.enableSound", checked)}
+                    onChange={(event, checked) => storeFunctions.preferences.set("notifications.enableSound", checked)}
                 />
 
                 <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="end">
@@ -105,7 +98,7 @@ export default class Notifications extends React.Component {
                         selectedKey={this.state.notifications.sound}
                         options={combinedSoundList}
                         onChange={(event, option, index) => {
-                            setPreference("notifications.sound", combinedSoundList[index].key)
+                            storeFunctions.preferences.set("notifications.sound", combinedSoundList[index].key)
                         }}
                     />
 
@@ -121,7 +114,7 @@ export default class Notifications extends React.Component {
                     <TooltipHost content="Import">
                         <IconButton
                             iconProps={{ iconName: 'Add' }}
-                            onClick={addCustomSound}
+                            onClick={storeFunctions.sounds.add}
                         />
                     </TooltipHost>
 

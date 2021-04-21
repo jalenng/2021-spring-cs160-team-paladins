@@ -6,17 +6,12 @@ import { Toggle } from '@fluentui/react/lib/Toggle';
 
 const { ipcRenderer } = window.require('electron');
 
-const {
-    getAllPreferences,
-    setPreference,
-} = require('../storeHelperFunctions');
-
 
 export default class Startup extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = getAllPreferences().startup;
+        this.state = storeFunctions.preferences.getAll().startup;
     }
 
     componentDidMount() {
@@ -27,7 +22,7 @@ export default class Startup extends React.Component {
     }
 
     updateState() {
-        this.setState(getAllPreferences().startup);
+        this.setState(storeFunctions.preferences.getAll().startup);
     }
 
     render() {
@@ -39,13 +34,13 @@ export default class Startup extends React.Component {
                 <Toggle label="Start app on login"
                     onText="On" offText="Off"
                     checked={this.state.startAppOnLogin}
-                    onChange={(event, checked) => setPreference("startup.startAppOnLogin", checked)}
+                    onChange={(event, checked) => storeFunctions.preferences.set("startup.startAppOnLogin", checked)}
                 />
                 <Toggle label="Start timer on app startup"
                     onText="On" offText="Off"
                     checked={this.state.startTimerOnAppStartup}
                     onChange={(event, checked) => {
-                        setPreference("startup.startTimerOnAppStartup", checked);
+                        storeFunctions.preferences.set("startup.startTimerOnAppStartup", checked);
                     }}
                 />
 

@@ -6,17 +6,12 @@ import { Text } from '@fluentui/react/lib/Text';
 
 const { ipcRenderer } = window.require('electron');
 
-const {
-    getAllPreferences, 
-    setPreference, 
-} = require('../storeHelperFunctions');
-
 
 export default class DataUsage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = getAllPreferences().dataUsage;
+        this.state = storeFunctions.preferences.getAll().dataUsage;
     }
 
     componentDidMount() {
@@ -27,7 +22,7 @@ export default class DataUsage extends React.Component {
     }
 
     updateState() {
-        this.setState(getAllPreferences().dataUsage);
+        this.setState(storeFunctions.preferences.getAll().dataUsage);
     }
 
     render() {
@@ -41,12 +36,12 @@ export default class DataUsage extends React.Component {
                 <Toggle label="Track my application usage statistics"
                     onText="On" offText="Off"
                     checked={this.state.trackAppUsageStats}
-                    onChange={(event, checked) => setPreference("dataUsage.trackAppUsageStats", checked)}
+                    onChange={(event, checked) => storeFunctions.preferences.set("dataUsage.trackAppUsageStats", checked)}
                 />
                 <Toggle label="Enable weekly usage statistics"
                     onText="On" offText="Off"
                     checked={this.state.enableWeeklyUsageStats}
-                    onChange={(event, checked) => setPreference("dataUsage.enableWeeklyUsageStats", checked)}
+                    onChange={(event, checked) => storeFunctions.preferences.set("dataUsage.enableWeeklyUsageStats", checked)}
                 />
 
             </Stack>

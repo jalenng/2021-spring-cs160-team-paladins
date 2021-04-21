@@ -23,6 +23,7 @@ const preferencePages = {
   about: <About/>
 }
 
+
 export default class PreferencesScreen extends React.Component {
 
   constructor(props) {

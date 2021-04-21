@@ -7,8 +7,6 @@ import { TextField } from '@fluentui/react/lib/TextField';
 import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
-const { deleteAccount } = require('../storeHelperFunctions');
-
 const divStyle = {
     MozUserSelect: 'none',
     WebkitUserSelect: 'none',
@@ -63,7 +61,7 @@ export default class extends React.Component {
         let password = state.inputs.password;
 
         // Delete account
-        deleteAccount(password)
+        storeFunctions.accounts.delete(password)
             .then(result => {
                 console.log(result);
                 // If deletion was successful, close the window

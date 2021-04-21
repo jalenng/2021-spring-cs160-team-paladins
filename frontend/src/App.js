@@ -14,8 +14,6 @@ import { Stack } from '@fluentui/react/lib/Stack';
 
 const { ipcRenderer } = window.require('electron');
 
-const { getAccountInfo, getAccountStore } = require('./storeHelperFunctions');
-
 const topRightCornerProps = {
   horizontal: true,
   verticalAlign: 'center', 
@@ -34,7 +32,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       messages: [],
-      account: getAccountStore()
+      account: storeFunctions.accounts.getAll()
     }
   }
 
@@ -48,7 +46,7 @@ export default class App extends React.Component {
     // Get the latest account info 
     const isSignedIn = this.state.account.token != null
     if (isSignedIn) {
-      getAccountInfo().then(result => {
+      storeFunctions.accounts.getLatestInfo().then(result => {
 
         // If information retrieval was not successful, show error message
         if (!result.success) this.addMessage({
@@ -63,7 +61,7 @@ export default class App extends React.Component {
 
   updateAccountState() {
     let state = this.state;
-    state.account = getAccountStore();
+    state.account = storeFunctions.accounts.getAll();
     this.setState(state);
   }
 

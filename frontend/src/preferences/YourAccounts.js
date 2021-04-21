@@ -7,18 +7,13 @@ import { Text } from '@fluentui/react/lib/Text';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
 const { ipcRenderer } = window.require('electron');
-
-const {
-    getAccountStore,
-    signOut
-} = require('../storeHelperFunctions');
-
  
+
 export default class extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = getAccountStore();
+        this.state = storeFunctions.accounts.getAll();
     }
 
     componentDidMount() {
@@ -29,7 +24,7 @@ export default class extends React.Component {
     }
 
     updateState() {
-        this.setState(getAccountStore());
+        this.setState(storeFunctions.accounts.getAll());
     }
 
     render() {
@@ -82,7 +77,7 @@ export default class extends React.Component {
                                     style={{ marginTop: "12px" }}
                                     tokens={{ childrenGap: 20 }}
                                 >
-                                    <DefaultButton text="Sign out" onClick={signOut} />
+                                    <DefaultButton text="Sign out" onClick={ storeFunctions.accounts.signOut } />
                                     <ActionButton onClick={() => ipcRenderer.invoke('show-delete-account-popup')}> 
                                         Delete account 
                                     </ActionButton>

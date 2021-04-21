@@ -14,9 +14,6 @@ import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
 const { ipcRenderer } = window.require('electron');
 
-const { getAllInsights } = require('./storeHelperFunctions');
-
-
 const divStyle = {
     paddingTop: '10px',
     paddingLeft: '30px'
@@ -43,7 +40,7 @@ export default class InsightsScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            cards: getAllInsights().cards
+            cards: storeFunctions.insights.getAll().cards
         };
     };
 
@@ -56,7 +53,7 @@ export default class InsightsScreen extends React.Component {
 
     updateState() {
         this.setState({
-            cards: getAllInsights().cards
+            cards: storeFunctions.insights.getAll().cards
         });
     };
 

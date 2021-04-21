@@ -123,6 +123,7 @@ const storeOptions = {
 global.store = new Store(storeOptions);
 // store.set('preferences.notifications.interval', 0.1)
 // store.clear();
+// console.log(store.store)
 
 /* Configure axios */
 axios.defaults.baseURL = 'http://165.232.156.120:3000';

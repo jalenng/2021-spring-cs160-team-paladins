@@ -5,8 +5,6 @@ import { FontIcon } from '@fluentui/react/lib/Icon';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 
-const { ipcRenderer } = window.require('electron');
-
 const divStyle = {
     MozUserSelect: "none",
     WebkitUserSelect: "none",
@@ -29,7 +27,7 @@ export default class extends React.Component {
             remainingTimeString: ""
         };
 
-        ipcRenderer.on('receive-break-status', (event, breakStatus) => {
+        breakSys.eventSystem.on('update', (event, breakStatus) => {
             var milliseconds = breakStatus.remainingTime;
             var seconds = Math.floor((milliseconds % 60000) / 1000);
 
@@ -44,8 +42,8 @@ export default class extends React.Component {
     
     componentDidMount() {
         document.body.style.backgroundColor = '#000000';
-        ipcRenderer.send('get-break-status');
-        setInterval(() => {ipcRenderer.send('get-break-status')}, 1000);
+        breakSys.getStatus();
+        setInterval(breakSys.getStatus, 100);
     }
 
     render() {

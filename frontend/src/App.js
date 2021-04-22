@@ -5,32 +5,21 @@ import UsageScreen from './UsageScreen';
 import InsightsScreen from './InsightsScreen';
 import PreferencesScreen from './preferences/PreferencesScreen'
 
+import { MessageBar, MessageBarType } from '@fluentui/react/lib/MessageBar';
 import { Text } from '@fluentui/react/lib/Text';
 import { Pivot, PivotItem } from '@fluentui/react/lib/Pivot';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DefaultButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
 
-const { ipcRenderer } = window.require('electron');
-
-const { getAccountStore } = require('./storeHelperFunctions');
-
-const divStyle = {
-  MozUserSelect: 'none',
-  WebkitUserSelect: 'none',
-  msUserSelect: 'none',
-};
-
-const signInDivStyle = {
-  position: 'fixed',
-  top: '3px',
-  right: '3px',
-};
-
 const topRightCornerProps = {
   horizontal: true,
   verticalAlign: 'center', 
-  style: signInDivStyle,
+  style: {
+    position: 'fixed',
+    top: '3px',
+    right: '3px',
+  },
   styles: { root: { height: 42} },
   tokens: { childrenGap: 16 }
 }
@@ -40,41 +29,74 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      account: getAccountStore()
+      messages: [],
+      account: store.accounts.getAll()
     }
   }
 
   componentDidMount() {
+    
     // Update this component's state when account is updated
-    ipcRenderer.on('account-store-changed', () => {
-        this.updateState();
+    store.accounts.eventSystem.on('changed', () => {
+        this.updateAccountState();
     })
+
+    // Fetch the latest account info from the server
+    const isSignedIn = this.state.account.token != null
+    if (isSignedIn) {
+      store.accounts.fetchInfo().then(result => {
+
+        // If information retrieval was not successful, show error message
+        if (!result.success) this.addMessage({
+          type: MessageBarType.error,
+          contents: `Failed to retrieve account information: ${result.data.message}`
+        })
+          
+      });
+    }
+    
   }
 
-  updateState() {
-    this.setState({ account: getAccountStore() });
+  updateAccountState() {
+    let state = this.state;
+    state.account = store.accounts.getAll();
+    this.setState(state);
+  }
+
+  removeMessage(index) {
+    let state = this.state;
+    state.messages.splice(index, 1);
+    this.setState(state);
+  }
+
+  addMessage(message) {
+    let state = this.state;
+    state.messages = [...state.messages, message];
+    this.setState(state);
   }
 
   render() {
 
     const isSignedIn = this.state.account.token != null
-    const displayName = this.state.account.accountInfo.displayName
+    const displayName = this.state.account.accountInfo.displayName.toString()
 
-    // Extract initials from display name. 
-    let regex = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
-    let displayInitials = [...displayName.matchAll(regex)] || [];
-    displayInitials = (
-        (displayInitials.shift()?.[1] || '') + (displayInitials.pop()?.[1] || '')
-    ).toUpperCase();      
+    const messages = this.state.messages.map( (message, index) => {
+      return (
+        <MessageBar
+          messageBarType={message.type}
+          onDismiss={() => this.removeMessage(index)}
+        >
+          {message.contents}
+        </MessageBar>
+      )
+    })
 
     return (
-      <div style={divStyle}>  
+      <div>  
 
-        <Pivot aria-label='Basic Pivot Example' linkSize='large'>
+        <Pivot linkSize='large'>
           <PivotItem itemIcon='Home'>
-            <HomeScreen 
-              style={{justifyContent: 'center', alignItems: 'center',}}
-            />
+            <HomeScreen/>
           </PivotItem>
           <PivotItem itemIcon='BarChartVertical'>
             <UsageScreen/>
@@ -92,9 +114,9 @@ export default class App extends React.Component {
           <Stack {...topRightCornerProps}>
             <Text>{displayName}</Text>
             <Persona
-              imageInitials={displayInitials}
               size= {PersonaSize.size40}
               hidePersonaDetails={true}
+              text={displayName}
             />
           </Stack>
         )}
@@ -103,10 +125,23 @@ export default class App extends React.Component {
         {!isSignedIn && (
           <Stack {...topRightCornerProps}>
             <DefaultButton text='Sign in'
-              onClick={() => ipcRenderer.invoke('show-sign-in-popup')}
+              onClick={ showPopup.signIn }
             /> 
           </Stack>
         )}     
+
+        {/* Show app messages */}
+        <Stack reversed
+          tokens={{ childrenGap: 8 }}
+          style={{
+            position: 'fixed',
+            bottom: '8px',
+            right: '8px',
+            width: '300px'
+          }}
+        >
+          {messages}        
+        </Stack>
 
       </div>
     );

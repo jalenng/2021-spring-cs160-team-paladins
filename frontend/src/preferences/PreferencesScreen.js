@@ -7,17 +7,13 @@ import YourAccounts from './YourAccounts'
 import Notifications from './Notifications'
 import Startup from './Startup'
 import DataUsage from './DataUsage'
+import Sync from './Sync'
 import About from './About'
 
 const divStyle = {
-  MozUserSelect: "none",
-  WebkitUserSelect: "none",
-  msUserSelect: "none",
-
   paddingTop: '10px',
   paddingLeft: '30px',
-
-  display: "grid"
+  display: 'grid'
 };
 
 const preferencePages = {
@@ -25,10 +21,12 @@ const preferencePages = {
   notifications: <Notifications/>,
   startup: <Startup/>,
   data_usage: <DataUsage/>,
+  sync: <Sync/>,
   about: <About/>
 }
 
-export default class PreferencesScreen extends React.Component {
+
+export default class extends React.Component {
 
   constructor(props) {
     super(props);
@@ -43,11 +41,10 @@ export default class PreferencesScreen extends React.Component {
       <div style={divStyle}>
 
         <ScrollablePane style={{
-          position: "absolute",
-          top: "60px",
-          left: "260px",
-          paddingBottom: "260px",
-          paddingRight: "40px"
+          position: 'absolute',
+          top: '60px',
+          left: '260px',
+          paddingRight: '40px'
         }}>
 
           {preferencesPage}

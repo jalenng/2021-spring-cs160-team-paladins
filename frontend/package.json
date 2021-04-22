@@ -34,14 +34,10 @@
     "npm": "^7.8.0",
     "react": "^17.0.2",
     "react-chartjs-2": "^2.11.1",
-    "react-countdown-circle-timer": "^2.5.1",
+    "react-circle": "^1.1.1",
     "react-dom": "^17.0.2",
-    "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
-    "react-select": "^4.3.0",
-    "react-switch": "^6.0.0",
     "sound-play": "^1.1.0",
-    "styled-components": "^4.3.2",
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {

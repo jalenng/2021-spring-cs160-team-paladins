@@ -12,6 +12,8 @@ import EditAccountScreen from './account/EditAccountScreen';
 import FullscreenNotification from './notifications/FullscreenNotification';
 import PopupNotification from './notifications/PopupNotification';
 
+import Timer from './Timer';
+
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { loadTheme } from '@fluentui/react'
 import { createTheme } from '@fluentui/theme/lib/createTheme'
@@ -44,16 +46,21 @@ const myTheme = createTheme({
   }
 });
 loadTheme(myTheme);
-initializeIcons();
-
 document.body.style = 'background: #222222;';
 
+initializeIcons();
+
+const unselectableTextStyle = {
+  MozUserSelect: "none",
+  WebkitUserSelect: "none",
+  msUserSelect: "none",
+}
 
 ReactDOM.render(
   <React.StrictMode>
     <HashRouter>
       <Switch>
-        <div className="App">
+        <div className="App" style={unselectableTextStyle}>
           <Route path="/" exact component={App} />
           <Route path="/signin" exact component={SignInScreen} />
           <Route path="/signup" exact component={SignUpScreen} />
@@ -62,6 +69,8 @@ ReactDOM.render(
 
           <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
           <Route path="/popupNotification" exact component={PopupNotification} />
+
+          <Route path="/popupTimer" exact component={Timer} />
         </div>
       </Switch>
     </HashRouter>

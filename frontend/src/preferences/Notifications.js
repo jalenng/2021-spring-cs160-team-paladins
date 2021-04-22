@@ -8,41 +8,31 @@ import { Text } from '@fluentui/react/lib/Text';
 import { Toggle } from '@fluentui/react/lib/Toggle';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
-const { ipcRenderer } = window.require('electron');
-
-const {
-    getAllPreferences,
-    setPreference,
-    getAllSounds, 
-    addCustomSound
-} = require('../storeHelperFunctions');
-
-
-export default class Notifications extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            notifications: getAllPreferences().notifications,
-            sounds: getAllSounds()
+            notifications: store.preferences.getAll().notifications,
+            sounds: store.sounds.getAll()
         };
     };
 
     componentDidMount() {
         // Update this component's state when preferences are updated
-        ipcRenderer.on('preferences-store-changed', () => {
+        store.preferences.eventSystem.on('changed', () => {
             this.updateState();
         })
 
-        ipcRenderer.on('sounds-store-changed', () => {
+        store.sounds.eventSystem.on('changed', () => {
             this.updateState();
         })
     };
 
     updateState() {
         this.setState({
-            notifications: getAllPreferences().notifications,
-            sounds: getAllSounds()
+            notifications: store.preferences.getAll().notifications,
+            sounds: store.sounds.getAll()
         });
     };
 
@@ -77,7 +67,7 @@ export default class Notifications extends React.Component {
         
         return (
 
-            <Stack id="notifications" tokens={{ childrenGap: 10 }}>
+            <Stack id="notifications" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
 
                 <Text variant={'xLarge'} block> Notifications </Text>
 
@@ -88,14 +78,14 @@ export default class Notifications extends React.Component {
                     valueFormat={(number) => `${number} minutes`}
                     styles={{ root: { maxWidth: 300 } }}
                     value={this.state.notifications.interval}
-                    onChange={number => setPreference("notifications.interval", number)}
+                    onChange={number => store.preferences.set("notifications.interval", number)}
                 /> 
 
                 <Toggle
                     label="Enable sound notifications"
                     onText="On" offText="Off"
                     checked={this.state.notifications.enableSound}
-                    onChange={(event, checked) => setPreference("notifications.enableSound", checked)}
+                    onChange={(event, checked) => store.preferences.set("notifications.enableSound", checked)}
                 />
 
                 <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="end">
@@ -105,23 +95,21 @@ export default class Notifications extends React.Component {
                         selectedKey={this.state.notifications.sound}
                         options={combinedSoundList}
                         onChange={(event, option, index) => {
-                            setPreference("notifications.sound", combinedSoundList[index].key)
+                            store.preferences.set("notifications.sound", combinedSoundList[index].key)
                         }}
                     />
 
                     <TooltipHost content="Preview">
                         <IconButton
                             iconProps={{ iconName: 'Play' }}
-                            onClick={() => {
-                                ipcRenderer.invoke("play-sound");
-                            }}
+                            onClick={ playSound }
                         />
                     </TooltipHost>
 
                     <TooltipHost content="Import">
                         <IconButton
                             iconProps={{ iconName: 'Add' }}
-                            onClick={addCustomSound}
+                            onClick={store.sounds.add}
                         />
                     </TooltipHost>
 

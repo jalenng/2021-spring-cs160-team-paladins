@@ -10,13 +10,8 @@ import TotalUsage from './usage/TotalUsage';
 
 
 const divStyle = {
-  MozUserSelect: "none",
-  WebkitUserSelect: "none",
-  msUserSelect: "none",
-
   paddingTop: '10px',
   paddingLeft: '30px',
-
   display: "grid"
 };
 

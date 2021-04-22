@@ -8,8 +8,6 @@ import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import { Separator } from '@fluentui/react/lib/Separator';
 
-const { getAccountStore, updateAccountInfo } = require('../storeHelperFunctions');
-
 const divStyle = {
     MozUserSelect: 'none',
     WebkitUserSelect: 'none',
@@ -47,7 +45,7 @@ export default class extends React.Component {
 
     // Load default values for inputs
     componentDidMount() {
-        let accountInfo = getAccountStore().accountInfo;
+        let accountInfo = store.accounts.getAll().accountInfo;
         let state = this.state;
         let inputs = {
             email: accountInfo.email,
@@ -83,7 +81,7 @@ export default class extends React.Component {
         let password = state.inputs.password;
 
         // Update user account info
-        updateAccountInfo(email, displayName, password)
+        store.accounts.updateInfo(email, displayName, password)
             .then(result => {
 
                 // If sign-in was successful, close the window

@@ -19,25 +19,19 @@ const groups = [
     links: [
       {
         name: 'App Usage',
-        icon: 'BarChartVertical',
+        icon: 'Favicon',
         key: 'app_usage'
       },
       {
         name: 'Daily Usage',
-        icon: 'BarChartVertical',
+        icon: 'GoToToday',
         key: 'daily_usage'
       },
       {
         name: 'Weekly Usage',
-        icon: 'BarChartVertical',
+        icon: 'CalendarWorkWeek',
         key: 'weekly_usage'
       },
-      {
-        name: 'Total Usage',
-        icon: 'BarChartVertical',
-        key: 'total_usage'
-      },
-
     ],
   },
 ];

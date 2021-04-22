@@ -41,10 +41,10 @@ export default class App extends React.Component {
         this.updateAccountState();
     })
 
-    // Get the latest account info 
+    // Fetch the latest account info from the server
     const isSignedIn = this.state.account.token != null
     if (isSignedIn) {
-      store.accounts.getLatestInfo().then(result => {
+      store.accounts.fetchInfo().then(result => {
 
         // If information retrieval was not successful, show error message
         if (!result.success) this.addMessage({

@@ -7,6 +7,7 @@ import YourAccounts from './YourAccounts'
 import Notifications from './Notifications'
 import Startup from './Startup'
 import DataUsage from './DataUsage'
+import Sync from './Sync'
 import About from './About'
 
 const divStyle = {
@@ -20,11 +21,12 @@ const preferencePages = {
   notifications: <Notifications/>,
   startup: <Startup/>,
   data_usage: <DataUsage/>,
+  sync: <Sync/>,
   about: <About/>
 }
 
 
-export default class PreferencesScreen extends React.Component {
+export default class extends React.Component {
 
   constructor(props) {
     super(props);

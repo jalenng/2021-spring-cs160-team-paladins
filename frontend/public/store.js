@@ -70,43 +70,7 @@ const insightsDefaults = {
         {
             header: 'Test insight 1',
             content: 'Insight message.'
-        },
-        {
-            header: 'Insight card!',
-            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
-        },
-        {
-            header: 'Test insight 1',
-            content: 'Insight message.'
-        },
-        {
-            header: 'Insight card!',
-            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
-        },
-        {
-            header: 'Test insight 1',
-            content: 'Insight message.'
-        },
-        {
-            header: 'Insight card!',
-            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
-        },
-        {
-            header: 'Test insight 1',
-            content: 'Insight message.'
-        },
-        {
-            header: 'Insight card!',
-            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
-        },
-        {
-            header: 'Test insight 1',
-            content: 'Insight message.'
-        },
-        {
-            header: 'Insight card!',
-            content: 'This is an insight card. Let\'s pretend that this card is saying something very, very insightful. So, so, so insightful. Wow, would you look at this insight! I love insights.'
-        },
+        }
     ]
 }
 
@@ -148,17 +112,14 @@ store.onDidChange('preferences.startup.startAppOnLogin', (newVal, oldVal) => {
 store.onDidChange('preferences', () => {
     global.mainWindow.webContents.send('store-changed', 'preferences');
 });
-
 store.onDidChange('sounds', () => {
     global.mainWindow.webContents.send('store-changed', 'sounds');
 });
-
 store.onDidChange('account', () => {
     // Configure axios to make requests with the token
     axios.defaults.headers.common['auth'] = store.get('account.token');
     global.mainWindow.webContents.send('store-changed', 'accounts');
 });
-
 store.onDidChange('insights', () => {
     global.mainWindow.webContents.send('store-changed', 'insights');
 });

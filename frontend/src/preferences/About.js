@@ -6,7 +6,7 @@ import { Text } from '@fluentui/react/lib/Text';
 
 import logo from '../assets/icon.png';
 
-export default class About extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);

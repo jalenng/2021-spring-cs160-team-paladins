@@ -1,4 +1,12 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { 
+    BrowserWindow, 
+    Tray, 
+    Menu, 
+    nativeImage, 
+    app, 
+    ipcMain, 
+    globalShortcut
+} = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
@@ -20,7 +28,8 @@ const MAX_WINDOW_SIZE = {
 }
 
 
-global.mainWindow;
+let mainWindow;
+let mainWindowState;
 
 /**
  * Configure event listeners and connect the various systems
@@ -45,14 +54,13 @@ breakSystem.on('break-end', () => notificationSystem.closeWindows());
 
 
 /**
- * Functions for creating windows
+ * Function to create the main window
  */
-// Main window
 function createWindow() {
 
-    // Main window
-    let mainWindowState = windowStateKeeper(DEFAULT_WINDOW_SIZE);
+    mainWindowState = windowStateKeeper(DEFAULT_WINDOW_SIZE);
 
+    // Instantiate the window
     mainWindow = new BrowserWindow({
         x: mainWindowState.x,
         y: mainWindowState.y,
@@ -76,62 +84,50 @@ function createWindow() {
         },
     });
 
+    // Manage the size of the main window
     mainWindowState.manage(mainWindow);
 
-    mainWindow.menuBarVisible = false;
-    if (!isDev) mainWindow.removeMenu()
-
+    // Remove the menu and load the page
+    mainWindow.removeMenu()
     mainWindow.loadURL(
         isDev
         ? 'http://localhost:3000'
         : `file://${path.join(__dirname, '../build/index.html')}`
     );
 
-    global.mainWindow.on('ready-to-show', () => global.mainWindow.show());
-
     // Prevent opening new windows
-    mainWindow.webContents.on('new-window', (e, url) => {
-        e.preventDefault()
-    })
+    mainWindow.webContents.on('new-window', (e, url) => e.preventDefault())
 
-    // Handle closing through a confirmation dialog
+    // Handle the close button action
     mainWindow.on('close', (e) => {
-        if (isDev) {    // Just exit the app if isDev
-            app.exit();
-            return;
+        if (isDev)
+            app.exit(); // Just exit the app if isDev
+        else {
+            e.preventDefault(); // Otherwise, just hide to tray
+            mainWindow.hide();
         }
-
-        e.preventDefault();
-        const closeConfirm = dialog.showMessageBoxSync(mainWindow, {
-            type: 'question',
-            title: 'iCare',
-            message: 'Close iCare?',
-            detail: 'You will not receive notifications when the app is closed.',
-            buttons: ['Yes', 'No'],
-            defaultId: 1
-        })
-        
-        if (closeConfirm === 0) app.exit(); // Exit app if selected button is 'Yes'
     })
+
+    // Open the window when it is ready to be shown
+    mainWindow.on('ready-to-show', () => mainWindow.show());
 
 }
 
 
 /**
- * Ensure that only one instance of iCare is open at a time
+ * Mechanism to allow only one instance of the app at once
  */
 const gotSingleInstanceLock = app.requestSingleInstanceLock()
 if (!gotSingleInstanceLock) app.quit()
 
-/**
- * Show first instance if a second instance is requested
- */
+/* Show first instance if a second instance is requested */
  app.on('second-instance', (event, commandLine, workingDirectory) => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
       mainWindow.focus()
     }
 })
+
 
 /**
  * App settings for when user logs in
@@ -145,23 +141,47 @@ app.setLoginItemSettings({
 /**
  * Application event handlers
  */
+let appTray = null;
 app.whenReady().then(() => {
-    createWindow()
 
+    createWindow()
+    
+    /* When app is activated and no windows are open, create a window */
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 
+    /* Create tray button */
+    const trayIcon = nativeImage.createFromPath(path.join(__dirname, '../icon.png'));
+    const contextMenu = Menu.buildFromTemplate([
+        { label: 'iCare', enabled: false },
+        { type: 'separator' },
+        { label: 'Quit',  role: 'quit'}
+    ]);
+
+    appTray = new Tray(trayIcon);
+    appTray.setToolTip('iCare');
+    appTray.setContextMenu(contextMenu);
+    appTray.on('click', () => {
+        mainWindow.show();
+        mainWindow.focus();
+    });
+
+    /* Allow keyboard shortcut to open DevTools if isDev */
+    if (isDev) {
+        globalShortcut.register('CommandOrControl+Shift+I', () => {
+            mainWindow.webContents.openDevTools()
+        });
+    }
+
 })
 
-/**
- * Handle closing all windows behavior for macOS
- */
+/* Handle closing all windows behavior for macOS */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
-// Prevent loading of new websitess
+/* Prevent loading of new websites */
 app.on('web-contents-created', (event, contents) => {
     contents.on('will-navigate', (event, navigationUrl) => {
         event.preventDefault()
@@ -195,10 +215,10 @@ ipcMain.on('get-about-info', (event) => {
             'Zuby Javed'
         ],
         openSourceLibraries: [
+            '@fluentui/react',
             'axios',
             'chart.js',
             'electron',
-            'electron-builder',
             'electron-is-dev',
             'electron-store',
             'electron-window-state',

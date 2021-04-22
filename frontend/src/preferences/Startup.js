@@ -4,7 +4,7 @@ import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 import { Toggle } from '@fluentui/react/lib/Toggle';
 
-export default class Startup extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);

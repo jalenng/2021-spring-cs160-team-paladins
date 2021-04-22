@@ -38,6 +38,11 @@ const navLinkGroups = [
         key: 'data_usage'
       },
       {
+        name: 'Sync',
+        icon: 'CloudImportExport',
+        key: 'sync'
+      },
+      {
         name: 'About',
         icon: 'Info',
         key: 'about'
@@ -46,7 +51,7 @@ const navLinkGroups = [
   },
 ];
 
-export default class PreferencesSidebar extends React.Component {
+export default class extends React.Component {
 
   constructor(props) {
     super(props);

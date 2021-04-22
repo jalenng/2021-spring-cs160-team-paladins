@@ -8,7 +8,7 @@ import { Text } from '@fluentui/react/lib/Text';
 import { Toggle } from '@fluentui/react/lib/Toggle';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
-export default class Notifications extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);

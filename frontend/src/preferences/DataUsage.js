@@ -4,7 +4,7 @@ import { Toggle } from '@fluentui/react/lib/Toggle';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 
-export default class DataUsage extends React.Component {
+export default class extends React.Component {
 
     constructor(props) {
         super(props);

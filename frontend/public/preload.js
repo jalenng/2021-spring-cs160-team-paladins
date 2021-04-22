@@ -71,9 +71,9 @@ window.store = {
         delete: (password) => { return ipcRenderer.invoke('sign-out', true, password) },
 
         /**
-         * Fetch the latest account information
+         * Fetch the latest account information from the server
          */
-        getLatestInfo: () => { return ipcRenderer.invoke('fetch-account-info') },
+        fetchInfo: () => { return ipcRenderer.invoke('fetch-account-info') },
 
         /**
          * Update account information
@@ -101,6 +101,16 @@ window.store = {
          * @param {String} value The new value 
          */
         set: (key, value) => { ipcRenderer.invoke('set-prefs-store-value', key, value) },
+
+        /**
+         * Fetch the latest preferences from the server
+         */
+        fetch: () => { return ipcRenderer.invoke('fetch-prefs') },
+
+        /**
+         * Push the local preferences to the server
+         */
+        push: () => { return ipcRenderer.invoke('push-prefs') },
 
         /* Event system */
         eventSystem: new EventSystem()

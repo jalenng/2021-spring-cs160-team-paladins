@@ -1,51 +1,64 @@
 import React from "react";
-import { Bar, defaults } from "react-chartjs-2";
+import { Bar, defaults } from "react-chartjs-2"
 
 defaults.global.tooltips.enabled = true;
 
-export default class BarChart extends React.Component {
+let weekday = new Array(7);
+weekday[0] = "Sunday";
+weekday[1] = "Monday";
+weekday[2] = "Tuesday";
+weekday[3] = "Wednesday";
+weekday[4] = "Thursday";
+weekday[5] = "Friday";
+weekday[6] = "Saturday";
+
+export default class DailyUsage extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.date = new Date();
+    this.weekday = weekday[this.date.getDay()];
+
+    // change to axios.get to get current values. 
+    this.hours = 5;
+    this.breaks = 10;
+  }
+
+   // change to axios.put to update values.
+  updateUsage(break_len) {
+    this.breaks = this.breaks + break_len;
+  }
+
   render() {
+
     return (
       <div>
         <Bar
           data={{
             labels: [
-              "Sunday",
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday",
-              "Saturday",
+              this.weekday,
             ],
             datasets: [
               {
-                label: "Total time usage",
-                data: [5, 6, 6.5, 6, 8, 3, 5],
+                label: "Total usage (hours)",
+                data: [this.hours],
                 backgroundColor: [
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
                   "rgba(72, 121, 240, 1)",
                 ],
               },
               {
-                label: "Number of break",
-                data: [15, 18, 20, 20, 24, 9, 15],
+                label: "Total # of breaks",
+                data: [this.breaks],
                 backgroundColor: "lightblue",
               },
             ],
           }}
-          height={150}
+          height={400}
           width={30}
           options={{
             title: {
               display: true,
-              text: "Weekly Icare Hour Usage and Number of Break Time",
+              text: "Daily Timer Usage",
               fontColor: "#FFFFFF",
               fontSize: 15,
               padding: 10,

@@ -97,9 +97,12 @@ const { route } = require('./index.js');
       let newDisplay = req.body.displayName;
       let pass = req.body.password;
 
-      // Checks password length, email, and display name
+      // Checks password and new display name
       if (newDisplay === null || newDisplay == "") { 
         res.status(409).send({ reason: "BAD_DISPLAY_NAME", message: "Display name cannot be empty." });
+        return;
+      } else if (pass === null) {
+        res.status(401).send({ reason: "BAD_PASSWORD", message: "Password cannot be empty" });
         return;
       }
 
@@ -246,7 +249,7 @@ const { route } = require('./index.js');
       let aUsage = await userDB.getAppUsage(email, timePeriod).then((r) => { return r; });
 
       // Response Codes (Sends JSONs)
-      if (dUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
+      if (dUsage != false && aUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
       else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage" }) }
     });
 
@@ -322,44 +325,4 @@ const { route } = require('./index.js');
 );
 
 //-------------------------------------
-
-/*
- // Database Connection
- let db = require('./db.js');
- let userDB = new db("localhost", "newuser", "password", "iCare");
-
- // API Methods
- let apiM = require('./api_methods.js');
- let api_methods = new apiM();
-
-/*
- // WORKS!
- async function testDataUsage() {
-
-  let email = "basic@gmail.com"
-  //let duSuccess = await userDB.setDataUsage(email, 270, 5);
-  //console.log("Success? " + duSuccess);
-
-  let value = await userDB.getDataUsage(email, "ALL TIME")
-  let listofvalues = await api_methods.getStatistics(value).then((res) => { return res; })
-
-  console.log("Average Screen Time: " + listofvalues[0]);
-  console.log("Min Screen Time Spend: " + listofvalues[1]);
-  console.log("Max Screen Time Spend: " + listofvalues[2]);
-  console.log();
-  console.log("Average Timer Count: " + listofvalues[3]);
-  console.log("Min Timer Count: " + listofvalues[4]);
-  console.log("Max Timer Count: " + listofvalues[5]);
- }
-*/
-
-/*
-async function test() {
-
-
-}
-
-
-test()
-*/
 

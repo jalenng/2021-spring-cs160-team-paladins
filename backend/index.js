@@ -18,7 +18,7 @@ const { route } = require('./index.js');
  
     // Database Connection
     let db = require('./db.js');
-    let userDB = new db("localhost", "newuser", "password", "iCare");
+    let userDB = new db("localhost", "newuser", "", "iCare");
 
     // API Methods
     let apiM = require('./api_methods.js');
@@ -130,13 +130,14 @@ const { route } = require('./index.js');
       })
       if (checkToken == false) { return; };
 
-      let success = await userDB.getDisplayName(email).then((r) => { return r; })
+      let dName = await userDB.getDisplayName(email).then((r) => { return r; })
 
-      if (success != false && email ) {
-
+      if (dName != false && email != false) {
+        res.status(200).send({ email: email, displayName: dName });
       }
-
-
+      else {
+        res.status(401).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve user information." });
+      }
     });
     
     // Delete user

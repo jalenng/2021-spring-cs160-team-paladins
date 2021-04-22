@@ -299,7 +299,7 @@ class db {
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE DataUsage SET screenTime=" + screenTime + ", timerCount=" + timerCount + 
+            q = "UPDATE DataUsage SET screenTime= screenTime + " + screenTime + ", timerCount= timerCount + " + timerCount + 
                 " WHERE email='" + userEmail + "' AND usageDate='" + usageDate + "'";
         }
         // Creates existing record
@@ -352,7 +352,7 @@ class db {
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE AppUsage SET appTime=" + appTime +
+            q = "UPDATE AppUsage SET appTime= appTime + " + appTime +
                 " WHERE email='" + userEmail + "' AND usageDate='" + date + "'";
         }
         // Creates a new record

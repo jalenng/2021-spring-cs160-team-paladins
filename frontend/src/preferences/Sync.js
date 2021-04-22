@@ -6,6 +6,14 @@ import { Text } from '@fluentui/react/lib/Text';
 
 export default class extends React.Component {
 
+    handleUploadBtn() {
+        store.preferences.push();
+    }
+
+    handleDownloadBtn() {
+        store.preferences.fetch();
+    }
+
     render() {
         return (
             <Stack id="startup" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
@@ -17,11 +25,13 @@ export default class extends React.Component {
                     <DefaultButton
                         text="Upload"
                         iconProps={{ iconName: 'CloudUpload' }}
+                        onClick={this.handleUploadBtn}
                     />
 
                     <DefaultButton
                         text="Download"
                         iconProps={{ iconName: 'CloudDownload' }}
+                        onClick={this.handleDownloadBtn}
                     />
 
                 </Stack>

@@ -28,7 +28,8 @@ const MAX_WINDOW_SIZE = {
 }
 
 
-let mainWindow;
+global.mainWindow;
+
 let mainWindowState;
 
 /**

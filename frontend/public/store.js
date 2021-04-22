@@ -76,8 +76,14 @@ const insightsDefaults = {
 
 /* Data usage defaults */
 const dataUsageDefaults = {
-    appUsage: {},
-    timerUsage: {}
+    unsynced: {
+        appUsage: {},
+        timerUsage: {}
+    },
+    fetched: {
+        appUsage: {},
+        timerUsage: {}
+    }
 }
 
 /* Create the store */
@@ -93,7 +99,7 @@ const storeOptions = {
 }
 global.store = new Store(storeOptions);
 // store.set('preferences.notifications.interval', 0.1)
-// store.clear();
+store.clear();
 // console.log(store.store)
 
 /* Configure axios */

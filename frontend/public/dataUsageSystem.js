@@ -29,7 +29,7 @@ function dataUsageSystem() {
      */
     this.captureAppSnapshot = async function () {
         let openProcesses = await getOpenProcesses();
-        let appUsage = global.store.get('dataUsage.appUsage')
+        let appUsage = global.store.get('dataUsage.unsynced.appUsage')
 
         // Update app usage
         openProcesses.forEach( taskName => {
@@ -39,9 +39,7 @@ function dataUsageSystem() {
             appUsage[taskName] = newValue;
         })
 
-        global.store.set('dataUsage.appUsage', appUsage)
-
-        console.log(appUsage);
+        global.store.set('dataUsage.unsynced.appUsage', appUsage)
     }
 
     /**

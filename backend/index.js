@@ -97,9 +97,12 @@ const { route } = require('./index.js');
       let newDisplay = req.body.displayName;
       let pass = req.body.password;
 
-      // Checks password length, email, and display name
+      // Checks password and new display name
       if (newDisplay === null || newDisplay == "") { 
         res.status(409).send({ reason: "BAD_DISPLAY_NAME", message: "Display name cannot be empty." });
+        return;
+      } else if (pass === null) {
+        res.status(401).send({ reason: "BAD_PASSWORD", message: "Password cannot be empty" });
         return;
       }
 
@@ -270,7 +273,7 @@ const { route } = require('./index.js');
       let aUsage = await userDB.getAppUsage(email, timePeriod).then((r) => { return r; });
 
       // Response Codes (Sends JSONs)
-      if (dUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
+      if (dUsage != false && aUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
       else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage" }) }
     });
 
@@ -451,6 +454,7 @@ const { route } = require('./index.js');
 
 //-------------------------------------
 
+<<<<<<< HEAD
 /*
  // Database Connection
  let db = require('./db.js');
@@ -629,3 +633,5 @@ test()
 =======
 
 >>>>>>> a82622e (added token based on user id)
+=======
+>>>>>>> 8ec33a6 (cleaned/updated index.js)

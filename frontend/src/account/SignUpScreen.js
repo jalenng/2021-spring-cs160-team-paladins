@@ -8,8 +8,6 @@ import { TextField } from '@fluentui/react/lib/TextField';
 import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
-const { signUp } = require('../storeHelperFunctions');
-
 const divStyle = {
     MozUserSelect: 'none',
     WebkitUserSelect: 'none',
@@ -91,7 +89,7 @@ export default class extends React.Component {
         let displayName = state.inputs.displayName;
 
         // Authenticate user with sign-up
-        signUp(email, password, displayName)
+        store.accounts.signUp(email, password, displayName)
             .then(result => {
 
                 // If sign-in was successful, close the window

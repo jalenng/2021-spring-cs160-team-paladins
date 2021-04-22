@@ -12,11 +12,6 @@ import {
 } from '@fluentui/react/lib/DocumentCard';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
-const { ipcRenderer } = window.require('electron');
-
-const { getAllInsights } = require('./storeHelperFunctions');
-
-
 const divStyle = {
     paddingTop: '10px',
     paddingLeft: '30px'
@@ -43,20 +38,20 @@ export default class InsightsScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            cards: getAllInsights().cards
+            cards: store.insights.getAll().cards
         };
     };
 
     componentDidMount() {
         // Update this component's state when insights are updated
-        ipcRenderer.on('insights-store-changed', () => {
+        store.insights.eventSystem.on('changed', () => {
             this.updateState();
         })
     };
 
     updateState() {
         this.setState({
-            cards: getAllInsights().cards
+            cards: store.insights.getAll().cards
         });
     };
 

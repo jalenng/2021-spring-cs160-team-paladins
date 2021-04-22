@@ -6,30 +6,22 @@ import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 
-const { ipcRenderer } = window.require('electron');
-
-const {
-    getAccountStore,
-    signOut
-} = require('../storeHelperFunctions');
-
- 
 export default class extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = getAccountStore();
+        this.state = store.accounts.getAll();
     }
 
     componentDidMount() {
         // Update this component's state when account is updated
-        ipcRenderer.on('account-store-changed', () => {
+        store.accounts.eventSystem.on('changed', () => {
             this.updateState();
         })
     }
 
     updateState() {
-        this.setState(getAccountStore());
+        this.setState(store.accounts.getAll());
     }
 
     render() {
@@ -41,7 +33,7 @@ export default class extends React.Component {
 
         return (
 
-            <Stack id="your_accounts" tokens={{ childrenGap: 10 }}>
+            <Stack id="your_accounts" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
 
                 <Stack horizontal
                     verticalAlign="center"
@@ -53,7 +45,7 @@ export default class extends React.Component {
                         <TooltipHost content="Edit account details">
                             <IconButton
                                 iconProps={{ iconName: 'Edit' }}
-                                onClick={() => ipcRenderer.invoke('show-edit-account-popup')}
+                                onClick={ showPopup.editAccount }
                             />
                         </TooltipHost>
                         
@@ -82,8 +74,8 @@ export default class extends React.Component {
                                     style={{ marginTop: "12px" }}
                                     tokens={{ childrenGap: 20 }}
                                 >
-                                    <DefaultButton text="Sign out" onClick={signOut} />
-                                    <ActionButton onClick={() => ipcRenderer.invoke('show-delete-account-popup')}> 
+                                    <DefaultButton text="Sign out" onClick={ store.accounts.signOut } />
+                                    <ActionButton onClick={ showPopup.deleteAccount }> 
                                         Delete account 
                                     </ActionButton>
                                 </Stack>

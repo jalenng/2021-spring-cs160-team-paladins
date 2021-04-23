@@ -14,13 +14,15 @@
     "files": [
       "build/**/*",
       "node_modules/**/*",
-      "sounds/**/*"
+      "sounds/**/*",
+      "trayAssets/**/*"
     ],
     "directories": {
       "buildResources": "assets"
     },
     "asarUnpack": [
-      "sounds/**/*"
+      "sounds/**/*",
+      "trayAssets/**/*"
     ]
   },
   "dependencies": {

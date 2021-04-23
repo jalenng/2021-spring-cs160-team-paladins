@@ -11,55 +11,55 @@ import Sync from './Sync'
 import About from './About'
 
 const divStyle = {
-  paddingTop: '10px',
-  paddingLeft: '30px',
-  display: 'grid'
+    paddingTop: '10px',
+    paddingLeft: '30px',
+    display: 'grid'
 };
 
 const preferencePages = {
-  your_accounts: <YourAccounts/>,
-  notifications: <Notifications/>,
-  startup: <Startup/>,
-  data_usage: <DataUsage/>,
-  sync: <Sync/>,
-  about: <About/>
+    your_accounts: <YourAccounts />,
+    notifications: <Notifications />,
+    startup: <Startup />,
+    data_usage: <DataUsage />,
+    sync: <Sync />,
+    about: <About />
 }
 
 
 export default class extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = { selectedKey: 'your_accounts' };
-  }
+    constructor(props) {
+        super(props);
+        this.state = { selectedKey: 'your_accounts' };
+    }
 
-  render() {
-    const selectedKey = this.state.selectedKey;
-    let preferencesPage = preferencePages[selectedKey];
-    
-    return (
-      <div style={divStyle}>
+    render() {
+        const selectedKey = this.state.selectedKey;
+        let preferencesPage = preferencePages[selectedKey];
 
-        <ScrollablePane style={{
-          position: 'absolute',
-          top: '60px',
-          left: '260px',
-          paddingRight: '40px'
-        }}>
+        return (
+            <div style={divStyle}>
 
-          {preferencesPage}
+                <ScrollablePane style={{
+                    position: 'absolute',
+                    top: '60px',
+                    left: '260px',
+                    paddingRight: '40px'
+                }}>
 
-        </ScrollablePane>
-                
-        <PreferencesSidebar
-          selectedKey={selectedKey} 
-          onUpdateSelectedKey={(key) => {
-            this.setState({ selectedKey: key });
-          }}
-        />
+                    {preferencesPage}
 
-      </div>
-    );
-  }
+                </ScrollablePane>
+
+                <PreferencesSidebar
+                    selectedKey={selectedKey}
+                    onUpdateSelectedKey={(key) => {
+                        this.setState({ selectedKey: key });
+                    }}
+                />
+
+            </div>
+        );
+    }
 }
 

@@ -99,7 +99,7 @@ const storeOptions = {
 }
 global.store = new Store(storeOptions);
 // store.set('preferences.notifications.interval', 0.1)
-store.clear();
+// store.clear();
 // console.log(store.store)
 
 /* Configure axios */

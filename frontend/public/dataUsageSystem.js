@@ -3,7 +3,7 @@ const isWindows = process.platform == 'win32';
 
 const APP_SNAPSHOT_INTERVAL = 5000
 const POWERSHELL_GET_PROCESS_COMMAND = 
-    `Get-Process | Where-Object {$_.mainWindowTitle} | Select-Object Name, mainWindowtitle, Description, Path | ConvertTo-Json | % {$_ -replace("\\u200B")}`
+    `Get-Process | Where-Object {$_.mainWindowTitle} | Select-Object Name, mainWindowtitle, Description, Path | ConvertTo-Json | % {$_ -replace("\\u200B")} | % {$_ -replace("\\u200E")}`
 
 /**
  * Data usage system states
@@ -26,16 +26,15 @@ function dataUsageSystem() {
      */
     this.captureAppSnapshot = async function () {
         let openProcesses = await this.getOpenProcesses();
-        let appUsage = global.store.get('dataUsage.unsynced.appUsage')
 
         // Update app usage
+        let appUsage = global.store.get('dataUsage.unsynced.appUsage');
         openProcesses.forEach( taskName => {
             let newValue = (taskName in appUsage)
                 ? appUsage[taskName] + APP_SNAPSHOT_INTERVAL
                 : 0;
             appUsage[taskName] = newValue;
         })
-
         global.store.set('dataUsage.unsynced.appUsage', appUsage)
 
         console.log(appUsage)

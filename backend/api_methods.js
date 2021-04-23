@@ -15,22 +15,6 @@
     constructor() {}
 
     /**
-     * Gets the response values for a failed create user
-     * @param {String} displayName
-     * @param {String} password 
-     * @returns array of reason and message
-     */
-    async postCreateUser(displayName, password) {
-        let r = ""; let m = "";
-
-        if (displayName === "") { r = "BAD_DISPLAY_NAME"; m = "Display name cannot be empty."; }
-        else if (password.length < 8) { r = "BAD_PASS"; m = "Your password must be at least 8 characters long."; }
-        else { r = "BAD_EMAIL"; m = "Email already in use."; }
-
-        return [r, m];
-    }
-
-    /**
      * Encrypts the given value
      * @param {String} password 
      * @returns encrypted password
@@ -49,6 +33,11 @@
      */
     async checkPass(password, email) {
 
+        // No Password
+        let chkPass = await this.chkValues("password", password);
+        if (chkPass == false) { return chkPass; };
+
+        // Checks for valid password
         let dec_pass = atob(password)
         let decryptPass = await userDB.getPassword(email).then((r) => { 
             if (r != false) { return cryptr.decrypt(r) }
@@ -62,26 +51,60 @@
     /**
      * Checks if the token is valid
      * @param {String} token 
-     * @returns id or error message
+     * @returns id or error message (invalid token)
      */
     async checkToken(token) {
-        let r = ""; let m = ""
 
-        if (typeof token !== 'undefined') {
-            let id = await userToken.getIDFromToken(token);
-            if (id == false) {
-                r = "INVALID_TOKEN";
-                m = "The token given is invalid."
-            } else {
-                return id;
+        // No Token
+        let chkToken = await this.chkValues("token", token);
+        if (chkToken == false) { return chkToken; }; 
+
+        // Check Token
+        let id = await userToken.getIDFromToken(token);
+        if (id === false) { return ["INVALID_TOKEN", "The token given is invalid."]; }
+        return id;
+    }
+
+    /**
+     * Checks if a given value is undefined
+     * @param {String} type 
+     * @param {String} value 
+     * @returns true if not undefined
+     */
+    async chkValues(type, value) {
+
+        let r = "";
+        let m = "";
+        
+        // Undefined
+        let test = await userDB.checkUndefined([value]);
+        if (!test) {
+            switch(type) {
+                case "email": 
+                    r = "BAD_EMAIL"
+                    m = "No email was given."
+                    break;
+                case "password":
+                    r = "BAD_PASSWORD"
+                    m = "No password was given."
+                    break;
+                case "display_name":
+                    r = "BAD_DISPLAY_NAME"
+                    m = "No display name was given."
+                    break;
+                case "token":
+                    r = "INVALID_TOKEN";
+                    m = "No token was given.";
+                    break;
+                default:
+                    r = "BAD_INPUT"
+                    m = "There is an empty input."
+                    
             }
-        }
-        else {
-            r = "INVALID_TOKEN";
-            m = "No token was given.";
+            return [r, m]
         }
 
-        return [r, m];
+        return true;
     }
 
     /**
@@ -126,11 +149,11 @@
 
     /**
      * Generate insights for user based on data/app usage statistics
-     * @returns array of two arrays [[header], [content]]
+     * @returns list of JSON object of two arrays [[header], [content]]
      */
     async generateInsights() {
 
-        // Return array [[header], [content]] if you were able to generate insights
+        // Return list of JSON [{header: header, content: content}, ...] if you were able to generate insights
 
         // Return false if fail to generate insights
         return false;

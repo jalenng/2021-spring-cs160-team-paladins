@@ -22,6 +22,13 @@ class db {
      * @returns true if no error, false for error
      */
      async createUser(givenEmail, givenPass, displayName) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([givenEmail, givenPass, displayName]);
+        if (checkValues == false) {
+            return false;
+        }
+
         let q = "INSERT INTO Users (email, pass, displayName)";
         q = q + "VALUES ('" + givenEmail + "', '" + givenPass + "', '" + displayName + "')";
 
@@ -93,6 +100,13 @@ class db {
      * @returns true if no error, false if fails
      */
     async changeEmail(oldEmail, newEmail) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([oldEmail, newEmail]);
+        if (checkValues == false) {
+            return false;
+        }
+
         let q = "UPDATE Users SET email='" + newEmail + "'"
 
         return await this.dbPromise(false, q, oldEmail);
@@ -133,6 +147,14 @@ class db {
      * @returns true if no error, false if fails
      */
     async setDisplayName(userEmail, displayName) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, displayName]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets display name
         let q = "UPDATE Users SET displayName='" + displayName + "'"
 
         return await this.dbPromise(false, q, userEmail);
@@ -162,6 +184,14 @@ class db {
      * @returns true if no error, false if fails
      */
     async setNotiInterval(userEmail, newInt) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, newInt]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets notification interval
         let q = "UPDATE UserPreferences SET notiInterval=" + newInt
 
         return await this.dbPromise(false, q, userEmail)
@@ -191,6 +221,14 @@ class db {
      * @param {String} newSound new sound to set to (sound name in database)
      */
     async setNotiSound(userEmail, newSound) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, newSound]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets notification sound
         let q = "UPDATE UserPreferences SET notiSound='" + newSound + "'";
 
         return await this.dbPromise(false, q, userEmail);
@@ -220,8 +258,16 @@ class db {
      * @returns true if no error, false if fails
      */
     async setNotiSoundOn(userEmail, boolValue) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, boolValue]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets boolValue
         let i = boolValue ? true : false;
-        let q = "UPDATE userPreferences SET notiSoundOn=" + i
+        let q = "UPDATE UserPreferences SET notiSoundOn=" + i
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -250,8 +296,16 @@ class db {
      * @returns true if no error
      */
     async setDataUsageOn(userEmail, boolValue) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, boolValue]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets boolValue
         let i = boolValue ? true : false;
-        let q = "UPDATE userPreferences SET dataUsageOn=" + i
+        let q = "UPDATE UserPreferences SET dataUsageOn=" + i
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -278,8 +332,16 @@ class db {
      * @returns true if no error; false if fails
      */
     async setAppUsageOn(userEmail, boolValue) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, boolValue]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets boolValue
         let i = boolValue ? true : false;
-        let q = "UPDATE userPreferences SET appUsageOn=" + i
+        let q = "UPDATE UserPreferences SET appUsageOn=" + i
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -293,7 +355,14 @@ class db {
      * @returns true if success in updating datausage records, false if fails
      */
     async setDataUsage(userEmail, screenTime, timerCount, usageDate) {
-        //let days = await this.getDate(numofDates).then((result) => { return result; })
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, screenTime, timerCount, usageDate]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Checks for existing record
         let check = await this.check("DataUsage", userEmail, "", usageDate);
         let q = "";
 
@@ -346,7 +415,14 @@ class db {
      * @returns true if success in updating appusage records, false if fails
      */
     async setAppUsage(userEmail, appName, appTime, date) {
-        //let today = await this.getDate(0).then((result) => { return result; })
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, appName, appTime, date]);
+        if (checkValues == false) {
+            return false;
+        }
+        
+        // Checks for existing record
         let check = await this.check("AppUsage", userEmail, appName, date).then((result) => { return result; })
         let q = "";
 
@@ -383,7 +459,7 @@ class db {
 
         // Querying Result
         let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
-            if (err) { resolve(false) }
+            if (err) { console.log(err); resolve(false) }
             else { resolve(result) }
         }));
 
@@ -512,6 +588,20 @@ class db {
         queryString = queryString + qPart + date + "'"
 
         return queryString;
+    }
+
+    /**
+     * Checks for undefined values
+     * @param {Array} list 
+     * @returns true if no undefined values
+     */
+    async checkUndefined(list) {
+        for (const item of list) {
+            if (typeof item === 'undefined' || item.length === 0 || item === null) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

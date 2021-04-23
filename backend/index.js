@@ -176,15 +176,7 @@ const { route } = require('./index.js');
     ///------------------------------------------------------------------------
  
     // Gets preferences of user
-<<<<<<< HEAD
-<<<<<<< HEAD
-    router.get('/pref/:user', async function (req, res) {
-=======
-    router.get('/pref', async function (req, res) {
->>>>>>> 99978f9 (updated token and 200 response code)
-=======
     router.get('/prefs', async function (req, res) {
->>>>>>> 79ab3e7 (reorganized code)
       let token = req.headers.auth;
       let email = ""
  
@@ -211,20 +203,8 @@ const { route } = require('./index.js');
  
     });
  
-<<<<<<< HEAD
-    // Saves the user preferences (incomplete)
-<<<<<<< HEAD
-<<<<<<< HEAD
-    router.put('/pref/:user', async function (req, res) {
-=======
-    router.put('/pref', async function (req, res) {
->>>>>>> 99978f9 (updated token and 200 response code)
-=======
-=======
     // Saves the user preferences
->>>>>>> adcf8d9 (checks, postman fail cases)
     router.put('/prefs', async function (req, res) {
->>>>>>> 79ab3e7 (reorganized code)
       let token = req.headers.auth;
       let notiInterval = req.body.notifications.interval;
       let notiSound = req.body.notifications.sound;
@@ -252,16 +232,8 @@ const { route } = require('./index.js');
       else { res.status(504).send({ reason: "SAVE_FAILED", message: "Couldn't save all preferences." }); }
     });
 
-<<<<<<< HEAD
-    // Gets data usage (incomplete)
-<<<<<<< HEAD
-    router.get('/data/:user', async (req, res) => {
-=======
-=======
     // Gets data usage
->>>>>>> 6df2ca3 (preferences postman, finished test.js)
     router.get('/data', async (req, res) => {
->>>>>>> 99978f9 (updated token and 200 response code)
       let token = req.headers.auth;
       let email = ""
 
@@ -283,16 +255,8 @@ const { route } = require('./index.js');
       else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data/app usage." }) }
     });
 
-<<<<<<< HEAD
-    // Updates the data/app usage of user (incomplete)
-<<<<<<< HEAD
-    router.put('/data/:user', async (req, res) => {
-=======
-=======
     // Updates the data/app usage of user
->>>>>>> 6df2ca3 (preferences postman, finished test.js)
     router.put('/data', async (req, res) => {
->>>>>>> 99978f9 (updated token and 200 response code)
       let token = req.headers.auth;
       let email = ""
 
@@ -328,101 +292,6 @@ const { route } = require('./index.js');
 
     });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    // Change email (incomplete)
-    router.put('/user/:user', async (req, res) => {
-=======
-=======
-    ///------------------------------------------------------------------------
-
->>>>>>> e6dd6ac (clean code, test create, login, change email, delete APIs)
-    // Change email
-    router.put('/user', async (req, res) => {
->>>>>>> 99978f9 (updated token and 200 response code)
-      let token = req.headers.auth;
-      let oldEmail = ""
-
-      // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
-        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else {  oldEmail = r; return true; }
-      })
-      if (checkToken == false) { return; }
-
-      // Checks crypto pass and changes email -------------------------
-      let newEmail = req.body.data.email;
-      let pass = req.body.data.password;
-      let checkPass = await api_methods.checkPass(pass, oldEmail).then((r) => { return r; });
-
-      if (checkPass == true) {
-        let success = await userDB.changeEmail(oldEmail, newEmail).then((r) => { return r; });
-        if (success == true) { 
-          let tokenValue = await userToken.createToken(newEmail).then((r) => { return r; });
-          res.status(200).send({ token: tokenValue, reason: "SUCCESS", message: "Changed email" });  
-        }
-        else { res.status(409).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
-      }
-      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
-
-    });
-
-    // Delete user
-    router.delete('/user', async (req, res) => {
-<<<<<<< HEAD
-
-=======
->>>>>>> 99978f9 (updated token and 200 response code)
-      let token = req.headers.auth;
-      let email = ""
-
-      // Checks Token -------------------------
-      let checkToken = await api_methods.checkToken(token).then((r) => {
-        if (Array.isArray(r)) { res.status(401).send({ reason: r[0], message: r[1] }); return false; }
-        else { email = r; return true; }
-      })
-      if (checkToken == false) { return; }
-
-<<<<<<< HEAD
-      //------------------------
-<<<<<<< HEAD
-      // Delete User
-      let password = req.body.password;
-
-      // Checks crypto pass
-      let dec_pass = atob(password)
-      let success = await userDB.getPassword(email).then((r) => {
-        if (r != false) {
-          let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } else { return false }
-        }
-=======
-      
-      // Checks crypto pass and deletes user
-      let pass = req.body.data.password;
-      let dec_pass = atob(pass)
-      let success = await userDB.getPassword(email).then((r) => {
-        let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } 
-        else { return false }
->>>>>>> 99978f9 (updated token and 200 response code)
-      })
-=======
-      // Checks crypto pass and deletes user -------------------------
-      let pass = req.body.data.password;
-      let checkPass = await api_methods.checkPass(pass, email).then((r) => { return r; });
->>>>>>> e6dd6ac (clean code, test create, login, change email, delete APIs)
-
-      if (checkPass == true) { 
-        let success = await userDB.deleteAccount(email).then((r) => { return r; }); 
-        if (success == true) { res.status(200).send({ reason: "SUCCESS", message: "Deleted account" }); }
-        else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
-      }
-      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
-    });
- 
-=======
     // Get Insights
     router.get('/data/insights', async (req, res) => {
       let token = req.headers.auth;
@@ -443,7 +312,6 @@ const { route } = require('./index.js');
       else { res.status(504).send({ reason: "RETRIEVE_FAILED", message: "Insights could not be generated." }) }
     });
 
->>>>>>> 79ab3e7 (reorganized code)
     //--------------------------
  
     let server = app.listen(3000, function () {
@@ -455,185 +323,3 @@ const { route } = require('./index.js');
 );
 
 //-------------------------------------
-
-<<<<<<< HEAD
-/*
- // Database Connection
- let db = require('./db.js');
- let userDB = new db("localhost", "newuser", "password", "iCare");
-
- // API Methods
- let apiM = require('./api_methods.js');
- let api_methods = new apiM();
-
-<<<<<<< HEAD
-<<<<<<< HEAD
- // Crypto Requirements
- var atob = require('atob');
- var Cryptr = require('cryptr'),
- cryptr = new Cryptr('myTotalySecretKey'); 
-
- // Token Methods
- let tokenClass = require('./token.js')
- let userToken = new tokenClass();
-
-
- // WORKING 
- async function testCreate() {
-  let email = 'test@gmail.com'
-  let password = 'passpasspass';
-  let dName = 'test';
-<<<<<<< HEAD
-
-  let success = true;
-
-=======
-
-  let success = true;
-
->>>>>>> ca128ad (testing code)
-  // Checks password length
-  if (password.length < 8) { success = false; }
-  else {
-    // CRYPTO: Encrypt password and store in the database
-    let dec_pass = atob(password);
-    let encrypted_pass = cryptr.encrypt(dec_pass);
-    if (email === null || password === null || dName === false) { success = false; }
-    else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
-  }
-
-  // Response Codes
-  if (success == true) {
-    console.log("Successful Creation")
-  }
-  else {
-    let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
-    console.log(array)
-  }
- }
-
-<<<<<<< HEAD
-
- // WORKING
- async function testLogin() {
-  let email = 'te@gmail.com'
-  let password = 'passpasspass';
-  let dName = '';
-
-  // Checks crypto pass
-  let dec_pass = atob(password)
-  let success = await userDB.getPassword(email).then((r) => {
-    if (r != false) {
-      let decryptPass = cryptr.decrypt(r)
-    if (decryptPass == dec_pass) { return true } else { return false }
-    }
-  })
-  
-  // Response Codes
-  if (success == true) {
-    let tokenValue = await userToken.createToken(email).then((res) => { return res });
-    dName = await userDB.getDisplayName(email).then((res) => { return res; });
-
-=======
-
- // WORKING
- async function testLogin() {
-  let email = 'test@gmail.com'
-  let password = 'passpasspass';
-  let dName = '';
-
-  // Checks crypto pass
-  let dec_pass = atob(password)
-  let success = await userDB.getPassword(email).then((r) => {
-    let decryptPass = cryptr.decrypt(r)
-    if (decryptPass == dec_pass) { return true } else { return false }
-  })
-  
-  // Response Codes
-  if (success == true) {
-    let tokenValue = await userToken.createToken(email).then((res) => { return res });
-    dName = await userDB.getDisplayName(email).then((res) => { return res; });
-
->>>>>>> ca128ad (testing code)
-    console.log("Sucessful Login DN: " + dName)
-    
-  }
-  else { console.log("Failed Login") }
- }
-
-
-=======
-
-=======
-/*
->>>>>>> a82622e (added token based on user id)
- // WORKS!
- async function testDataUsage() {
-
-  let email = "basic@gmail.com"
-  //let duSuccess = await userDB.setDataUsage(email, 270, 5);
-  //console.log("Success? " + duSuccess);
-
-  let value = await userDB.getDataUsage(email, "ALL TIME")
-  let listofvalues = await api_methods.getStatistics(value).then((res) => { return res; })
-
-  console.log("Average Screen Time: " + listofvalues[0]);
-  console.log("Min Screen Time Spend: " + listofvalues[1]);
-  console.log("Max Screen Time Spend: " + listofvalues[2]);
-  console.log();
-  console.log("Average Timer Count: " + listofvalues[3]);
-  console.log("Min Timer Count: " + listofvalues[4]);
-  console.log("Max Timer Count: " + listofvalues[5]);
- }
-*/
-
-<<<<<<< HEAD
-
-
->>>>>>> 0e70f85 (mocha testing and data usage aggregation)
-async function test() {
-
-  testDataUsage()
-  
-<<<<<<< HEAD
-<<<<<<< HEAD
-  //await testCreate()
-=======
-  await testCreate()
->>>>>>> ca128ad (testing code)
-  await testLogin()
-=======
->>>>>>> 0e70f85 (mocha testing and data usage aggregation)
-=======
-/*
-async function test() {
-
->>>>>>> 6df2ca3 (preferences postman, finished test.js)
-
-}
-
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-//test()
-=======
-test();
->>>>>>> ca128ad (testing code)
-=======
-test()
->>>>>>> 0e70f85 (mocha testing and data usage aggregation)
-=======
-//test()
-=======
-test()
->>>>>>> 6df2ca3 (preferences postman, finished test.js)
-*/
-<<<<<<< HEAD
->>>>>>> 1430444 (fixed create user bugs)
-=======
-
->>>>>>> a82622e (added token based on user id)
-=======
->>>>>>> 8ec33a6 (cleaned/updated index.js)

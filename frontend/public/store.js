@@ -3,7 +3,7 @@ const Store = require('electron-store');
 const path = require('path');
 const axios = require('axios');
 
-/* Preferences defaults */
+/* Store defaults */
 const preferencesStoreDefaults = {
     notifications: {
         enableSound: true,
@@ -20,7 +20,6 @@ const preferencesStoreDefaults = {
     }
 }
 
-/* Sounds defaults */
 const soundsStoreDefaults = {
     defaultSounds: [
         {
@@ -55,8 +54,7 @@ const soundsStoreDefaults = {
     customSounds: []
 }
 
-/* Account defaults */
-const accountStoreDefaults = {
+const accountsStoreDefaults = {
     token: null,
     accountInfo: {
         email: '',
@@ -64,7 +62,17 @@ const accountStoreDefaults = {
     }
 }
 
-/* Insights defaults */
+const dataUsageDefaults = {
+    unsynced: {
+        appUsage: [],
+        timerUsage: []
+    },
+    fetched: {
+        appUsage: [],
+        timerUsage: []
+    }
+}
+
 const insightsDefaults = {
     cards: [
         {
@@ -74,46 +82,34 @@ const insightsDefaults = {
     ]
 }
 
-/* Data usage defaults */
-const dataUsageDefaults = {
-    unsynced: {
-        appUsage: {},
-        timerUsage: {}
-    },
-    fetched: {
-        appUsage: {},
-        timerUsage: {}
-    }
-}
-
 /* Create the store */
 const storeOptions = {
     defaults: {
         preferences: preferencesStoreDefaults,
         sounds: soundsStoreDefaults,
-        account: accountStoreDefaults,
-        insights: insightsDefaults,
-        dataUsage: dataUsageDefaults
+        accounts: accountsStoreDefaults,
+        dataUsage: dataUsageDefaults,
+        insights: insightsDefaults
     },
     watch: true
 }
 global.store = new Store(storeOptions);
-// store.set('preferences.notifications.interval', 0.1)
 // store.clear();
 // console.log(store.store)
 
 /* Configure axios */
 axios.defaults.baseURL = 'http://165.232.156.120:3000';
 axios.defaults.timeout = 10000;
-axios.defaults.headers.common['auth'] = store.get('account.token');
+axios.defaults.headers.common['auth'] = store.get('accounts.token');
 
+/*---------------------------------------------------------------------------*/
 
 /**
  * Handler for store change events
  */
-// Handles a change to preferences.startup.startAppOnLogin 
+
+// Configure the system's login items when "Start app on login" is changed
 store.onDidChange('preferences.startup.startAppOnLogin', (newVal, oldVal) => {
-    // Start app when the user logs in
     app.setLoginItemSettings({
         openAtLogin: newVal,
         enabled: newVal,
@@ -128,91 +124,51 @@ store.onDidChange('preferences', () => {
 store.onDidChange('sounds', () => {
     global.mainWindow.webContents.send('store-changed', 'sounds');
 });
-store.onDidChange('account', () => {
+store.onDidChange('accounts', () => {
     // Configure axios to make requests with the token
-    axios.defaults.headers.common['auth'] = store.get('account.token');
+    axios.defaults.headers.common['auth'] = store.get('accounts.token');
     global.mainWindow.webContents.send('store-changed', 'accounts');
 });
 store.onDidChange('insights', () => {
     global.mainWindow.webContents.send('store-changed', 'insights');
 });
 
+/*---------------------------------------------------------------------------*/
 
 /**
- * Preferences-related IPC event handlers 
- * These event handlers retrieve and update the preferences on behalf of the renderer.
+ * IPC event handlers & functions to manipulate and retrieve from the store
  */
 
-// Handles a request to retrieve the preferences store
-ipcMain.on('get-prefs-store', (event) => {
-    event.returnValue = store.get('preferences');
-});
+// Retrieve the local store
+ipcMain.on('get-store', (event, key) => event.returnValue = store.get(key));
 
-// Handles a request to update the preferences store
-ipcMain.handle('set-prefs-store-value', (event, key, value) => {
+// Handles a request to update the local preferences store
+ipcMain.handle('set-prefs', (event, key, value) => {
     store.set(`preferences.${key}`, value);
 });
 
-// Handles a request to upload the user's preferences.
-// Involves backend communication.
+// Push user preferences to the backend
+// PUT - /prefs
 ipcMain.handle('push-prefs', async (event) => {
-    let result = { success: false, data: {} };
-
-    try {
-        // Send PUT request and await for response
-        let res = await axios.put('prefs', {
-            notifications: store.get('preferences.notifications'),
-            dataUsage: store.get('preferences.dataUsage')
-        });
-
-        // If preferences was received by the backend successful
-        if (res.status === 200) {
-            result.success = true;
-        }
-    }
-    // Handle errors
-    catch (error) { result.data = handleRequestError(error) }
-    
-    return result;
+    const data = {
+        notifications: store.get('preferences.notifications'),
+        dataUsage: store.get('preferences.dataUsage')
+    };
+    return await returnAxiosResult('put', 'prefs', data, [200]);
 })
 
-// Handles a request to retrieve the user's preferences.
-// Involves backend communication.
+// Fetch user preferences from the backend
+// GET - /prefs
 ipcMain.handle('fetch-prefs', async (event) => {
-    let result = { success: false, data: {} };
-
-    try {
-        // Send GET request and await for response
-        let res = await axios.get('prefs');
-
-        // If preferences retrieval was successful
-        if (res.status === 200) {
-            store.set('preferences.notifications', res.data.notifications);
-            store.set('preferences.dataUsage', res.data.dataUsage);
-
-            result.success = true;
-        }
+    const successCallback = (res) => {
+        store.set('preferences.notifications', res.data.notifications);
+        store.set('preferences.dataUsage', res.data.dataUsage);
     }
-    catch (error) { result.data = handleRequestError(error) }
-    
-    return result;
+    return await returnAxiosResult('get', 'prefs', {}, [200], successCallback);
 })
 
-
-/**
- * Sounds-related IPC event handlers 
- * These event handlers retrieve and update the sounds on behalf of the renderer.
- */
-
-// Handles a request to retrieve the sounds store
-ipcMain.on('get-sounds-store', (event) => {
-    event.returnValue = store.get('sounds');
-});
-
-// Handles a request to update the sounds store
+// Show a dialog to import a custom sound
 ipcMain.handle('add-custom-sound', (event) => {
-
-    // Open file selection dialog box
     dialog.showOpenDialog(mainWindow, {
         title: 'Choose custom sound',
         filters: [{
@@ -247,223 +203,174 @@ ipcMain.handle('add-custom-sound', (event) => {
         }).catch(err => {
             console.log(err);
         })
-
 });
 
-
-/**
- * Account store-related IPC event handlers 
- * These event handlers retrieve and update the account store on behalf of the renderer.
- */
-
-// Handles a request to retrieve the account store
-ipcMain.on('get-account-store', (event) => {
-    event.returnValue = store.get('account');
-});
-
-// Handles a request to retrieve the latest account info.
-// Involves backend communication.
+// Fetch the latest account info from the backend
+// GET - /user
 ipcMain.handle('fetch-account-info', async (event) => {
-    let result = { success: false, data: {} };
-
-    try {
-
-        // Send GET request and await for response
-        let res = await axios.get('user');
-
-        // If information retrieval was successful
-        if (res.status === 200) {
-
-            let accountInfo = {
-                email: res.data.email,
-                displayName: res.data.displayName
-            }
-            store.set('account.accountInfo', accountInfo)
-
-            result.success = true;
+    const successCallback = (res) => {
+        const accountInfo = {
+            email: res.data.email,
+            displayName: res.data.displayName
         }
+        store.set('accounts.accountInfo', accountInfo);
     }
-    catch (error) { result.data = handleRequestError(error) }
-    
-    return result;
+    return await returnAxiosResult('get', 'user', {}, [200], successCallback);
 })
 
-// Handles a request to authenticate the user (by signing in or signing up).
-// Involves backend communication.
+// Authenticate the user and retrieve a token (by signing in or signing up)
+// If signing in: POST - /auth
+// If signing up: POST - /user
 ipcMain.handle('authenticate', async (event, email, password, createAccount = false, displayName = '') => {
-    let result = { success: false, data: {} };
+    let location;
+    let data;
 
-    try {
-        // Send POST request and await for response
-        let res;
-
-        if (createAccount) {    // Sign up
-            res = await axios.post('user', {
-                email: email,
-                password: password,
-                displayName: displayName
-            })
-        }
-        else {  // Sign in
-            res = await axios.post('auth', {
-                email: email,
-                password: password
-            });
-        }
-
-        // If sign-in was successful
-        if (res.status === 200 || res.status === 201) {
-            
-            let account = {
-                token: res.data.token,
-                accountInfo: {
-                    email: res.data.accountInfo.email,
-                    displayName: res.data.accountInfo.displayName
-                }
-            }
-            store.set('account', account)
-
-            result.success = true;
-
-        }
-    }
-    catch (error) { result.data = handleRequestError(error) }
-
-    return result;
-})
-
-// Handles a request to clear the account store (by signing out or deleting the account).
-// Involves backend communication.
-ipcMain.handle('sign-out', async (event, deleteAccount=false, password='') => {
-    let result = { success: false, data: {} };
-
-    try {
-        if (deleteAccount) {
-
-            // Send DELETE request and await for response
-            let res = await axios.delete('user', { // Second arg is a config object with property data
-                data: {
-                    password: password,
-                }
-            });
-
-            // If sign-in was successful
-            if (res.status === 200) {
-                store.reset('account');
-                store.reset('insights');
-                store.reset('dataUsage');
-                result.success = true;
-            }
-            
-        }
-        else {
-            store.reset('account');
-            store.reset('insights');
-            store.reset('dataUsage');
-            result.success = true;
-        }
-    }
-    catch (error) { result.data = handleRequestError(error) }
-
-    return result;
-})
-
-// Handles a request to authenticate the user (by signing in or signing up).
-// Involves backend communication.
-ipcMain.handle('update-account-info', async (event, email, displayName, password) => {
-    let result = { success: false, data: {} };
-
-    try {
-        // Send PUT request and await for response
-        let res = await axios.put('user', {
+    if (createAccount) { // Sign up
+        location = 'user';
+        data = {
             email: email,
-            displayName: displayName,
             password: password,
-        });
+            displayName: displayName
+        }
+    }
+    else {  // Sign in
+        location = 'auth';
+        data = {
+            email: email,
+            password: password
+        }
+    }
 
-        // If sign-in was successful
-        if (res.status === 202) {
-
-            let accountInfo = {
-                email: res.data.email,
-                displayName: res.data.displayName
+    const successCallback = (res) => {
+        const accounts = {
+            token: res.data.token,
+            accountInfo: {
+                email: res.data.accountInfo.email,
+                displayName: res.data.accountInfo.displayName
             }
-            store.set('account.accountInfo', accountInfo)
-
-            result.success = true;
-        }
-
+        };
+        store.set('accounts', accounts);
     }
-    catch (error) { result.data = handleRequestError(error) }
-    
+
+    return await returnAxiosResult('post', location, data, [200, 201], successCallback);
+})
+
+// Clear the accounts store (by signing out or deleting the accounts)
+// If deleting: DELETE - /user
+ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') => {
+    const data = {
+        password: password,
+    }
+    let result;
+
+    if (deleteAccount)
+        result = await returnAxiosResult('delete', 'user', data, [200]);
+
+    if (!deleteAccount || result.success) {
+        store.reset('accounts');
+        store.reset('insights');
+        store.reset('dataUsage');
+    }
+
     return result;
 })
 
+// Update accounts information from the backend
+// PUT - /user
+ipcMain.handle('update-account-info', async (event, email, displayName, password) => {
+    const data = {
+        email: email,
+        displayName: displayName,
+        password: password,
+    };
+    const successCallback = (res) => {
+        let accountInfo = {
+            email: res.data.email,
+            displayName: res.data.displayName
+        }
+        store.set('accounts.accountInfo', accountInfo)
+    }
 
-/**
- * Insights store-related IPC event handlers
- * These event handlers retrieve and update the data usage store on behalf of the renderer.
- */
-// Handles a request to retrieve the insights store
-ipcMain.on('get-insights-store', (event) => {
-    event.returnValue = store.get('insights');
-});
+    return await returnAxiosResult('put', 'user', data, [202], successCallback);
+})
 
-// Handles a request to retrieve the latest insights.
-// Involves backend communication.
+// Fetch data usage from the backend
+// GET - /data
+ipcMain.handle('fetch-data-usage', async (event) => {
+    const successCallback = (res) => {
+        store.set('dataUsage.fetched', res.data.cards);
+    }
+    return await returnAxiosResult('get', 'data', {}, [200], successCallback);
+})
+
+// Fetch the latest insights.
+// GET - /data/insights
 ipcMain.handle('fetch-insights', async (event) => {
-    let result = { success: false, data: {} };
-
-    try {
-        // Send GET request and await for response
-        let res = await axios.get('data/insights');
-
-        // If insights retrieval was successful
-        if (res.status === 200) {
-            store.set('insights.cards', res.data.cards);
-            result.success = true;
-        }
+    const successCallback = (res) => {
+        store.set('insights.cards', res.data.cards);
     }
-    catch (error) { result.data = handleRequestError(error) }
-    
-    return result;
+    return await returnAxiosResult('get', 'data/insights', {}, [200], successCallback);
 })
 
+/*---------------------------------------------------------------------------*/
 
 /**
- * Helper functions
+ * Helper function to make a call with axios
+ * @param {*} error 
+ * @returns 
  */
+async function returnAxiosResult(request, location, data, successStatuses, successCallback = () => { }) {
+    try {
+        let res = request === 'get'
+            ? await axios.get(location, { data })
+            : request === 'delete'
+                ? await axios.delete(location, { data })
+                : request === 'head'
+                    ? await axios.head(location, { data })
+                    : request === 'options'
+                        ? await axios.options(location, { data })
+                        : request === 'post'
+                            ? await axios.post(location, data)
+                            : request === 'put'
+                                ? await axios.put(location, data)
+                                : request === 'patch'
+                                    ? await axios.patch(location, data)
+                                    : console.log(`Invalid request type: ${request}`);
 
-/**
- * Handle an exception from making an API call via axios
- * @param {Error} error 
- * @returns an object with the reason and message of the error
- */
-function handleRequestError(error) {
-
-    let resultData;
-
-    // Check if backend returned a reason and message for the error
-    let responseMessageExists = 
-        error.response 
-        && error.response.data 
-        && error.response.data.reason 
-        && error.response.data.message;
-
-    if (responseMessageExists) {
-        resultData = {
-            reason: error.response.data.reason,
-            message: error.response.data.message
+        // If axios call was successful
+        if (successStatuses.indexOf(res.status) != -1) {
+            successCallback(res);
+            return {
+                success: true,
+                data: {}
+            }
         }
     }
+    catch (error) {
+        // If backend returned a reason and message for the error
+        let responseMessageExists =
+            error.response
+            && error.response.data
+            && error.response.data.reason
+            && error.response.data.message;
 
-    else {
-        // Else, return generic error
-        resultData = {
-            reason: 'RESPONSE_ERR',
-            message: error.toString()
+        if (responseMessageExists) {
+            return {
+                success: false,
+                data: {
+                    reason: error.response.data.reason,
+                    message: error.response.data.message
+                }
+            }
+        }
+        else {      // Return generic error
+            return {
+                success: false,
+                data: {
+                    reason: 'RESPONSE_ERR',
+                    message: error.toString()
+                }
+            }
         }
     }
-    return resultData;
-
 }

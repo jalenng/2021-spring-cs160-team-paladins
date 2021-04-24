@@ -38,7 +38,7 @@ window.store = {
          * Retrieve info about the signed-in account from the account store
          * @returns {Object}
          */
-        getAll: () => { return ipcRenderer.sendSync('get-account-store') },
+        getAll: () => { return ipcRenderer.sendSync('get-store', 'accounts') },
         
         /**
          * Sign into an account.
@@ -93,14 +93,14 @@ window.store = {
          * Retrieve all preferences from the preferences store
          * @returns {Object}
          */
-        getAll: () => { return ipcRenderer.sendSync('get-prefs-store') },
+        getAll: () => { return ipcRenderer.sendSync('get-store', 'preferences') },
 
         /**
          * Update a preference on the preferences store
          * @param {String} key The key of the preference. e.g. 'notifications.sound'
          * @param {String} value The new value 
          */
-        set: (key, value) => { ipcRenderer.invoke('set-prefs-store-value', key, value) },
+        set: (key, value) => { ipcRenderer.invoke('set-prefs', key, value) },
 
         /**
          * Fetch the latest preferences from the server
@@ -120,7 +120,7 @@ window.store = {
          * Retrieve all sounds from the sounds store
          * @returns {Object}
          */
-        getAll: () => { return ipcRenderer.sendSync('get-sounds-store') },
+        getAll: () => { return ipcRenderer.sendSync('get-store', 'sounds') },
 
         /**
          * Open a file selection dialog for adding a custom sound to the sounds store
@@ -135,7 +135,7 @@ window.store = {
          * Retrieve insights from the data usage store
          * @returns {Object}
          */
-        getAll: () => { return ipcRenderer.sendSync('get-insights-store') },
+        getAll: () => { return ipcRenderer.sendSync('get-store', 'insights') },
 
         /* Event system */
         eventSystem: new EventSystem()

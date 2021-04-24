@@ -89,7 +89,8 @@ const storeOptions = {
         sounds: soundsStoreDefaults,
         accounts: accountsStoreDefaults,
         dataUsage: dataUsageDefaults,
-        insights: insightsDefaults
+        insights: insightsDefaults,
+        messages: []
     },
     watch: true
 }
@@ -131,6 +132,9 @@ store.onDidChange('accounts', () => {
 });
 store.onDidChange('insights', () => {
     global.mainWindow.webContents.send('store-changed', 'insights');
+});
+store.onDidChange('messages', () => {
+    global.mainWindow.webContents.send('store-changed', 'messages');
 });
 
 /*---------------------------------------------------------------------------*/
@@ -316,6 +320,26 @@ ipcMain.handle('fetch-insights', async (event) => {
     }
     return await returnAxiosResult('get', 'data/insights', {}, [200], successCallback);
 })
+
+// Retrieve the list of in-app messages
+ipcMain.on('get-messages', (event) => {
+    event.returnValue = store.get('messages');
+});
+
+// Add an in-app message
+ipcMain.handle('add-message', (event, message) => {
+    let messages = store.get('messages');
+    messages = [...messages, message];
+    store.set('messages', messages);
+})
+
+// Dismiss an in-app message
+ipcMain.handle('dismiss-message', (event, index) => {
+    let messages = store.get('messages');
+    messages.splice(index, 1);
+    store.set('messages', messages);
+})
+
 
 /*---------------------------------------------------------------------------*/
 

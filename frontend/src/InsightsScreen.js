@@ -13,6 +13,7 @@ import {
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 import { Dialog } from '@fluentui/react/lib/Dialog';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
+import { MessageBarType } from '@fluentui/react/lib/MessageBar';
 
 const divStyle = {
     paddingTop: '10px',
@@ -81,26 +82,26 @@ export default class InsightsScreen extends React.Component {
     render() {
 
         // Map all card objects in the state to React components
-        const cards = this.state.cards.map( card => {
+        const cards = this.state.cards.map(card => {
             return (
                 <DocumentCard styles={cardStyles} >
-    
+
                     {/* Card image */}
-                    <DocumentCardImage 
-                        height={100} 
-                        imageFit={ImageFit.cover} 
+                    <DocumentCardImage
+                        height={100}
+                        imageFit={ImageFit.cover}
                         iconProps={{
                             iconName: 'RedEye',
                             styles: { root: { color: '#ffffff', fontSize: '96px', width: '96px', height: '96px' } }
                         }}
                     />
-    
+
                     {/* Card contents/stack */}
                     <Stack style={cardStackStyle} tokens={{ childrenGap: 8 }}>
                         <Text variant="large" block> {card.header} </Text>
                         <Text block> {card.content} </Text>
                     </Stack>
-    
+
                     {/* Card action buttons */}
                     <DocumentCardActions actions={[
                         {
@@ -112,10 +113,10 @@ export default class InsightsScreen extends React.Component {
                             onClick: () => { alert('Dislike clicked') }
                         }
                     ]} />
-    
+
                 </DocumentCard>
             );
-        });     
+        });
 
         // Create the Insights screen
         return (

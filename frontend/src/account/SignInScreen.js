@@ -9,10 +9,6 @@ import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
 const divStyle = {
-    MozUserSelect: 'none',
-    WebkitUserSelect: 'none',
-    msUserSelect: 'none',
-
     paddingTop: '10px',
     paddingLeft: '30px',
 };

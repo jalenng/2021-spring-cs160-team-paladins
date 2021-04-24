@@ -31,7 +31,7 @@ ipcMain.handle('show-sign-in-popup', event => {
         : `file://${path.join(__dirname, '../build/index.html#signin')}`
     ); 
     
-    signInWindow.menuBarVisible = false;
+    signInWindow.removeMenu();
     signInWindow.on('ready-to-show', () => signInWindow.show());
 
 })
@@ -52,7 +52,7 @@ ipcMain.handle('show-delete-account-popup', event => {
         : `file://${path.join(__dirname, '../build/index.html#deleteAccount')}`
     ); 
 
-    deleteAccountWindow.menuBarVisible = false;
+    deleteAccountWindow.removeMenu();
     deleteAccountWindow.on('ready-to-show', () => deleteAccountWindow.show());
 
 })
@@ -73,7 +73,7 @@ ipcMain.handle('show-edit-account-popup', event => {
         : `file://${path.join(__dirname, '../build/index.html#editAccount')}`
     ); 
     
-    editAccountWindow.menuBarVisible = false;
+    editAccountWindow.removeMenu();
     editAccountWindow.on('ready-to-show', () => editAccountWindow.show());
 
 })
@@ -95,7 +95,7 @@ ipcMain.handle('show-timer-popup', event => {
         : `file://${path.join(__dirname, '../build/index.html#popupTimer')}`
     ); 
     
-    timerPopupWindow.menuBarVisible = false;
+    timerPopupWindow.removeMenu();
     timerPopupWindow.on('ready-to-show', () => timerPopupWindow.show());
     
 })

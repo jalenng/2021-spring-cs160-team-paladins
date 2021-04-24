@@ -9,10 +9,6 @@ import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import { Separator } from '@fluentui/react/lib/Separator';
 
 const divStyle = {
-    MozUserSelect: 'none',
-    WebkitUserSelect: 'none',
-    msUserSelect: 'none',
-
     paddingTop: '10px',
     paddingLeft: '30px',
 };

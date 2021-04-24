@@ -59,7 +59,7 @@ function dataUsageSystem() {
                 psJson.forEach( process => {
                     const winTitle = process.MainWindowTitle;
                     const winDesc = process.Description;
-                    if (winTitle.indexOf(winDesc) === -1) 
+                    if (winTitle.indexOf(winDesc) === -1 || winDesc) 
                         result.push(winTitle);
                     else
                         result.push(winDesc);

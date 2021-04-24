@@ -80,6 +80,7 @@ function createWindow() {
             contextIsolation: false,
 
             // Allow dev tools (for dev) and remote module (for testing) if isDev
+            nodeIntegration: isDev,
             devTools: isDev,
             enableRemoteModule: isDev
         },

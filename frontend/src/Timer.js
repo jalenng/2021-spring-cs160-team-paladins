@@ -92,7 +92,10 @@ export default class Timer extends React.Component {
 
                 {/* Remaining time */}
                 <Text variant={"xxLarge"} style={{ fontSize: "4rem" }} block>
+                  <div id="remainingTimeText">
+                    
                   {this.state.remainingTimeString}
+                  </div>
                 </Text>
 
                 {/* End time - show only if the timer is running*/}
@@ -117,6 +120,7 @@ export default class Timer extends React.Component {
             {/* Toggle button */}
             <TooltipHost content={this.state.state === "running" ? "Pause" : "Start"}>
               <PrimaryButton
+                id="toggleButton"
                 disabled={this.state.state === "idle"}
                 onClick={this.togglePause}
                 style={buttonStyle}

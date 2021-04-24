@@ -93,7 +93,7 @@ export default class App extends React.Component {
 
     return (
       <div>  
-
+        
         <Pivot linkSize='large'>
           <PivotItem itemIcon='Home'>
             <HomeScreen/>

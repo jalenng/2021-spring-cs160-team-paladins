@@ -100,7 +100,7 @@ const NotificationSystem = function() {
         }
         window.setBounds(bounds);
         window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })   
-        window.menuBarVisible = false;
+        window.removeMenu()
 
         // Configure event listeners
         window.on('close', (e) => e.preventDefault())
@@ -151,7 +151,7 @@ const NotificationSystem = function() {
 
         window.setBounds(newBounds); 
         window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-        window.menuBarVisible = false;
+        window.removeMenu()
 
         // Configure event listeners
         window.on('close', (e) => e.preventDefault())

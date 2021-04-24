@@ -140,6 +140,26 @@ window.store = {
         /* Event system */
         eventSystem: new EventSystem()
     },
+    messages: {
+        /**
+         * Retrieve in-app messages
+         * @returns {Object}
+         */
+        getAll: () => { return ipcRenderer.sendSync('get-messages') },
+
+        /**
+         * Dismiss an in-app message
+         */
+        add: (message) => { ipcRenderer.invoke('add-message', message) },
+
+        /**
+         * Dismiss an in-app message
+         */
+        dismiss: (index) => { ipcRenderer.invoke('dismiss-message', index) },
+        
+        /* Event system */
+        eventSystem: new EventSystem()
+    }
 }
 
 

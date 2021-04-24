@@ -93,12 +93,12 @@ const storeOptions = {
         sounds: soundsStoreDefaults,
         account: accountStoreDefaults,
         insights: insightsDefaults,
-        dataUsage: dataUsageDefaults
+        dataUsage: dataUsageDefaults,
+        messages: []
     },
     watch: true
 }
 global.store = new Store(storeOptions);
-// store.set('preferences.notifications.interval', 0.1)
 // store.clear();
 // console.log(store.store)
 
@@ -135,6 +135,9 @@ store.onDidChange('account', () => {
 });
 store.onDidChange('insights', () => {
     global.mainWindow.webContents.send('store-changed', 'insights');
+});
+store.onDidChange('messages', () => {
+    global.mainWindow.webContents.send('store-changed', 'messages');
 });
 
 
@@ -429,6 +432,29 @@ ipcMain.handle('fetch-insights', async (event) => {
     return result;
 })
 
+/**
+ * Message store-related IPC event handlers
+ * These event handlers retrieve and update the list of in-app messages on behalf of the renderer.
+ */
+// Handles a request to retrieve the list of messages
+ipcMain.on('get-messages', (event) => {
+    event.returnValue = store.get('messages');
+});
+
+// Handles a request to dismiss a message
+ipcMain.handle('dismiss-message', (event, index) => {
+    let messages = store.get('messages');
+    messages.splice(index, 1);
+    store.set('messages', messages);
+})
+
+// Handles a request to add a message
+ipcMain.handle('add-message', (event, message) => {
+    let messages = store.get('messages');
+    messages = [...messages, message];
+    store.set('messages', messages);
+})
+    
 
 /**
  * Helper functions

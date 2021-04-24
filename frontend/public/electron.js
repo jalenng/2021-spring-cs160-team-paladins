@@ -15,6 +15,7 @@ require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
 require('./notificationSystem.js');
+require('./dataUsageSystem');
 require('./popupWindows');
 
 const DEFAULT_WINDOW_SIZE = {

@@ -139,23 +139,13 @@ store.onDidChange('insights', () => {
  * IPC event handlers & functions to manipulate and retrieve from the store
  */
 
-// Retrieve the local store
+// Retrieve from the local store
 ipcMain.on('get-store', (event, key) => event.returnValue = store.get(key));
 
-// Handles a request to update the local preferences store
+// Update the local preferences
 ipcMain.handle('set-prefs', (event, key, value) => {
     store.set(`preferences.${key}`, value);
 });
-
-// Push user preferences to the backend
-// PUT - /prefs
-ipcMain.handle('push-prefs', async (event) => {
-    const data = {
-        notifications: store.get('preferences.notifications'),
-        dataUsage: store.get('preferences.dataUsage')
-    };
-    return await returnAxiosResult('put', 'prefs', data, [200]);
-})
 
 // Fetch user preferences from the backend
 // GET - /prefs
@@ -165,6 +155,16 @@ ipcMain.handle('fetch-prefs', async (event) => {
         store.set('preferences.dataUsage', res.data.dataUsage);
     }
     return await returnAxiosResult('get', 'prefs', {}, [200], successCallback);
+})
+
+// Update user preferences on the backend
+// PUT - /prefs
+ipcMain.handle('push-prefs', async (event) => {
+    const data = {
+        notifications: store.get('preferences.notifications'),
+        dataUsage: store.get('preferences.dataUsage')
+    };
+    return await returnAxiosResult('put', 'prefs', data, [200]);
 })
 
 // Show a dialog to import a custom sound
@@ -205,19 +205,6 @@ ipcMain.handle('add-custom-sound', (event) => {
         })
 });
 
-// Fetch the latest account info from the backend
-// GET - /user
-ipcMain.handle('fetch-account-info', async (event) => {
-    const successCallback = (res) => {
-        const accountInfo = {
-            email: res.data.email,
-            displayName: res.data.displayName
-        }
-        store.set('accounts.accountInfo', accountInfo);
-    }
-    return await returnAxiosResult('get', 'user', {}, [200], successCallback);
-})
-
 // Authenticate the user and retrieve a token (by signing in or signing up)
 // If signing in: POST - /auth
 // If signing up: POST - /user
@@ -255,7 +242,39 @@ ipcMain.handle('authenticate', async (event, email, password, createAccount = fa
     return await returnAxiosResult('post', location, data, [200, 201], successCallback);
 })
 
-// Clear the accounts store (by signing out or deleting the accounts)
+// Fetch the latest account information from the backend
+// GET - /user
+ipcMain.handle('fetch-account-info', async (event) => {
+    const successCallback = (res) => {
+        const accountInfo = {
+            email: res.data.email,
+            displayName: res.data.displayName
+        }
+        store.set('accounts.accountInfo', accountInfo);
+    }
+    return await returnAxiosResult('get', 'user', {}, [200], successCallback);
+})
+
+// Update accounts information on the backend
+// PUT - /user
+ipcMain.handle('update-account-info', async (event, email, displayName, password) => {
+    const data = {
+        email: email,
+        displayName: displayName,
+        password: password,
+    };
+    const successCallback = (res) => {
+        let accountInfo = {
+            email: res.data.email,
+            displayName: res.data.displayName
+        }
+        store.set('accounts.accountInfo', accountInfo)
+    }
+
+    return await returnAxiosResult('put', 'user', data, [202], successCallback);
+})
+
+// Clear the accounts store (by signing out or deleting the account)
 // If deleting: DELETE - /user
 ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') => {
     const data = {
@@ -275,35 +294,21 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
     return result;
 })
 
-// Update accounts information from the backend
-// PUT - /user
-ipcMain.handle('update-account-info', async (event, email, displayName, password) => {
-    const data = {
-        email: email,
-        displayName: displayName,
-        password: password,
-    };
-    const successCallback = (res) => {
-        let accountInfo = {
-            email: res.data.email,
-            displayName: res.data.displayName
-        }
-        store.set('accounts.accountInfo', accountInfo)
-    }
-
-    return await returnAxiosResult('put', 'user', data, [202], successCallback);
-})
-
 // Fetch data usage from the backend
 // GET - /data
 ipcMain.handle('fetch-data-usage', async (event) => {
-    const successCallback = (res) => {
-        store.set('dataUsage.fetched', res.data.cards);
-    }
+    const successCallback = (res) => store.set('dataUsage.fetched', res.data.cards);
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
 })
 
-// Fetch the latest insights.
+// Update data usage on the backend
+// PUT - /data
+ipcMain.handle('push-data-usage', async (event) => {
+    const data = store.get('dataUsage.unsynced');
+    return await returnAxiosResult('put', 'data', data, [200]);
+})
+
+// Fetch insights from the backend
 // GET - /data/insights
 ipcMain.handle('fetch-insights', async (event) => {
     const successCallback = (res) => {
@@ -316,7 +321,11 @@ ipcMain.handle('fetch-insights', async (event) => {
 
 /**
  * Helper function to make a call with axios
- * @param {*} error 
+ * @param {String} request  The request type. Can be one of {'get', 'delete', 'head', 'options', 'post', 'put', 'patch'}
+ * @param {String} location The relative URL to make the request to
+ * @param {Object} data     The data to send with the request
+ * @param {Number[]} successStatuses    An array of status codes to be accepted for success
+ * @param {(axios.response) => any} successCallback    A callback function that is executed when the request is successful
  * @returns 
  */
 async function returnAxiosResult(request, location, data, successStatuses, successCallback = () => { }) {

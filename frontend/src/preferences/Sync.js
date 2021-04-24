@@ -1,11 +1,11 @@
 import React from 'react';
 
+import DialogSpinner from "../DialogSpinner";
+
 import { MessageBarType } from '@fluentui/react/lib/MessageBar';
 import { DefaultButton } from '@fluentui/react/lib/Button';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
-import { Dialog } from '@fluentui/react/lib/Dialog';
 
 export default class extends React.Component {
 
@@ -90,10 +90,11 @@ export default class extends React.Component {
 
                 </Stack>
 
-                {/* Spinner that shows when loading */}
-                <Dialog hidden={!this.state.isLoading}>
-                    <Spinner label='Syncing your preferences' size={SpinnerSize.large} />
-                </Dialog>
+                <DialogSpinner
+                    show={this.state.isLoading}
+                    text='Syncing your preferences'
+                />
+
             </div>
         )
     }

@@ -1,5 +1,7 @@
 import React from "react";
 
+import DialogSpinner from "./DialogSpinner";
+
 import { IconButton } from '@fluentui/react/lib/Button';
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 import { Stack } from '@fluentui/react/lib/Stack';
@@ -11,8 +13,6 @@ import {
     DocumentCardActions
 } from '@fluentui/react/lib/DocumentCard';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
-import { Dialog } from '@fluentui/react/lib/Dialog';
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import { MessageBarType } from '@fluentui/react/lib/MessageBar';
 
 const divStyle = {
@@ -148,10 +148,10 @@ export default class InsightsScreen extends React.Component {
                     {cards}
                 </ScrollablePane>
 
-                {/* Spinner that shows when loading */}
-                <Dialog hidden={!this.state.isLoading}>
-                    <Spinner label='Syncing your preferences' size={SpinnerSize.large} />
-                </Dialog>
+                <DialogSpinner
+                    show={this.state.isLoading}
+                    text='Retrieving your insights'
+                />
 
             </div>
 

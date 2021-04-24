@@ -95,6 +95,8 @@ const storeOptions = {
     watch: true
 }
 global.store = new Store(storeOptions);
+store.reset('messages'); // Clear all in-app messages on app startup
+
 // store.clear();
 // console.log(store.store)
 

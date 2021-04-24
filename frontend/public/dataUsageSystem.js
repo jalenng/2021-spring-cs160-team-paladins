@@ -1,7 +1,7 @@
 const psShell = require('node-powershell');
 const isWindows = process.platform == 'win32';
 
-const APP_SNAPSHOT_INTERVAL = 5000
+const APP_SNAPSHOT_INTERVAL = 10000
 const POWERSHELL_GET_PROCESS_COMMAND = 
     `Get-Process | Where-Object {$_.mainWindowTitle} | Select-Object Name, mainWindowtitle, Description, Path | ConvertTo-Json | % {$_ -replace("\\u200B")} | % {$_ -replace("\\u200E")}`
 
@@ -29,12 +29,31 @@ function dataUsageSystem() {
 
         // Update app usage
         let appUsage = global.store.get('dataUsage.unsynced.appUsage');
-        openProcesses.forEach( taskName => {
-            let newValue = (taskName in appUsage)
-                ? appUsage[taskName] + APP_SNAPSHOT_INTERVAL
-                : 0;
-            appUsage[taskName] = newValue;
+        openProcesses.forEach( process => {
+            const processPath = process.path;
+
+            // Try to find an entry with the same path
+            const foundEntry = appUsage.find(app => app.appPath === processPath)
+
+            // If this app has not been seen, add new entry
+            if (foundEntry === undefined) {
+                appUsage.push({
+                    appName: process.name,
+                    appPath: processPath,
+                    appTime:  APP_SNAPSHOT_INTERVAL
+                })
+            }
+            // Else, just update existing entry
+            else {
+                appUsage = appUsage.filter(app => app.appPath != processPath); // Remove existing entry
+                appUsage.push({ // Push updated entry
+                    appName: process.name,
+                    appPath: processPath,
+                    appTime: foundEntry.appTime + APP_SNAPSHOT_INTERVAL
+                })
+            }            
         })
+
         global.store.set('dataUsage.unsynced.appUsage', appUsage)
 
         console.log(appUsage)
@@ -42,7 +61,7 @@ function dataUsageSystem() {
 
     /**
      * Get the list of open windows.
-     * @returns {[string]} List of names of open windows
+     * @returns {[Object]} List of objects representing the open windows
      */
     this.getOpenProcesses = async function() {
         let result = [];
@@ -59,10 +78,17 @@ function dataUsageSystem() {
                 psJson.forEach( process => {
                     const winTitle = process.MainWindowTitle;
                     const winDesc = process.Description;
-                    if (winTitle.indexOf(winDesc) === -1 || winDesc) 
-                        result.push(winTitle);
+                    const winPath = process.Path;
+                    if (winTitle.indexOf(winDesc) === -1 || winDesc === '') 
+                        result.push({
+                            name: winTitle,
+                            path: winPath
+                        });
                     else
-                        result.push(winDesc);
+                        result.push({
+                            name: winDesc,
+                            path: winPath
+                        });
                 })
 
             }

@@ -11,6 +11,8 @@ import {
     DocumentCardActions
 } from '@fluentui/react/lib/DocumentCard';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
+import { Dialog } from '@fluentui/react/lib/Dialog';
+import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
 const divStyle = {
     paddingTop: '10px',
@@ -40,6 +42,7 @@ export default class InsightsScreen extends React.Component {
         this.state = {
             cards: store.insights.getAll().cards
         };
+        this.handleRefreshBtn = this.handleRefreshBtn.bind(this);
     };
 
     componentDidMount() {
@@ -48,6 +51,26 @@ export default class InsightsScreen extends React.Component {
             this.updateState();
         })
     };
+
+    setSpinner(isLoading) {
+        let state = this.state;
+        state.isLoading = isLoading;
+        this.setState(state);
+    }
+
+    handleRefreshBtn() {
+        this.setSpinner(true);
+        store.insights.fetch()
+            .then(result => {
+                if (!result.success) {
+                    store.messages.add({
+                        type: MessageBarType.error,
+                        contents: `Failed to retrieve insights: ${result.data.message}`
+                    });
+                } 
+                this.setSpinner(false);
+            });
+    }
 
     updateState() {
         this.setState({
@@ -108,7 +131,7 @@ export default class InsightsScreen extends React.Component {
                     <TooltipHost content="Refresh">
                         <IconButton
                             iconProps={{ iconName: 'Refresh' }}
-                            onClick={() => alert('Refresh clicked') }
+                            onClick={this.handleRefreshBtn}
                         />
                     </TooltipHost>
                 </Stack>
@@ -121,14 +144,16 @@ export default class InsightsScreen extends React.Component {
                     paddingBottom: "260px",
                     paddingRight: "40px"
                 }}>
-
                     {cards}
-
                 </ScrollablePane>
+
+                {/* Spinner that shows when loading */}
+                <Dialog hidden={!this.state.isLoading}>
+                    <Spinner label='Syncing your preferences' size={SpinnerSize.large} />
+                </Dialog>
 
             </div>
 
         );
     }
 }
-

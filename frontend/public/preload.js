@@ -148,10 +148,16 @@ window.store = {
     },
     insights: {
         /**
-         * Fetch insights from the backend
+         * Retrieve the local insights
          * @returns {Object}
          */
         getAll: () => { return ipcRenderer.sendSync('get-store', 'insights') },
+
+        /**
+         * Fetch insights from the backend
+         * @returns {Object}
+         */
+        fetch: () => { return ipcRenderer.invoke('fetch-insights') },
 
         /* Event system */
         eventSystem: new EventSystem()

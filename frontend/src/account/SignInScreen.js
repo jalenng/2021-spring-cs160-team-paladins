@@ -120,7 +120,7 @@ export default class extends React.Component {
                             />
 
                             <Link to='/signup'>
-                                <ActionButton text="Don't have an account?"/>
+                                <ActionButton id='noAccountLink'> Don't have an account? </ActionButton>
                             </Link>
 
                         </Stack>

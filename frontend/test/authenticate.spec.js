@@ -124,6 +124,249 @@ describe("Authenticate", function () {
         assert.strictEqual(numWindows - 1, await this.app.client.getWindowCount());
     })
 
+    it("Click [Already have an account?] to return to sign in screen", async function () {
+        // Get number of open windows
+        const numWindows = await this.app.client.getWindowCount();
+        await wait (2000)
+        const signUpDirectBtn = await this.app.client.react$('button', { 
+            props: { id: 'noAccountLink' }
+        });
+        signUpDirectBtn.click();
+        // Wait for backend response
+        await wait(2000)
+
+        const signInReturnBtn = await this.app.client.react$('button', { 
+            props: { id: 'alreadyHaveAccount' }
+        });
+
+        signInReturnBtn.click();
+        // Wait for backend response
+        await wait(2000)
+
+        // Make sure the popup didn't close since it should just return to the sign in window
+        assert.strictEqual(numWindows, await this.app.client.getWindowCount());
+    });  
+
+    it("Sign up with empty fields", async function () 
+    {
+        // Get number of open windows
+        const numWindows = await this.app.client.getWindowCount();
+        await wait (2000)
+        const signUpDirectBtn = await this.app.client.react$('button', { 
+            props: { id: 'noAccountLink' }
+        });
+        signUpDirectBtn.click();
+
+        // Wait for backend response
+        await wait(2000)
+
+        // Try to shift focus to the popup window
+        this.app.client.switchWindow('Sign in')
+
+        const signUpBtn = await this.app.client.react$('button', { 
+            props: { id: 'submitButton' }
+        });
+        signUpBtn.click();
+
+        // Wait for backend response
+        await wait(2000)
+
+        // Make sure the popup didn't close since it should be a failed sign up
+        assert.strictEqual(numWindows, await this.app.client.getWindowCount());
+    });
+
+    it("Sign up with email that already exists", async function () 
+    {
+        // Get number of open windows
+        const numWindows = await this.app.client.getWindowCount();
+        await wait (2000)
+        const signUpDirectBtn = await this.app.client.react$('button', { 
+            props: { id: 'noAccountLink' }
+        });
+        signUpDirectBtn.click();
+
+        // Wait for backend response
+        await wait(2000)
+
+        // Try to shift focus to the popup window
+        this.app.client.switchWindow('Sign in')
+
+        const nameField = await this.app.client.react$('input', { 
+            props: { id: 'displayName' }
+        });
+        nameField.addValue('iCare');
+
+        const emailField = await this.app.client.react$('input', { 
+            props: { id: 'email' }
+        });
+        emailField.addValue('iCare@gmail.com');
+
+        const passwordField = await this.app.client.react$('input', { 
+            props: { id: 'password' }
+        });
+        passwordField.addValue('icarepass');
+
+        const confirmPasswordField = await this.app.client.react$('input', { 
+            props: { id: 'confirm' }
+        });
+        confirmPasswordField.addValue('icarepass');
+
+        const signUpBtn = await this.app.client.react$('button', { 
+            props: { id: 'submitButton' }
+        });
+        signUpBtn.click();
+        
+        // Wait for backend response
+        await wait(2000)
+
+        // Make sure the popup didn't close since it should be a failed sign up
+        assert.strictEqual(numWindows, await this.app.client.getWindowCount());
+    });
+
+    it("Sign up with password that does not meet requirements", async function () 
+    {
+        // Get number of open windows
+        const numWindows = await this.app.client.getWindowCount();
+        await wait (2000)
+        const signUpDirectBtn = await this.app.client.react$('button', { 
+            props: { id: 'noAccountLink' }
+        });
+        signUpDirectBtn.click();
+
+        // Wait for backend response
+        await wait(2000)
+
+        // Try to shift focus to the popup window
+        this.app.client.switchWindow('Sign in')
+
+        const nameField = await this.app.client.react$('input', { 
+            props: { id: 'displayName' }
+        });
+        nameField.addValue('iCare');
+
+        const emailField = await this.app.client.react$('input', { 
+            props: { id: 'email' }
+        });
+        emailField.addValue('iCare@email.com');
+
+        const passwordField = await this.app.client.react$('input', { 
+            props: { id: 'password' }
+        });
+        passwordField.addValue('pass');
+
+        const confirmPasswordField = await this.app.client.react$('input', { 
+            props: { id: 'confirm' }
+        });
+        confirmPasswordField.addValue('pass');
+
+        const signUpBtn = await this.app.client.react$('button', { 
+            props: { id: 'submitButton' }
+        });
+        signUpBtn.click();
+
+        // Wait for backend response
+        await wait(2000)
+
+        // Make sure the popup didn't close since it should be a failed sign up
+        assert.strictEqual(numWindows, await this.app.client.getWindowCount());
+    });
+
+    it("Sign up with password that does not match confirmation password", async function () 
+    {
+        // Get number of open windows
+        const numWindows = await this.app.client.getWindowCount();
+        await wait (2000)
+        const signUpDirectBtn = await this.app.client.react$('button', { 
+            props: { id: 'noAccountLink' }
+        });
+        signUpDirectBtn.click();
+
+        // Wait for backend response
+        await wait(2000)
+
+        // Try to shift focus to the popup window
+        this.app.client.switchWindow('Sign in')
+
+        const nameField = await this.app.client.react$('input', { 
+            props: { id: 'displayName' }
+        });
+        nameField.addValue('iCare');
+
+        const emailField = await this.app.client.react$('input', { 
+            props: { id: 'email' }
+        });
+        emailField.addValue('iCare@email.com');
+
+        const passwordField = await this.app.client.react$('input', { 
+            props: { id: 'password' }
+        });
+        passwordField.addValue('pass');
+
+        const confirmPasswordField = await this.app.client.react$('input', { 
+            props: { id: 'confirm' }
+        });
+        confirmPasswordField.addValue('icarepass');
+
+        const signUpBtn = await this.app.client.react$('button', { 
+            props: { id: 'submitButton' }
+        });
+        signUpBtn.click();
+        
+        // Wait for backend response
+        await wait(2000)
+
+        // Make sure the popup didn't close since it should be a failed sign up
+        assert.strictEqual(numWindows, await this.app.client.getWindowCount());
+    });
+
+    it("Sign up with valid email and password", async function () 
+    {
+        // Get number of open windows
+        const numWindows = await this.app.client.getWindowCount();
+        await wait (2000)
+        const signUpDirectBtn = await this.app.client.react$('button', { 
+            props: { id: 'noAccountLink' }
+        });
+        signUpDirectBtn.click();
+
+        // Wait for backend response
+        await wait(2000)
+
+        // Try to shift focus to the popup window
+        this.app.client.switchWindow('Sign in')
+
+        const nameField = await this.app.client.react$('input', { 
+            props: { id: 'displayName' }
+        });
+        nameField.addValue('iCare');
+
+        const emailField = await this.app.client.react$('input', { 
+            props: { id: 'email' }
+        });
+        emailField.addValue('iCare@email.com');
+
+        const passwordField = await this.app.client.react$('input', { 
+            props: { id: 'password' }
+        });
+        passwordField.addValue('icarepass');
+
+        const confirmPasswordField = await this.app.client.react$('input', { 
+            props: { id: 'confirm' }
+        });
+        confirmPasswordField.addValue('icarepass');
+
+        const signUpBtn = await this.app.client.react$('button', { 
+            props: { id: 'submitButton' }
+        });
+        signUpBtn.click();
+        
+        // Wait for backend response
+        await wait(2000)
+
+        // Make sure the popup closed since it should be a successful sign up
+        assert.strictEqual(numWindows - 1, await this.app.client.getWindowCount());
+    });      
+
     afterEach(function () {
         // Try to return focus to the main window
         this.app.client.switchWindow('iCare')

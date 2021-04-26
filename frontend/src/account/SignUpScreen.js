@@ -173,7 +173,7 @@ export default class extends React.Component {
                             />
 
                             <Link to='/signin'>
-                                <ActionButton text='Already have an account?'/>
+                                <ActionButton id='alreadyHaveAccount'> Already have an account? </ActionButton>
                             </Link>
 
                         </Stack>

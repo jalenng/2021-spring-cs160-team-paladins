@@ -14,13 +14,15 @@
     "files": [
       "build/**/*",
       "node_modules/**/*",
-      "sounds/**/*"
+      "sounds/**/*",
+      "trayAssets/**/*"
     ],
     "directories": {
       "buildResources": "assets"
     },
     "asarUnpack": [
-      "sounds/**/*"
+      "sounds/**/*",
+      "trayAssets/**/*"
     ]
   },
   "dependencies": {
@@ -31,6 +33,7 @@
     "electron-store": "^7.0.2",
     "electron-window-state": "^5.0.3",
     "hazardous": "^0.3.0",
+    "node-powershell": "^4.0.0",
     "npm": "^7.8.0",
     "react": "^17.0.2",
     "react-chartjs-2": "^2.11.1",

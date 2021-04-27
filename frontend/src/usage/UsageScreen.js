@@ -2,11 +2,11 @@ import React from 'react';
 
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 
-import UsageSidebar from './usage/UsageSidebar';
-import AppUsage from './usage/AppUsage';
-import DailyUsage from './usage/DailyUsage'
-import WeeklyUsage from './usage/WeeklyUsage';
-import TotalUsage from './usage/TotalUsage';
+import UsageSidebar from './UsageSidebar';
+import AppUsage from './AppUsage';
+import DailyUsage from './DailyUsage'
+import WeeklyUsage from './WeeklyUsage';
+import TotalUsage from './TotalUsage';
 
 
 const divStyle = {

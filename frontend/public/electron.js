@@ -15,6 +15,7 @@ require('./store');
 require('./timerSystem.js');
 require('./breakSystem.js');
 require('./notificationSystem.js');
+require('./dataUsageSystem');
 require('./popupWindows');
 
 const DEFAULT_WINDOW_SIZE = {
@@ -120,7 +121,7 @@ function createWindow() {
  * Mechanism to allow only one instance of the app at once
  */
 const gotSingleInstanceLock = app.requestSingleInstanceLock()
-if (!gotSingleInstanceLock) app.quit()
+if (!gotSingleInstanceLock) app.exit()
 
 /* Show first instance if a second instance is requested */
  app.on('second-instance', (event, commandLine, workingDirectory) => {
@@ -154,11 +155,11 @@ app.whenReady().then(() => {
     })
 
     /* Create tray button */
-    const trayIcon = nativeImage.createFromPath(path.join(__dirname, '../icon.png'));
+    const trayIcon = nativeImage.createFromPath(path.join(__dirname, '../trayAssets/icon.png'));
     const contextMenu = Menu.buildFromTemplate([
         { label: 'iCare', enabled: false },
         { type: 'separator' },
-        { label: 'Quit',  role: 'quit'}
+        { label: 'Quit', click: app.exit }
     ]);
 
     appTray = new Tray(trayIcon);
@@ -180,7 +181,7 @@ app.whenReady().then(() => {
 
 /* Handle closing all windows behavior for macOS */
 app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') app.quit()
+    if (process.platform !== 'darwin') app.exit()
 })
 
 /* Prevent loading of new websites */

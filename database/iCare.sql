@@ -16,7 +16,7 @@ CREATE TABLE Users (
 CREATE TABLE UserPreferences (
 	email varchar(50),
     notiInterval int DEFAULT 20,
-    notiSound varchar(200) DEFAULT '/Leaf.ogg',
+    notiSound varchar(200) DEFAULT '../sounds/Long Expected.mp3',
     notiSoundOn boolean DEFAULT TRUE,
     dataUsageOn bool DEFAULT TRUE,
     appUsageOn bool DEFAULT TRUE,

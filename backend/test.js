@@ -9,6 +9,10 @@ const userDB = new db("localhost", "newuser", "", "iCare");
 let apiM = require('./api_methods.js');
 let api_methods = new apiM();
 
+// Token
+let tokenClass = require('./token.js')
+let userToken = new tokenClass();
+
 // Crypto Requirements
 var atob = require('atob');
 const { AssertionError, strict } = require('assert');
@@ -25,6 +29,11 @@ let goodPass = "password12345";         // Reuse for create, login, delete
 let failEmail = "idontexist@gmail.com"  // Reuse for failing
 let success = "";
 
+let id = "testemail@gmail.com";
+let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTgzODEwNDksImp3dGlkIjoibGZqYmoiLCJhdWRpZW5jZSI6IlRFU1QiLCJkYXRhIjoidGVzdCIsImV4cCI6MTYxODM4NDY0OX0.TTrYqESQPCrDN9hJSJ9p_iACOrD7grZ4u8NF2zzU3qk";
+let falseToken = "false-token";
+let idFromToken = "test";
+let unexpectedID = "unexpectedemail@gmail.com";
 
 // Create Account Test (works for both existing/non-existing email)
 describe('Create new account: ', () => {
@@ -103,6 +112,38 @@ describe('Get user ID and email', () => {
     });
 });
 
+// Create Token
+describe('Create Token and get ID from token', () => {
+    describe('Verify token created for ' + id, async() => {
+        it('Verify token is not empty', async () => {
+            res_token = await userToken.createToken(id).then((res) => { return res });
+            assert.notStrictEqual(res_token, "", 'Generated token is empty');
+        })
+        it('Verify generated token is for the expected email', async () => {
+            res_id = await userToken.getIDFromToken(res_token).then((res) => { return res });
+            assert.strictEqual(id, res_id, 'Email retrieved from generated token does not match [wanted: ' + id + ', received: ' + res_id +']');
+        })
+        it('Verify generated token is not for other emails', async () => {
+            res_id = await userToken.getIDFromToken(res_token).then((res) => { return res });
+            assert.notStrictEqual(unexpectedID, res_id);
+        });
+    });       
+  
+    // Verify getIDFromToken
+    describe('Verify ID retrieved from a valid token', async() => {
+        it('Verify expected ID is retrieved', async () => {
+            res_id = await userToken.getIDFromToken(token);
+            assert.strictEqual(res_id, idFromToken, 'ID retrieved from valid token does not match [wanted: ' + idFromToken + ', received: ' + res_id +']');
+        });
+    })
+  
+    describe('Verify ID failed to retrieve from an invalid token' , async() => {
+        it('Verify ID retrieved does not match', async () => {
+            res_id = await userToken.getIDFromToken(falseToken);
+            assert.notStrictEqual(res_id, id, 'IDFromToken does not match with givenID');
+        });
+    });
+ });
 
 // Change Email
 describe('Change email', () => {

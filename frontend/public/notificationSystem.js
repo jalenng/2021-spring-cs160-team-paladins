@@ -18,7 +18,6 @@ const sharedWindowOptions = {
     backgroundColor: '#222222',
     webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
-        nodeIntegration: true,
         contextIsolation: false
     }
 };
@@ -101,7 +100,7 @@ const NotificationSystem = function() {
         }
         window.setBounds(bounds);
         window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })   
-        window.menuBarVisible = false;
+        window.removeMenu()
 
         // Configure event listeners
         window.on('close', (e) => e.preventDefault())
@@ -152,7 +151,7 @@ const NotificationSystem = function() {
 
         window.setBounds(newBounds); 
         window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-        window.menuBarVisible = false;
+        window.removeMenu()
 
         // Configure event listeners
         window.on('close', (e) => e.preventDefault())

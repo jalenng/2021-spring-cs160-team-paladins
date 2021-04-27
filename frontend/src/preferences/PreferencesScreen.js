@@ -7,62 +7,59 @@ import YourAccounts from './YourAccounts'
 import Notifications from './Notifications'
 import Startup from './Startup'
 import DataUsage from './DataUsage'
+import Sync from './Sync'
 import About from './About'
 
 const divStyle = {
-  MozUserSelect: "none",
-  WebkitUserSelect: "none",
-  msUserSelect: "none",
-
-  paddingTop: '10px',
-  paddingLeft: '30px',
-
-  display: "grid"
+    paddingTop: '10px',
+    paddingLeft: '30px',
+    display: 'grid'
 };
 
 const preferencePages = {
-  your_accounts: <YourAccounts/>,
-  notifications: <Notifications/>,
-  startup: <Startup/>,
-  data_usage: <DataUsage/>,
-  about: <About/>
+    your_accounts: <YourAccounts />,
+    notifications: <Notifications />,
+    startup: <Startup />,
+    data_usage: <DataUsage />,
+    sync: <Sync />,
+    about: <About />
 }
 
-export default class PreferencesScreen extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = { selectedKey: 'your_accounts' };
-  }
+export default class extends React.Component {
 
-  render() {
-    const selectedKey = this.state.selectedKey;
-    let preferencesPage = preferencePages[selectedKey];
-    
-    return (
-      <div style={divStyle}>
+    constructor(props) {
+        super(props);
+        this.state = { selectedKey: 'your_accounts' };
+    }
 
-        <ScrollablePane style={{
-          position: "absolute",
-          top: "60px",
-          left: "260px",
-          paddingBottom: "260px",
-          paddingRight: "40px"
-        }}>
+    render() {
+        const selectedKey = this.state.selectedKey;
+        let preferencesPage = preferencePages[selectedKey];
 
-          {preferencesPage}
+        return (
+            <div style={divStyle}>
 
-        </ScrollablePane>
-                
-        <PreferencesSidebar
-          selectedKey={selectedKey} 
-          onUpdateSelectedKey={(key) => {
-            this.setState({ selectedKey: key });
-          }}
-        />
+                <ScrollablePane style={{
+                    position: 'absolute',
+                    top: '60px',
+                    left: '260px',
+                    paddingRight: '40px'
+                }}>
 
-      </div>
-    );
-  }
+                    {preferencesPage}
+
+                </ScrollablePane>
+
+                <PreferencesSidebar
+                    selectedKey={selectedKey}
+                    onUpdateSelectedKey={(key) => {
+                        this.setState({ selectedKey: key });
+                    }}
+                />
+
+            </div>
+        );
+    }
 }
 

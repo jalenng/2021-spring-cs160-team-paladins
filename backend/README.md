@@ -1,6 +1,6 @@
 # README.md for backend automation tests required for Sprint 5
 # 
-###### The backend api testing is done using Postman.
+The backend api testing is done using Postman.
 ###### The link below consists of the Postman collection of backend api tests for our iCare application. You will not be able to run it because it requires the environment, which I cannot share. As such, I have an image of the runner in Postman successfully running the tests.
 ###### POSTMAN: [Backend API Tests](https://www.getpostman.com/collections/fcd8a3e81ecbc02034b1)
 # 

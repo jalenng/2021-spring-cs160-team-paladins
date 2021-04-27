@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Dialog } from '@fluentui/react/lib/Dialog';
+import DialogSpinner from "../DialogSpinner";
+
 import { Text } from '@fluentui/react/lib/Text';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 
 const divStyle = {
     paddingTop: '10px',
@@ -175,11 +175,11 @@ export default class extends React.Component {
 
                     </Stack>
                 </form>
-                
-                {/* Spinner that shows when loading */}
-                <Dialog hidden={!this.state.isLoading}>
-                    <Spinner label='Signing you up' size={SpinnerSize.large} />
-                </Dialog>
+
+                <DialogSpinner
+                    show={this.state.isLoading}
+                    text='Signing you up'
+                />
 
             </div>
         );

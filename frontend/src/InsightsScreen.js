@@ -1,5 +1,7 @@
 import React from "react";
 
+import DialogSpinner from "./DialogSpinner";
+
 import { IconButton } from '@fluentui/react/lib/Button';
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 import { Stack } from '@fluentui/react/lib/Stack';
@@ -11,6 +13,7 @@ import {
     DocumentCardActions
 } from '@fluentui/react/lib/DocumentCard';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
+import { MessageBarType } from '@fluentui/react/lib/MessageBar';
 
 const divStyle = {
     paddingTop: '10px',
@@ -40,6 +43,7 @@ export default class InsightsScreen extends React.Component {
         this.state = {
             cards: store.insights.getAll().cards
         };
+        this.handleRefreshBtn = this.handleRefreshBtn.bind(this);
     };
 
     componentDidMount() {
@@ -48,6 +52,26 @@ export default class InsightsScreen extends React.Component {
             this.updateState();
         })
     };
+
+    setSpinner(isLoading) {
+        let state = this.state;
+        state.isLoading = isLoading;
+        this.setState(state);
+    }
+
+    handleRefreshBtn() {
+        this.setSpinner(true);
+        store.insights.fetch()
+            .then(result => {
+                if (!result.success) {
+                    store.messages.add({
+                        type: MessageBarType.error,
+                        contents: `Failed to retrieve insights: ${result.data.message}`
+                    });
+                } 
+                this.setSpinner(false);
+            });
+    }
 
     updateState() {
         this.setState({
@@ -108,7 +132,7 @@ export default class InsightsScreen extends React.Component {
                     <TooltipHost content="Refresh">
                         <IconButton
                             iconProps={{ iconName: 'Refresh' }}
-                            onClick={() => alert('Refresh clicked')}
+                            onClick={this.handleRefreshBtn}
                         />
                     </TooltipHost>
                 </Stack>
@@ -121,14 +145,16 @@ export default class InsightsScreen extends React.Component {
                     paddingBottom: "260px",
                     paddingRight: "40px"
                 }}>
-
                     {cards}
-
                 </ScrollablePane>
+
+                <DialogSpinner
+                    show={this.state.isLoading}
+                    text='Retrieving your insights'
+                />
 
             </div>
 
         );
     }
 }
-

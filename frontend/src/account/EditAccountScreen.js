@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Dialog } from '@fluentui/react/lib/Dialog';
+import DialogSpinner from "../DialogSpinner";
+
 import { Text } from '@fluentui/react/lib/Text';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { PrimaryButton } from '@fluentui/react/lib/Button';
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import { Separator } from '@fluentui/react/lib/Separator';
 
 const divStyle = {
@@ -166,10 +166,10 @@ export default class extends React.Component {
                     </Stack>
                 </form>
                 
-                {/* Spinner that shows when loading */}
-                <Dialog hidden={!this.state.isLoading}>
-                    <Spinner label='Saving your changes' size={SpinnerSize.large} />
-                </Dialog>
+                <DialogSpinner
+                    show={this.state.isLoading}
+                    text='Saving your changes'
+                />
 
             </div>
         );

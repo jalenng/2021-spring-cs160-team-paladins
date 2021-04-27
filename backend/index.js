@@ -1,6 +1,7 @@
 const { time } = require('console');
 const { route } = require('./index.js');
- 
+const newman = require('newman');
+
 (
   function () {
     "use strict";
@@ -24,11 +25,6 @@ const { route } = require('./index.js');
     let apiM = require('./api_methods.js');
     let api_methods = new apiM();
 
-    // Crypto Requirements
-    var atob = require('atob');
-    var Cryptr = require('cryptr'),
-    cryptr = new Cryptr('myTotalySecretKey'); 
-
     // Token Methods
     let tokenClass = require('./token.js')
     let userToken = new tokenClass();
@@ -42,27 +38,34 @@ const { route } = require('./index.js');
       let email = req.body.email;
       let password = req.body.password;
       let dName = req.body.displayName;
+      let success = false;
 
-      let success = true;
+      // Checks for undefined inputs
+      for (const item of [["email", email], ["password", password], ["display_name", dName]]) {
+        let checkValues =  await api_methods.chkValues(item[0], item[1])
+        if (Array.isArray(checkValues)) {
+          res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
+          return;
+        }
+      }
 
-      // Checks password length
-      if (password.length < 8) { success = false; }
-      else {
-        // CRYPTO: Encrypt password and store in the database
-        let dec_pass = atob(password);
-        let encrypted_pass = cryptr.encrypt(dec_pass);
-        if (email === null || password === null || dName === false) { success = false; }
-        else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
+      // Check Password Length
+      if (password.length > 8) { 
+        let encrypted_pass = await api_methods.encryptPass(password);
+        success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
+      } else {
+        res.status(401).send({ reason: "BAD_PASSWORD", message: "Your password must be at least 8 characters long." });
+        return;
       }
 
       // Response Codes
       if (success == true) {
-        let tokenValue = await userToken.createToken(email).then((res) => { return res });
-        res.status(200).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
+        let userID = await userDB.getID(email).then((r) => { return r; });
+        let tokenValue = await userToken.createToken(userID).then((r) => { return r; });
+        res.status(201).send({ token: tokenValue, accountInfo: { email: email, displayName: dName } });
       }
       else {
-        let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
-        res.status(401).send({ reason: array[0], message: array[1] });
+        res.status(401).send({ reason: "BAD_EMAIL", message: "Email already in use." });
       }
     })
 
@@ -70,53 +73,128 @@ const { route } = require('./index.js');
     router.post('/auth', async function (req, res) {
       let email = req.body.email;
       let password = req.body.password;
-      let dName = ""
 
-      // Checks crypto pass
-      let dec_pass = atob(password)
-      let success = await userDB.getPassword(email).then((r) => {
-        if (r != false) {
-          let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } else { return false }
-        }
-      })
+      // Checks for undefined email input
+      let checkValues =  await api_methods.chkValues("email", email)
+      if (Array.isArray(checkValues)) {
+        res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
+        return;
+      }
+  
+      // Checks password, Response Codes
+      let success = await api_methods.checkPass(password, email).then((r) => { return r; });
       
-      // Response Codes
       if (success == true) {
-        let tokenValue = await userToken.createToken(email).then((res) => { return res });
-        dName = await userDB.getDisplayName(email).then((res) => { return res; });
+        let userID = await userDB.getID(email).then((r) => { return r; });
+        let tokenValue = await userToken.createToken(userID).then((r) => { return r; });
+        let dName = await userDB.getDisplayName(email).then((r) => { return r; });
         
         res.status(200).send({ token: tokenValue,  accountInfo: { email: email, displayName: dName } });
       }
-      else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Authentication invalid" }) }
+      else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Authentication invalid." }) }
 
-    })
+    });
+
+    // Change email and display name
+    router.put('/user', async (req, res) => {
+      let token = req.headers.auth;
+      let newEmail = req.body.email;
+      let newDisplay = req.body.displayName;
+      let pass = req.body.password;
+      let oldEmail = ""
+
+      // Check Token
+      let ct = await api_methods.checkToken(token)
+      if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
+      else { oldEmail = await userDB.getEmail(ct) }
+
+      // Checks for undefined inputs
+      for (const item of [["email", newEmail], ["display_name", newDisplay]]) {
+        let checkValues =  await api_methods.chkValues(item[0], item[1])
+        if (Array.isArray(checkValues)) {
+          res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
+          return;
+        }
+      }
+
+      // Check password, Response Codes
+      let checkPass = await api_methods.checkPass(pass, oldEmail)
+      if (checkPass == true) {
+        let dnSuccess = await userDB.setDisplayName(oldEmail, newDisplay)
+        let ceSuccess = await userDB.changeEmail(oldEmail, newEmail)
+        
+        if (dnSuccess == ceSuccess == true) { 
+          res.status(202).send({ email: newEmail, displayName: newDisplay }); 
+        }
+        else { res.status(401).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
+      }
+      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
+
+    });
+
+    // Gets email and display name
+    router.get('/user', async (req, res) => {
+      let token = req.headers.auth;
+      let email = ""
+
+      // Check Token
+      let ct = await api_methods.checkToken(token)
+      if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
+      else { email = await userDB.getEmail(ct); }
+
+      // Response Code
+      if (email != false) {
+        let dName = await userDB.getDisplayName(email).then((r) => { return r; })
+        res.status(200).send({ email: email, displayName: dName });
+      }
+      else {
+        res.status(401).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve user information." });
+      }
+    });
+    
+    // Delete user
+    router.delete('/user', async (req, res) => {
+      let token = req.headers.auth;
+      let email = ""
+
+      // Check Token
+      let ct = await api_methods.checkToken(token)
+      if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
+      else { email = await userDB.getEmail(ct); }
+
+      // Checks crypto pass, Deletes User, Response Codes
+      let pass = req.body.password;
+      let checkPass = await api_methods.checkPass(pass, email).then((r) => { return r; });
+
+      if (checkPass == true) { 
+        let success = await userDB.deleteAccount(email).then((r) => { return r; }); 
+        if (success == true) { res.status(200).send({ reason: "SUCCESS", message: "Deleted account" }); }
+        else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
+      }
+      else { res.status(401).send({ reason: checkPass[0], message: checkPass[1] }); }
+    });
+
+    ///------------------------------------------------------------------------
  
     // Gets preferences of user
-    router.get('/pref/:user', async function (req, res) {
+    router.get('/prefs', async function (req, res) {
       let token = req.headers.auth;
       let email = ""
  
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
-
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
-
-      //------------------------
+      // Check Token
+      let ct = await api_methods.checkToken(token)
+      if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
+      else { email = await userDB.getEmail(ct); }
       
-      // Get Preferences
-      let notiInterval = await userDB.getNotiInterval(email).then((result) => { return result; })
-      let notiSound = await userDB.getNotiSound(email).then((result) => { return result; })
-      let notiSoundOn = await userDB.getNotiSoundOn(email).then((result) => { return result; })
-      let dUsageOn = await userDB.getDataUsageOn(email).then((result) => { return result; })
-      let aUsageOn = await userDB.getAppUsageOn(email).then((result) => { return result; })
+      // Get Preferences -------------------------
+      let notiInterval = await userDB.getNotiInterval(email)
+      let notiSound = await userDB.getNotiSound(email)
+      let notiSoundOn = await userDB.getNotiSoundOn(email)
+      let dUsageOn = await userDB.getDataUsageOn(email)
+      let aUsageOn = await userDB.getAppUsageOn(email)
  
       // Response Codes
-      if (notiInterval != false && notiSound != false && notiSoundOn != false) {
+      if (notiInterval == notiSound == notiSoundOn == dUsageOn == aUsageOn == true) {
         res.status(200).send({
           notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
           dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: dUsageOn }
@@ -126,173 +204,115 @@ const { route } = require('./index.js');
  
     });
  
-    // Saves the user preferences (incomplete)
-    router.put('/pref/:user', async function (req, res) {
+    // Saves the user preferences
+    router.put('/prefs', async function (req, res) {
       let token = req.headers.auth;
+      let notiInterval = req.body.notifications.interval;
+      let notiSound = req.body.notifications.sound;
+      let notiSoundOn = req.body.notifications.enableSound;
+      let dUsageOn = req.body.dataUsage.enableWeeklyUsageStats;
+      let aUsageOn = req.body.dataUsage.trackAppUsageStats;
       let email = ""
  
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
+      // Check Token
+      let ct = await api_methods.checkToken(token)
+      if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
+      else { email = await userDB.getEmail(ct); }
 
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
-
-      //------------------------
-
-      // Set Preferences
-      let notiInterval = req.body.data.notifications.interval;
-      let notiSound = req.body.data.notifications.sound;
-      let notiSoundOn = req.body.data.notifications.enableSound;
-      let dUsageOn = req.body.dataUsage.enableWeeklyUsageStats;
-      let aUsageOn = eq.body.dataUsage.trackAppUsageStats;
- 
-      // Save user preferences in database
-      let success1 = await userDB.setNotiInterval(email, notiInterval).then((result) => { return result; })
-      let success2 = await userDB.setNotiSound(email, notiSound).then((result) => { return result; })
-      let success3 = await userDB.setNotiSoundOn(email, notiSoundOn).then((result) => { return result; })
-      let success4 = await userDB.setDataUsageOn(email, dUsageOn).then((result) => { return result; })
-      let success5 = await userDB.setAppUsageOn(email, aUsageOn).then((result) => { return result; })
+      // Save user preferences in database 
+      let success1 = await userDB.setNotiInterval(email, notiInterval).then((r) => { return r; })
+      let success2 = await userDB.setNotiSound(email, notiSound).then((r) => { return r; })
+      let success3 = await userDB.setNotiSoundOn(email, notiSoundOn).then((r) => { return r; })
+      let success4 = await userDB.setDataUsageOn(email, dUsageOn).then((r) => { return r; })
+      let success5 = await userDB.setAppUsageOn(email, aUsageOn).then((r) => { return r; })
 
       // Send to frontend
-      if (success1 == success2 == success3 == success4 == success5 == true) { res.status(200); }
+      if (success1 == success2 == success3 == success4 == success5 == true) { 
+        res.status(200).send({ reason: "SUCCESS", message: "Saved new user preferences." }); 
+      }
       else { res.status(504).send({ reason: "SAVE_FAILED", message: "Couldn't save all preferences." }); }
     });
 
-    // Gets data usage (incomplete)
-    router.get('/data/:user', async (req, res) => {
+    // Gets data usage
+    router.get('/data', async (req, res) => {
       let token = req.headers.auth;
       let email = ""
- 
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
 
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
+      // Check Token
+      let ct = await api_methods.checkToken(token)
+      if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
+      else { email = await userDB.getEmail(ct); }
 
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
-
-      //------------------------
-      let timePeriod = req.body.data.timePeriod;    // TODAY, WEEK, MONTH, ALL
-
-      // Get Usage Data
-      let dUsage = await userDB.getDataUsage(email, timePeriod).then((result) => { return result; });
-      let aUsage = await userDB.getAppUsage(email, timePeriod).then((result) => { return result; });
+      // Get Usage Data -------------------------
+      let timePeriod = "WEEK";    // TODAY, WEEK, MONTH, ALL
+      let dUsage = await userDB.getDataUsage(email, timePeriod).then((r) => { return r; });
+      let aUsage = await userDB.getAppUsage(email, timePeriod).then((r) => { return r; });
 
       // Response Codes (Sends JSONs)
-      if (dUsage != false && aUsage != false) { res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) }
-      else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage" }) }
+      if ((dUsage != false && aUsage != false) || (dUsage.length === 0 && aUsage != false) 
+          || (dUsage != false && aUsage.length === 0) || (dUsage.length === 0 && aUsage.length === 0)) { 
+        res.status(200).send({ dataUsage: dUsage, appUsage: aUsage }) 
+      }
+      else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data/app usage." }) }
     });
 
-    // Updates the data/app usage of user (incomplete)
-    router.put('/data/:user', async (req, res) => {
+    // Updates the data/app usage of user
+    router.put('/data', async (req, res) => {
       let token = req.headers.auth;
       let email = ""
- 
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
 
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
+      // Check Token
+      let ct = await api_methods.checkToken(token)
+      if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
+      else { email = await userDB.getEmail(ct); }
 
       //------------------------
+      // Update Data Usage
+      let dataUsageObjects = req.body.dataUsage;
+      let duSuccess = false;
 
-      // Sets Update Data
-      let todayScreenTime = req.body.data.dailyDataUsage.screenTime;
-      let todaynumBreaks = req.body.data.dailyDataUsage.numBreaks;
-      let todayAppUsage = req.body.data.dailyAppUsage;
-      
-      let duSuccess = await userDB.setDataUsage(email, todayScreenTime, todaynumBreaks);
+      for (const duObject of dataUsageObjects) {
+        let row = JSON.parse(JSON.stringify(duObject));
+        duSuccess = await userDB.setDataUsage(email, row.screenTime, row.numBreaks, row.usageDate)
+      }
 
+      // Update App Usage
+      let appUsageObjects = req.body.appUsage;
+      let auSuccess = false;
 
-      let ausuccess = ""
-      // For app usage, use dictionary key-value pairing in a for loop to insert into the database
-      // If one fails, success == false
-
-
+      for (const auObject of appUsageObjects) {
+        let row = JSON.parse(JSON.stringify(auObject));
+        auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
+      }
 
       // Response Codes
-      if (dusuccess == true && auSuccess == true) { res.status(200); }
-      else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage" }) }
+      if (duSuccess == true && auSuccess == true) { 
+        res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
+      }
+      else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update all data/app usage" }) }
 
     });
 
-    // Change email (incomplete)
-    router.put('/user/:user', async (req, res) => {
-      let token = req.headers.auth;
-      let oldEmail = ""
- 
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        oldEmail = await userToken.getEmailFromToken(token);
-
-        // Invalid Token
-        if (oldEmail == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
-
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
-
-      //------------------------
-
-      // Set new password
-      let newEmail = req.body.data.email;
-      let pass = req.body.data.password;
-
-      // Checks password
-      let dec_pass = atob(pass)
-      let success = await userDB.getPassword(email).then((r) => {
-        let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } 
-        else { return false }
-      })
-      
-      // Response Code (check password)
-      if (success == true) { success = await userDB.changeEmail(oldEmail, newEmail); }
-      else { res.status(401).send({ reason: "INVALID_CREDENTIALS", message: "Your password is incorrect." }); }
-      
-      // Response Code (check changeEmail success)
-      if (success == true) { res.status(200); }
-      else { res.status(401).send({ reason: "BAD_EMAIL", message: "The email is already in use." }); }
-    });
-
-    // Delete user (incomplete)
-    router.delete('/user', async (req, res) => {
-
+    // Get Insights
+    router.get('/data/insights', async (req, res) => {
       let token = req.headers.auth;
       let email = ""
  
-      // Checking the token
-      if (typeof token !== 'undefined') {
-        email = await userToken.getEmailFromToken(token);
+      // Check Token
+      let ct = await api_methods.checkToken(token)
+      if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
+      else { email = await userDB.getEmail(ct); }
 
-        // Invalid Token
-        if (email == false) { res.status(504).send({ reason: "INVALID_TOKEN",  message: "The token given is invalid" }); return; }
+      // Get Insights
+      let insight = await api_methods.generateInsights();
 
-      } else {res.status(504).send({ reason: "INVALID_TOKEN", message: "No token was given." }); return; }
-
-      //------------------------
-      // Delete User
-      let password = req.body.password;
-
-      // Checks crypto pass
-      let dec_pass = atob(password)
-      let success = await userDB.getPassword(email).then((r) => {
-        if (r != false) {
-          let decryptPass = cryptr.decrypt(r)
-        if (decryptPass == dec_pass) { return true } else { return false }
-        }
-      })
-      
-      // Response Code
-      if (success == true) { res.status(200); }
-      else { res.status(504).send({ reason: "INVALID_CREDENTIALS", message: "Couldn't delete account." }); }
+      // Response Codes
+      if (insight != false) { 
+        res.status(200).send({ header: insight });  
+      }
+      else { res.status(504).send({ reason: "RETRIEVE_FAILED", message: "Insights could not be generated." }) }
     });
- 
+
     //--------------------------
  
     let server = app.listen(3000, function () {
@@ -305,87 +325,19 @@ const { route } = require('./index.js');
 
 //-------------------------------------
 
-
- // Database Connection
- let db = require('./db.js');
- let userDB = new db("localhost", "newuser", "password", "iCare");
-
- // API Methods
- let apiM = require('./api_methods.js');
- let api_methods = new apiM();
-
- // Crypto Requirements
- var atob = require('atob');
- var Cryptr = require('cryptr'),
- cryptr = new Cryptr('myTotalySecretKey'); 
-
- // Token Methods
- let tokenClass = require('./token.js')
- let userToken = new tokenClass();
-
-
- // WORKING 
- async function testCreate() {
-  let email = 'test@gmail.com'
-  let password = 'passpasspass';
-  let dName = 'test';
-
-  let success = true;
-
-  // Checks password length
-  if (password.length < 8) { success = false; }
-  else {
-    // CRYPTO: Encrypt password and store in the database
-    let dec_pass = atob(password);
-    let encrypted_pass = cryptr.encrypt(dec_pass);
-    if (email === null || password === null || dName === false) { success = false; }
-    else { success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); }
+// Runs Postman Backend API tests
+newman.run(
+  {
+    collection: require('./iCare_Tests.json'),
+    environment: require('./iCare_Environment.json'),
+    reporters: 'cli'
+  }, 
+  function (err) {
+    if (err) { throw err; }
+    console.log('iCare Collection Run Complete!');
   }
-
-  // Response Codes
-  if (success == true) {
-    console.log("Successful Creation")
-  }
-  else {
-    let array = await api_methods.postCreateUser(dName, password).then((result) => { return result; }); 
-    console.log(array)
-  }
- }
+);
 
 
- // WORKING
- async function testLogin() {
-  let email = 'te@gmail.com'
-  let password = 'passpasspass';
-  let dName = '';
-
-  // Checks crypto pass
-  let dec_pass = atob(password)
-  let success = await userDB.getPassword(email).then((r) => {
-    if (r != false) {
-      let decryptPass = cryptr.decrypt(r)
-    if (decryptPass == dec_pass) { return true } else { return false }
-    }
-  })
-  
-  // Response Codes
-  if (success == true) {
-    let tokenValue = await userToken.createToken(email).then((res) => { return res });
-    dName = await userDB.getDisplayName(email).then((res) => { return res; });
-
-    console.log("Sucessful Login DN: " + dName)
-    
-  }
-  else { console.log("Failed Login") }
- }
 
 
-async function test() {
-  
-  //await testCreate()
-  await testLogin()
-
-}
-
-
-//test();

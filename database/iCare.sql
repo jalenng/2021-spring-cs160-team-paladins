@@ -4,11 +4,12 @@ USE iCare;
 
 # Table of Users
 CREATE TABLE Users (
-	email varchar(50) NOT NULL,
+	id int NOT NULL AUTO_INCREMENT,
+	email varchar(50) NOT NULL UNIQUE,
 	pass varchar(300) NOT NULL,
     displayName varchar(50) NOT NULL,
     dateCreated date,
-	PRIMARY KEY (email)
+	PRIMARY KEY (id)
 );
 
 # Table of User Preferences
@@ -62,18 +63,7 @@ DELIMITER $$
 CREATE TRIGGER AfterInsertUsers AFTER INSERT ON Users
 FOR EACH ROW BEGIN
 		INSERT INTO UserPreferences (email) VALUES (NEW.email);
-        INSERT INTO DataUsage (email) VALUES (NEW.email);
-END;
-$$
-DELIMITER ;
-
-# Trigger: Before creating the UserPreferences entry
-# - sets the default notifcation sound (Leaf)
-DROP TRIGGER IF EXISTS BeforeInsertUserPreferences; 
-DELIMITER $$
-CREATE TRIGGER BeforeInsertUserPreferences BEFORE INSERT ON UserPreferences
-FOR EACH ROW BEGIN
-		SET NEW.notiSound='Leaf';
+        INSERT INTO DataUsage (email, usageDate) VALUES (NEW.email, CURDATE());
 END;
 $$
 DELIMITER ;
@@ -87,9 +77,7 @@ FOR EACH ROW BEGIN
     DECLARE usageOn bool;
     SELECT dataUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
-    IF (usageOn) THEN
-		SET NEW.usageDate=CURDATE();
-	ELSE
+    IF (!usageOn) THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";
     END IF;
 END;
@@ -121,9 +109,7 @@ FOR EACH ROW BEGIN
     DECLARE usageOn bool;
     SELECT appUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
-    IF (usageOn) THEN
-		SET NEW.usageDate=CURDATE();
-	ELSE
+    IF (!usageOn) THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";
     END IF;
 END;
@@ -146,9 +132,8 @@ END;
 $$
 DELIMITER ;
 
-
-
 # ----------------------------------------------------------------------
 # mysql --local-infile -u root -p
 # source iCare.sql
 
+ALTER TABLE Users AUTO_INCREMENT = 1000;

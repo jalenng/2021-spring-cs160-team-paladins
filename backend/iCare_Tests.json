@@ -1,0 +1,1940 @@
+{
+	"info": {
+		"_postman_id": "3513fbae-55e0-4d1d-ab42-a395ffa318a9",
+		"name": "iCare Testing (Local Host)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Account (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create Account test - Success\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// Sets the token variable\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"tokenValue\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{GEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{GDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				},
+				"description": "We successfully created an account."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account (Existing Email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create Account test -Existing Email\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{EEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{ATDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				},
+				"description": "We fail to create an account due to using an existing email (from the successful 'create account' attempt)."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account (Bad Passsword)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create Account test -Bad Password\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{ATEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{WPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{GDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				},
+				"description": "We fail to create an account due to having no displayName inputted"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account (No Email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create Account test - No Email\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"// Sets the token variable\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"tokenValue\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{ATDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				},
+				"description": "We successfully created an account."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account (No Password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create Account test - No Password\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"// Sets the token variable\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"tokenValue\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{ATEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{ATDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				},
+				"description": "We successfully created an account."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account (No Display Name)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create Account test - No Display Name\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"// Sets the token variable\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"tokenValue\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{ATEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				},
+				"description": "We successfully created an account."
+			},
+			"response": []
+		},
+		{
+			"name": "Log in (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Sets the token variable\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"tokenValue\", jsonData.token);\r",
+							" "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{GEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/auth",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"auth"
+					]
+				},
+				"description": "We successfully login based on the email/password of the successful 'create account' post."
+			},
+			"response": []
+		},
+		{
+			"name": "Login (Bad email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login test - Bad email\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{WEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/auth",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"auth"
+					]
+				},
+				"description": "We fail to login as we are using an email that does not have an account."
+			},
+			"response": []
+		},
+		{
+			"name": "Log in (Bad password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login test - Bad password\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{GEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{WPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/auth",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"auth"
+					]
+				},
+				"description": "We fail to login to our account (from successful 'create account' request) due to using the wrong password"
+			},
+			"response": []
+		},
+		{
+			"name": "Log in (No Password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login test - No password\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{GEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/auth",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"auth"
+					]
+				},
+				"description": "We fail to login to our account (from successful 'create account' request) due to using the wrong password"
+			},
+			"response": []
+		},
+		{
+			"name": "Log in (No Email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login test - No email\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/auth",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"auth"
+					]
+				},
+				"description": "We fail to login to our account (from successful 'create account' request) due to using the wrong password"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Data/App Usage (Empty Array)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Data/App Usage test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "timePeriod",
+							"value": "WEEK",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/data",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Data/App Usage (Undefined Values)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Set Data/App Usage test - undefined values\", function () {\r",
+							"    pm.response.to.have.status(504);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dataUsage\": [\r\n        {\r\n            \"screenTime\": 50,\r\n            \"numBreaks\": 4\r\n        },\r\n        {\r\n            \"numBreaks\": 2,\r\n            \"usageDate\": \"2021-04-10\"\r\n        }\r\n    ],\r\n    \"appUsage\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url\n}}/data",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Data/App Usage (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Set Data/App Usage test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dataUsage\": [\r\n        {\r\n            \"screenTime\": 50,\r\n            \"numBreaks\": 4,\r\n            \"usageDate\": \"2021-04-19\"\r\n        },\r\n        {\r\n            \"screenTime\": 48,\r\n            \"numBreaks\": 2,\r\n            \"usageDate\": \"2021-04-10\"\r\n        }\r\n    ],\r\n    \"appUsage\": [\r\n        {\r\n            \"appName\": \"Discord\",\r\n            \"appTime\": 40,\r\n            \"usageDate\": \"2021-04-19\"\r\n        },\r\n        {\r\n            \"appName\": \"Zoom\",\r\n            \"appTime\": 37,\r\n            \"usageDate\": \"2021-04-19\"\r\n        },\r\n        {\r\n            \"appName\": \"Discord\",\r\n            \"appTime\": 431,\r\n            \"usageDate\": \"2021-04-01\"\r\n        },\r\n        {\r\n            \"appName\": \"Zoom\",\r\n            \"appTime\": 87,\r\n            \"usageDate\": \"2021-04-13\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url\n}}/data",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Data/App Usage (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Data/App Usage test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "timePeriod",
+							"value": "WEEK",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/data",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Preferences (No Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Set Preferences test - No Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"notifications\": {\r\n        \"interval\": \"{{newInterval}}\",\r\n        \"sound\": \"{{newSound}}\",\r\n        \"enableSound\": {{false}}\r\n    },\r\n    \"dataUsage\": {\r\n        \"enableWeeklyUsageStats\": {{false}},\r\n        \"trackAppUsageStats\": {{false}}\r\n    }\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url\n}}/prefs",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"prefs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Preferences (Invalid Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Set Preferences test - Invalid Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{WToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"notifications\": {\r\n        \"interval\": \"{{newInterval}}\",\r\n        \"sound\": \"{{newSound}}\",\r\n        \"enableSound\": {{false}}\r\n    },\r\n    \"dataUsage\": {\r\n        \"enableWeeklyUsageStats\": {{false}},\r\n        \"trackAppUsageStats\": {{false}}\r\n    }\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url\n}}/prefs",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"prefs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Preferences (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Set Preferences test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"notifications\": {\r\n        \"interval\": \"{{newInterval}}\",\r\n        \"sound\": \"{{newSound}}\",\r\n        \"enableSound\": {{false}}\r\n    },\r\n    \"dataUsage\": {\r\n        \"enableWeeklyUsageStats\": {{false}},\r\n        \"trackAppUsageStats\": {{false}}\r\n    }\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url\n}}/prefs",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"prefs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Preferences (No Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Preferences test - No Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{base_url\n}}/prefs",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"prefs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Preferences (Invalid Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Preferences test - Invalid Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{WToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url\n}}/prefs",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"prefs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Preferences (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Preferences test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url\n}}/prefs",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"prefs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Email/DN (No Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Preferences test - Success\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Email/DN (Invalid Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Preferences test - Success\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{WToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Email/DN (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Preferences test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Email/DN (No Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Email/DN test - no token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{ATEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{ATDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Email/DN (Invalid Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Email/DN test - invalid token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{WToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{ATEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{ATDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Email/DN (No DN)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Email/DN test - empty display name\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{EEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Email/DN (No Email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Email/DN test - empty email\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{ATDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Email/DN (No Password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Email/DN test - empty password\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{ATEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{ATDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Email/DN (Bad Password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Email test - bad password\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{NEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{WPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{NDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Email/DN (Existing Email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Email/DN test - new email is existing email\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{EEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{NDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Email/DN (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Change Email test - Success\", function () {\r",
+							"    pm.response.to.have.status(202);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{NEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						},
+						{
+							"key": "{{displayName}}",
+							"value": "{{NDN}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Account (NoToken)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete Account test - No Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "auth",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Account (Invalid Token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete Account test - Invalid Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{WToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Account (Wrong Password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete Account test - Wrong Password\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{password}}",
+							"value": "{{WPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Account (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete Account test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{password}}",
+							"value": "{{GPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in (Existing Email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Sets the token variable\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"tokenValue\", jsonData.token);\r",
+							" "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{email}}",
+							"value": "{{EEmail}}",
+							"type": "text"
+						},
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/auth",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"auth"
+					]
+				},
+				"description": "We successfully login based on the email/password of the successful 'create account' post."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Account (Existing Email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete Account test - Success\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "{{auth}}",
+						"value": "{{tokenValue}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "{{password}}",
+							"value": "{{ATPass}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url\n}}/user",
+					"host": [
+						"{{base_url\n}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

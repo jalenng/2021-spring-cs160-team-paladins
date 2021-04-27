@@ -1,0 +1,119 @@
+{
+	"id": "a2b5d2b3-74ba-4da8-bad9-0c3bab31d1bf",
+	"name": "iCare Testing",
+	"values": [
+		{
+			"key": "base_url\n",
+			"value": "localhost:3000",
+			"enabled": true
+		},
+		{
+			"key": "tokenValue",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "auth",
+			"value": "auth",
+			"enabled": true
+		},
+		{
+			"key": "email",
+			"value": "email",
+			"enabled": true
+		},
+		{
+			"key": "password",
+			"value": "password",
+			"enabled": true
+		},
+		{
+			"key": "displayName",
+			"value": "displayName",
+			"enabled": true
+		},
+		{
+			"key": "false",
+			"value": "0",
+			"enabled": true
+		},
+		{
+			"key": "true",
+			"value": "1",
+			"enabled": true
+		},
+		{
+			"key": "EEmail",
+			"value": "exist@gmail.com",
+			"enabled": true
+		},
+		{
+			"key": "GEmail",
+			"value": "success@gmail.com",
+			"enabled": true
+		},
+		{
+			"key": "GPass",
+			"value": "successpassword",
+			"enabled": true
+		},
+		{
+			"key": "GDN",
+			"value": "Successful User",
+			"enabled": true
+		},
+		{
+			"key": "ATEmail",
+			"value": "anythingEmail",
+			"enabled": true
+		},
+		{
+			"key": "ATPass",
+			"value": "anythingPassword",
+			"enabled": true
+		},
+		{
+			"key": "ATDN",
+			"value": "anythingDisplayName",
+			"enabled": true
+		},
+		{
+			"key": "NEmail",
+			"value": "newEmail@gmail.com",
+			"enabled": true
+		},
+		{
+			"key": "NDN",
+			"value": "new display name",
+			"enabled": true
+		},
+		{
+			"key": "newInterval",
+			"value": "30",
+			"enabled": true
+		},
+		{
+			"key": "newSound",
+			"value": "Leaf2",
+			"enabled": true
+		},
+		{
+			"key": "WEmail",
+			"value": "wrong@gmail.com",
+			"enabled": true
+		},
+		{
+			"key": "WPass",
+			"value": "wpass",
+			"enabled": true
+		},
+		{
+			"key": "WToken",
+			"value": "wrongtoken",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-04-27T01:08:16.927Z",
+	"_postman_exported_using": "Postman/8.3.0-210421-0415"
+}

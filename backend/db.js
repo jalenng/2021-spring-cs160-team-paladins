@@ -22,16 +22,58 @@ class db {
      * @returns true if no error, false for error
      */
      async createUser(givenEmail, givenPass, displayName) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([givenEmail, givenPass, displayName]);
+        if (checkValues == false) {
+            return false;
+        }
+
         let q = "INSERT INTO Users (email, pass, displayName)";
         q = q + "VALUES ('" + givenEmail + "', '" + givenPass + "', '" + displayName + "')";
 
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { resolve(true) }
         }));
         return results;
     }
 
+    /**
+     * Gets the user id from the database
+     * @param {String} givenEmail 
+     * @returns user id (int)
+     */
+    async getID(givenEmail) {
+        let q = "SELECT id FROM Users"
+        let data = await this.dbPromise(true, q, givenEmail);
+
+        if (data.length === 0) { return false; }
+        else if (data != false) {
+            let intValue = await this.gettingInteger(data)
+            return intValue;
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets email from id
+     * @param {int} id 
+     * @returns email associated with user id
+     */
+    async getEmail(id) {
+        let q = "SELECT email FROM Users WHERE id=" + id 
+
+        // Querying Result
+        return await new Promise((resolve) => this.pool.query(q, function (err, result) {
+            if (err) { resolve(false) }
+            else { 
+                let splits = (JSON.stringify(result)).split('\"', 5);                
+                resolve(splits[3])
+             }
+        }));
+    }
 
     /**
      * Gets the password given an email
@@ -58,22 +100,27 @@ class db {
      * @returns true if no error, false if fails
      */
     async changeEmail(oldEmail, newEmail) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([oldEmail, newEmail]);
+        if (checkValues == false) {
+            return false;
+        }
+
         let q = "UPDATE Users SET email='" + newEmail + "'"
 
         return await this.dbPromise(false, q, oldEmail);
     }
 
-
     /**
-     * Sets the displayName
-     * @param {String} userEmail email (primary key)
-     * @param {String} displayName displayName
+     * Deletes a user given the email
+     * @param {String} userEmail 
      * @returns true if no error, false if fails
      */
-    async setDisplayName(userEmail, displayName) {
-        let q = "UPDATE UserPreferences SET displayName='" + displayName + "'"
+    async deleteAccount(userEmail) {
+        let q = "DELETE FROM Users"
 
-        return await this.dbPromise(false, q, userEmail)
+        return await this.dbPromise(false, q, userEmail);
     }
 
     /**
@@ -100,9 +147,17 @@ class db {
      * @returns true if no error, false if fails
      */
     async setDisplayName(userEmail, displayName) {
-        let q = "UPDATE UserPreferences SET displayName='" + displayName + "'"
 
-        return await this.dbPromise(false, q, userEmail)
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, displayName]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets display name
+        let q = "UPDATE Users SET displayName='" + displayName + "'"
+
+        return await this.dbPromise(false, q, userEmail);
     }
 
     /**
@@ -129,6 +184,14 @@ class db {
      * @returns true if no error, false if fails
      */
     async setNotiInterval(userEmail, newInt) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, newInt]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets notification interval
         let q = "UPDATE UserPreferences SET notiInterval=" + newInt
 
         return await this.dbPromise(false, q, userEmail)
@@ -158,6 +221,14 @@ class db {
      * @param {String} newSound new sound to set to (sound name in database)
      */
     async setNotiSound(userEmail, newSound) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, newSound]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets notification sound
         let q = "UPDATE UserPreferences SET notiSound='" + newSound + "'";
 
         return await this.dbPromise(false, q, userEmail);
@@ -187,8 +258,16 @@ class db {
      * @returns true if no error, false if fails
      */
     async setNotiSoundOn(userEmail, boolValue) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, boolValue]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets boolValue
         let i = boolValue ? true : false;
-        let q = "UPDATE userPreferences SET notiSoundOn=" + i
+        let q = "UPDATE UserPreferences SET notiSoundOn=" + i
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -201,12 +280,13 @@ class db {
     async getDataUsageOn(userEmail) {
         let q = "SELECT dataUsageOn FROM UserPreferences"
         let data = await this.dbPromise(true, q, userEmail);
+
         if (data != false) {
             let bVal = await this.gettingInteger(data)
             return Boolean(Number(bVal))
         }
 
-        return data
+        return data;
     }
 
     /**
@@ -216,8 +296,16 @@ class db {
      * @returns true if no error
      */
     async setDataUsageOn(userEmail, boolValue) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, boolValue]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets boolValue
         let i = boolValue ? true : false;
-        let q = "UPDATE userPreferences SET dataUsageOn=" + i
+        let q = "UPDATE UserPreferences SET dataUsageOn=" + i
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -244,8 +332,16 @@ class db {
      * @returns true if no error; false if fails
      */
     async setAppUsageOn(userEmail, boolValue) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, boolValue]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Sets boolValue
         let i = boolValue ? true : false;
-        let q = "UPDATE userPreferences SET appUsageOn=" + i
+        let q = "UPDATE UserPreferences SET appUsageOn=" + i
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -255,20 +351,29 @@ class db {
      * @param {String} userEmail user email
      * @param {int} screenTime screen time spent on computer
      * @param {int} timerCount amount of times counter has been called
+     * @param {date} usageDate number of days the usageDate is away from today
      * @returns true if success in updating datausage records, false if fails
      */
-    async setDataUsage(userEmail, screenTime, timerCount) {
-        let today = await this.getDate(0).then((result) => { return result; })
-        let check = await this.check("DataUsage", userEmail, "", today);
+    async setDataUsage(userEmail, screenTime, timerCount, usageDate) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, screenTime, timerCount, usageDate]);
+        if (checkValues == false) {
+            return false;
+        }
+
+        // Checks for existing record
+        let check = await this.check("DataUsage", userEmail, "", usageDate);
         let q = "";
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE DataUsage SET screenTime=" + screenTime + ", timerCount=" + timerCount + " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
+            q = "UPDATE DataUsage SET screenTime= screenTime + " + screenTime + ", timerCount= timerCount + " + timerCount + 
+                " WHERE email='" + userEmail + "' AND usageDate='" + usageDate + "'";
         }
         // Creates existing record
         else {
-            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + today + "')";
+            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + usageDate + "')";
         }
 
         // Updates the database
@@ -294,7 +399,7 @@ class db {
 
         // Querying Result
         let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { resolve(result) }
         }));
 
@@ -306,26 +411,34 @@ class db {
      * @param {String} userEmail user email
      * @param {String} appName name of the application
      * @param {int} appTime time spent on the application
+     * @param {date} date usageDate
      * @returns true if success in updating appusage records, false if fails
      */
-    async setAppUsage(userEmail, appName, appTime) {
-        let today = await this.getDate(0).then((result) => { return result; })
-        let check = await this.check("AppUsage", userEmail, appName, today);
+    async setAppUsage(userEmail, appName, appTime, date) {
+
+        // Check for undefined values
+        let checkValues = await this.checkUndefined([userEmail, appName, appTime, date]);
+        if (checkValues == false) {
+            return false;
+        }
+        
+        // Checks for existing record
+        let check = await this.check("AppUsage", userEmail, appName, date).then((result) => { return result; })
         let q = "";
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE AppUsage SET appTime=" + appTime + ", timerCount=" + timerCount +
-                " WHERE email='" + userEmail + "' AND usageDate='" + today + "'";
+            q = "UPDATE AppUsage SET appTime= appTime + " + appTime +
+                " WHERE email='" + userEmail + "' AND usageDate='" + date + "'";
         }
-        // Creates existing record
+        // Creates a new record
         else {
-            q = "INSERT INTO AppUsage VALUES('" + userEmail + "', " + appName + ", " + appTime + ", '" + today + "')";
+            q = "INSERT INTO AppUsage VALUES('" + userEmail + "', '" + appName + "', " + appTime + ", '" + date + "')";
         }
 
         // Updates the database
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { resolve(true) }
         }));
 
@@ -345,15 +458,13 @@ class db {
         q = q + q2
 
         // Querying Result
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(result) }
         }));
 
         return results; // JSON.stringify(results); to get the string format
     }
-
-
 
     /**
      * Closes the database pool
@@ -374,7 +485,7 @@ class db {
     async dbPromise(isGet, str, userEmail) {
         let q = str + " WHERE email='" + userEmail + "'"
 
-        let results = await new Promise((resolve, reject) => this.pool.query(q, function (err, result) {
+        let results = await new Promise((resolve) => this.pool.query(q, function (err, result) {
             if (err) { resolve(false) }
             else {
                 if (isGet) { resolve(result) }      // For Getter Methods
@@ -433,7 +544,7 @@ class db {
         if (table == "DataUsage") {
             addq = table + " WHERE email='" + userEmail + "' AND usageDate='" + today + "')";
         }
-        else if (table == "App Usage") {
+        else if (table == "AppUsage") {
             addq = table + " WHERE email='" + userEmail + "' AND appName='" + appName + "' AND usageDate='" + today + "')";
         }
         checkq = checkq + addq;
@@ -477,6 +588,20 @@ class db {
         queryString = queryString + qPart + date + "'"
 
         return queryString;
+    }
+
+    /**
+     * Checks for undefined values
+     * @param {Array} list 
+     * @returns true if no undefined values
+     */
+    async checkUndefined(list) {
+        for (const item of list) {
+            if (typeof item === 'undefined' || item.length === 0 || item === null) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

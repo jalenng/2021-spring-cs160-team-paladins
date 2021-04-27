@@ -1,0 +1,1 @@
+# README.md for automation tests required for Sprint 5

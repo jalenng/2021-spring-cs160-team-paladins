@@ -24,6 +24,7 @@
     "cryptr": "^6.0.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.18",
-    "multer": "^1.4.2"
+    "multer": "^1.4.2",
+    "newman": "^5.2.2"
   }
 }

@@ -17,10 +17,10 @@ cryptr = new Cryptr('myTotalySecretKey');
 
 // Mocha Tests --------------------------------
 
-let goodEmail = "good@gmail.com";       // Reuse for create, login, delete
+let goodEmail = "goodgood@gmail.com";       // Reuse for create, login, delete
 let goodDisplay = "goodDisplay"
-let badEmail = 'exist@gmail.com';
-let newEmail = "newEmail@gmail.com"     // Use for change email
+let badEmail = 'existexist@gmail.com';
+let newEmail = "newnewEmail@gmail.com"     // Use for change email
 let goodPass = "password12345";         // Reuse for create, login, delete
 let failEmail = "idontexist@gmail.com"  // Reuse for failing
 let success = "";
@@ -119,7 +119,6 @@ describe('Change email', () => {
     describe('(Success) Existing email [' + goodEmail + ']: ', () => {
         it ('should return true as email does exist', async () => {
             success = await userDB.changeEmail(goodEmail, newEmail);
-            console.log(success)
             assert.strictEqual(success, true, 'success is true');
         });
     });

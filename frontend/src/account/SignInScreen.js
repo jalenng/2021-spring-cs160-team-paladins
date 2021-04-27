@@ -109,13 +109,14 @@ export default class extends React.Component {
                             tokens={{ childrenGap: 20 }}>
 
                             <PrimaryButton
+                                id='submitButton'
                                 text='Sign in'
                                 type='submit'
                                 onClick={this.handleSubmit}
                             />
 
                             <Link to='/signup'>
-                                <ActionButton> Don't have an account? </ActionButton>
+                                <ActionButton id='noAccountLink'> Don't have an account? </ActionButton>
                             </Link>
 
                         </Stack>

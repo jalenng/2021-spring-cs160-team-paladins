@@ -123,7 +123,9 @@ export default class App extends React.Component {
                 {/* If not signed in: show sign in button */}
                 {!isSignedIn && (
                     <Stack {...topRightCornerProps}>
-                        <DefaultButton text='Sign in'
+                        <DefaultButton
+                            id='signInPopupButton'
+                            text='Sign in'
                             onClick={showPopup.signIn}
                         />
                     </Stack>

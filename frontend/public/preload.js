@@ -6,8 +6,11 @@
  * and displaying UI elements is handled exclusively by React.
  */
 
-const { ipcRenderer } = require('electron');
+// Allow access to core Electron APIs when testing
+if (process.env.NODE_ENV === 'test') 
+    window.electronRequire = require;
 
+const { ipcRenderer } = require('electron');
 
 /* Event system */
 const EventSystem = function () {

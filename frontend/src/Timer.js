@@ -10,10 +10,11 @@ import { getTheme } from "@fluentui/react";
 
 import Circle from "react-circle";
 
-const buttonStyle = { borderRadius: '20px', width: '40px', height: '40px' };
+const buttonStyle = { borderRadius: "20px", width: "40px", height: "40px" };
 const buttonIconClass = mergeStyles({ fontSize: 24, height: 24, width: 24 });
 
 export default class Timer extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -84,7 +85,9 @@ export default class Timer extends React.Component {
 
                                 {/* Remaining time */}
                                 <Text variant={"xxLarge"} style={{ fontSize: "4rem" }} block>
-                                    {this.state.remainingTimeString}
+                                    <div id="remainingTimeText">
+                                        {this.state.remainingTimeString}
+                                    </div>
                                 </Text>
 
                                 {/* End time - show only if the timer is running*/}
@@ -109,6 +112,7 @@ export default class Timer extends React.Component {
                         {/* Toggle button */}
                         <TooltipHost content={this.state.state === "running" ? "Pause" : "Start"}>
                             <PrimaryButton
+                                id="toggleButton"
                                 disabled={this.state.state === "idle"}
                                 onClick={timer.toggle}
                                 style={buttonStyle}
@@ -122,6 +126,7 @@ export default class Timer extends React.Component {
                         {/* Other actions */}
                         <TooltipHost content={"More"}>
                             <DefaultButton
+                                id="buttonGroup"
                                 disabled={this.state.state === "blocked" || this.state.state === "idle"}
                                 style={buttonStyle}
                                 onRenderText={() => {

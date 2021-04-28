@@ -72,6 +72,7 @@ export default class extends React.Component {
                 <Text variant={'xLarge'} block> Notifications </Text>
 
                 <Slider
+                    id="notifSlider"
                     label="Notification interval"
                     min={5} max={60} step={5}
                     showValue snapToStep
@@ -82,6 +83,7 @@ export default class extends React.Component {
                 /> 
 
                 <Toggle
+                    id="soundNotifsToggle"
                     label="Enable sound notifications"
                     onText="On" offText="Off"
                     checked={this.state.notifications.enableSound}
@@ -91,6 +93,7 @@ export default class extends React.Component {
                 <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="end">
 
                     <Dropdown label="Sound"
+                        id="soundDropdown"
                         styles={{ dropdown: { width: 300 } }}
                         selectedKey={this.state.notifications.sound}
                         options={combinedSoundList}
@@ -101,6 +104,7 @@ export default class extends React.Component {
 
                     <TooltipHost content="Preview">
                         <IconButton
+                            id='playSoundBtn'
                             iconProps={{ iconName: 'Play' }}
                             onClick={ playSound }
                         />

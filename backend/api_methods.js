@@ -148,15 +148,36 @@ class api_methods {
    }
 
    /**
-    * Generate insights for user based on data/app usage statistics
-    * @returns list of JSON object of two arrays [[header], [content]]
+    * Generate dynamic insights for user based on data/app usage statistics
+    * @returns list of JSON objects
     */
    async generateInsights() {
+       let insights = this.genericInsights();
 
-       // Return list of JSON [{header: header, content: content}, ...] if you were able to generate insights
+       // Generate Dynamic insights here!
 
-       // Return false if fail to generate insights
-       return false;
+       return insights;
+   }
+
+   /**
+    * Generate the default insights that appear for everyone
+    * @returns list of JSON objects
+    */
+   async genericInsights() {
+
+        let genericInsights = [
+            { header: "Standing Up", content: "Try to stand up for 5 minutes every 30 minutes" },
+            { header: "Working Hard", content: "Did you know it’s best not to work for more than an hour at a time" },
+            { header: "Meditation Benefits", content: "Consider learning about the benefits of mindfulness meditation" },
+            { header: "Bluelight Filter", content: "Consider using a blue light filter to protect your eyes" },
+            { header: "Dark Mode", content: "Consider using a dark mode to protect your eyes" },
+            { header: "Pomodoro technique", content: "Have you ever considered trying the Pomodoro technique" },
+
+        ];
+
+        return genericInsights;
+
+
    }
 
 

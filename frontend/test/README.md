@@ -23,3 +23,10 @@ The files in this folder are test scripts that test our frontend. The scripts us
 - Timer functionality
   - Start and pause timer with button
   - Reset timer
+- Preferences functionality
+  - Toggling enable sound notifications.
+  - Playing selected notification sound.
+  - Modifying Timer Duration
+  - Toggling open iCare on startup.
+  - Toggling track app usage statistics.
+  - Toggling track data usage statistics.

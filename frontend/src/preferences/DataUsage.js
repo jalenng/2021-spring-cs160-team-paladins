@@ -31,11 +31,13 @@ export default class extends React.Component {
                 <Text variant={'xLarge'} block> Data usage </Text>
 
                 <Toggle label="Track my application usage statistics"
+                    id="appUsageToggle"
                     onText="On" offText="Off"
                     checked={this.state.trackAppUsageStats}
                     onChange={(event, checked) => store.preferences.set("dataUsage.trackAppUsageStats", checked)}
                 />
                 <Toggle label="Enable weekly usage statistics"
+                    id="dataUsageToggle"
                     onText="On" offText="Off"
                     checked={this.state.enableWeeklyUsageStats}
                     onChange={(event, checked) => store.preferences.set("dataUsage.enableWeeklyUsageStats", checked)}

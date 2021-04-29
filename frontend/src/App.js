@@ -104,7 +104,7 @@ export default class App extends React.Component {
                         <InsightsScreen />
                     </PivotItem>
                     <PivotItem itemIcon='Settings'>
-                        <PreferencesScreen />
+                        <PreferencesScreen/>
                     </PivotItem>
                 </Pivot>
 

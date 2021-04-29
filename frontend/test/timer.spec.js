@@ -36,7 +36,7 @@ describe("Timer functionality", function () {
     return this.app.start();
   });
 
-  it("Start and pause timer with button", async function () {
+  it("Starting and pausing the timer", async function () {
     const isVisible = await this.app.browserWindow.isVisible();
     assert.strictEqual(isVisible, true);
 
@@ -67,7 +67,7 @@ describe("Timer functionality", function () {
     await wait(3000); // Wait 3 seconds
   });
 
-  it("should reset timer", async function () {
+  it("Resetting the timer", async function () {
     const isVisible = await this.app.browserWindow.isVisible();
     assert.strictEqual(isVisible, true);
 
@@ -91,6 +91,8 @@ describe("Timer functionality", function () {
     // const remainingTimeText = await remainingTimeComp.getText();
     // assert.strictEqual(remainingTimeText, "20:00");
   });
+
+
 
   afterEach(function () {
     if (this.app && this.app.isRunning()) return this.app.stop();

@@ -29,11 +29,13 @@ export default class extends React.Component {
                 <Text variant={'xLarge'} block> Startup </Text>
 
                 <Toggle label="Start app on login"
+                    id="autoLoginToggle"
                     onText="On" offText="Off"
                     checked={this.state.startAppOnLogin}
                     onChange={(event, checked) => store.preferences.set("startup.startAppOnLogin", checked)}
                 />
                 <Toggle label="Start timer on app startup"
+                    id="appStartupToggle"
                     onText="On" offText="Off"
                     checked={this.state.startTimerOnAppStartup}
                     onChange={(event, checked) => {

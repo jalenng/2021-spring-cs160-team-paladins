@@ -63,7 +63,7 @@ describe('Preferences', function () {
         await openStartupBtn.click();
         await wait(2000)
 
-        // Toggle the app startup button.
+        // Click/Toggle the app startup button.
         const toggleStartupBtn = await this.app.client.react$('button', {
             props: { id : 'appStartupToggle' }
         });
@@ -101,18 +101,15 @@ describe('Preferences', function () {
         const openNotifBtn = await this.app.client.react$('button', { 
             props: { title : 'Notifications' }
         });
-        openNotifBtn.click();
-
-        const notifSlider = await this.app.client.react$('div', {
-            props: { id : 'Slider99' }
-        });
+        await openNotifBtn.click();
+        await wait(2000);
 
         const soundDropdown = await this.app.client.react$('button', {
             props: { id : 'playSoundBtn' }
         })
 
-        soundDropdown.click();
-        await wait(1000);
+        await soundDropdown.click();
+        await wait(2000);
     });
 
     /*
@@ -126,13 +123,14 @@ describe('Preferences', function () {
         const openNotifBtn = await this.app.client.react$('button', { 
             props: { title : 'Notifications' }
         });
-        openNotifBtn.click();
+        await openNotifBtn.click();
+        await wait(2000);
 
         const notifSlider = await this.app.client.react$('div', {
             props: { id : 'Slider99' }
         });
 
-        notifSlider.click();
+        await notifSlider.click();
         await wait(1000);
     });
 

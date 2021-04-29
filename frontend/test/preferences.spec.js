@@ -49,7 +49,7 @@ describe('Preferences', function () {
             props: { id : 'Pivot1-Tab3' }
         });
 
-        openSettingsBtn.click();
+        await openSettingsBtn.click();
         await wait(1000);
     });
 
@@ -94,7 +94,6 @@ describe('Preferences', function () {
     });
 
     it('Toggling open iCare on startup', async function () {
-
         // Click the startup menu.
         const openStartupBtn = await this.app.client.react$('button', { 
             props: { title : 'Startup' }
@@ -115,7 +114,6 @@ describe('Preferences', function () {
     });
 
     it('Toggling enable sound notifications', async function () {
-
         // Click the notification menu.
         const openNotifBtn = await this.app.client.react$('button', { 
             props: { title : 'Notifications' }
@@ -124,13 +122,13 @@ describe('Preferences', function () {
         await wait(2000)
 
         // Toggle the app startup button.
-        const appUsageToggle = await this.app.client.react$('button', {
-            props: { id : 'appUsageToggle' }
+        const soundNotifsToggle = await this.app.client.react$('button', {
+            props: { id : 'soundNotifsToggle' }
         });
-        const beforeClick = await appUsageToggle.getProperty('checked');
-        await appUsageToggle.click();
+        const beforeClick = await soundNotifsToggle.getProperty('checked');
+        await soundNotifsToggle.click();
         await wait(2000);
-        const afterClick = await appUsageToggle.getProperty('checked');
+        const afterClick = await soundNotifsToggle.getProperty('checked');
         assert.notStrictEqual(beforeClick, afterClick);
     });
 

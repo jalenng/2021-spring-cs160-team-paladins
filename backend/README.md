@@ -4,21 +4,6 @@ The backend api testing is done using Postman.
 The link below consists of the Postman collection of backend api tests for our iCare application. You will not be able to run it because it requires the environment, which I cannot share. As such, I have an image of the runner in Postman successfully running the tests.
 POSTMAN: [Backend API Tests](https://www.getpostman.com/collections/fcd8a3e81ecbc02034b1)
 
-<div class="postman-run-button"
-data-postman-action="collection/fork"
-data-postman-var-1="15167292-3513fbae-55e0-4d1d-ab42-a395ffa318a9"
-data-postman-collection-url="entityId=15167292-3513fbae-55e0-4d1d-ab42-a395ffa318a9&entityType=collection&workspaceId=34b38cfa-cc92-4fc4-a73c-ab8aad28778b"
-data-postman-param="env%5BiCare%20Testing%5D=W3sia2V5IjoiYmFzZV91cmxcbiIsInZhbHVlIjoibG9jYWxob3N0OjMwMDAiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRva2VuVmFsdWUiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiYXV0aCIsInZhbHVlIjoiYXV0aCIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZW1haWwiLCJ2YWx1ZSI6ImVtYWlsIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJwYXNzd29yZCIsInZhbHVlIjoicGFzc3dvcmQiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImRpc3BsYXlOYW1lIiwidmFsdWUiOiJkaXNwbGF5TmFtZSIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiZmFsc2UiLCJ2YWx1ZSI6IjAiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6InRydWUiLCJ2YWx1ZSI6IjEiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6IkVFbWFpbCIsInZhbHVlIjoiZXhpc3RAZ21haWwuY29tIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJHRW1haWwiLCJ2YWx1ZSI6InN1Y2Nlc3NAZ21haWwuY29tIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJHUGFzcyIsInZhbHVlIjoic3VjY2Vzc3Bhc3N3b3JkIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJHRE4iLCJ2YWx1ZSI6IlN1Y2Nlc3NmdWwgVXNlciIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiQVRFbWFpbCIsInZhbHVlIjoiYW55dGhpbmdFbWFpbCIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiQVRQYXNzIiwidmFsdWUiOiJhbnl0aGluZ1Bhc3N3b3JkIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJBVEROIiwidmFsdWUiOiJhbnl0aGluZ0Rpc3BsYXlOYW1lIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJORW1haWwiLCJ2YWx1ZSI6Im5ld0VtYWlsQGdtYWlsLmNvbSIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiTkROIiwidmFsdWUiOiJuZXcgZGlzcGxheSBuYW1lIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJuZXdJbnRlcnZhbCIsInZhbHVlIjoiMzAiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6Im5ld1NvdW5kIiwidmFsdWUiOiJMZWFmMiIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiV0VtYWlsIiwidmFsdWUiOiJ3cm9uZ0BnbWFpbC5jb20iLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6IldQYXNzIiwidmFsdWUiOiJ3cGFzcyIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiV1Rva2VuIiwidmFsdWUiOiJ3cm9uZ3Rva2VuIiwiZW5hYmxlZCI6dHJ1ZX1d"></div>
-<script type="text/javascript">
-  (function (p,o,s,t,m,a,n) {
-    !p[s] && (p[s] = function () { (p[t] || (p[t] = [])).push(arguments); });
-    !o.getElementById(s+t) && o.getElementsByTagName("head")[0].appendChild((
-      (n = o.createElement("script")),
-      (n.id = s+t), (n.async = 1), (n.src = m), n
-    ));
-  }(window, document, "_pm", "PostmanRunObject", "https://run.pstmn.io/button.js"));
-</script>
-
 In this backend folder, there are two JSON files that I exported from Postman that will run the tests when you npm start in the backend.
 This should give you the result below:
 ```

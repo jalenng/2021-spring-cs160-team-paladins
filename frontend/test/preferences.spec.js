@@ -53,6 +53,62 @@ describe('Preferences', function () {
         await wait(1000);
     });
 
+    it('Toggling enable sound notifications', async function () {
+        // Click the notification menu.
+        const openNotifBtn = await this.app.client.react$('button', { 
+            props: { title : 'Notifications' }
+        });
+        await openNotifBtn.click();
+        await wait(2000)
+
+        // Toggle the app startup button.
+        const soundNotifsToggle = await this.app.client.react$('button', {
+            props: { id : 'soundNotifsToggle' }
+        });
+        const beforeClick = await soundNotifsToggle.getProperty('checked');
+        await soundNotifsToggle.click();
+        await wait(2000);
+        const afterClick = await soundNotifsToggle.getProperty('checked');
+        assert.notStrictEqual(beforeClick, afterClick);
+    });
+
+    it('Playing default notification sound.', async function () {
+
+        // Click the notification menu.
+        const openNotifBtn = await this.app.client.react$('button', { 
+            props: { title : 'Notifications' }
+        });
+        await openNotifBtn.click();
+        await wait(2000);
+
+        const playSoundBtn = await this.app.client.react$('button', {
+            props: { id : 'playSoundBtn' }
+        })
+
+        await playSoundBtn.click();
+        await wait(2000);
+    });
+
+    it('Toggling open iCare on startup', async function () {
+        // Click the startup menu.
+        const openStartupBtn = await this.app.client.react$('button', { 
+            props: { title : 'Startup' }
+        });
+        await openStartupBtn.click();
+        await wait(2000)
+
+        // Click/Toggle the app startup button.
+        const appStartupToggle = await this.app.client.react$('button', {
+            props: { id : 'appStartupToggle' }
+        });
+
+        const beforeClick = await appStartupToggle.getProperty('checked');
+        await appStartupToggle.click();
+        await wait(2000);
+        const afterClick = await appStartupToggle.getProperty('checked');
+        assert.notStrictEqual(beforeClick, afterClick);
+    });
+
     it('Toggling track app usage statistics', async function () {
 
         // Click the data usage menu.
@@ -91,62 +147,6 @@ describe('Preferences', function () {
         await wait(2000);
         const afterClick = await dataUsageToggle.getProperty('checked');
         assert.notStrictEqual(beforeClick, afterClick);
-    });
-
-    it('Toggling open iCare on startup', async function () {
-        // Click the startup menu.
-        const openStartupBtn = await this.app.client.react$('button', { 
-            props: { title : 'Startup' }
-        });
-        await openStartupBtn.click();
-        await wait(2000)
-
-        // Click/Toggle the app startup button.
-        const appStartupToggle = await this.app.client.react$('button', {
-            props: { id : 'appStartupToggle' }
-        });
-
-        const beforeClick = await appStartupToggle.getProperty('checked');
-        await appStartupToggle.click();
-        await wait(2000);
-        const afterClick = await appStartupToggle.getProperty('checked');
-        assert.notStrictEqual(beforeClick, afterClick);
-    });
-
-    it('Toggling enable sound notifications', async function () {
-        // Click the notification menu.
-        const openNotifBtn = await this.app.client.react$('button', { 
-            props: { title : 'Notifications' }
-        });
-        await openNotifBtn.click();
-        await wait(2000)
-
-        // Toggle the app startup button.
-        const soundNotifsToggle = await this.app.client.react$('button', {
-            props: { id : 'soundNotifsToggle' }
-        });
-        const beforeClick = await soundNotifsToggle.getProperty('checked');
-        await soundNotifsToggle.click();
-        await wait(2000);
-        const afterClick = await soundNotifsToggle.getProperty('checked');
-        assert.notStrictEqual(beforeClick, afterClick);
-    });
-
-    it('Playing default notification sound.', async function () {
-
-        // Click the notification menu.
-        const openNotifBtn = await this.app.client.react$('button', { 
-            props: { title : 'Notifications' }
-        });
-        await openNotifBtn.click();
-        await wait(2000);
-
-        const playSoundBtn = await this.app.client.react$('button', {
-            props: { id : 'playSoundBtn' }
-        })
-
-        await playSoundBtn.click();
-        await wait(2000);
     });
 
     it('Modifying timer duration', async function () {

@@ -25,7 +25,6 @@ const path = require('path');
 /**
  * FluentUI's 'Button' == 'button'
  * FluentUI's 'TextField' == 'input'
- * FluentUI's PivotItem == '
  */
 
 describe('Preferences', function () {
@@ -50,17 +49,57 @@ describe('Preferences', function () {
             props: { id : 'Pivot1-Tab3' }
         });
 
-        await openSettingsBtn.click();
-        await wait(1000)
+        openSettingsBtn.click();
+        await wait(1000);
+    });
+
+    it('Toggling track app usage statistics', async function () {
+
+        // Click the data usage menu.
+        const openUsageBtn = await this.app.client.react$('button', { 
+            props: { title : 'Data usage' }
+        });
+        await openUsageBtn.click();
+        await wait(2000)
+
+        // Click/toggle track app usage statistics.
+        const appUsageToggle = await this.app.client.react$('button', {
+            props: { id : 'appUsageToggle' }
+        });
+        const beforeClick = await appUsageToggle.getProperty('checked');
+        await appUsageToggle.click();
+        await wait(2000);
+        const afterClick = await appUsageToggle.getProperty('checked');
+        assert.notStrictEqual(beforeClick, afterClick);
+    });
+
+    it('Toggling track data usage statistics', async function () {
+
+        // Click the data usage menu.
+        const openUsageBtn = await this.app.client.react$('button', { 
+            props: { title : 'Data usage' }
+        });
+        await openUsageBtn.click();
+        await wait(2000)
+
+        // Click/toggle track app usage statistics.
+        const dataUsageToggle = await this.app.client.react$('button', {
+            props: { id : 'dataUsageToggle' }
+        });
+        const beforeClick = await dataUsageToggle.getProperty('checked');
+        await dataUsageToggle.click();
+        await wait(2000);
+        const afterClick = await dataUsageToggle.getProperty('checked');
+        assert.notStrictEqual(beforeClick, afterClick);
     });
 
     it('Toggling open iCare on startup', async function () {
 
-        // Click the notification menu.
-        const openNotifsBtn = await this.app.client.react$('button', { 
+        // Click the startup menu.
+        const openStartupBtn = await this.app.client.react$('button', { 
             props: { title : 'Startup' }
         });
-        await openNotifsBtn.click();
+        await openStartupBtn.click();
         await wait(2000)
 
         // Click/Toggle the app startup button.
@@ -85,13 +124,13 @@ describe('Preferences', function () {
         await wait(2000)
 
         // Toggle the app startup button.
-        const soundNotifsToggle = await this.app.client.react$('button', {
-            props: { id : 'soundNotifsToggle' }
+        const appUsageToggle = await this.app.client.react$('button', {
+            props: { id : 'appUsageToggle' }
         });
-        const beforeClick = await soundNotifsToggle.getProperty('checked');
-        await soundNotifsToggle.click();
+        const beforeClick = await appUsageToggle.getProperty('checked');
+        await appUsageToggle.click();
         await wait(2000);
-        const afterClick = await soundNotifsToggle.getProperty('checked');
+        const afterClick = await appUsageToggle.getProperty('checked');
         assert.notStrictEqual(beforeClick, afterClick);
     });
 
@@ -112,12 +151,6 @@ describe('Preferences', function () {
         await wait(2000);
     });
 
-    /*
-    NOT DONE
-    To do
-    1. Simulate dragging slider value. 
-    2. Get timer component and compare values to see if updated.
-    */
     it('Modifying timer duration', async function () {
         // Click the notification menu.
         const openNotifBtn = await this.app.client.react$('button', { 
@@ -148,4 +181,4 @@ function wait(milliseconds) {
     return new Promise(function (resolve, reject) {
         setTimeout(() => { resolve() }, milliseconds)
     })
-}   
+}

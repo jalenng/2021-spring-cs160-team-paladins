@@ -1,9 +1,15 @@
-# iCare
+
+
 
 
 **Table of Contents**
 
+
 [TOC]
+
+
+
+
 
 # 1 Introduction
 
@@ -54,23 +60,37 @@ Many of us spend plenty of time staring at the computer screen every day. This c
 ## 3.1 Application overview
 
 
+## 
+
+![Home page](screenshots/homepage.png)
 
 
 # 4 Timer
 
 
-## 4.1 Overview of the timer timerface
+## 4.1 Overview of the timer interface
 
+<table>
+   <tr>
+      <td>Start/Pause
+      <td>If the timer is paused, starts the timer. If the timer is running, pauses the timer.
+   <tr>
+      <td>More
+      <td>
 
-## 
+      Expands a pop-up menu with additional buttons.
+      Opens the timer in a new window.
+      Restarts the countdown.
 
-##
-4.2 Starting and pausing the timer
+   <tr>
+      <td> Remaining time
+      <td> The remaining time in MM:SS format.
+   <tr>
+      <td> End time
+      <td> The time in which the timer will end.
+<h2>
 
-The blue button is used to start and pause the timer. The menu button is used to reset the timer a
-
-
-## 4.3 How breaks work
+## 4.2 How breaks work
 
 Ideas:
 
@@ -92,16 +112,37 @@ Break resets when you move your mouse
 
 ## 5.1 Why make an account?
 
+To be able to use all of iCare’s extensive features, you must register and create an account.
+
 Ideas:
 
+Unlock functionalities
+
 Access to usage data and insights
+
+	Preference synchronization
 
 
 ## 5.2 How to sign-in or sign-up
 
+Sign-up
 
 
-1. 
+
+1. Click Sign in at the top right corner. The Sign in window should appear.
+2. Click ‘Don’t have an account?’ to go to the sign-up page.
+3. Complete all fields.
+4. Provide your name, email address, and create a password for your iCare account.
+    1. Your password must contain at least 8 characters.
+5. Click Sign up.
+
+Sign-in
+
+
+
+1. Click Sign in at the top right corner. The Sign in window should appear.
+2. On the sign in page, enter the email address and password that you registered with.
+3. Click Sign in.
 
 
 
@@ -111,8 +152,24 @@ Access to usage data and insights
 
 ## 6.1 Data Usage
 
+The iCare application will, by default, collect your PC’s data usage statistics that is associated with your account. It will keep track of the total amount of screen time and the total amount of times the timer has been successfully used per day on the account.
+
+This information will be used for you to keep track of the time you have spent on your device and how much you have been diligently following the 20-20-20 rule over the past 7 days.
+
+
+If you do not want the iCare application to collect your data, it is possible to turn off this data collection feature in your account’s user preferences. Furthermore, when you delete your account the data associated with your account will automatically be deleted from our server.
+
+
+## 
+
 
 ## 6.2 App Usage
+
+The iCare application will, by default, collect information on how much time you spend on any applications that your PC will use when linked to your iCare account. These application statistics will be used for you to keep track of the amount of time you have spent on these applications over the past 7 days.
+
+
+
+If you do not want the iCare application to collect your application data, you can turn this feature off in **Preferences**. Furthermore, when you delete your account the application data associated with your account will automatically be deleted from our server.
 
 
 
@@ -122,8 +179,7 @@ Access to usage data and insights
 
 ## 7.1 Default Insights
 
--Static Insights
-
+The default insights cards are insight
 
 ## 7.2 Custom Insights
 
@@ -135,7 +191,46 @@ Access to usage data and insights
 # 8 Preferences
 
 
-## 8.1 Notification Sound
+## 8.1 Overview of preferences
 
 
-## 8.2 Data and App Usage 
+## 8.2 Notifications
+
+**Notification interval**
+
+Slide bar options vary from 5 minutes to 60 minutes.
+
+**Enable sound notifications**
+
+Sound notification is on by default.
+
+Sound
+
+
+Choose embedded sound from dropdown menu
+
+Play the sound by clicking on 
+
+
+
+
+
+Import the sound from local computer by clicking on 
+
+
+
+## 8.3 Startup 
+
+
+## 8.4 Data usage
+
+Track my application usage statistics
+
+Enable weekly usage statistics
+
+
+## 8.5 Sync
+
+Upload
+
+Download

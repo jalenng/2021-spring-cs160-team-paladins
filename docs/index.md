@@ -284,10 +284,12 @@ _▲The sidebar in the Preferences screen_
    <td>Slider
    </td>
    <td>
-
-f
 <p>
-Slide bar options vary from 5 minutes to 60 minutes.
+Changes the time duration between each break. 
+<p>
+Valid values are multiples of 5 minutes between 5 and 60 minutes.
+<p>
+<em>Default: 20 minutes</em>
    </td>
   </tr>
   <tr>
@@ -295,7 +297,9 @@ Slide bar options vary from 5 minutes to 60 minutes.
    </td>
    <td>Toggle
    </td>
-   <td>Sound notification is on by default.
+   <td>Whether to play a sound when the break starts and ends.
+<p>
+<em>Default: On</em>
    </td>
   </tr>
   <tr>
@@ -303,17 +307,15 @@ Slide bar options vary from 5 minutes to 60 minutes.
    </td>
    <td>Dropdown
    </td>
-   <td>
+   <td>The sound to play when the break starts and ends.
+<p>
+
+
+
+<img src="images/image26.png" width="" alt="alt_text" title="image_tooltip">
 
 <p>
-Choose embedded sound from dropdown menu
-<p>
-Play the sound by clicking on 
-
-
-<p>
-Import the sound from local computer by clicking on 
-
+<em>Default: Long expected</em>
    </td>
   </tr>
 </table>
@@ -359,9 +361,24 @@ Start timer on app startup is on by default.
 ## 8.4 Data usage
 
 
-
-
-
+<table>
+  <tr>
+   <td><strong>Option</strong>
+   <td><strong>Type</strong>
+   <td><strong>Description</strong>
+  </tr>
+  <tr>
+   <td><strong>Track my application usage statistics</strong>
+   <td><strong>Toggle</strong>
+   </td>
+   <td>Track my application usage statistics is on by default.
+  </tr>
+  <tr>
+   <td>Track my application usage statistics
+   <td><strong>Toggle</strong>
+   <td>Enable weekly usage statistics is on by default.
+  </tr>
+</table>
 
 Track my application usage statistics is on by default.
 
@@ -370,9 +387,57 @@ Enable weekly usage statistics is on by default.
 
 ## 8.5 Sync
 
-Upload
+**NOTE: **These options are available only if you have signed into iCare.
 
-Download
+
+<table>
+  <tr>
+   <td><strong>Option</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Upload preference</strong>
+   </td>
+   <td><strong>Button</strong>
+   </td>
+   <td>Save and sync current preferences.
+<p>
+The following preferences are synced.
+<ul>
+
+<li>Notifications
+
+<li>Startup
+
+<li>Data usage
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Download preference</strong>
+   </td>
+   <td><strong>Button</strong>
+   </td>
+   <td>Download previous syncing preferences
+<p>
+The following preferences are synced.
+<ul>
+
+<li>Notifications
+
+<li>Startup
+
+<li>Data usage
+</li>
+</ul>
+   </td>
+  </tr>
+</table>
 
 
 

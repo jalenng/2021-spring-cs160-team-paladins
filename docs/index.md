@@ -3,22 +3,29 @@
 
 ![iCare icon](../frontend/trayAssets/icon.png)
 
-**Table of Contents**
-[TOC]
+**Table of Contents** 
+TODO
 
 # 1 Introduction
+![Person asleep at their computer](screenshots/monitor_smash.png)
 
 ## 1.1 Why iCare?
 
 Many of us spend plenty of time staring at the computer screen every day. This can put a lot of strain on our eyes and cause eye fatigue. iCare is a desktop app that uses the 20-20-20 rule to motivate users to develop good habits to avoid eye strain without being too intrusive to their schedule. iCare would suggest users to take a 20-second break every 20 minutes and look at something at least 20 feet away.
 
+Disclaimer:
+Please note that iCare is not intended to be a substitute for professional medical advice. Always seek the advice of your physician or qualified health provider with any questions you may have.
+
 ## 1.2 The 20-20-20 rule
 
-The 20-20-20 rule is the idea that, every 20 minutes spent using a screen, you should try to look away from the device and look at something that is 20 feet away for a total of 20 seconds. This is done in order to take care of your eyes in the current digital age where many people spend their day staring at their screens.
+For every 20 minutes spent using a screen, look at something 20 feet away for 20 seconds. 
+
+This is done to take care of your eyes in the current digital age where many people spend their day staring at their screens.
 
 While the rule recommends that you look at something that is 20 feet away, being exact isn’t the idea. You should just try to focus on something that is far away from you for 20 seconds, which is the amount of time it takes for your eyes to completely relax.
 
 Of course, most people do not keep track of the time and get absorbed in reading or working when looking at a screen. Using iCare to set a timed reminder to pop up will help you take your needed break to rest your eyes.
+
 
 # 2 Installation
 
@@ -54,7 +61,11 @@ The second tab, the Usage Statistics screen, shows you data and app usage statis
 
 In the upper right-hand corner, we have the Sign-in button that opens up the Login window. If you are already logged in, it will display your display name there.
 
+![Home tab selected](screenshots/home_tab_selected.png)
+
 _▲The various tabs of the application (for a guest)_ 
+
+![Preferences tab selected](screenshots/pref_tab_selected.png)
 
 _▲The various tabs of the application (for a user account)_ 
 
@@ -113,13 +124,16 @@ _▲The various tabs of the application (for a user account)_
 
 # 4 Timer
 ## 4.1 Overview of the timer interface
+
+_▲The timer on the Home screen_
+
+
 When you start the iCare application, the timer on the Home screen will start automatically from the default 20 minutes. If you have an account and a customized timer notification interval, the timer will start from that customized interval.
 
 At the end of your timer, a break notification will appear and have you take a 20 second break away from the screen. When your break is over, the timer will automatically start counting down again.
 
 This feature is default by nature and cannot be disabled. If you want your timer to stop, you must press the pause button underneath the timer. Just keep in mind that this will reset the timer back to its default notification interval.
 
-_▲The timer on the Home screen_
 
 **Timer Interface Overview**
 <table>
@@ -135,10 +149,10 @@ _▲The timer on the Home screen_
    <td>
    </td>
    <td><strong>Start/Pause</strong>
-   </td>
-   <td>If the timer is paused, starts the timer.
-<p>
-If the timer is running, pauses the timer.
+   <td>
+   If the timer is paused, start the timer.
+
+   Otherwise, if the timer is running, pauses the timer.
    </td>
   </tr>
   <tr>
@@ -195,9 +209,10 @@ _▲The fullsreen notification_
 
 ## 5.1 Why make an account?
 
-To be able to use all of iCare’s extensive features, you must register and create an account. This will allow you to keep track of your own data and app usage (if desired) and generate insights based on those statistics. 
+To be able to use all of iCare’s extensive features, you must register and create an account. This will allow you to keep track of your data and app usage (if desired) and generate insights based on those statistics. 
 
 Additionally, creating an account will allow you to customize your experience that will be stored in iCare servers to use for any device with the iCare application installed that you log into.
+
 
 
 ## 5.2 How to sign-up
@@ -240,7 +255,7 @@ If you do not want iCare to collect your data, it is possible to turn off this d
 
 ## 6.2 App Usage
 
-The iCare application will, by default, collect information on how much time you spend on any applications that your PC will use when linked to your iCare account. These application statistics will be used for you to keep track of the amount of time you have spent on these applications over the past 7 days.
+By default, iCare will collect information on how much time you spend on any applications that your PC will use when linked to your iCare account. These application statistics will be used for you to keep track of the amount of time you have spent on these applications over the past 7 days.
 
 ![App usage graph](screenshots/app_usage.png)
 
@@ -249,7 +264,6 @@ _▲ App usage on the Usage Statistics screen_
 If you do not want iCare to collect your application data, you can turn this feature off in **Preferences**. Furthermore, when you delete your account the application data associated with your account will automatically be deleted from our server.
 
 Note: App usage collection is currently unsupported on macOS and Linux.
-
 
 
 # 7 Insights
@@ -262,8 +276,6 @@ The default insights cards are insight cards that you are always going to get, r
 These insight cards provide great tips that you, as a user of the iCare application, would consider helpful in your journey to take care of your eyes.
 ![Insights screenshot](screenshots/insights_page.png)
 
-
-
 _▲The Insights screen_
 
 
@@ -274,22 +286,69 @@ Custom insight cards are insight cards that you will receive that are generated 
 If you do  not have any data or app usage statistics over the past 7 days, then you will not receive any custom insight cards.
 
 
-
-
 # 8 Preferences
 
 
 ## 8.1 Overview of preferences
-
-
-
-
-
+![Preferences sidebar](screenshots/pref_sidebar.png)
 
 _▲The sidebar in the Preferences screen_
 
+## 8.2 Your Account
 
-## 8.2 Notifications
+By default, you start at the ‘Your Account’ screen in the Preferences tab.
+
+If you are a guest, then there is nothing that shows on this page other than informing you of your guest status on the application.
+
+_▲The ‘Your account’ screen as a guest
+
+If you are a signed-in user, then the ‘Your Account’ screen will display your display name and your email. It will also allow you to edit your account information, sign out, or delete your account.
+
+_▲The ‘Your account’ screen with a signed-in user_
+
+**‘Your Accounts’ Icon Overview**
+<table>
+  <tr>
+   <td><strong>Image</strong>
+   </td>
+   <td><strong>Name</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td><strong>Edit</strong>
+   </td>
+   <td>Opens a pop-up window that allows you to edit your account details (change email or display name) given the correct password.
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td><strong>Sign Out</strong>
+   </td>
+   <td>Signs the user out of their account.
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td><strong>More</strong>
+   </td>
+   <td>Opens a pop-up window that allows you to delete your account given the correct password.
+   </td>
+  </tr>
+</table>
+
+
+## 8.3 Notifications
+
+The Notification screen is where you can customize your notification settings. This includes the notification interval of the timer, the option to enable sound notifications, and choosing a sound to play during the notification.
+
+![Notifications tab in User Preferences](screenshots/pref_notif_tab.png)
+_▲The ‘Notification’ screen_
 
 
 <table>
@@ -307,6 +366,8 @@ _▲The sidebar in the Preferences screen_
    <td>Slider
    </td>
    <td>
+   
+![Notification slider](screenshots/notif_slider.png)
 <p>
 Changes the time duration between each break. 
 <p>
@@ -345,7 +406,13 @@ Valid values are multiples of 5 minutes between 5 and 60 minutes.
 
 
 
-## 8.3 Startup 
+## 8.4 Startup 
+
+The Notification screen is where you can customize your notification settings. This includes the notification interval of the timer, the option to enable sound notifications, and choosing a sound to play during the notification.
+
+_▲The ‘Startup’ screen_
+
+## 8.5 Data usage
 
 
 <table>
@@ -356,56 +423,28 @@ Valid values are multiples of 5 minutes between 5 and 60 minutes.
    </td>
    <td><strong>Description</strong>
    </td>
-  </tr>
-  <tr>
-   <td><strong>Notification interval</strong>
-   </td>
-   <td>Slider
-   </td>
-   <td>
-
-
-
-<p>
-Slide bar options vary from 5 minutes to 60 minutes.
-   </td>
-  </tr>
-</table>
-
-
-
-
-
-Start app on login is on by default.
-
-Start timer on app startup is on by default.
-
-
-## 8.4 Data usage
-
-
-<table>
-  <tr>
-   <td><strong>Option</strong>
-   <td><strong>Type</strong>
-   <td><strong>Description</strong>
   </tr>
   <tr>
    <td><strong>Track my application usage statistics</strong>
+   </td>
    <td><strong>Toggle</strong>
    </td>
-   <td>Track my application usage statistics is on by default.
+   <td>Chooses whether to allow the app to record a list of your open apps to track application usage statistics.
+<p>
+<em>Default: On</em>
+   </td>
   </tr>
   <tr>
-   <td>Track my application usage statistics
+   <td><strong>Enable weekly usage statistics</strong>
+   </td>
    <td><strong>Toggle</strong>
-   <td>Enable weekly usage statistics is on by default.
+   </td>
+   <td>Chooses whether to allow the app to track timer usage statistics.
+<p>
+<em>Default: On</em>
+   </td>
   </tr>
 </table>
-
-Track my application usage statistics is on by default.
-
-Enable weekly usage statistics is on by default.
 
 
 ## 8.5 Sync

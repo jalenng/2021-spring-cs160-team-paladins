@@ -48,6 +48,11 @@ Many of us spend plenty of time staring at the computer screen every day. This c
 
 ## 1.2 The 20-20-20 rule
 
+The 20-20-20 rule is the idea that, every 20 minutes spent using a screen, you should try to look away from the device and look at something that is 20 feet away for a total of 20 seconds. This is done in order to take care of your eyes in the current digital age where many people spend their day staring at their screens.
+
+While the rule recommends that you look at something that is 20 feet away, being exact isn’t the idea. You should just try to focus on something that is far away from you for 20 seconds, which is the amount of time it takes for your eyes to completely relax.
+
+
 # 2 Installation
 
 ## 2.1 Windows
@@ -161,6 +166,8 @@ Opens the timer in a new window.
 
 
 ## 4.2 How breaks work
+![Break notification](screenshots/break_notif.png)
+![Fullscreen break notification](screenshots/fullscreen_break_notif.png)
 
 Ideas:
 
@@ -185,20 +192,15 @@ Break resets when you move your mouse
 To be able to use all of iCare’s extensive features, you must register and create an account.
 
 Ideas:
-
-Unlock functionalities
-
-Access to usage data and insights
-
-	Preference synchronization
-
-
-## 5.2 How to sign-in or sign-up
-
-**Sign-up**
+When time is up, popup notif shows
+- Indicating start of 20s break
+FIve seconds into the break
+- Notification will take over the screen
+Break resets when you move your mouse
 
 
 
+## 5.2 How to sign-up
 1. Click Sign in at the top right corner. The Sign in window should appear.
 2. Click ‘Don’t have an account?’ to go to the sign-up page.
 3. Complete all fields.
@@ -206,25 +208,26 @@ Access to usage data and insights
     1. Your password must contain at least 8 characters.
 5. Click Sign up.
 
-**Sign-in**
+![Sign up screen](screenshots/sign_up.png)
+_▲The sign-up screen_
 
 
-
+## 5.2 How to sign-in
 1. Click Sign in at the top right corner. The Sign in window should appear.
 2. On the sign in page, enter the email address and password that you registered with.
 3. Click Sign in.
+![Sign in page](screenshots/sign_in.png)
 
 
 
 
 
 
-_▲The sign-in screen_
 
 
 
 
-# 6 Usage Data
+# 6 Usage Statistics
 
 
 ## 6.1 Data Usage
@@ -232,6 +235,8 @@ _▲The sign-in screen_
 The iCare application will, by default, collect your PC’s data usage statistics that is associated with your account. It will keep track of the total amount of screen time and the total amount of times the timer has been successfully used per day on the account.
 
 This information will be used for you to keep track of the time you have spent on your device and how much you have been diligently following the 20-20-20 rule over the past 7 days.
+
+![Data usage graph](screenshots/data_usage.png)
 
 
 
@@ -248,6 +253,9 @@ If you do not want the iCare application to collect your data, it is possible to
 
 The iCare application will, by default, collect information on how much time you spend on any applications that your PC will use when linked to your iCare account. These application statistics will be used for you to keep track of the amount of time you have spent on these applications over the past 7 days.
 
+![App usage graph](screenshots/app_usage.png)
+
+
 _▲ App usage being shown on the Usage Statistics screen_
 
 If you do not want the iCare application to collect your application data, you can turn this feature off in **Preferences**. Furthermore, when you delete your account the application data associated with your account will automatically be deleted from our server.
@@ -263,6 +271,7 @@ If you do not want the iCare application to collect your application data, you c
 The default insights cards are insight cards that you are always going to get, regardless of any data or app usage statistics.
 
 These insight cards provide great tips that you, as a user of the iCare application, would consider helpful in your journey to take care of your eyes.
+![Insights screenshot](screenshots/insights_page.png)
 
 
 
@@ -291,7 +300,7 @@ If you do  not have any data or app usage statistics over the past 7 days, then 
 _▲The sidebar in the Preferences screen_
 
 
-## 8**.**2 Notifications
+## 8.2 Notifications
 
 
 <table>
@@ -310,7 +319,7 @@ _▲The sidebar in the Preferences screen_
    </td>
    <td>
 
-
+f
 <p>
 Slide bar options vary from 5 minutes to 60 minutes.
    </td>
@@ -345,7 +354,7 @@ Import the sound from local computer by clicking on
 
 
 
-## 8**.**3 Startup 
+## 8.3 Startup 
 
 
 <table>
@@ -393,7 +402,7 @@ Track my application usage statistics is on by default.
 Enable weekly usage statistics is on by default.
 
 
-## 8.**5** Sync
+## 8.5 Sync
 
 Upload
 

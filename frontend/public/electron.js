@@ -12,9 +12,10 @@ const isDev = require('electron-is-dev');
 const path = require('path'); 
 
 require('./store');
-require('./timerSystem.js');
-require('./breakSystem.js');
-require('./notificationSystem.js');
+require('./timerSystem');
+require('./breakSystem');
+require('./notificationSystem');
+require('./appSnapshotSystem');
 require('./dataUsageSystem');
 require('./popupWindows');
 
@@ -53,6 +54,8 @@ breakSystem.on('break-end', () => timerSystem.start());
 
 // Close notification windows when break ends
 breakSystem.on('break-end', () => notificationSystem.closeWindows());
+
+appSnapshotSystem.on('app-snapshot-taken', (snapshot) => dataUsageSystem.processAppSnapshot(snapshot));
 
 
 /**

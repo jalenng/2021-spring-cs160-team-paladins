@@ -14,6 +14,10 @@ const preferencesStoreDefaults = {
         trackAppUsageStats: true,
         enableWeeklyUsageStats: true
     },
+    blockers: {
+        apps: [],
+        blockOnLowBattery: true
+    },
     startup: {
         startAppOnLogin: true,
         startTimerOnAppStartup: true

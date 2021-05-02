@@ -104,10 +104,12 @@ export default class InsightsScreen extends React.Component {
                     {/* Card action buttons */}
                     <DocumentCardActions actions={[
                         {
+                            key: 'like',
                             iconProps: { iconName: 'Like' },
                             onClick: () => { alert('Like clicked') }
                         },
                         {
+                            key: 'dislike',
                             iconProps: { iconName: 'Dislike' },
                             onClick: () => { alert('Dislike clicked') }
                         }

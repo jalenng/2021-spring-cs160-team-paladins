@@ -57,26 +57,26 @@ const unselectableTextStyle = {
 }
 
 ReactDOM.render(
-    <React.StrictMode>
-        <ErrorBoundary>
-            <HashRouter>
-                <Switch>
-                    <div className="App" style={unselectableTextStyle}>
-                        <Route path="/" exact component={App} />
-                        <Route path="/signin" exact component={SignInScreen} />
-                        <Route path="/signup" exact component={SignUpScreen} />
-                        <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
-                        <Route path="/editAccount" exact component={EditAccountScreen} />
+    <div style={unselectableTextStyle}>
+        <React.StrictMode>
+            <ErrorBoundary>
+                <HashRouter>
+                    <Switch>
+                            <Route path="/" exact component={App} />
+                            <Route path="/signin" exact component={SignInScreen} />
+                            <Route path="/signup" exact component={SignUpScreen} />
+                            <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
+                            <Route path="/editAccount" exact component={EditAccountScreen} />
 
-                        <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
-                        <Route path="/popupNotification" exact component={PopupNotification} />
+                            <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
+                            <Route path="/popupNotification" exact component={PopupNotification} />
 
-                        <Route path="/popupTimer" exact component={Timer} />
-                    </div>
-                </Switch>
-            </HashRouter>
-        </ErrorBoundary>
-    </React.StrictMode>,
+                            <Route path="/popupTimer" exact component={Timer} />
+                    </Switch>
+                </HashRouter>
+            </ErrorBoundary>
+        </React.StrictMode>
+    </div>,
     document.getElementById('root')
 );
 

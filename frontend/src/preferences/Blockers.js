@@ -38,12 +38,14 @@ export default class extends React.Component {
         this.setState(state);
     };
 
+    // Update the state to reflect the selected value of the app dropdown menu
     handleAppDropdown(value) {
         let state = this.state;
         state.appDropdownSelection = value;
         this.setState(state);
     };
 
+    // Add the selected value of the app dropbown menu to the list of blocker apps
     handleAppAdd() {
         if (this.state.appDropdownSelection === null) return 
         let appBlockers = this.state.blockers.apps;
@@ -51,6 +53,7 @@ export default class extends React.Component {
         store.preferences.set("blockers.apps", appBlockers);
     }
 
+    // Delete the checked value of the blocker apps list
     handleAppDelete() {
         let selectionKeys = this.selection.getSelection().map(selection => selection.key);
         let appBlockers = this.state.blockers.apps;
@@ -77,12 +80,13 @@ export default class extends React.Component {
                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
             });
 
-        let appBlockersColumns = [
+        // Columns of the list of blocker apps
+        let blockerAppsColumns = [
             { key: '1', name: 'Name', fieldName: 'name', isResizable: true },
             { key: '2', name: 'Path', fieldName: 'key', isResizable: true }
         ];
 
-        let appBlockers = this.state.blockers.apps.map( path => {
+        let blockerApps = this.state.blockers.apps.map( path => {
             console.log(path)
             return {
                 key: path,
@@ -94,10 +98,12 @@ export default class extends React.Component {
 
             <Stack id="blockers" {...level1Props}>
 
-                {/* App blocker settings */}
+                {/* Blocker app settings */}
                 <Stack {...level2Props}>
 
-                    <Text variant={'xLarge'} block> App blockers </Text>
+                    <Text variant={'xLarge'} block> Blocker apps </Text>
+
+                    <Text variant={'medium'} block> Apps in this list will block the timer from running. </Text>
 
                     {/* Add app blockers */}
                     <Stack {...level2HorizontalProps} verticalAlign='end'>
@@ -128,8 +134,8 @@ export default class extends React.Component {
 
                     <DetailsList
                         compact={true}
-                        items={appBlockers}
-                        columns={appBlockersColumns}
+                        items={blockerApps}
+                        columns={blockerAppsColumns}
                         selectionPreservedOnEmptyClick={true}
                         selection={this.selection}
                     />

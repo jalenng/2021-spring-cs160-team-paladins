@@ -16,6 +16,7 @@ const buttonStyle = { borderRadius: "20px", width: "40px", height: "40px" };
 const buttonIconClass = mergeStyles({ fontSize: 24, height: 24, width: 24 });
 
 export default class Timer extends React.Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -30,7 +31,10 @@ export default class Timer extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         timer.eventSystem.on("update", (event, timerStatus) => {
+            if (!this._isMounted) return;
+            
             let remainingMinutes = Math.floor(timerStatus.remainingTime / 60000).toString();
             let remainingSeconds = Math.floor((timerStatus.remainingTime % 60000) / 1000);
             remainingSeconds = ("00" + remainingSeconds).substr(-2, 2);
@@ -57,6 +61,10 @@ export default class Timer extends React.Component {
 
         timer.getStatus();
         setInterval(timer.getStatus, 100);
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {

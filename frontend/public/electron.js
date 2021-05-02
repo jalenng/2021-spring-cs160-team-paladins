@@ -12,6 +12,7 @@ const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
+
 require('./store');
 require('./timerSystem');
 require('./breakSystem');

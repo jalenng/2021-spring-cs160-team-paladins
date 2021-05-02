@@ -42,9 +42,17 @@ function AppSnapshotSystem() {
             try {
                 let newAppNames = {};
 
+                // Set up PowerShell child process, invoke command, then kill it.
+                const ps = new psShell({
+                    executionPolicy: 'Bypass',
+                    noProfile: true
+                }); 
+                ps.addCommand(POWERSHELL_GET_PROCESS_COMMAND);
+                const psOutput = await ps.invoke();
+                ps.dispose();
+
                 // Evaluate the JSON string output to a JSON object
-                this.ps.addCommand(POWERSHELL_GET_PROCESS_COMMAND);
-                const psOutput = await this.ps.invoke();
+   
                 const psJson = eval(psOutput)
 
                 psJson.forEach(process => {
@@ -90,14 +98,6 @@ function AppSnapshotSystem() {
         if (this.state == states.STOPPED) {
             // Set interval to take snapshots of open processes
             interval = setInterval(this.takeAppSnapshot.bind(this), APP_SNAPSHOT_INTERVAL);
-
-            // WINDOWS: Set up PowerShell shell
-            if (isWindows) {
-                this.ps = new psShell({
-                    executionPolicy: 'Bypass',
-                    noProfile: true
-                });
-            }
 
             this.state = states.RUNNING;
 

@@ -62,7 +62,6 @@ export default class extends React.Component {
     }
 
     render() {
-
         const appNames = store.appNames.getAll();
 
         // Map the list of objects about each window to a list of selectable options...

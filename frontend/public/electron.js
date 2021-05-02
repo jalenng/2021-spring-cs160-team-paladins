@@ -220,8 +220,14 @@ app.on('web-contents-created', (event, contents) => {
  */
 
 // Log to main process's console
-ipcMain.handle('log-to-console', (event, message) => {
-    console.log(message);
+ipcMain.handle('log-to-main', (event, content) => {
+    console.log(content.toString());
+})
+
+// Restart the app
+ipcMain.handle('restart-app', () => {
+    app.relaunch();
+    app.exit();
 })
 
 // Get info about the app

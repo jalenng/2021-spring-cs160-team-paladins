@@ -74,8 +74,7 @@ export default class App extends React.Component {
         this.setState(state);
     }
 
-    render() {
-
+    render() {        
         const isSignedIn = this.state.account.token != null
         const displayName = this.state.account.accountInfo.displayName.toString()
 

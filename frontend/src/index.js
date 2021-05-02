@@ -14,6 +14,8 @@ import PopupNotification from './notifications/PopupNotification';
 
 import Timer from './Timer';
 
+import ErrorBoundary from './ErrorBoundary';
+
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { loadTheme } from '@fluentui/react'
 import { createTheme } from '@fluentui/theme/lib/createTheme'
@@ -58,22 +60,24 @@ const unselectableTextStyle = {
 
 ReactDOM.render(
     <React.StrictMode>
-        <HashRouter>
-            <Switch>
-                <div className="App" style={unselectableTextStyle}>
-                    <Route path="/" exact component={App} />
-                    <Route path="/signin" exact component={SignInScreen} />
-                    <Route path="/signup" exact component={SignUpScreen} />
-                    <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
-                    <Route path="/editAccount" exact component={EditAccountScreen} />
+        <ErrorBoundary>
+            <HashRouter>
+                <Switch>
+                    <div className="App" style={unselectableTextStyle}>
+                        <Route path="/" exact component={App} />
+                        <Route path="/signin" exact component={SignInScreen} />
+                        <Route path="/signup" exact component={SignUpScreen} />
+                        <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
+                        <Route path="/editAccount" exact component={EditAccountScreen} />
 
-                    <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
-                    <Route path="/popupNotification" exact component={PopupNotification} />
+                        <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
+                        <Route path="/popupNotification" exact component={PopupNotification} />
 
-                    <Route path="/popupTimer" exact component={Timer} />
-                </div>
-            </Switch>
-        </HashRouter>
+                        <Route path="/popupTimer" exact component={Timer} />
+                    </div>
+                </Switch>
+            </HashRouter>
+        </ErrorBoundary>
     </React.StrictMode>,
     document.getElementById('root')
 );

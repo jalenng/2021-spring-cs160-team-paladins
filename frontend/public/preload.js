@@ -236,19 +236,32 @@ window.breakSys = {
 
 
 /* Other functions */
+
 /**
  * Play the selected notification sound in preferences
  */
 window.playSound = () => { ipcRenderer.invoke('play-sound') }
+
 /**
  * Retrieves information about the app
  * @returns an object with the relevant information
  */
 window.getAboutInfo = () => { return ipcRenderer.sendSync('get-about-info') }
+
 /**
  * Get a list of open windows on the system
  */
-window.getOpenWindows = () => {return ipcRenderer.sendSync('get-open-windows')}
+window.getOpenWindows = () => { return ipcRenderer.sendSync('get-open-windows') }
+
+/**
+ * Prints content on the main process's console
+ */
+window.logToMain = (content) => { ipcRenderer.invoke('log-to-main', content) }
+
+/**
+ * Relaunches the iCare application
+ */
+window.restartApp = () => { ipcRenderer.invoke('restart-app') }
 
 
 /* Listen for events from ipcRenderer and relay them accordingly */

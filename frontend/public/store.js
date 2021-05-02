@@ -352,7 +352,7 @@ ipcMain.handle('reset-store', () => {
         title: 'Reset iCare',
         type: 'question',
         message: 'Are you sure you want to reset iCare?',
-        detail: 'This will restart the app.',
+        detail: 'You will be signed out, and all unsynced data will be lost.',
         buttons: ['Yes', 'No'],
     })
     .then( result => {

@@ -57,9 +57,14 @@ export default class extends React.Component {
                 transform: 'translate(-50%, -50%)'
                 }}>
 
-                    <Stack token={{childrenGap: 32}}>
+                    <Stack tokens={{childrenGap: 16}}>
                         <Stack.Item align="center">
-                            <FontIcon iconName="RedEye" className={iconClass} />
+                            <Stack horizontal verticalAlign="center">
+                                <FontIcon iconName="RedEye" className={iconClass} />
+                                <FontIcon iconName="Remove" className={iconClass} />
+                                <FontIcon iconName="Street" className={iconClass} />
+                            </Stack>
+
                         </Stack.Item>
 
                         <Stack.Item align="center">

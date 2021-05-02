@@ -41,16 +41,16 @@ export default class InsightsScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isSignedIn: store.accounts.getAll().token !== null,
             cards: store.insights.getAll().cards
         };
         this.handleRefreshBtn = this.handleRefreshBtn.bind(this);
     };
 
     componentDidMount() {
-        // Update this component's state when insights are updated
-        store.insights.eventSystem.on('changed', () => {
-            this.updateState();
-        })
+        // Update this component's state when insights or accounts have updated
+        store.insights.eventSystem.on('changed', () => this.updateState())
+        store.accounts.eventSystem.on('changed', () => this.updateState())
     };
 
     setSpinner(isLoading) {
@@ -75,6 +75,7 @@ export default class InsightsScreen extends React.Component {
 
     updateState() {
         this.setState({
+            isSignedIn: store.accounts.getAll().token !== null,
             cards: store.insights.getAll().cards
         });
     };
@@ -129,24 +130,39 @@ export default class InsightsScreen extends React.Component {
                     tokens={{ childrenGap: 16 }} >
                     <Text variant={'xxLarge'} block> <b>Insights</b> </Text>
 
-                    <TooltipHost content="Refresh">
-                        <IconButton
-                            iconProps={{ iconName: 'Refresh' }}
-                            onClick={this.handleRefreshBtn}
-                        />
-                    </TooltipHost>
+                    {this.state.isSignedIn && 
+                        <TooltipHost content="Refresh">
+                            <IconButton
+                                iconProps={{ iconName: 'Refresh' }}
+                                onClick={this.handleRefreshBtn}
+                            />
+                        </TooltipHost>
+                    }
+
                 </Stack>
 
-                {/* Insights contents */}
-                <ScrollablePane style={{
-                    position: "absolute",
-                    top: "105px",
-                    left: "30px",
-                    paddingBottom: "260px",
-                    paddingRight: "40px"
-                }}>
-                    {cards}
-                </ScrollablePane>
+                {/* Show message if not signed in */}
+                {!this.state.isSignedIn && 
+                    <Text>To view your insights, please sign in. </Text>
+                }
+                
+                {/* Show message if signed in, but no cards */}
+                {this.state.isSignedIn && cards.length === 0 &&
+                    <Text>There are currently no insights. Click 'Refresh' or try again later. </Text>
+                }
+
+                {/* Show insights contents if signed in */}
+                {this.state.isSignedIn && 
+                    <ScrollablePane style={{
+                        position: "absolute",
+                        top: "105px",
+                        left: "30px",
+                        paddingBottom: "260px",
+                        paddingRight: "40px"
+                    }}>
+                        {cards}
+                    </ScrollablePane>
+                }
 
                 <DialogSpinner
                     show={this.state.isLoading}

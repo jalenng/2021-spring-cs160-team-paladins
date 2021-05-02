@@ -165,6 +165,13 @@ window.store = {
         /* Event system */
         eventSystem: new EventSystem()
     },
+    appNames: {
+        /**
+         * Retrieve the dictionary of friendly app names
+         * @returns {Object}
+         */
+        getAll: () => { return ipcRenderer.sendSync('get-store', 'appNames') },
+    },
     messages: {
         /**
          * Retrieve the list of in-app messages
@@ -184,7 +191,8 @@ window.store = {
         
         /* Event system */
         eventSystem: new EventSystem()
-    }
+    },
+    reset: () => { return ipcRenderer.invoke('reset-store') }
 }
 
 

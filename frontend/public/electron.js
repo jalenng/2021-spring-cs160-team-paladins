@@ -5,7 +5,8 @@ const {
     nativeImage, 
     app, 
     ipcMain, 
-    globalShortcut
+    globalShortcut,
+    powerMonitor
 } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
@@ -190,6 +191,13 @@ app.whenReady().then(() => {
             mainWindow.webContents.openDevTools()
         });
     }
+
+    /* Block timer if on battery power */
+    if (powerMonitor.isOnBatteryPower() && global.store.get('preferences.blockers.blockOnBattery'))
+    blockerSystem.addBlocker({
+        type: 'Other',
+        message: 'Your computer is running on battery power.'
+    })
 
 })
 

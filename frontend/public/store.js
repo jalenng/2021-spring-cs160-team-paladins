@@ -16,7 +16,7 @@ const preferencesStoreDefaults = {
     },
     blockers: {
         apps: [],
-        blockOnLowBattery: true
+        blockOnBattery: true
     },
     startup: {
         startAppOnLogin: true,
@@ -89,12 +89,17 @@ const storeOptions = {
         accounts: accountsStoreDefaults,
         dataUsage: dataUsageDefaults,
         insights: insightsDefaults,
-        messages: []
+        appNames: {},
+        messages: [],
+        resetFlag: false
     },
     watch: true
 }
 global.store = new Store(storeOptions);
 store.reset('messages'); // Clear all in-app messages on app startup
+
+// Reset entire store if the reset flag is enabled
+if (store.get('resetFlag')) store.clear();
 
 // store.clear();
 // console.log(store.store)
@@ -339,6 +344,24 @@ ipcMain.handle('dismiss-message', (event, index) => {
     let messages = store.get('messages');
     messages.splice(index, 1);
     store.set('messages', messages);
+})
+
+// Show a dialog to confirm resetting the app
+ipcMain.handle('reset-store', () => {
+    dialog.showMessageBox(mainWindow, {
+        title: 'Reset iCare',
+        type: 'question',
+        message: 'Are you sure you want to reset iCare?',
+        detail: 'This will restart the app.',
+        buttons: ['Yes', 'No'],
+    })
+    .then( result => {
+        if (result.response == 0) {
+            store.set('resetFlag', true);
+            app.relaunch();
+            app.exit();
+        }
+    })
 })
 
 

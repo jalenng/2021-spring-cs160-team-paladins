@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { 
+    DefaultButton,
     Image, ImageFit,
     Stack, 
     Text 
@@ -99,6 +100,21 @@ export default class extends React.Component {
                             return ( <Text variant={'medium'} block> {libName} </Text> )
                         })}
                     </div>
+                </Stack>
+
+                {/* Options to reset the app */}
+                <Stack {...level2Props}>
+
+                    <Text variant={'xLarge'} block> Reset app </Text>
+
+                    <Stack {...level2HorizontalProps}>
+                        <DefaultButton
+                            text='Reset iCare'
+                            iconProps={{ iconName: 'Refresh' }}
+                            onClick={store.reset}
+                        />
+                    </Stack>
+
                 </Stack>
 
             </Stack>

@@ -16,6 +16,8 @@ function dataUsageSystem() {
      * Update the data usage store according to the list of open processes
      */
     this.processAppSnapshot = async function (openProcesses) {
+        const appNamesDict  = global.store.get('appNames');
+
         // Update app usage
         let appUsage = global.store.get('dataUsage.unsynced.appUsage');
         openProcesses.forEach( process => {
@@ -27,7 +29,7 @@ function dataUsageSystem() {
             // If this app has not been seen, add new entry
             if (foundEntry === undefined) {
                 appUsage.push({
-                    appName: process.name,
+                    appName: appNamesDict[processPath],
                     appPath: processPath,
                     appTime: process.duration
                 })
@@ -36,7 +38,7 @@ function dataUsageSystem() {
             else {
                 appUsage = appUsage.filter(app => app.appPath != processPath); // Remove existing entry
                 appUsage.push({ // Push updated entry
-                    appName: process.name,
+                    appName: appNamesDict[processPath],
                     appPath: processPath,
                     appTime: foundEntry.appTime + process.duration
                 })

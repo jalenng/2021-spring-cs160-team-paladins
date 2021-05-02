@@ -46,6 +46,7 @@ export default class extends React.Component {
     };
 
     handleAddAppBlocker() {
+        if (this.state.appDropdownSelection === null) return 
         let appBlockers = this.state.blockers.apps;
         appBlockers.push(this.state.appDropdownSelection);
         store.preferences.set("blockers.apps", appBlockers);
@@ -62,11 +63,13 @@ export default class extends React.Component {
 
     render() {
 
+        const appNames = store.appNames.getAll();
+
         // Map the list of objects about each window to a list of selectable options...
         let openWindowsOptions = getOpenWindows().map(process => {
             return {
                 key: process.path,
-                text: process.name,
+                text: appNames[process.path],
             }
         })
             // ...then sort the list alphabetically.
@@ -76,13 +79,16 @@ export default class extends React.Component {
                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
             });
 
-        let appBlockersColumns = [{ key: '1', name: 'Name', fieldName: 'name', isResizable: false }];
+        let appBlockersColumns = [
+            { key: '1', name: 'Name', fieldName: 'name', isResizable: true },
+            { key: '2', name: 'Path', fieldName: 'key', isResizable: true }
+        ];
 
         let appBlockers = this.state.blockers.apps.map( path => {
             console.log(path)
             return {
                 key: path,
-                name: path,
+                name: appNames[path],
             }
         });
 
@@ -90,10 +96,12 @@ export default class extends React.Component {
 
             <Stack id="blockers" {...level1Props}>
 
+                {/* App blocker settings */}
                 <Stack {...level2Props}>
 
                     <Text variant={'xLarge'} block> App blockers </Text>
 
+                    {/* Add app blockers */}
                     <Stack {...level2HorizontalProps} verticalAlign='end'>
 
                         <Dropdown label="Add an app blocker"
@@ -113,6 +121,7 @@ export default class extends React.Component {
 
                     </Stack>
 
+                    {/* Manage existing app blockers */}
                     <ActionButton
                         iconProps={{ iconName: 'Delete' }}
                         text='Delete'
@@ -129,15 +138,16 @@ export default class extends React.Component {
 
                 </Stack>
 
+                {/* Other blocker settings */}
                 <Stack {...level2Props}>
 
                     <Text variant={'xLarge'} block> Other blockers </Text>
 
                     <Toggle
-                        label="Block timer when battery is below 20%"
+                        label="Block timer when on battery power"
                         onText="On" offText="Off"
-                        checked={this.state.blockOnLowBattery}
-                        onChange={(event, checked) => store.preferences.set("blockers.blockOnLowBattery", checked)}
+                        checked={this.state.blockers.blockOnBattery}
+                        onChange={(event, checked) => store.preferences.set("blockers.blockOnBattery", checked)}
                     />
 
                 </Stack>

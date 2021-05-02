@@ -2,7 +2,7 @@ const { ipcMain } = require('electron');
 const psShell = require('node-powershell');
 const isWindows = process.platform == 'win32';
 
-const APP_SNAPSHOT_INTERVAL = 10000
+const APP_SNAPSHOT_INTERVAL = 10000;
 const POWERSHELL_GET_PROCESS_COMMAND =
     `Get-Process | Where-Object {$_.mainWindowTitle} | Select-Object Name, mainWindowtitle, Description, Path | ConvertTo-Json | % {$_ -replace("\\u200B")} | % {$_ -replace("\\u200E")}`;
 
@@ -16,6 +16,7 @@ function AppSnapshotSystem() {
     this._events = {};
     
     this.state = states.STOPPED;
+    this.lastSnapshot = [];
 
     /**
      * Registers an event listener
@@ -29,50 +30,55 @@ function AppSnapshotSystem() {
     }
 
     /**
-     * Takes a snapshot of the list of open windows.
+     * Takes a snapshot of the list of open windows, and update the dictionary of friendly app names accordingly.
      * This emits the 'app-snapshot-taken' event.
-     * @param {Boolean} callListeners Optional argument. If false, does not emit event 'app-snapshot-taken'.
      * @returns {[Object]} List of open windows
      */
-    this.takeAppSnapshot = async function (emitEvent=true) {
+    this.takeAppSnapshot = async function () {
         let result = [];
 
         // WINDOWS: Invoke PowerShell command to get open windows
         if (isWindows) {
             try {
+                let newAppNames = {};
+
                 // Evaluate the JSON string output to a JSON object
                 this.ps.addCommand(POWERSHELL_GET_PROCESS_COMMAND);
                 const psOutput = await this.ps.invoke();
                 const psJson = eval(psOutput)
 
-                // Perform processing to get the ideal name
                 psJson.forEach(process => {
                     const winTitle = process.MainWindowTitle;
                     const winDesc = process.Description;
                     const winPath = process.Path;
+
+                    // Push process to list of open windows
+                    result.push({
+                        path: winPath,
+                        duration: APP_SNAPSHOT_INTERVAL
+                    });
+                    
+                    // Perform processing to get the ideal name
                     if (winTitle.indexOf(winDesc) === -1 || winDesc === '')
-                        result.push({
-                            name: winTitle,
-                            path: winPath,
-                            duration: APP_SNAPSHOT_INTERVAL
-                        });
+                        newAppNames[winPath] = winTitle;
                     else
-                        result.push({
-                            name: winDesc,
-                            path: winPath,
-                            duration: APP_SNAPSHOT_INTERVAL
-                        });
+                        newAppNames[winPath] = winDesc;
                 })
+
+                // Update the app names dictionary
+                let appNamesDict = global.store.get('appNames');
+                appNamesDict = {...appNamesDict, ...newAppNames};
+                global.store.set('appNames', appNamesDict);
 
             }
             catch (error) { console.log(error) }
         }
 
-        if (emitEvent) {
-            // Call app-snapshot-taken listeners
-            const fireCallbacks = (callback) => callback(result);
-            this._events['app-snapshot-taken'].forEach(fireCallbacks);
-        }
+        // Call app-snapshot-taken listeners
+        const fireCallbacks = (callback) => callback(result);
+        this._events['app-snapshot-taken'].forEach(fireCallbacks);
+
+        lastSnapshot = result;
 
         return result;
     }
@@ -108,6 +114,10 @@ function AppSnapshotSystem() {
             clearInterval(interval);
             this.state = states.STOPPED;
         }
+    }
+
+    this.getLastSnapshot = function () {
+        return lastSnapshot;
     }
 }
 
@@ -154,5 +164,5 @@ function checkWhetherToStartSystem() {
  */
 // Get list of open windows
 ipcMain.on('get-open-windows', async (event) => {
-    event.returnValue = await appSnapshotSystem.takeAppSnapshot(false);
+    event.returnValue = appSnapshotSystem.getLastSnapshot();
 });

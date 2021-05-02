@@ -102,7 +102,7 @@ export default class extends React.Component {
                     {/* Add app blockers */}
                     <Stack {...level2HorizontalProps} verticalAlign='end'>
 
-                        <Dropdown label="Add an app blocker"
+                        <Dropdown label="Add an app"
                             styles={{ dropdown: { width: 300 } }}
                             options={openWindowsOptions}
                             selectedKey={this.state.appDropdownSelection}
@@ -114,7 +114,7 @@ export default class extends React.Component {
 
                         <DefaultButton
                             text='Add'
-                            onClick={this.handleAddAppBlocker}
+                            onClick={this.handleAppAdd}
                         />
 
                     </Stack>
@@ -123,7 +123,7 @@ export default class extends React.Component {
                     <ActionButton
                         iconProps={{ iconName: 'Delete' }}
                         text='Delete'
-                        onClick={this.handleDeleteAppBlocker}
+                        onClick={this.handleAppDelete}
                     />
 
                     <DetailsList

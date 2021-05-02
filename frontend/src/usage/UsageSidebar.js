@@ -1,8 +1,10 @@
 import React from 'react';
 
-import { Nav } from '@fluentui/react/lib/Nav';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
+import { 
+  Nav,
+  Stack,
+  Text 
+} from '@fluentui/react';
 
 const navStyles = {
   root: {

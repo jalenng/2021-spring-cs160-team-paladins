@@ -17,9 +17,7 @@ import Timer from './Timer';
 import ErrorBoundary from './ErrorBoundary';
 
 import { HashRouter, Route, Switch } from "react-router-dom";
-import { loadTheme } from '@fluentui/react'
-import { createTheme } from '@fluentui/theme/lib/createTheme'
-import { initializeIcons } from '@fluentui/react/lib/Icons';
+import { loadTheme, createTheme, initializeIcons } from '@fluentui/react';
 
 const myTheme = createTheme({
     palette: {

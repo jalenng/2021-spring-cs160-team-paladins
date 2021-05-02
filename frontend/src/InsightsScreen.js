@@ -1,19 +1,17 @@
 import React from "react";
 
-import DialogSpinner from "./DialogSpinner";
+import { 
+    IconButton,
+    ScrollablePane,
+    Stack,
+    Text,
+    ImageFit,
+    DocumentCard, DocumentCardImage, DocumentCardActions,
+    TooltipHost,
+    MessageBarType 
+} from '@fluentui/react';
 
-import { IconButton } from '@fluentui/react/lib/Button';
-import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
-import { ImageFit } from '@fluentui/react/lib/Image';
-import {
-    DocumentCard,
-    DocumentCardImage,
-    DocumentCardActions
-} from '@fluentui/react/lib/DocumentCard';
-import { TooltipHost } from '@fluentui/react/lib/Tooltip';
-import { MessageBarType } from '@fluentui/react/lib/MessageBar';
+import DialogSpinner from "./DialogSpinner";
 
 const divStyle = {
     paddingTop: '10px',

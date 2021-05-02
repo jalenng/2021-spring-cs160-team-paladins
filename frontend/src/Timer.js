@@ -1,12 +1,14 @@
 import React from "react";
 
-import { Text } from "@fluentui/react/lib/Text";
-import { PrimaryButton, DefaultButton } from "@fluentui/react/lib/Button";
-import { TooltipHost } from "@fluentui/react/lib/Tooltip";
-import { Stack } from "@fluentui/react/lib/Stack";
-import { FontIcon } from "@fluentui/react/lib/Icon";
-import { mergeStyles } from "@fluentui/react/lib/Styling";
-import { getTheme } from "@fluentui/react";
+import { 
+    Text,
+    PrimaryButton, DefaultButton,
+    TooltipHost,
+    Stack,
+    FontIcon,
+    mergeStyles,
+    getTheme
+ } from "@fluentui/react";
 
 import Circle from "react-circle";
 

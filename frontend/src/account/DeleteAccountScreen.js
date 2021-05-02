@@ -2,10 +2,12 @@ import React from 'react';
 
 import DialogSpinner from "../DialogSpinner";
 
-import { Text } from '@fluentui/react/lib/Text';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { TextField } from '@fluentui/react/lib/TextField';
-import { PrimaryButton } from '@fluentui/react/lib/Button';
+import { 
+    Text,
+    Stack,
+    TextField,
+    PrimaryButton 
+} from '@fluentui/react';
 
 const divStyle = {
     paddingTop: '10px',

@@ -8,7 +8,7 @@ import {
     Text,
     Toggle,
     TooltipHost
-} from '@fluentui/react/lib';
+} from '@fluentui/react';
 
 import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 

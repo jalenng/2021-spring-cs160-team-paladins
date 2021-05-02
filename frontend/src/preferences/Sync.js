@@ -5,7 +5,7 @@ import {
     DefaultButton,
     Stack,
     Text 
-} from '@fluentui/react/lib';
+} from '@fluentui/react';
 
 import DialogSpinner from "../DialogSpinner";
 import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';

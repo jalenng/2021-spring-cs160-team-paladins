@@ -9,7 +9,7 @@ import {
     Text,
     Toggle,
     Selection
-} from '@fluentui/react/lib';
+} from '@fluentui/react';
 
 import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 
@@ -21,10 +21,9 @@ export default class extends React.Component {
             appDropdownSelection: null,
             blockers: store.preferences.getAll().blockers
         };
-        this.handleAppBlockerDropdownChange = this.handleAppBlockerDropdownChange.bind(this);
-        this.handleAddAppBlocker = this.handleAddAppBlocker.bind(this);
-        this.addAppBlocker = this.handleAddAppBlocker.bind(this);
-        this.handleDeleteAppBlocker = this.handleDeleteAppBlocker.bind(this);
+        this.handleAppDropdown = this.handleAppDropdown.bind(this);
+        this.handleAppAdd = this.handleAppAdd.bind(this);
+        this.handleAppDelete = this.handleAppDelete.bind(this);
         this.selection = new Selection();
     };
 
@@ -39,20 +38,20 @@ export default class extends React.Component {
         this.setState(state);
     };
 
-    handleAppBlockerDropdownChange(value) {
+    handleAppDropdown(value) {
         let state = this.state;
         state.appDropdownSelection = value;
         this.setState(state);
     };
 
-    handleAddAppBlocker() {
+    handleAppAdd() {
         if (this.state.appDropdownSelection === null) return 
         let appBlockers = this.state.blockers.apps;
         appBlockers.push(this.state.appDropdownSelection);
         store.preferences.set("blockers.apps", appBlockers);
     }
 
-    handleDeleteAppBlocker() {
+    handleAppDelete() {
         let selectionKeys = this.selection.getSelection().map(selection => selection.key);
         let appBlockers = this.state.blockers.apps;
         appBlockers = appBlockers.filter(path => {
@@ -109,7 +108,7 @@ export default class extends React.Component {
                             selectedKey={this.state.appDropdownSelection}
                             placeholder='Select an app'
                             onChange={(event, option, index) => {
-                                this.handleAppBlockerDropdownChange(openWindowsOptions[index].key)
+                                this.handleAppDropdown(openWindowsOptions[index].key)
                             }}
                         />
 

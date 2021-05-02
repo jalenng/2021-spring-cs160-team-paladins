@@ -1,9 +1,11 @@
 import React from "react";
 
-import { mergeStyles } from '@fluentui/react/lib/Styling';
-import { FontIcon } from '@fluentui/react/lib/Icon';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
+import { 
+    mergeStyles,
+    FontIcon,
+    Stack,
+    Text 
+} from '@fluentui/react';
 
 const divStyle = {
     MozUserSelect: "none",

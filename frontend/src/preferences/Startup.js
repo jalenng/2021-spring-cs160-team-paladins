@@ -4,7 +4,7 @@ import {
     Stack,
     Text,
     Toggle 
-} from '@fluentui/react/lib';
+} from '@fluentui/react';
 
 import { level1Props, level2Props } from './PrefsStackProps';
 

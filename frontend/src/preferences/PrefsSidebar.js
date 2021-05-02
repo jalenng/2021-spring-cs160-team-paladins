@@ -4,7 +4,7 @@ import {
     Nav,
     Stack,
     Text
-} from '@fluentui/react/lib';
+} from '@fluentui/react';
 
 const navStyles = {
     root: {

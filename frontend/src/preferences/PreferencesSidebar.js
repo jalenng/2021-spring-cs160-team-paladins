@@ -1,8 +1,10 @@
 import React from 'react';
 
-import { Nav } from '@fluentui/react/lib/Nav';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
+import { 
+    Nav,
+    Stack,
+    Text
+} from '@fluentui/react/lib';
 
 const navStyles = {
     root: {
@@ -18,7 +20,7 @@ const navLinkGroups = [
     {
         links: [
             {
-                name: 'Your accounts',
+                name: 'Accounts',
                 icon: 'ContactInfo',
                 key: 'your_accounts'
             },
@@ -26,6 +28,11 @@ const navLinkGroups = [
                 name: 'Notifications',
                 icon: 'Ringer',
                 key: 'notifications'
+            },
+            {
+                name: 'Blockers',
+                icon: 'Blocked2',
+                key: 'blockers'
             },
             {
                 name: 'Startup',

@@ -13,8 +13,7 @@ function dataUsageSystem() {
     this.state = states.STOPPED;
     
     /**
-     * Capture a snapshot of the list of open windows, 
-     * then update the data usage store accordingly.
+     * Update the data usage store according to the list of open processes
      */
     this.processAppSnapshot = async function (openProcesses) {
         // Update app usage
@@ -45,8 +44,6 @@ function dataUsageSystem() {
         })
 
         global.store.set('dataUsage.unsynced.appUsage', appUsage)
-
-        console.log(appUsage)
     }
 
     /**

@@ -124,8 +124,11 @@ const TimerSystem = function(){
      * Blocks the timer from running
      */
     this.block = function() {
-        if (this.state === states.BLOCKED) return;
+        if (this.state === states.BLOCKED || this.state === states.PAUSED) return;
         clearTimeout(this.timeout);
+
+        this.totalDuration = global.store.get('preferences.notifications.interval') * 60000;
+        this.remainingTime = this.totalDuration
 
         this.state = states.BLOCKED;
     }

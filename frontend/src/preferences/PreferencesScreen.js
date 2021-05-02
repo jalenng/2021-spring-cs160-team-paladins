@@ -3,12 +3,13 @@ import React from 'react';
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 
 import PreferencesSidebar from './PreferencesSidebar';
-import YourAccounts from './YourAccounts'
-import Notifications from './Notifications'
-import Startup from './Startup'
-import DataUsage from './DataUsage'
-import Sync from './Sync'
-import About from './About'
+import YourAccounts from './YourAccounts';
+import Notifications from './Notifications';
+import Blockers from './Blockers';
+import Startup from './Startup';
+import DataUsage from './DataUsage';
+import Sync from './Sync';
+import About from './About';
 
 const divStyle = {
     paddingTop: '10px',
@@ -19,6 +20,7 @@ const divStyle = {
 const preferencePages = {
     your_accounts: <YourAccounts />,
     notifications: <Notifications />,
+    blockers: <Blockers />,
     startup: <Startup />,
     data_usage: <DataUsage />,
     sync: <Sync />,

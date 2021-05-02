@@ -1,16 +1,14 @@
 import React from 'react';
 
-import { 
-    IconButton,
-    Dropdown, DropdownMenuItemType,
-    Slider,
-    Stack,
-    Text,
-    Toggle,
-    TooltipHost
+import {
+    IconButton, 
+    Dropdown, 
+    DropdownMenuItemType, 
+    Stack, 
+    Text, 
+    Toggle, 
+    TooltipHost 
 } from '@fluentui/react/lib';
-
-import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 
 export default class extends React.Component {
 
@@ -42,58 +40,42 @@ export default class extends React.Component {
 
     render() {
 
-        let defaultSoundsHeader = [{ 
-            key: 'defaultSoundsHeader', 
-            text: 'Default', 
+        let defaultSoundsHeader = [{
+            key: 'defaultSoundsHeader',
+            text: 'Default',
             itemType: DropdownMenuItemType.Header
         }];
-        let customSoundsHeader = [{ 
-            key: 'customSoundsHeader', 
-            text: 'Custom', 
+        let customSoundsHeader = [{
+            key: 'customSoundsHeader',
+            text: 'Custom',
             itemType: DropdownMenuItemType.Header
         }];
 
-        let divider = [{   
-            key: 'div', 
-            text: '-', 
-            itemType: DropdownMenuItemType.Divider 
+        let divider = [{
+            key: 'div',
+            text: '-',
+            itemType: DropdownMenuItemType.Divider
         }]
 
         let defaultSounds = this.state.sounds.defaultSounds;
         let customSounds = this.state.sounds.customSounds;
-        
-        let combinedSoundList = 
+
+        let combinedSoundList =
             defaultSoundsHeader
-            .concat(defaultSounds)
-            .concat(divider)
-            .concat(customSoundsHeader)
-            .concat(customSounds);
-        
+                .concat(defaultSounds)
+                .concat(divider)
+                .concat(customSoundsHeader)
+                .concat(customSounds);
+
         return (
 
-            <Stack id="notifications" {...level1Props}>
+            <Stack id="blockers" tokens={{ childrenGap: 24 }} style={{ paddingBottom: '20px' }}>
 
-                <Stack {...level2Props}>
-                    <Text variant={'xLarge'} block> Notifications </Text>
+                <Stack tokens={{ childrenGap: 8 }}>
 
-                    <Slider
-                        label="Notification interval"
-                        min={5} max={60} step={5}
-                        showValue snapToStep
-                        valueFormat={(number) => `${number} minutes`}
-                        styles={{ root: { maxWidth: 300 } }}
-                        value={this.state.notifications.interval}
-                        onChange={number => store.preferences.set("notifications.interval", number)}
-                    /> 
+                    <Text variant={'xLarge'} block> App blockers </Text>
 
-                    <Toggle
-                        label="Enable sound notifications"
-                        onText="On" offText="Off"
-                        checked={this.state.notifications.enableSound}
-                        onChange={(event, checked) => store.preferences.set("notifications.enableSound", checked)}
-                    />
-
-                    <Stack {...level2HorizontalProps}>
+                    <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="end">
 
                         <Dropdown label="Sound"
                             styles={{ dropdown: { width: 300 } }}
@@ -107,7 +89,7 @@ export default class extends React.Component {
                         <TooltipHost content="Preview">
                             <IconButton
                                 iconProps={{ iconName: 'Play' }}
-                                onClick={ playSound }
+                                onClick={playSound}
                             />
                         </TooltipHost>
 
@@ -120,6 +102,17 @@ export default class extends React.Component {
 
                     </Stack>
 
+                </Stack>
+
+                <Stack tokens={{ childrenGap: 8 }}>
+                    <Text variant={'xLarge'} block> Other blockers </Text>
+
+                    <Toggle
+                        label="Block timer when battery is below 20%"
+                        onText="On" offText="Off"
+                        checked={this.state.notifications.enableSound}
+                        onChange={(event, checked) => store.preferences.set("notifications.enableSound", checked)}
+                    />
                 </Stack>
 
             </Stack>

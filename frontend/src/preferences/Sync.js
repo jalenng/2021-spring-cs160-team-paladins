@@ -1,11 +1,14 @@
 import React from 'react';
 
-import DialogSpinner from "../DialogSpinner";
+import { 
+    MessageBarType,
+    DefaultButton,
+    Stack,
+    Text 
+} from '@fluentui/react/lib';
 
-import { MessageBarType } from '@fluentui/react/lib/MessageBar';
-import { DefaultButton } from '@fluentui/react/lib/Button';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
+import DialogSpinner from "../DialogSpinner";
+import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 
 export default class extends React.Component {
 
@@ -68,23 +71,27 @@ export default class extends React.Component {
     render() {
         return (
             <div>
-                <Stack id="startup" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
+                <Stack id="startup" {...level1Props}>
 
-                    <Text variant={'xLarge'} block> Sync preferences </Text>
+                    <Stack {...level2Props}>
 
-                    <Stack horizontal tokens={{ childrenGap: 16 }}>
+                        <Text variant={'xLarge'} block> Sync preferences </Text>
 
-                        <DefaultButton
-                            text="Upload"
-                            iconProps={{ iconName: 'CloudUpload' }}
-                            onClick={this.handleUploadBtn}
-                        />
+                        <Stack {...level2HorizontalProps}>
 
-                        <DefaultButton
-                            text="Download"
-                            iconProps={{ iconName: 'CloudDownload' }}
-                            onClick={this.handleDownloadBtn}
-                        />
+                            <DefaultButton
+                                text="Upload"
+                                iconProps={{ iconName: 'CloudUpload' }}
+                                onClick={this.handleUploadBtn}
+                            />
+
+                            <DefaultButton
+                                text="Download"
+                                iconProps={{ iconName: 'CloudDownload' }}
+                                onClick={this.handleDownloadBtn}
+                            />
+
+                        </Stack>
 
                     </Stack>
 

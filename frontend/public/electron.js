@@ -17,6 +17,7 @@ require('./breakSystem');
 require('./notificationSystem');
 require('./appSnapshotSystem');
 require('./dataUsageSystem');
+require('./blockerSystem');
 require('./popupWindows');
 
 const DEFAULT_WINDOW_SIZE = {
@@ -55,7 +56,17 @@ breakSystem.on('break-end', () => timerSystem.start());
 // Close notification windows when break ends
 breakSystem.on('break-end', () => notificationSystem.closeWindows());
 
+// Process the list of open apps through the data usage system when a snapshot is taken
 appSnapshotSystem.on('app-snapshot-taken', (snapshot) => dataUsageSystem.processAppSnapshot(snapshot));
+
+// Process the list of open apps through the blocker system when a snapshot is taken
+appSnapshotSystem.on('app-snapshot-taken', (snapshot) => blockerSystem.processAppSnapshot(snapshot));
+
+// Block the timer when a blocker is detected
+blockerSystem.on('blocker-detected', () => timerSystem.block());
+
+// Clear the blockers when the timer starts
+timerSystem.on('timer-start', () => blockerSystem.clear());
 
 
 /**

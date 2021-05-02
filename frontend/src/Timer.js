@@ -22,7 +22,8 @@ export default class Timer extends React.Component {
             totalDuration: "",
             remainingTime: "",
             endTimeString: "",
-            state: ""
+            state: "",
+            progressBarColor: ""
         };
     }
 
@@ -41,12 +42,18 @@ export default class Timer extends React.Component {
             let endMinutes = timerStatus.endDate.getMinutes();
             endMinutes = ("00" + endMinutes).substr(-2, 2);
 
+            let state = timerStatus.state;
+            let progressBarColor = state === 'blocked' 
+                ? '#F1707B'
+                : getTheme().palette.themePrimary
+
             this.setState({
                 remainingTimeString: `${remainingMinutes}:${remainingSeconds}`,
                 totalDuration: timerStatus.totalDuration,
                 remainingTime: timerStatus.remainingTime,
                 endTimeString: `${endHours}:${endMinutes}`,
-                state: timerStatus.state,
+                state: state,
+                progressBarColor: progressBarColor
             });
         });
 
@@ -73,7 +80,7 @@ export default class Timer extends React.Component {
                             size={300}
                             lineWidth={20}
                             progress={(this.state.remainingTime / this.state.totalDuration) * 100}
-                            progressColor={getTheme().palette.themePrimary}
+                            progressColor={this.state.progressBarColor}
                             bgColor={getTheme().palette.neutralLighter}
                             roundedStroke={true}
                             showPercentage={false}

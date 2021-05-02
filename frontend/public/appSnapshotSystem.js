@@ -10,7 +10,7 @@ const states = {
     STOPPED: 'stopped',
 }
 
-function appSnapshotSystem() {
+function AppSnapshotSystem() {
 
     this._events = {};
     
@@ -107,7 +107,7 @@ function appSnapshotSystem() {
 
 
 /* Instantiate the data usage system */
-global.appSnapshotSystem = new appSnapshotSystem();
+global.appSnapshotSystem = new AppSnapshotSystem();
 
 
 /* Start the system depending on user preferences */

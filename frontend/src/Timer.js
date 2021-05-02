@@ -43,17 +43,13 @@ export default class Timer extends React.Component {
             endMinutes = ("00" + endMinutes).substr(-2, 2);
 
             let state = timerStatus.state;
-            let progressBarColor = state === 'blocked' 
-                ? '#F1707B'
-                : getTheme().palette.themePrimary
 
             this.setState({
                 remainingTimeString: `${remainingMinutes}:${remainingSeconds}`,
                 totalDuration: timerStatus.totalDuration,
                 remainingTime: timerStatus.remainingTime,
                 endTimeString: `${endHours}:${endMinutes}`,
-                state: state,
-                progressBarColor: progressBarColor
+                state: state
             });
         });
 
@@ -80,7 +76,7 @@ export default class Timer extends React.Component {
                             size={300}
                             lineWidth={20}
                             progress={(this.state.remainingTime / this.state.totalDuration) * 100}
-                            progressColor={this.state.progressBarColor}
+                            progressColor={getTheme().palette.themePrimary}
                             bgColor={getTheme().palette.neutralLighter}
                             roundedStroke={true}
                             showPercentage={false}
@@ -97,7 +93,7 @@ export default class Timer extends React.Component {
                                     </div>
                                 </Text>
 
-                                {/* End time - show only if the timer is running*/}
+                                {/* End time - show only if the timer is running */}
                                 {this.state.state === "running" &&
                                     <TooltipHost content="End time">
                                         <DefaultButton
@@ -108,6 +104,16 @@ export default class Timer extends React.Component {
                                         />
                                     </TooltipHost>
                                 }
+
+                                {/* Blocked indicator - show only if the timer is blocked */}
+                                {this.state.state === "blocked" &&
+                                    <DefaultButton
+                                        style={{ ...buttonStyle, height: "28px" }}
+                                        iconProps={{ iconName: 'Blocked2' }}
+                                        disabled
+                                    />
+                                }
+
                             </Stack>
                         </div>
 

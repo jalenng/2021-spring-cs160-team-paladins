@@ -1,20 +1,31 @@
 import React from 'react';
 
 import {
+    ActionButton,
+    DefaultButton,
     DetailsList,
-    Dropdown,  
-    Stack, 
-    Text, 
-    Toggle
+    Dropdown,
+    Stack,
+    Text,
+    Toggle,
+    Selection
 } from '@fluentui/react/lib';
 
-import { level1Props, level2Props } from './PrefsStackProps';
+import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 
 export default class extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = store.preferences.getAll().blockers;
+        this.state = {
+            appDropdownSelection: null,
+            blockers: store.preferences.getAll().blockers
+        };
+        this.handleAppBlockerDropdownChange = this.handleAppBlockerDropdownChange.bind(this);
+        this.handleAddAppBlocker = this.handleAddAppBlocker.bind(this);
+        this.addAppBlocker = this.handleAddAppBlocker.bind(this);
+        this.handleDeleteAppBlocker = this.handleDeleteAppBlocker.bind(this);
+        this.selection = new Selection();
     };
 
     componentDidMount() {
@@ -23,40 +34,57 @@ export default class extends React.Component {
     };
 
     updateState() {
-        this.setState(store.preferences.getAll().blockers);
+        let state = this.state;
+        state.blockers = store.preferences.getAll().blockers;
+        this.setState(state);
     };
+
+    handleAppBlockerDropdownChange(value) {
+        let state = this.state;
+        state.appDropdownSelection = value;
+        this.setState(state);
+    };
+
+    handleAddAppBlocker() {
+        let appBlockers = this.state.blockers.apps;
+        appBlockers.push(this.state.appDropdownSelection);
+        store.preferences.set("blockers.apps", appBlockers);
+    }
+
+    handleDeleteAppBlocker() {
+        let selectionKeys = this.selection.getSelection().map(selection => selection.key);
+        let appBlockers = this.state.blockers.apps;
+        appBlockers = appBlockers.filter(path => {
+            return selectionKeys.indexOf(path) === -1
+        })
+        store.preferences.set("blockers.apps", appBlockers);
+    }
 
     render() {
 
         // Map the list of objects about each window to a list of selectable options...
-        let openWindowsOptions = getOpenWindows().map( process => {
+        let openWindowsOptions = getOpenWindows().map(process => {
             return {
-                key: process.path, 
-                text: process.name, 
+                key: process.path,
+                text: process.name,
             }
         })
-        // ...then sort the list alphabetically.
-        .sort((a, b) => {
-            var textA = a.text.toUpperCase();
-            var textB = b.text.toUpperCase();
-            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-        });
-        
-        let appBlockersListColumns = [
-            { key: '1', name: 'Name', fieldName: 'name', isResizable: false },
-        ];
+            // ...then sort the list alphabetically.
+            .sort((a, b) => {
+                var textA = a.text.toUpperCase();
+                var textB = b.text.toUpperCase();
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            });
 
-        let appBlockers = [
-            {
-                key: 1,
-                name: 'Item 1'
-            },
-            {
-                key: 2,
-                name: 'Item 2'
+        let appBlockersColumns = [{ key: '1', name: 'Name', fieldName: 'name', isResizable: false }];
+
+        let appBlockers = this.state.blockers.apps.map( path => {
+            console.log(path)
+            return {
+                key: path,
+                name: path,
             }
-        ]
-
+        });
 
         return (
 
@@ -66,22 +94,37 @@ export default class extends React.Component {
 
                     <Text variant={'xLarge'} block> App blockers </Text>
 
-                    <Dropdown label="Add an app blocker"
-                        styles={{ dropdown: { width: 300 } }}
-                        options={openWindowsOptions}
-                        selectedKey={null}
-                        placeholder='Select an app'
-                        onChange={(event, option, index) => {
-                            // store.preferences.set("notifications.sound", combinedSoundList[index].key)
-                        }}
+                    <Stack {...level2HorizontalProps} verticalAlign='end'>
+
+                        <Dropdown label="Add an app blocker"
+                            styles={{ dropdown: { width: 300 } }}
+                            options={openWindowsOptions}
+                            selectedKey={this.state.appDropdownSelection}
+                            placeholder='Select an app'
+                            onChange={(event, option, index) => {
+                                this.handleAppBlockerDropdownChange(openWindowsOptions[index].key)
+                            }}
+                        />
+
+                        <DefaultButton
+                            text='Add'
+                            onClick={this.handleAddAppBlocker}
+                        />
+
+                    </Stack>
+
+                    <ActionButton
+                        iconProps={{ iconName: 'Delete' }}
+                        text='Delete'
+                        onClick={this.handleDeleteAppBlocker}
                     />
 
                     <DetailsList
                         compact={true}
                         items={appBlockers}
-                        columns={appBlockersListColumns}
+                        columns={appBlockersColumns}
                         selectionPreservedOnEmptyClick={true}
-                        onItemInvoked={this._onItemInvoked}
+                        selection={this.selection}
                     />
 
                 </Stack>

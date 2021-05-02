@@ -78,12 +78,7 @@ const dataUsageDefaults = {
 }
 
 const insightsDefaults = {
-    cards: [
-        {
-            header: 'Test insight 1',
-            content: 'Insight message.'
-        }
-    ]
+    cards: []
 }
 
 /* Create the store */

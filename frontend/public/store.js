@@ -102,6 +102,7 @@ store.reset('messages'); // Clear all in-app messages on app startup
 if (store.get('resetFlag')) store.clear();
 
 // store.clear();
+// store.set('preferences.notifications.interval', 0.2)
 // console.log(store.store)
 
 /* Configure axios */

@@ -1,13 +1,43 @@
 const { ipcMain } = require('electron');
+const { unstable_renderSubtreeIntoContainer } = require('react-dom');
 
 /**
  * Timer states
+ *
+ * The states of the timers and its transitions are shown here:
+ * 
+ * 0 : false :: 1 : true
+ * 
+ *                 +-----------------------+--------------+
+ *                 |               isPaused               |
+ *                 +-----------------------+--------------+
+ *                 |           0           |       1      |
+ * +-----------+---+-----------------------+--------------+
+ * |           |   | +-------------------+ |              |
+ * |           |   | | isIdle            | |              |
+ * |           |   | +-------------------+ |              |
+ * |           |   | |    0    |    1    | |              |  /\          |
+ * |           | 0 | +-------------------+ |    Paused    |  |           |
+ * | isBlocked |   | | Running |  Idle   | |              |  |           |
+ * |           |   | +-------------------+ |              |  |           | 
+ * |           |   |    <----Start-----    |              |  | Unblock   | Block
+ * |           |   |    ------End----->    |              |  |           |
+ * |           +---+-----------------------+--------------+  |           |
+ * |           |   |                       |    Blocked   |  |           |
+ * |           | 1 |        Blocked        |      and     |  |           \/
+ * |           |   |                       |    paused    |
+ * +-----------+---+-----------------------+--------------+
+ *                             <-------Start--------
+ *                             --------Pause------->
+ * 
+ *                             <-------Toggle------>
  */
 const states = {
-    BLOCKED: 'blocked',
-    PAUSED:  'paused',
     RUNNING: 'running',
-    IDLE: 'idle'
+    IDLE: 'idle',
+    BLOCKED: 'blocked',
+    PAUSED: 'paused',
+    BLOCKED_AND_PAUSED: 'blocked_and_paused'
 }
 
 const TimerSystem = function(){
@@ -15,7 +45,11 @@ const TimerSystem = function(){
     this._events = {};
 
     this.timeout;
-    this.state = states.PAUSED;
+
+    this.isPaused = true;
+    this.isBlocked = false;
+    this.isIdle = false;
+
     this.endDate = new Date();  // When the timer will end
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
     this.remainingTime = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
@@ -24,10 +58,8 @@ const TimerSystem = function(){
      * Registers an event listener
      */
     this.on = function(name, listener) {
-        if (!this._events[name]) {
-          this._events[name] = [];
-        }
-    
+        if (!this._events[name]) 
+            this._events[name] = [];
         this._events[name].push(listener);
     }
 
@@ -37,12 +69,12 @@ const TimerSystem = function(){
      */
     this.getStatus = function() {
 
-        if (this.state === states.RUNNING) {
+        if (this.getState() === states.RUNNING) {
             this.remainingTime = this.endDate - new Date();
         }
 
         return {
-            state: this.state,
+            state: this.getState(),
             endDate: this.endDate,
             totalDuration: this.totalDuration,
             remainingTime: this.remainingTime,
@@ -53,13 +85,18 @@ const TimerSystem = function(){
      * Starts the timer. Calls this.setupTimer in the process.
      */
     this.start = function() {
-        if (this.state === states.RUNNING) return;
-        if (this.state === states.BLOCKED) this.state = states.IDLE;
-        if (this.state === states.IDLE) this.reset();
+        const state = this.getState()
 
+        if (state === states.BLOCKED) return;
+        if (state === states.RUNNING) return;
+
+        if (state === states.IDLE) this.reset()
+        
         this.setupTimes();
 
-        this.state = states.RUNNING;
+        // Update state bits
+        this.isIdle = false;
+        this.isPaused = false;
     };
 
     /**
@@ -82,9 +119,9 @@ const TimerSystem = function(){
      * Ends the timer and emits the 'timer-end' event. Used to start the break.
      */
     this.end = function() {
-        
-        if (this.state === states.BLOCKED) return;
-        if (this.state === states.IDLE) return;
+        // if (this.isPaused) return;
+        if (this.isBlocked) return;
+        if (this.isIdle) return;
 
         clearTimeout(this.timeout);
 
@@ -92,45 +129,47 @@ const TimerSystem = function(){
         const fireCallbacks = (callback) => callback();
         this._events['timer-end'].forEach(fireCallbacks);
 
-        this.state = states.IDLE;        
+        this.isIdle = true;
+        this.isPaused = false;
     };
 
     /**
      * Pauses the timer. Saves the remaining time.
      */
     this.pause = function() {
-        if (this.state === states.BLOCKED) return;
-        if (this.state === states.PAUSED) return;
+        if (this.isPaused) return;
 
         this.remainingTime = this.endDate - new Date();
         clearTimeout(this.timeout)
 
-        this.state = states.PAUSED;
+        this.isPaused = true;
     }
 
     /**
      * Resets the timer
      */
     this.reset = function() {
-        if (this.state === states.BLOCKED) return;
-
         this.totalDuration = global.store.get('preferences.notifications.interval') * 60000;
         this.remainingTime = this.totalDuration
 
-        if (this.state === states.RUNNING) this.setupTimes();
+        if (this.getState() === states.RUNNING) this.setupTimes();
     }
 
     /**
      * Blocks the timer from running
      */
     this.block = function() {
-        if (this.state === states.BLOCKED || this.state === states.PAUSED) return;
+        if (this.isIdle) return
+        if (this.isBlocked) return
+
+        const state = this.getState();
+        if (state === states.BLOCKED || state === states.PAUSED) return;
         clearTimeout(this.timeout);
 
         this.totalDuration = global.store.get('preferences.notifications.interval') * 60000;
         this.remainingTime = this.totalDuration
 
-        this.state = states.BLOCKED;
+        this.blocked = true;
     }
 
     /**
@@ -138,10 +177,31 @@ const TimerSystem = function(){
      * or starts the timer when it is paused or blocked.
      */
     this.togglePause = function() {
-        if (this.state !== states.RUNNING) 
+        if (this.isPaused) 
             this.start();
         else 
             this.pause();
+    }
+
+    /**
+     * Gets the state of the timer.
+     * @returns a string indicating the state.
+     */
+    this.getState = function() {
+        if (this.isPaused) {
+            if (this.isBlocked)
+                return states.BLOCKED_AND_PAUSED;
+            else 
+                return states.PAUSED;
+        }
+        else {
+            if (this.isBlocked)
+                return states.BLOCKED;
+            else if (this.isIdle) 
+                return states.IDLE;
+            else 
+                return states.RUNNING;
+        }
     }
 }
 

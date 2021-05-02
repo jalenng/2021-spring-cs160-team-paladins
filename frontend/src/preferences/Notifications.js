@@ -93,7 +93,7 @@ export default class extends React.Component {
                         onChange={(event, checked) => store.preferences.set("notifications.enableSound", checked)}
                     />
 
-                    <Stack {...level2HorizontalProps}>
+                    <Stack {...level2HorizontalProps} verticalAlign='end'>
 
                         <Dropdown label="Sound"
                             styles={{ dropdown: { width: 300 } }}

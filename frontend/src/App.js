@@ -3,7 +3,7 @@ import React from 'react';
 import HomeScreen from './HomeScreen';
 import UsageScreen from './usage/UsageScreen';
 import InsightsScreen from './InsightsScreen';
-import PreferencesScreen from './preferences/PreferencesScreen'
+import PrefsScreen from './preferences/PrefsScreen'
 
 import { MessageBar, MessageBarType } from '@fluentui/react/lib/MessageBar';
 import { Text } from '@fluentui/react/lib/Text';
@@ -104,7 +104,7 @@ export default class App extends React.Component {
                         <InsightsScreen />
                     </PivotItem>
                     <PivotItem itemIcon='Settings'>
-                        <PreferencesScreen />
+                        <PrefsScreen />
                     </PivotItem>
                 </Pivot>
 

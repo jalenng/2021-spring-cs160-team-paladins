@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 
-import PreferencesSidebar from './PreferencesSidebar';
+import PrefsSidebar from './PrefsSidebar';
 import YourAccounts from './YourAccounts';
 import Notifications from './Notifications';
 import Blockers from './Blockers';
@@ -53,7 +53,7 @@ export default class extends React.Component {
 
                 </ScrollablePane>
 
-                <PreferencesSidebar
+                <PrefsSidebar
                     selectedKey={selectedKey}
                     onUpdateSelectedKey={(key) => {
                         this.setState({ selectedKey: key });

@@ -44,6 +44,12 @@ function BlockerSystem() {
 
     }
 
+    this.checkBatteryStatus = async function() {
+        const { level, charging } = await battery();
+        console.log(level);
+        console.log(charging);
+    }
+
     this.clear = function() {
         this.blockers = [];
     }

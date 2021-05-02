@@ -237,6 +237,10 @@ window.playSound = () => { ipcRenderer.invoke('play-sound') }
  * @returns an object with the relevant information
  */
 window.getAboutInfo = () => { return ipcRenderer.sendSync('get-about-info') }
+/**
+ * Get a list of open windows on the system
+ */
+window.getOpenWindows = () => {return ipcRenderer.sendSync('get-open-windows')}
 
 
 /* Listen for events from ipcRenderer and relay them accordingly */

@@ -1,3 +1,4 @@
+const { ipcMain } = require('electron');
 const psShell = require('node-powershell');
 const isWindows = process.platform == 'win32';
 
@@ -30,8 +31,10 @@ function AppSnapshotSystem() {
     /**
      * Takes a snapshot of the list of open windows.
      * This emits the 'app-snapshot-taken' event.
+     * @param {Boolean} callListeners Optional argument. If false, does not emit event 'app-snapshot-taken'.
+     * @returns {[Object]} List of open windows
      */
-    this.takeAppSnapshot = async function () {
+    this.takeAppSnapshot = async function (emitEvent=true) {
         let result = [];
 
         // WINDOWS: Invoke PowerShell command to get open windows
@@ -65,11 +68,14 @@ function AppSnapshotSystem() {
             catch (error) { console.log(error) }
         }
 
-        // Call app-snapshot-taken listeners
-        const fireCallbacks = (callback) => callback(result);
-        this._events['app-snapshot-taken'].forEach(fireCallbacks);
-    }
+        if (emitEvent) {
+            // Call app-snapshot-taken listeners
+            const fireCallbacks = (callback) => callback(result);
+            this._events['app-snapshot-taken'].forEach(fireCallbacks);
+        }
 
+        return result;
+    }
 
     /**
      * Starts the app snapshot system.
@@ -141,3 +147,12 @@ function checkWhetherToStartSystem() {
 
     return trackAppUsageStats || (appBlockers.length != 0);
 }
+
+
+/**
+ * These event handlers retrieve information about open windows on behalf of the renderer.
+ */
+// Get list of open windows
+ipcMain.on('get-open-windows', async (event) => {
+    event.returnValue = await appSnapshotSystem.takeAppSnapshot(false);
+});

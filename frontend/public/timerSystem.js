@@ -46,15 +46,14 @@ const TimerSystem = function () {
 
     this.timeout;
 
-    // Flags
+    // Flags and variables to track timer status
     this.isPaused = true;
     this.isBlocked = false;
     this.isIdle = false;
 
-    // Variables to keep track of the quantifiable timer status
-    this.endDate = new Date();  // When the timer will end
+    this.endDate = new Date();  // The Date Object indicating when the timer will end
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
-    this.remainingTime = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
+    this.savedTime = this.totalDuration;    // Stores the remaining time when the timer is paused or blocked
 
     /**
      * Registers an event listener
@@ -70,13 +69,13 @@ const TimerSystem = function () {
      * @returns an object
      */
     this.getStatus = function () {
-        if (this.getState() === states.RUNNING)
-            this.remainingTime = this.endDate - new Date();
-
-        return {
+        return { 
             endDate: this.endDate,
             totalDuration: this.totalDuration,
-            remainingTime: this.remainingTime,
+            remainingTime: (() => {
+                if (this.savedTime != null) return this.savedTime   // Use this only if the timer is paused or blocked
+                else return this.endDate - new Date();      // Otherwise, calculate it dynamically
+            })(),
             isBlocked: this.isBlocked,
             isPaused: this.isPaused,
             isIdle: this.isIdle
@@ -90,15 +89,15 @@ const TimerSystem = function () {
     this.update = function () {
         switch (this.getState()) {
             case states.RUNNING:
-                if (this.remainingTime === 0) this.reset();
+                if (this.savedTime === 0) this.reset();
                 this.setup();
 
                 break;
 
             // End timer and begin break
             case states.IDLE:
-
-                this.remainingTime = 0;
+                
+                this.savedTime = 0;
                 clearTimeout(this.timeout);
 
                 // Call timer-end listeners
@@ -109,12 +108,10 @@ const TimerSystem = function () {
 
             // The timer should not be running here
             case states.BLOCKED:
-            case states.PAUSED:
             case states.BLOCKED_AND_PAUSED:
-
-                this.remainingTime = this.endDate - new Date();
-                clearTimeout(this.timeout)
-
+            case states.PAUSED:
+                if (!this.savedTime) this.savedTime = this.endDate - new Date();
+                clearTimeout(this.timeout);
                 break;
 
         }
@@ -126,12 +123,14 @@ const TimerSystem = function () {
     this.setup = function () {
         // Use JS timeouts to facilitate delay
         clearTimeout(this.timeout)
-        this.timeout = setTimeout(this.end.bind(this), this.remainingTime);
+        this.timeout = setTimeout(this.end.bind(this), this.savedTime);
 
         // Calculate the end date, 
         this.endDate = new Date();
-        let msLeft = this.endDate.getMilliseconds() + this.remainingTime;
+        let msLeft = this.endDate.getMilliseconds() + this.savedTime;
         this.endDate.setMilliseconds(msLeft);
+
+        this.savedTime = null;
     }
 
     /**
@@ -139,7 +138,7 @@ const TimerSystem = function () {
      */
     this.reset = function () {
         this.totalDuration = global.store.get('preferences.notifications.interval') * 60000;
-        this.remainingTime = this.totalDuration
+        this.savedTime = this.totalDuration
 
         if (this.getState() === states.RUNNING) this.setup();
     }
@@ -193,6 +192,7 @@ const TimerSystem = function () {
         if (this.isBlocked) return;
 
         // Set flag
+        this.isIdle = false;
         this.isBlocked = true;
 
         this.update();
@@ -203,10 +203,6 @@ const TimerSystem = function () {
      */
     this.unblock = function () {
         if (!this.isBlocked) return;
-        if (!this.isPaused) {
-            this.reset();
-            this.setup();
-        }
 
         // Set flag
         this.isBlocked = false;

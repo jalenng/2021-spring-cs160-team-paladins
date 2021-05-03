@@ -20,19 +20,46 @@ export default class extends React.Component {
 
     render() {
 
+        let mainButtonTooltip;
+        let mainButtonIconName;
+        let mainButtonOnClick;
+
+        // Main button is a button to clear all blockers
+        if (this.props.isBlocked) {
+            mainButtonTooltip = "Clear blockers" ;
+            mainButtonIconName = "Clear";
+            mainButtonOnClick = blockerSys.clear;
+        }
+
+        // Main button is a button to toggle the timer
+        else {
+            mainButtonOnClick = timer.toggle;
+            if (this.props.isPaused) {
+                mainButtonTooltip = "Start";
+                mainButtonIconName = "Play";
+            }
+            else {
+                mainButtonTooltip = "Pause";
+                mainButtonIconName = "Pause";
+            }
+        }
+
+        let mainButtonDisabled = this.props.isIdle;
+        let secondaryButtonDisabled = this.props.isBlocked;
+
         return (
 
             <Stack horizontal tokens={{ childrenGap: 20 }}>
 
-                {/* Toggle button */}
-                <TooltipHost content={this.props.mainButtonTooltip}>
+                {/* Main button */}
+                <TooltipHost content={mainButtonTooltip}>
                     <PrimaryButton
                         id="toggleButton"
-                        disabled={this.props.mainButtonDisabled}
-                        onClick={timer.toggle}
+                        disabled={mainButtonDisabled}
+                        onClick={mainButtonOnClick}
                         style={buttonStyle}
                         onRenderText={() => {
-                            return <FontIcon iconName={this.props.mainButtonIconName} className={buttonIconClass} />
+                            return <FontIcon iconName={mainButtonIconName} className={buttonIconClass} />
                         }}
                     />
                 </TooltipHost>
@@ -41,32 +68,39 @@ export default class extends React.Component {
                 <TooltipHost content={"More"}>
                     <DefaultButton
                         id="buttonGroup"
-                        disabled={this.props.secondaryButtonDisabled}
+                        disabled={secondaryButtonDisabled}
                         style={buttonStyle}
                         onRenderText={() => { 
                             return <FontIcon iconName="More" className={buttonIconClass} /> 
                         }}
                         menuProps={{
-                            items: [
-                                {
-                                    key: "resetTimer",
-                                    text: 'Reset timer',
-                                    iconProps: { iconName: 'Refresh' },
-                                    onClick: timer.reset
-                                },
-                                {
-                                    key: "popOutTimer",
-                                    text: 'Pop out',
-                                    iconProps: { iconName: 'MiniExpand' },
-                                    onClick: showPopup.timer
-                                },
-                                {
-                                    key: "startBreak",
-                                    text: 'Start break (for testing purposes)',
-                                    iconProps: { iconName: 'FastForward' },
-                                    onClick: timer.end
-                                }
-                            ]
+                            items: (() => {
+                                let menu = [
+                                    {
+                                        key: "resetTimer",
+                                        text: 'Reset timer',
+                                        iconProps: { iconName: 'Refresh' },
+                                        onClick: timer.reset,
+                                        disabled: secondaryButtonDisabled
+                                    },
+                                    {
+                                        key: "popOutTimer",
+                                        text: 'Pop out',
+                                        iconProps: { iconName: 'MiniExpand' },
+                                        onClick: showPopup.timer,
+                                        disabled: secondaryButtonDisabled
+                                    }                                    
+                                ]
+                                if (isDev)
+                                    menu.push({
+                                        key: "startBreak",
+                                        text: 'Start break (for testing purposes)',
+                                        iconProps: { iconName: 'FastForward' },
+                                        onClick: timer.end,
+                                        disabled: secondaryButtonDisabled
+                                    })
+                                return menu;
+                            })()
                         }}
                     />
                 </TooltipHost>

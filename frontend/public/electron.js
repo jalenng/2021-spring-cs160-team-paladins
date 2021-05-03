@@ -231,6 +231,11 @@ ipcMain.handle('restart-app', () => {
     app.exit();
 })
 
+// Find out whether or not the app is running in a dev environment
+ipcMain.on('is-dev', (event) => {
+    event.returnValue = isDev;
+})
+
 // Get info about the app
 ipcMain.on('get-about-info', (event) => {
     let aboutInfo = {

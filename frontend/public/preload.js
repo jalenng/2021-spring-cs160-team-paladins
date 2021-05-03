@@ -266,6 +266,10 @@ window.logToMain = (content) => { ipcRenderer.invoke('log-to-main', content) }
  */
 window.restartApp = () => { ipcRenderer.invoke('restart-app') }
 
+/**
+ * Return a boolean that tells whether or not this app is running in a dev environment
+ */
+window.isDev = ipcRenderer.sendSync('is-dev');
 
 /* Listen for events from ipcRenderer and relay them accordingly */
 ipcRenderer.on('receive-timer-status', (event, timerStatus) => {

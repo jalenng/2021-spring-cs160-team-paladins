@@ -73,6 +73,11 @@ powerMonitor.on('on-battery', () => {
         });
 });
 
+
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
+
+// Clear blockers
 ipcMain.handle('clear-blockers', () => {
     global.blockerSystem.clear();
 })

@@ -17,85 +17,59 @@ const sharedWindowOptions = {
     }
 }
 
-// Sign-in popup
-ipcMain.handle('show-sign-in-popup', event => {
 
-    const signInWindow = new BrowserWindow({
+function openPopup(customOptions, destination) {
+    const popupWindow = new BrowserWindow({
         ...sharedWindowOptions,
-        height: 420,
-        title: "Sign in",
+        ...customOptions
     })
-    signInWindow.loadURL( 
+    popupWindow.loadURL( 
         isDev
-        ? 'http://localhost:3000#/signin'
-        : `file://${path.join(__dirname, '../build/index.html#signin')}`
+        ? `http://localhost:3000#/${destination}`
+        : `file://${path.join(__dirname, `../build/index.html#${destination}`)}`
     ); 
     
-    signInWindow.removeMenu();
-    signInWindow.on('ready-to-show', () => signInWindow.show());
+    popupWindow.removeMenu();
+    popupWindow.on('ready-to-show', () => popupWindow.show());
+}
 
+
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
+
+// Sign-in popup
+ipcMain.handle('show-sign-in-popup', event => {
+    openPopup({
+        height: 420,
+        title: "Sign in"
+    }, 'signin');
 })
 
 
 // Delete account popup
 ipcMain.handle('show-delete-account-popup', event => {
-
-    const deleteAccountWindow = new BrowserWindow({
-        ...sharedWindowOptions, 
+    openPopup({
         height: 240,
         title: "Delete account"
-    });
-    
-    deleteAccountWindow.loadURL( 
-        isDev
-        ? 'http://localhost:3000#/deleteAccount'
-        : `file://${path.join(__dirname, '../build/index.html#deleteAccount')}`
-    ); 
-
-    deleteAccountWindow.removeMenu();
-    deleteAccountWindow.on('ready-to-show', () => deleteAccountWindow.show());
-
+    }, 'deleteAccount');
 })
 
 
 // Edit account popup
 ipcMain.handle('show-edit-account-popup', event => {
-
-    const editAccountWindow = new BrowserWindow({
-        ...sharedWindowOptions,
+    openPopup({
         height: 420,
         title: "Edit account"
-    });
-    
-    editAccountWindow.loadURL( 
-        isDev
-        ? 'http://localhost:3000#/editAccount'
-        : `file://${path.join(__dirname, '../build/index.html#editAccount')}`
-    ); 
-    
-    editAccountWindow.removeMenu();
-    editAccountWindow.on('ready-to-show', () => editAccountWindow.show());
-
+    }, 'editAccount');
 })
 
 
 // Timer popup
 ipcMain.handle('show-timer-popup', event => {
-
-    const timerPopupWindow = new BrowserWindow({
-        ...sharedWindowOptions,
+    openPopup({
         width: 320,
         height: 400,
         title: "iCare",
         alwaysOnTop: true
-    })
-    timerPopupWindow.loadURL( 
-        isDev
-        ? 'http://localhost:3000#/popupTimer'
-        : `file://${path.join(__dirname, '../build/index.html#popupTimer')}`
-    ); 
-    
-    timerPopupWindow.removeMenu();
-    timerPopupWindow.on('ready-to-show', () => timerPopupWindow.show());
-    
+    }, 'popupTimer');
 })

@@ -37,9 +37,10 @@ global.mainWindow;
 
 let mainWindowState;
 
-/**
- * Configure event listeners and connect the various systems
- */
+
+/*---------------------------------------------------------------------------*/
+/* Configure event listeners and connect the various systems */
+
 // Start break when timer ends
 timerSystem.on('timer-end', () => breakSystem.start()); 
 
@@ -132,14 +133,13 @@ function createWindow() {
 
 }
 
+/*---------------------------------------------------------------------------*/
+/* Mechanism to allow only one instance of the app at once */
 
-/**
- * Mechanism to allow only one instance of the app at once
- */
 const gotSingleInstanceLock = app.requestSingleInstanceLock()
 if (!gotSingleInstanceLock) app.exit()
 
-/* Show first instance if a second instance is requested */
+// Show first instance if a second instance is requested
  app.on('second-instance', (event, commandLine, workingDirectory) => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
@@ -148,18 +148,18 @@ if (!gotSingleInstanceLock) app.exit()
 })
 
 
-/**
- * App settings for when user logs in
- */
+/*---------------------------------------------------------------------------*/
+/* App settings for when user logs in */
+
 app.setLoginItemSettings({
     openAtLogin: global.store.get('preferences.startup.startAppOnLogin'),
     enabled: global.store.get('preferences.startup.startAppOnLogin'),
     path: app.getPath('exe')
 })
 
-/**
- * Application event handlers
- */
+
+/*---------------------------------------------------------------------------*/
+/* Application event handlers */
 let appTray = null;
 app.whenReady().then(() => {
 
@@ -215,10 +215,8 @@ app.on('web-contents-created', (event, contents) => {
 })
 
 
-/**
- * IPC event handlers
- * These event handlers are executed when another process invokes the event.
- */
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
 
 // Log to main process's console
 ipcMain.handle('log-to-main', (event, content) => {

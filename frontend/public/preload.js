@@ -12,7 +12,10 @@ if (process.env.NODE_ENV === 'test')
 
 const { ipcRenderer } = require('electron');
 
+
+/*---------------------------------------------------------------------------*/
 /* Event system */
+
 const EventSystem = function () {
 
     this._events = {}
@@ -30,7 +33,9 @@ const EventSystem = function () {
 }
 
 
+/*---------------------------------------------------------------------------*/
 /* Store helper functions */
+
 window.store = {
     preferences: {
         /**
@@ -196,6 +201,7 @@ window.store = {
 }
 
 
+/*---------------------------------------------------------------------------*/
 /* Popup window helper functions */
 window.showPopup = {
     /**
@@ -220,6 +226,7 @@ window.showPopup = {
 }
 
 
+/*---------------------------------------------------------------------------*/
 /* Timer, break, and blocker system helper functions */
 window.timer = {
     toggle: () => { ipcRenderer.invoke('timer-toggle') },
@@ -238,6 +245,8 @@ window.blockerSys = {
     clear: () => { ipcRenderer.invoke('clear-blockers') }
 }
 
+
+/*---------------------------------------------------------------------------*/
 /* Other functions */
 
 /**

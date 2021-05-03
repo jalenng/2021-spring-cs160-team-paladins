@@ -159,9 +159,9 @@ function checkWhetherToStartSystem() {
 }
 
 
-/**
- * These event handlers retrieve information about open windows on behalf of the renderer.
- */
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
+
 // Get list of open windows
 ipcMain.on('get-open-windows', async (event) => {
     event.returnValue = appSnapshotSystem.getLastSnapshot();

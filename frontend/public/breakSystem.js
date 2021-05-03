@@ -4,10 +4,6 @@ const path = require('path');
 const { ipcMain, screen } = require('electron');
 const soundPlayer = require('sound-play');
 
-
-/**
- * Break states
- */
 const states = {
     ON_BREAK: 'on_break',
     NOT_ON_BREAK: 'not_on_break',
@@ -161,9 +157,9 @@ const BreakSystem = function(){
 global.breakSystem = new BreakSystem();
 
 
-/**
- * IPC event handlers
- */
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
+
 // Get break status
 ipcMain.on('get-break-status', (event) => {
     event.reply('receive-break-status', global.breakSystem.getStatus());

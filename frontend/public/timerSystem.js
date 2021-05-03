@@ -1,5 +1,4 @@
 const { ipcMain } = require('electron');
-const { unstable_renderSubtreeIntoContainer } = require('react-dom');
 
 /**
  * Timer states
@@ -65,6 +64,27 @@ const TimerSystem = function () {
     }
 
     /**
+     * Gets the state of the timer.
+     * @returns a string indicating the state.
+     */
+     this.getState = function () {
+        if (this.isPaused) {
+            if (this.isBlocked)
+                return states.BLOCKED_AND_PAUSED;
+            else
+                return states.PAUSED;
+        }
+        else {
+            if (this.isBlocked)
+                return states.BLOCKED;
+            else if (this.isIdle)
+                return states.IDLE;
+            else
+                return states.RUNNING;
+        }
+    }
+
+    /**
      * Gets the status of the timer system
      * @returns an object
      */
@@ -110,15 +130,18 @@ const TimerSystem = function () {
             case states.BLOCKED:
             case states.BLOCKED_AND_PAUSED:
             case states.PAUSED:
-                if (!this.savedTime) this.savedTime = this.endDate - new Date();
+
+                // Save the time if it's not already saved
+                if (this.savedTime === null) this.savedTime = this.endDate - new Date();
                 clearTimeout(this.timeout);
+
                 break;
 
         }
     }
 
     /**
-     * Sets up the timer times
+     * Sets up the timer
      */
     this.setup = function () {
         // Use JS timeouts to facilitate delay
@@ -144,7 +167,7 @@ const TimerSystem = function () {
     }
 
     /**
-     * Starts the timer. Calls this.setupTimer in the process.
+     * Starts the timer
      */
     this.start = function () {
         if (this.isBlocked) return;
@@ -158,7 +181,7 @@ const TimerSystem = function () {
     };
 
     /** 
-     * Ends the timer and emits the 'timer-end' event. Used to start the break.
+     * Ends the timer and starts the break
      */
     this.end = function () {
         if (this.isBlocked) return;
@@ -172,7 +195,7 @@ const TimerSystem = function () {
     };
 
     /**
-     * Pauses the timer. Saves the remaining time.
+     * Pauses the timer
      */
     // Conditions to ignore
     this.pause = function () {
@@ -221,26 +244,6 @@ const TimerSystem = function () {
             this.pause();
     }
 
-    /**
-     * Gets the state of the timer.
-     * @returns a string indicating the state.
-     */
-    this.getState = function () {
-        if (this.isPaused) {
-            if (this.isBlocked)
-                return states.BLOCKED_AND_PAUSED;
-            else
-                return states.PAUSED;
-        }
-        else {
-            if (this.isBlocked)
-                return states.BLOCKED;
-            else if (this.isIdle)
-                return states.IDLE;
-            else
-                return states.RUNNING;
-        }
-    }
 }
 
 // Instantiate the timer system
@@ -251,9 +254,8 @@ if (global.store.get('preferences.startup.startTimerOnAppStartup'))
     global.timerSystem.start();
 
 
-/**
- * IPC event handlers
- */
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
 
 // Reset the timer
 ipcMain.handle('timer-reset', () => {
@@ -279,8 +281,3 @@ ipcMain.handle('timer-toggle', () => {
 ipcMain.handle('timer-block', () => {
     global.timerSystem.block();
 })
-
-
-module.exports = {
-    TimerStates: states
-}

@@ -144,11 +144,9 @@ store.onDidChange('messages', () => {
     global.mainWindow.webContents.send('store-changed', 'messages');
 });
 
-/*---------------------------------------------------------------------------*/
 
-/**
- * IPC event handlers & functions to manipulate and retrieve from the store
- */
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
 
 // Retrieve from the local store
 ipcMain.on('get-store', (event, key) => event.returnValue = store.get(key));

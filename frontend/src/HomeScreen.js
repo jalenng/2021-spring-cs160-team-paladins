@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import Timer from "./timer/Timer";
+import Timer from './timer/Timer';
 
 const homeStyle = {
     paddingTop: '30px',

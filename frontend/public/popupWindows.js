@@ -41,7 +41,7 @@ function openPopup(customOptions, destination) {
 ipcMain.handle('show-sign-in-popup', event => {
     openPopup({
         height: 420,
-        title: "Sign in"
+        title: 'Sign in'
     }, 'signin');
 })
 
@@ -50,7 +50,7 @@ ipcMain.handle('show-sign-in-popup', event => {
 ipcMain.handle('show-delete-account-popup', event => {
     openPopup({
         height: 240,
-        title: "Delete account"
+        title: 'Delete account'
     }, 'deleteAccount');
 })
 
@@ -59,7 +59,7 @@ ipcMain.handle('show-delete-account-popup', event => {
 ipcMain.handle('show-edit-account-popup', event => {
     openPopup({
         height: 420,
-        title: "Edit account"
+        title: 'Edit account'
     }, 'editAccount');
 })
 
@@ -69,7 +69,7 @@ ipcMain.handle('show-timer-popup', event => {
     openPopup({
         width: 320,
         height: 400,
-        title: "iCare",
+        title: 'iCare',
         alwaysOnTop: true
     }, 'popupTimer');
 })

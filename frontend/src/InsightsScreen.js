@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { 
     IconButton,
@@ -11,7 +11,7 @@ import {
     MessageBarType 
 } from '@fluentui/react';
 
-import DialogSpinner from "./DialogSpinner";
+import DialogSpinner from './DialogSpinner';
 
 const divStyle = {
     paddingTop: '10px',
@@ -28,10 +28,10 @@ const cardStyles = {
 }
 
 const cardStackStyle = {
-    marginTop: "8px",
-    marginLeft: "16px",
-    marginRight: "16px",
-    height: "auto"
+    marginTop: '8px',
+    marginLeft: '16px',
+    marginRight: '16px',
+    height: 'auto'
 }
 
 export default class InsightsScreen extends React.Component {
@@ -97,7 +97,7 @@ export default class InsightsScreen extends React.Component {
 
                     {/* Card contents/stack */}
                     <Stack style={cardStackStyle} tokens={{ childrenGap: 8 }}>
-                        <Text variant="large" block> {card.header} </Text>
+                        <Text variant='large' block> {card.header} </Text>
                         <Text block> {card.content} </Text>
                     </Stack>
 
@@ -126,12 +126,12 @@ export default class InsightsScreen extends React.Component {
 
                 {/* Insights screen header */}
                 <Stack horizontal
-                    verticalAlign="center"
+                    verticalAlign='center'
                     tokens={{ childrenGap: 16 }} >
                     <Text variant={'xxLarge'} block> <b>Insights</b> </Text>
 
                     {this.state.isSignedIn && 
-                        <TooltipHost content="Refresh">
+                        <TooltipHost content='Refresh'>
                             <IconButton
                                 iconProps={{ iconName: 'Refresh' }}
                                 onClick={this.handleRefreshBtn}
@@ -154,11 +154,11 @@ export default class InsightsScreen extends React.Component {
                 {/* Show insights contents if signed in */}
                 {this.state.isSignedIn && 
                     <ScrollablePane style={{
-                        position: "absolute",
-                        top: "105px",
-                        left: "30px",
-                        paddingBottom: "260px",
-                        paddingRight: "40px"
+                        position: 'absolute',
+                        top: '105px',
+                        left: '30px',
+                        paddingBottom: '260px',
+                        paddingRight: '40px'
                     }}>
                         {cards}
                     </ScrollablePane>

@@ -7,7 +7,7 @@ import {
     Text 
 } from '@fluentui/react';
 
-import DialogSpinner from "../DialogSpinner";
+import DialogSpinner from '../DialogSpinner';
 import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 
 export default class extends React.Component {
@@ -69,7 +69,7 @@ export default class extends React.Component {
     render() {
         return (
             <div>
-                <Stack id="startup" {...level1Props}>
+                <Stack id='startup' {...level1Props}>
 
                     <Stack {...level2Props}>
 
@@ -78,13 +78,13 @@ export default class extends React.Component {
                         <Stack {...level2HorizontalProps}>
 
                             <DefaultButton
-                                text="Upload"
+                                text='Upload'
                                 iconProps={{ iconName: 'CloudUpload' }}
                                 onClick={this.handleUploadBtn}
                             />
 
                             <DefaultButton
-                                text="Download"
+                                text='Download'
                                 iconProps={{ iconName: 'CloudDownload' }}
                                 onClick={this.handleDownloadBtn}
                             />

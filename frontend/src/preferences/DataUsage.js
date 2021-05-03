@@ -30,21 +30,21 @@ export default class extends React.Component {
 
         return (
 
-            <Stack id="data_usage" {...level1Props}>
+            <Stack id='data_usage' {...level1Props}>
 
                 <Stack {...level2Props}>
 
                     <Text variant={'xLarge'} block> Data usage </Text>
 
-                    <Toggle label="Track my application usage statistics"
-                        onText="On" offText="Off"
+                    <Toggle label='Track my application usage statistics'
+                        onText='On' offText='Off'
                         checked={this.state.trackAppUsageStats}
-                        onChange={(event, checked) => store.preferences.set("dataUsage.trackAppUsageStats", checked)}
+                        onChange={(event, checked) => store.preferences.set('dataUsage.trackAppUsageStats', checked)}
                     />
-                    <Toggle label="Enable weekly usage statistics"
-                        onText="On" offText="Off"
+                    <Toggle label='Enable weekly usage statistics'
+                        onText='On' offText='Off'
                         checked={this.state.enableWeeklyUsageStats}
-                        onChange={(event, checked) => store.preferences.set("dataUsage.enableWeeklyUsageStats", checked)}
+                        onChange={(event, checked) => store.preferences.set('dataUsage.enableWeeklyUsageStats', checked)}
                     />
 
                 </Stack>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DialogSpinner from "../DialogSpinner";
+import DialogSpinner from '../DialogSpinner';
 
 import { 
     Text,

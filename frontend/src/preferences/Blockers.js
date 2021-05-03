@@ -50,7 +50,7 @@ export default class extends React.Component {
         if (this.state.appDropdownSelection === null) return 
         let appBlockers = this.state.blockers.apps;
         appBlockers.push(this.state.appDropdownSelection);
-        store.preferences.set("blockers.apps", appBlockers);
+        store.preferences.set('blockers.apps', appBlockers);
     }
 
     // Delete the checked value of the blocker apps list
@@ -60,7 +60,7 @@ export default class extends React.Component {
         appBlockers = appBlockers.filter(path => {
             return selectionKeys.indexOf(path) === -1
         })
-        store.preferences.set("blockers.apps", appBlockers);
+        store.preferences.set('blockers.apps', appBlockers);
     }
 
     render() {
@@ -96,7 +96,7 @@ export default class extends React.Component {
 
         return (
 
-            <Stack id="blockers" {...level1Props}>
+            <Stack id='blockers' {...level1Props}>
 
                 {/* Blocker app settings */}
                 <Stack {...level2Props}>
@@ -108,7 +108,7 @@ export default class extends React.Component {
                     {/* Add app blockers */}
                     <Stack {...level2HorizontalProps} verticalAlign='end'>
 
-                        <Dropdown label="Add an app"
+                        <Dropdown label='Add an app'
                             styles={{ dropdown: { width: 300 } }}
                             options={openWindowsOptions}
                             selectedKey={this.state.appDropdownSelection}
@@ -148,10 +148,10 @@ export default class extends React.Component {
                     <Text variant={'xLarge'} block> Other blockers </Text>
 
                     <Toggle
-                        label="Block timer when on battery power"
-                        onText="On" offText="Off"
+                        label='Block timer when on battery power'
+                        onText='On' offText='Off'
                         checked={this.state.blockers.blockOnBattery}
-                        onChange={(event, checked) => store.preferences.set("blockers.blockOnBattery", checked)}
+                        onChange={(event, checked) => store.preferences.set('blockers.blockOnBattery', checked)}
                     />
 
                 </Stack>

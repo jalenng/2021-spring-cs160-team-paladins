@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { 
     mergeStyles,
@@ -8,9 +8,9 @@ import {
 } from '@fluentui/react';
 
 const divStyle = {
-    MozUserSelect: "none",
-    WebkitUserSelect: "none",
-    msUserSelect: "none",
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
 };
 
 const iconClass = mergeStyles({
@@ -26,7 +26,7 @@ export default class extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            remainingTimeString: ""
+            remainingTimeString: ''
         };
 
         breakSys.eventSystem.on('update', (event, breakStatus) => {
@@ -60,23 +60,23 @@ export default class extends React.Component {
                 }}>
 
                     <Stack tokens={{childrenGap: 16}}>
-                        <Stack.Item align="center">
-                            <Stack horizontal verticalAlign="center">
-                                <FontIcon iconName="RedEye" className={iconClass} />
-                                <FontIcon iconName="Remove" className={iconClass} />
-                                <FontIcon iconName="Street" className={iconClass} />
+                        <Stack.Item align='center'>
+                            <Stack horizontal verticalAlign='center'>
+                                <FontIcon iconName='RedEye' className={iconClass} />
+                                <FontIcon iconName='Remove' className={iconClass} />
+                                <FontIcon iconName='Street' className={iconClass} />
                             </Stack>
 
                         </Stack.Item>
 
-                        <Stack.Item align="center">
-                            <Text variant={"xxLarge"}>
+                        <Stack.Item align='center'>
+                            <Text variant={'xxLarge'}>
                                 Look at something 20 feet away.
                             </Text>
                         </Stack.Item>
                         
-                        <Stack.Item align="center">
-                            <Text variant={"xLarge"} align="center">
+                        <Stack.Item align='center'>
+                            <Text variant={'xLarge'} align='center'>
                                 {this.state.remainingTimeString}
                             </Text>
                         </Stack.Item>
@@ -91,7 +91,7 @@ export default class extends React.Component {
                     top: '90%',
                     transform: 'translate(-50%, -50%)'
                 }}>
-                    <Text variant={"large"} align="center">
+                    <Text variant={'large'} align='center'>
                         The timer will reset upon mouse movement.
                     </Text>          
                 </div>

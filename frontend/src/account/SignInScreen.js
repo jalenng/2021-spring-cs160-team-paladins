@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import DialogSpinner from "../DialogSpinner";
+import DialogSpinner from '../DialogSpinner';
 
 import { 
     Text,

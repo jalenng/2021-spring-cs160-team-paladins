@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { 
     Text,
@@ -6,11 +6,11 @@ import {
     TooltipHost,
     Stack,
     getTheme
- } from "@fluentui/react";
+ } from '@fluentui/react';
 
-import Circle from "react-circle";
+import Circle from 'react-circle';
 
-const chipStyle = { borderRadius: "20px", width: "40px", height: "28px" };
+const chipStyle = { borderRadius: '20px', width: '40px', height: '28px' };
 const circleProps = {
     animate: false,
     size: 300,
@@ -32,9 +32,9 @@ export default class extends React.Component {
         return (
 
             <div style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
             }}>
 
                 {/* Circular progress bar */}
@@ -46,12 +46,12 @@ export default class extends React.Component {
                 />
 
                 {/* Timer information */}
-                <div className="time" style={{ position: "absolute" }}>
-                    <Stack vertical horizontalAlign="center">
+                <div className='time' style={{ position: 'absolute' }}>
+                    <Stack vertical horizontalAlign='center'>
 
                         {/* Remaining time */}
-                        <Text variant={"xxLarge"} style={{ fontSize: "4rem" }} block>
-                            <div id="remainingTimeText">
+                        <Text variant={'xxLarge'} style={{ fontSize: '4rem' }} block>
+                            <div id='remainingTimeText'>
                                 {this.props.text}
                             </div>
                         </Text>

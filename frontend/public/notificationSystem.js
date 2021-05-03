@@ -14,7 +14,7 @@ const sharedWindowOptions = {
     maximizable: false,
     skipTaskbar: true,
     show: false,
-    title: "iCare Notification",
+    title: 'iCare Notification',
     backgroundColor: '#222222',
     webPreferences: {
         preload: path.join(__dirname, 'preload.js'),

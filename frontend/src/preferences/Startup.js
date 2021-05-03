@@ -28,21 +28,21 @@ export default class extends React.Component {
 
     render() {
         return (
-            <Stack id="startup" {...level1Props}>
+            <Stack id='startup' {...level1Props}>
 
                 <Stack {...level2Props}>
                     <Text variant={'xLarge'} block> Startup </Text>
 
-                    <Toggle label="Start app on login"
-                        onText="On" offText="Off"
+                    <Toggle label='Start app on login'
+                        onText='On' offText='Off'
                         checked={this.state.startAppOnLogin}
-                        onChange={(event, checked) => store.preferences.set("startup.startAppOnLogin", checked)}
+                        onChange={(event, checked) => store.preferences.set('startup.startAppOnLogin', checked)}
                     />
-                    <Toggle label="Start timer on app startup"
-                        onText="On" offText="Off"
+                    <Toggle label='Start timer on app startup'
+                        onText='On' offText='Off'
                         checked={this.state.startTimerOnAppStartup}
                         onChange={(event, checked) => {
-                            store.preferences.set("startup.startTimerOnAppStartup", checked);
+                            store.preferences.set('startup.startTimerOnAppStartup', checked);
                         }}
                     />
                 </Stack>

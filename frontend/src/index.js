@@ -16,7 +16,7 @@ import Timer from './timer/Timer';
 
 import ErrorBoundary from './ErrorBoundary';
 
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import { loadTheme, createTheme, initializeIcons } from '@fluentui/react';
 
 const myTheme = createTheme({
@@ -51,9 +51,9 @@ document.body.style = 'background: #222222;';
 initializeIcons();
 
 const unselectableTextStyle = {
-    MozUserSelect: "none",
-    WebkitUserSelect: "none",
-    msUserSelect: "none",
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
 }
 
 ReactDOM.render(
@@ -62,16 +62,16 @@ ReactDOM.render(
             <ErrorBoundary>
                 <HashRouter>
                     <Switch>
-                            <Route path="/" exact component={App} />
-                            <Route path="/signin" exact component={SignInScreen} />
-                            <Route path="/signup" exact component={SignUpScreen} />
-                            <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
-                            <Route path="/editAccount" exact component={EditAccountScreen} />
+                            <Route path='/' exact component={App} />
+                            <Route path='/signin' exact component={SignInScreen} />
+                            <Route path='/signup' exact component={SignUpScreen} />
+                            <Route path='/deleteAccount' exact component={DeleteAccountScreen} />
+                            <Route path='/editAccount' exact component={EditAccountScreen} />
 
-                            <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
-                            <Route path="/popupNotification" exact component={PopupNotification} />
+                            <Route path='/fullscreenNotification' exact component={FullscreenNotification} />
+                            <Route path='/popupNotification' exact component={PopupNotification} />
 
-                            <Route path="/popupTimer" exact component={Timer} />
+                            <Route path='/popupTimer' exact component={Timer} />
                     </Switch>
                 </HashRouter>
             </ErrorBoundary>

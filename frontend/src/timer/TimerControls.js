@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { 
     PrimaryButton, DefaultButton,
@@ -6,9 +6,9 @@ import {
     Stack,
     FontIcon,
     mergeStyles,
-} from "@fluentui/react";;
+} from '@fluentui/react';;
 
-const buttonStyle = { borderRadius: "20px", width: "40px", height: "40px" };
+const buttonStyle = { borderRadius: '20px', width: '40px', height: '40px' };
 const buttonIconClass = mergeStyles({ fontSize: 24, height: 24, width: 24 });
 
 export default class extends React.Component {
@@ -26,8 +26,8 @@ export default class extends React.Component {
 
         // Main button is a button to clear all blockers
         if (this.props.isBlocked) {
-            mainButtonTooltip = "Clear blockers" ;
-            mainButtonIconName = "Clear";
+            mainButtonTooltip = 'Clear blockers' ;
+            mainButtonIconName = 'Clear';
             mainButtonOnClick = blockerSys.clear;
         }
 
@@ -35,12 +35,12 @@ export default class extends React.Component {
         else {
             mainButtonOnClick = timer.toggle;
             if (this.props.isPaused) {
-                mainButtonTooltip = "Start";
-                mainButtonIconName = "Play";
+                mainButtonTooltip = 'Start';
+                mainButtonIconName = 'Play';
             }
             else {
-                mainButtonTooltip = "Pause";
-                mainButtonIconName = "Pause";
+                mainButtonTooltip = 'Pause';
+                mainButtonIconName = 'Pause';
             }
         }
 
@@ -54,7 +54,7 @@ export default class extends React.Component {
                 {/* Main button */}
                 <TooltipHost content={mainButtonTooltip}>
                     <PrimaryButton
-                        id="toggleButton"
+                        id='toggleButton'
                         disabled={mainButtonDisabled}
                         onClick={mainButtonOnClick}
                         style={buttonStyle}
@@ -65,26 +65,26 @@ export default class extends React.Component {
                 </TooltipHost>
 
                 {/* Other actions */}
-                <TooltipHost content={"More"}>
+                <TooltipHost content={'More'}>
                     <DefaultButton
-                        id="buttonGroup"
+                        id='buttonGroup'
                         disabled={secondaryButtonDisabled}
                         style={buttonStyle}
                         onRenderText={() => { 
-                            return <FontIcon iconName="More" className={buttonIconClass} /> 
+                            return <FontIcon iconName='More' className={buttonIconClass} /> 
                         }}
                         menuProps={{
                             items: (() => {
                                 let menu = [
                                     {
-                                        key: "resetTimer",
+                                        key: 'resetTimer',
                                         text: 'Reset timer',
                                         iconProps: { iconName: 'Refresh' },
                                         onClick: timer.reset,
                                         disabled: secondaryButtonDisabled
                                     },
                                     {
-                                        key: "popOutTimer",
+                                        key: 'popOutTimer',
                                         text: 'Pop out',
                                         iconProps: { iconName: 'MiniExpand' },
                                         onClick: showPopup.timer,
@@ -93,7 +93,7 @@ export default class extends React.Component {
                                 ]
                                 if (isDev)
                                     menu.push({
-                                        key: "startBreak",
+                                        key: 'startBreak',
                                         text: 'Start break (for testing purposes)',
                                         iconProps: { iconName: 'FastForward' },
                                         onClick: timer.end,

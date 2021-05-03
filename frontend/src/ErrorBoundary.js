@@ -7,9 +7,9 @@ import {
 } from '@fluentui/react';
 
 const divStyle = {
-    MozUserSelect: "none",
-    WebkitUserSelect: "none",
-    msUserSelect: "none",
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
 };
 
 export default class extends React.Component {
@@ -42,16 +42,16 @@ export default class extends React.Component {
 
                         <Stack tokens={{ childrenGap: 24 }}>
 
-                            <Stack.Item align="center">
-                                <Text variant={"xxLarge"} align="center">
+                            <Stack.Item align='center'>
+                                <Text variant={'xxLarge'} align='center'>
                                     Sorry, something went wrong.
                                 </Text>
                             </Stack.Item>
 
-                            <Stack.Item align="center">
+                            <Stack.Item align='center'>
                                 <PrimaryButton
                                     iconProps={{ iconName: 'Refresh' }}
-                                    text="Restart app"
+                                    text='Restart app'
                                     onClick={restartApp}
                                 />
                             </Stack.Item>
@@ -68,7 +68,7 @@ export default class extends React.Component {
                     }}>
                         <ActionButton
                             iconProps={{ iconName: 'Refresh' }}
-                            text="Reset iCare if you are still having trouble"
+                            text='Reset iCare if you are still having trouble'
                             onClick={store.reset}
                         />
                     </div>

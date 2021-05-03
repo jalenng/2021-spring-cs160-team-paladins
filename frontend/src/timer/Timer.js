@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import { Stack } from "@fluentui/react";
+import { Stack } from '@fluentui/react';
 
-import TimerDisplay from "./TimerDisplay";
-import TimerControls from "./TimerControls";
+import TimerDisplay from './TimerDisplay';
+import TimerControls from './TimerControls';
 
 export default class extends React.Component {
     _isMounted = false;
@@ -16,7 +16,7 @@ export default class extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        timer.eventSystem.on("update", (event, status) => this.updateState(status));
+        timer.eventSystem.on('update', (event, status) => this.updateState(status));
 
         timer.getStatus();
         setInterval(timer.getStatus, 100);
@@ -41,7 +41,7 @@ export default class extends React.Component {
             remainingTimeString: (() => {
                 let minutes = Math.floor(remainingTime / 60000).toString();
                 let seconds = Math.floor((remainingTime % 60000) / 1000);
-                seconds = ("00" + seconds).substr(-2, 2);
+                seconds = ('00' + seconds).substr(-2, 2);
 
                 return `${minutes}:${seconds}`
             })(),
@@ -50,13 +50,13 @@ export default class extends React.Component {
             endTimeString: (() => {
                 let hours = status.endDate.getHours();
                 hours = hours === 0 // Enforce 12-hour format. For hours, display 12 instead of 0.
-                    ? "12"
+                    ? '12'
                     : hours > 12
                         ? (hours % 12).toString()
                         : hours.toString();
 
                 let minutes = status.endDate.getMinutes();
-                minutes = ("00" + minutes).substr(-2, 2);
+                minutes = ('00' + minutes).substr(-2, 2);
 
                 return `${hours}:${minutes}`
             })(),
@@ -76,8 +76,8 @@ export default class extends React.Component {
         if (!this.state.isPaused && !this.state.isBlocked) {
             timerDisplayChipProps = {
                 showChip: true,
-                chipTooltip: "End time",
-                chipIconName: "Ringer",
+                chipTooltip: 'End time',
+                chipIconName: 'Ringer',
                 chipText: this.state.endTimeString
             }
         }
@@ -86,7 +86,7 @@ export default class extends React.Component {
         else if (this.state.isBlocked) {
             timerDisplayChipProps = {
                 showChip: true,
-                chipIconName: "Blocked2"
+                chipIconName: 'Blocked2'
             }
         }
 
@@ -99,7 +99,7 @@ export default class extends React.Component {
 
         return (
             <div>
-                <Stack vertical tokens={{ childrenGap: 8 }} horizontalAlign="center">
+                <Stack vertical tokens={{ childrenGap: 8 }} horizontalAlign='center'>
 
                     <TimerDisplay
                         progressBarValue={this.state.remainingPercentage}

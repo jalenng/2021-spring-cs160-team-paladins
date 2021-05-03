@@ -67,8 +67,8 @@ appSnapshotSystem.on('app-snapshot-taken', (snapshot) => blockerSystem.processAp
 // Block the timer when a blocker is detected
 blockerSystem.on('blocker-detected', () => timerSystem.block());
 
-// Clear the blockers when the timer starts
-timerSystem.on('timer-start', () => blockerSystem.clear());
+// Unblock the timer when all blockers are cleared
+blockerSystem.on('blockers-cleared', () => timerSystem.unblock());
 
 
 /**

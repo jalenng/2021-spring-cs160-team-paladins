@@ -220,7 +220,7 @@ window.showPopup = {
 }
 
 
-/* Timer and break system helper functions */
+/* Timer, break, and blocker system helper functions */
 window.timer = {
     toggle: () => { ipcRenderer.invoke('timer-toggle') },
     end: () => { ipcRenderer.invoke('timer-end') },
@@ -234,6 +234,9 @@ window.breakSys = {
     eventSystem: new EventSystem()
 }
 
+window.blockerSys = {
+    clear: () => { ipcRenderer.invoke('clear-blockers') }
+}
 
 /* Other functions */
 

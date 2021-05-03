@@ -162,8 +162,7 @@ global.breakSystem = new BreakSystem();
 
 
 /**
- * Break-related IPC event handlers 
- * These event handlers retrieve and update the break system on behalf of the renderer.
+ * IPC event handlers
  */
 // Get break status
 ipcMain.on('get-break-status', (event) => {

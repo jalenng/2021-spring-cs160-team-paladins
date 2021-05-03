@@ -1,4 +1,4 @@
-const { powerMonitor } = require('electron');
+const { powerMonitor, ipcMain } = require('electron');
 
 function BlockerSystem() {
 
@@ -21,7 +21,7 @@ function BlockerSystem() {
      * Adds a blocker to the list of blockers
      * @param {Object} blocker 
      */
-    this.addBlocker = function (blocker) {
+    this.add = function (blocker) {
         this.blockers.push(blocker);
 
         // Call blocker-detected listeners
@@ -34,6 +34,10 @@ function BlockerSystem() {
      */
     this.clear = function () {
         this.blockers = [];
+
+        // Call blockers-cleared listeners
+        const fireCallbacks = (callback) => callback();
+        this._events['blockers-cleared'].forEach(fireCallbacks);
     }
 
     /**
@@ -47,7 +51,7 @@ function BlockerSystem() {
             const processPath = process.path;
 
             if (appBlockers.indexOf(processPath) != -1) {
-                this.addBlocker({
+                this.add({
                     type: 'App',
                     message: process.name
                 })
@@ -63,8 +67,12 @@ global.blockerSystem = new BlockerSystem();
 // Block if switched to battery power
 powerMonitor.on('on-battery', () => {
     if (global.store.get('preferences.blockers.blockOnBattery')) 
-        blockerSystem.addBlocker({
+        blockerSystem.add({
             type: 'Other',
             message: 'Your computer is running on battery power.'
         });
 });
+
+ipcMain.handle('clear-blockers', () => {
+    global.blockerSystem.clear();
+})

@@ -12,7 +12,7 @@ import EditAccountScreen from './account/EditAccountScreen';
 import FullscreenNotification from './notifications/FullscreenNotification';
 import PopupNotification from './notifications/PopupNotification';
 
-import Timer from './Timer';
+import Timer from './timer/Timer';
 
 import ErrorBoundary from './ErrorBoundary';
 

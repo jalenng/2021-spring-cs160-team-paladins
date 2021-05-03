@@ -1,20 +1,27 @@
+
+
 # iCare User Guide
+<img src="../frontend/trayAssets/icon.png" alt="iCare icon" width=" 150"/>
+
 ### by Team Paladins
 
-![iCare icon](../frontend/trayAssets/icon.png)
+
+
 
 **Table of Contents** 
 TODO
 
 # 1 Introduction
-![Person asleep at their computer](screenshots/monitor_smash.png)
+<img src="screenshots/monitor_smash.png" alt="iCare icon"/>
 
 ## 1.1 Why iCare?
 
 Many of us spend plenty of time staring at the computer screen every day. This can put a lot of strain on our eyes and cause eye fatigue. iCare is a desktop app that uses the 20-20-20 rule to motivate users to develop good habits to avoid eye strain without being too intrusive to their schedule. iCare would suggest users to take a 20-second break every 20 minutes and look at something at least 20 feet away.
 
+<span style="color:#d86c70">
 Disclaimer:
 Please note that iCare is not intended to be a substitute for professional medical advice. Always seek the advice of your physician or qualified health provider with any questions you may have.
+</span>
 
 ## 1.2 The 20-20-20 rule
 
@@ -28,16 +35,18 @@ Of course, most people do not keep track of the time and get absorbed in reading
 
 
 # 2 Installation
-
 Installation is simple and takes just a few minutes.
-
 ## 2.1 Windows
+
+<img src="screenshots/windows.png" alt="Windows logo" width="100"/>
 
 1. Open your browser and navigate to &lt;TODO: insert site link>. 
 2. Click the green **_Download iCare for Windows_** button.
 3. Once the download is complete, open **iCareSetup.exe** to finish installation
 
 ## 2.2 macOS
+
+<img src="screenshots/macOS.png" alt="Mac logo" width="100"/>
 
 
 1. Open your browser and navigate to icare.github.io/setup. 

@@ -37,6 +37,21 @@ function BlockerSystem() {
     }
 
     /**
+     * Removes a blocker to the list of blockers by type and key
+     * @param {string} type 
+     * @param {string} key 
+     */
+    this.remove = function (type, key) {
+        const filterFunction = blocker => {
+            return !(blocker.key === key && blocker.type === type);
+        };
+        
+        this.blockers = this.blockers.filter(filterFunction);
+        this.dismissedBlockers = this.dismissedBlockers.filter(filterFunction);
+        console.log(this.blockers)
+    }
+
+    /**
      * Clears the list of blockers
      */
     this.clear = function () {
@@ -59,8 +74,9 @@ function BlockerSystem() {
      */
     this.removeClosedBlockedApps = function(openProcesses) {
         const filterFunction = blocker => {
-            const foundProcess = openProcesses.find(process => process.path === blocker.key)
-            return (foundProcess != undefined)
+            if (blocker.type !== 'app') return true;
+            const foundProcess = openProcesses.find(process => process.path === blocker.key);
+            return (foundProcess != undefined);
         }
 
         // Filter out the processes that are not open
@@ -88,7 +104,7 @@ function BlockerSystem() {
             if (blockedApps.indexOf(processPath) != -1) {
                 // Add it to the list of app blockers
                 this.add({
-                    type: 'App',
+                    type: 'app',
                     key: processPath,
                     message: appNamesDict[processPath]
                 })
@@ -131,10 +147,16 @@ global.blockerSystem = new BlockerSystem();
 powerMonitor.on('on-battery', () => {
     if (global.store.get('preferences.blockers.blockOnBattery')) 
         blockerSystem.add({
-            type: 'Other',
+            type: 'other',
             key: 'batteryPower',
             message: 'Your computer is running on battery power.'
         });
+});
+
+// Unblock if switched to AC power
+powerMonitor.on('on-ac', () => {
+    if (global.store.get('preferences.blockers.blockOnBattery')) 
+        blockerSystem.remove('other', 'batteryPower');
 });
 
 

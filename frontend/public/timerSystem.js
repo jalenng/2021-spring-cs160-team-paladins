@@ -110,7 +110,7 @@ const TimerSystem = function () {
         switch (this.getState()) {
             case states.RUNNING:
                 if (this.savedTime === 0) this.reset();
-                this.setup();
+                else this.setup();
 
                 break;
 
@@ -148,7 +148,7 @@ const TimerSystem = function () {
         clearTimeout(this.timeout)
         this.timeout = setTimeout(this.end.bind(this), this.savedTime);
 
-        // Calculate the end date, 
+        // Calculate the end date
         this.endDate = new Date();
         let msLeft = this.endDate.getMilliseconds() + this.savedTime;
         this.endDate.setMilliseconds(msLeft);

@@ -44,12 +44,10 @@ export default class extends React.Component {
     }
 
     // Change spinner status
-    setSpinner(isLoading) {
-        let state = this.state;
-        state.isLoading = isLoading;
-        this.setState(state);
+    setSpinner(val) {
+        this.setState({...this.state, isLoading: val});
     }
-
+    
     handleSubmit(event) {
         event.preventDefault();
         this.setSpinner(true);

@@ -18,10 +18,8 @@ TODO
 
 Many of us spend plenty of time staring at the computer screen every day. This can put a lot of strain on our eyes and cause eye fatigue. iCare is a desktop app that uses the 20-20-20 rule to motivate users to develop good habits to avoid eye strain without being too intrusive to their schedule. iCare would suggest users to take a 20-second break every 20 minutes and look at something at least 20 feet away.
 
-<span style="color:#d86c70">
-Disclaimer:
+<span style="color:#d86c70">Disclaimer : </span>
 Please note that iCare is not intended to be a substitute for professional medical advice. Always seek the advice of your physician or qualified health provider with any questions you may have.
-</span>
 
 ## 1.2 The 20-20-20 rule
 
@@ -130,9 +128,18 @@ _▲The various tabs of the application (for a user account)_
   </tr>
 </table>
 
+## 3.2 Exiting iCare
+
+The iCare window can be hidden by clicking on the application close button. When the application is hidden, it is running and performing its tasks in the background.
+
+To exit iCare, right-click on the iCare icon on the system tray. In the context menu, click “**Quit**”. Once the app quits, it will not be running anymore.
+
+_▲The iCare icon and its context menu in the Windows system tray_
 
 # 4 Timer
 ## 4.1 Overview of the timer interface
+
+<img src="screenshots/timer_overview.png" alt="Timer Button"/>
 
 _▲The timer on the Home screen_
 
@@ -144,10 +151,10 @@ At the end of your timer, a break notification will appear and have you take a 2
 This feature is default by nature and cannot be disabled. If you want your timer to stop, you must press the pause button underneath the timer. Just keep in mind that this will reset the timer back to its default notification interval.
 
 
-**Timer Interface Overview**
+**Timer Overview**
 <table>
   <tr>
-   <td><strong>Image</strong>
+   <td><strong></strong>
    </td>
    <td><strong>Name</strong>
    </td>
@@ -197,25 +204,22 @@ Opens the timer in a new window.
 </table>
 
 ## 4.2 How breaks work
-In iCare, a break occurs when the timer finishes, which results in a pop-up notification that indicates the start of the 20 second break. 
-
-While the initial pop-up notification is small, five seconds into the break, the pop-up notification will turn into a full-screen overlay that takes over your screen. During the time the notification or overlay is present, the break timer will reset when it senses any mouse movement.
-
-Note: Notification sound playback is currently unsupported on Linux.
-
-
 ![Break notification](screenshots/break_notif.png)
 
 _▲The popup notification_
-
 
 ![Fullscreen break notification](screenshots/fullscreen_break_notif.png)
 
 _▲The fullsreen notification_
 
+In iCare, a break occurs when the timer finishes, which results in a pop-up notification that indicates the start of the 20 second break. 
+
+While the initial pop-up notification is small, five seconds into the break, the pop-up notification will turn into a full-screen overlay that takes over your screen. During the time the notification or overlay is present, the break timer will reset when it senses any mouse movement.
+
+<span style="color:#ADD8E6">Note</span>
+: Notification sound playback is currently unsupported on Linux.
+
 # 5 iCare Account
-
-
 ## 5.1 Why make an account?
 
 To be able to use all of iCare’s extensive features, you must register and create an account. This will allow you to keep track of your data and app usage (if desired) and generate insights based on those statistics. 
@@ -223,22 +227,22 @@ To be able to use all of iCare’s extensive features, you must register and cre
 Additionally, creating an account will allow you to customize your experience that will be stored in iCare servers to use for any device with the iCare application installed that you log into.
 
 
-
 ## 5.2 How to sign-up
-![Sign up screen](screenshots/sign_up.png)
+<img src="screenshots/sign_up.png" alt="Sign up Screen" width="300"/>
 
 _▲The sign-up screen_
 
-1. Click Sign in at the top right corner. The Sign in window should appear.
+1. Click Sign in at the top right corner. The Sign-in pop-up window should appear.
 2. Click ‘Don’t have an account?’ to go to the sign-up page.
 3. Complete all fields.
 4. Provide your name, email address, and create a password for your iCare account.
     1. Your password must contain at least 8 characters.
+    2. Your email address must follow the email format.
 5. Click Sign up.
 
 
 ## 5.2 How to sign-in
-![Sign in page](screenshots/sign_in.png)
+<img src="screenshots/sign_in.png" alt="Sign in Screen" width="300"/>
 
 _▲The sign-in screen_
 
@@ -272,7 +276,7 @@ _▲ App usage on the Usage Statistics screen_
 
 If you do not want iCare to collect your application data, you can turn this feature off in **Preferences**. Furthermore, when you delete your account the application data associated with your account will automatically be deleted from our server.
 
-Note: App usage collection is currently unsupported on macOS and Linux.
+<span style="color:#ADD8E6">Note</span>: App usage collection is currently unsupported on macOS and Linux.
 
 
 # 7 Insights
@@ -299,7 +303,7 @@ If you do  not have any data or app usage statistics over the past 7 days, then 
 
 
 ## 8.1 Overview of preferences
-![Preferences sidebar](screenshots/pref_sidebar.png)
+<img src="screenshots/pref_sidebar.png" alt="Preferences sidebar" width="200"/>
 
 _▲The sidebar in the Preferences screen_
 
@@ -309,16 +313,21 @@ By default, you start at the ‘Your Account’ screen in the Preferences tab.
 
 If you are a guest, then there is nothing that shows on this page other than informing you of your guest status on the application.
 
+
+<img src="screenshots/guest_account.png" alt="Guest Account Preferences Page"/>
+
 _▲The ‘Your account’ screen as a guest
 
 If you are a signed-in user, then the ‘Your Account’ screen will display your display name and your email. It will also allow you to edit your account information, sign out, or delete your account.
+
+<img src="screenshots/user_account.png" alt="Logged in Account Preferences Page"/>
 
 _▲The ‘Your account’ screen with a signed-in user_
 
 **‘Your Accounts’ Icon Overview**
 <table>
   <tr>
-   <td><strong>Image</strong>
+   <td><strong></strong>
    </td>
    <td><strong>Name</strong>
    </td>
@@ -347,6 +356,9 @@ _▲The ‘Your account’ screen with a signed-in user_
    <td><strong>More</strong>
    </td>
    <td>Opens a pop-up window that allows you to delete your account given the correct password.
+   <div>
+      <img src="screenshots/del_account.png" alt="Delete account screen" width="250">
+   </div>   
    </td>
   </tr>
 </table>
@@ -356,9 +368,13 @@ _▲The ‘Your account’ screen with a signed-in user_
 
 The Notification screen is where you can customize your notification settings. This includes the notification interval of the timer, the option to enable sound notifications, and choosing a sound to play during the notification.
 
-![Notifications tab in User Preferences](screenshots/pref_notif_tab.png)
+<div>
+   <img src=screenshots/pref_notif_tab.png alt="Notifications tab in User Preferences" width="450">
+</div>
+
 _▲The ‘Notification’ screen_
 
+**Notifications overview**
 
 <table>
   <tr>
@@ -376,7 +392,9 @@ _▲The ‘Notification’ screen_
    </td>
    <td>
    
-![Notification slider](screenshots/notif_slider.png)
+<div>
+   <img src=screenshots/notif_slider.png alt="Notifications tab in User Preferences" width="350">
+</div>
 <p>
 Changes the time duration between each break. 
 <p>
@@ -405,7 +423,34 @@ Valid values are multiples of 5 minutes between 5 and 60 minutes.
 
 
 
-<img src="images/image26.png" width="" alt="alt_text" title="image_tooltip">
+<div>
+   <img src=screenshots/default_sound.png alt="Long Expected (default) sound selected" width="200">
+</div>
+
+<table>
+  <tr>
+   <td>
+   </td>
+   <td><strong>Preview</strong>
+   </td>
+   <td>Plays the currently selected sound.
+   </td>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td><strong>Import</strong>
+   </td>
+   <td>Import a sound from your local file system.
+   </td>
+   <td>
+   </td>
+  </tr>
+</table>
+
+
 
 <p>
 <em>Default: Long expected</em>
@@ -417,12 +462,65 @@ Valid values are multiples of 5 minutes between 5 and 60 minutes.
 
 ## 8.4 Startup 
 
-The Notification screen is where you can customize your notification settings. This includes the notification interval of the timer, the option to enable sound notifications, and choosing a sound to play during the notification.
+The Startup screen is where you can customize what happens when you start up the iCare application. You can set it so that the iCare application will start when you log into your computer and set it so that the timer will automatically start when iCare runs.
+
+By default, both of these options are enabled.
+
+<div>
+   <img src=screenshots/startup_tab.png alt="Startup tab with default options" width="400">
+</div>
+
 
 _▲The ‘Startup’ screen_
 
+**Startup overview**
+
+
+<table>
+  <tr>
+   <td><strong>Option</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Start app on login</strong>
+   </td>
+   <td><strong>Toggle</strong>
+   </td>
+   <td>Chooses whether to start the app automatically after logging into your device.
+<p>
+<em>Default: On</em>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Start timer on app startup</strong>
+   </td>
+   <td><strong>Toggle</strong>
+   </td>
+   <td>Chooses whether to start the timer automatically after starting the app.
+<p>
+<em>Default: On</em>
+   </td>
+  </tr>
+</table>
+
 ## 8.5 Data usage
 
+The ‘Data usage’ screen is where you can enable or disable data and/or app usage statistics. If they are disabled, then the iCare application will not collect data on your PC to send back to the server and you will be unable to generate usage statistics and custom insight cards if there is no data on the server to use.
+
+By default, both of these options are enabled.
+
+
+<div>
+   <img src=screenshots/usage_tab.png alt="Usage tab with default options" width="500">
+</div>
+
+_▲The ‘Data usage’ screen_
+
+**Data Usage overview**
 
 <table>
   <tr>
@@ -456,60 +554,67 @@ _▲The ‘Startup’ screen_
 </table>
 
 
-## 8.5 Sync
+## 8.6 Sync
 
-**NOTE: **These options are available only if you have signed into iCare.
+The ‘Sync’ screen is where you can upload or download your preferences settings from the server. This is used to sync local user preferences with the user preferences saved in the server relating to your account.
 
+<div>
+   <img src=screenshots/usage_tab.png alt="Usage tab with default options" width="500">
+</div>
 
+_▲The ‘Sync ‘ screen_
+
+<span style="color:#ADD8E6">Note</span> : These options are available only if you have signed into iCare.
+
+**Sync overview**
 <table>
-  <tr>
-   <td><strong>Option</strong>
+ <tr>
+   <td>Option
+
    </td>
-   <td><strong>Type</strong>
+   <td>Type
+
    </td>
-   <td><strong>Description</strong>
+   <td>Description
+
    </td>
   </tr>
   <tr>
-   <td><strong>Upload preference</strong>
+   <td>Upload
+
    </td>
-   <td><strong>Button</strong>
+   <td>Button
+
    </td>
    <td>Save and sync current preferences.
-<p>
+
 The following preferences are synced.
-<ul>
 
-<li>Notifications
 
-<li>Startup
 
-<li>Data usage
-</li>
-</ul>
+*   Notifications
+*   Startup
+*   Data usage
    </td>
   </tr>
   <tr>
-   <td><strong>Download preference</strong>
+   <td>
+   Download
+
    </td>
-   <td><strong>Button</strong>
+   <td>Button
+
    </td>
-   <td>Download previous syncing preferences
-<p>
+   <td>Download previous syncing preferences.
+
 The following preferences are synced.
-<ul>
 
-<li>Notifications
 
-<li>Startup
 
-<li>Data usage
-</li>
-</ul>
+*   Notifications
+*   Startup
+*   Data usage
    </td>
   </tr>
+
 </table>
-
-
-
-

@@ -2,7 +2,7 @@ const { ipcMain } = require('electron');
 const psShell = require('node-powershell');
 const isWindows = process.platform == 'win32';
 
-const APP_SNAPSHOT_INTERVAL = 10000;
+const APP_SNAPSHOT_INTERVAL = 5000;
 const POWERSHELL_GET_PROCESS_COMMAND =
     `Get-Process | Where-Object {$_.mainWindowTitle} | Select-Object Name, mainWindowtitle, Description, Path | ConvertTo-Json | % {$_ -replace("\\u200B")} | % {$_ -replace("\\u200E")}`;
 

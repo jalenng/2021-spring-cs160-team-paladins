@@ -92,7 +92,7 @@ module.exports = function() {
         window.loadURL(
             isDev
             ? 'http://localhost:3000#/fullscreenNotification'
-            : `file://${path.join(__dirname, '../build/index.html#fullscreenNotification')}`
+            : `file://${path.join(__dirname, '../../build/index.html#fullscreenNotification')}`
         ); 
 
         // Configure bounds and visibility
@@ -128,7 +128,7 @@ module.exports = function() {
         window.loadURL(
             isDev
             ? 'http://localhost:3000#/popupNotification'
-            : `file://${path.join(__dirname, '../build/index.html#popupNotification')}`
+            : `file://${path.join(__dirname, '../../build/index.html#popupNotification')}`
         ); 
 
         // Configure bounds and visibility

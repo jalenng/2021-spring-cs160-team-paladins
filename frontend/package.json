@@ -1,5 +1,5 @@
 {
-  "name": "icare_client",
+  "name": "icare",
   "productName": "iCare",
   "description": "iCare",
   "author": "Team Paladins",
@@ -23,7 +23,13 @@
     "asarUnpack": [
       "sounds/**/*",
       "trayAssets/**/*"
-    ]
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "deb"
+    }
   },
   "dependencies": {
     "@fluentui/react": "^8.8.0",

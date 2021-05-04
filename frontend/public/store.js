@@ -158,7 +158,7 @@ ipcMain.handle('set-prefs', (event, key, value) => {
 
 // Fetch user preferences from the backend
 // GET - /prefs
-ipcMain.handle('fetch-prefs', async (event) => {
+ipcMain.handle('fetch-prefs', async () => {
     const successCallback = (res) => {
         store.set('preferences.notifications', res.data.notifications);
         store.set('preferences.dataUsage', res.data.dataUsage);
@@ -305,24 +305,22 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
 
 // Fetch data usage from the backend
 // GET - /data
-ipcMain.handle('fetch-data-usage', async (event) => {
+ipcMain.handle('fetch-data-usage', async () => {
     const successCallback = (res) => store.set('dataUsage.fetched', res.data.cards);
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
 })
 
 // Update data usage on the backend
 // PUT - /data
-ipcMain.handle('push-data-usage', async (event) => {
+ipcMain.handle('push-data-usage', async () => {
     const data = store.get('dataUsage.unsynced');
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
 // Fetch insights from the backend
 // GET - /data/insights
-ipcMain.handle('fetch-insights', async (event) => {
-    const successCallback = (res) => {
-        store.set('insights.cards', res.data.cards);
-    }
+ipcMain.handle('fetch-insights', async () => {
+    const successCallback = (res) => store.set('insights.cards', res.data.cards);
     return await returnAxiosResult('get', 'data/insights', {}, [200], successCallback);
 })
 

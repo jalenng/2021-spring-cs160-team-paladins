@@ -266,8 +266,8 @@ const { route } = require('./index.js');
       else { email = await userDB.getEmail(ct); }
 
       //------------------------
-      // Update Data Usage
-      let dataUsageObjects = req.body.dataUsage;
+      // Update Timer Usage
+      let dataUsageObjects = req.body.timerUsage;
       let duSuccess = false;
 
       for (const duObject of dataUsageObjects) {

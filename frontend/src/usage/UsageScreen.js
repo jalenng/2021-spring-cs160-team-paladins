@@ -3,10 +3,10 @@ import React from 'react';
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 
 import UsageSidebar from './UsageSidebar';
-import AppUsage from './AppUsage';
-import DailyUsage from './DailyUsage'
-import WeeklyUsage from './WeeklyUsage';
-import TotalUsage from './TotalUsage';
+import DailyAppUsage from './DailyAppUsage';
+import WeeklyAppUsage from './WeeklyAppUsage';
+import DailyTimerUsage from './DailyTimerUsage'
+import WeeklyTimerUsage from './WeeklyTimerUsage';
 
 
 const divStyle = {
@@ -16,10 +16,10 @@ const divStyle = {
 };
 
 const usagePages = {
-  app_usage: <AppUsage/>,
-  daily_usage: <DailyUsage/>,
-  weekly_usage: <WeeklyUsage/>,
-  total_usage: <TotalUsage/>,
+  daily_app_usage: <DailyAppUsage/>,
+  weekly_app_usage: <WeeklyAppUsage/>,
+  daily_timer_usage: <DailyTimerUsage/>,
+  weekly_timer_usage: <WeeklyTimerUsage/>,
 }
 
 export default class UsageScreen extends React.Component {

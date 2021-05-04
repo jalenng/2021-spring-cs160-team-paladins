@@ -8,6 +8,9 @@ import { FontIcon } from "@fluentui/react/lib/Icon";
 import { mergeStyles } from "@fluentui/react/lib/Styling";
 import { getTheme } from "@fluentui/react";
 
+import { MessageBarType } from '@fluentui/react/lib/MessageBar';
+
+
 import Circle from "react-circle";
 
 const buttonStyle = { borderRadius: "20px", width: "40px", height: "40px" };
@@ -27,6 +30,17 @@ export default class Timer extends React.Component {
     }
 
     componentDidMount() {
+        store.dataUsage.fetch()
+        .then(result => {
+            if (!result.success) {
+                store.messages.add({
+                    type: MessageBarType.error,
+                    contents: `Failed to retrieve data usage: ${result.data.message}`
+                });
+            } 
+        });
+
+
         timer.eventSystem.on("update", (event, timerStatus) => {
             let remainingMinutes = Math.floor(timerStatus.remainingTime / 60000).toString();
             let remainingSeconds = Math.floor((timerStatus.remainingTime % 60000) / 1000);

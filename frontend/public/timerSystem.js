@@ -21,6 +21,8 @@ const TimerSystem = function(){
     this.remainingTime = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
 
     // Initialize unsynced timer usage tracking
+    let timerCount = global.store.get('dataUsage.unsynced.timerUsage.timerCount');
+    console.log(timerCount);
     global.store.set('dataUsage.unsynced.timerUsage.timerCount', 0);
 
     /**
@@ -45,6 +47,8 @@ const TimerSystem = function(){
             let elapsedTime = (this.totalDuration - this.remainingTime) / 1000;
             global.store.set('dataUsage.unsynced.timerUsage.screenTime', elapsedTime);
         }
+
+        console.log(global.store.get('dataUsage'));
 
         return {
             state: this.state,
@@ -104,6 +108,7 @@ const TimerSystem = function(){
      * Pauses the timer. Saves the remaining time.
      */
     this.pause = function() {
+
         let usage = global.store.get('dataUsage');
         console.log(usage);
 
@@ -174,6 +179,7 @@ ipcMain.handle('timer-end', () => {
     let dataUsagePath = 'dataUsage.unsynced.timerUsage.timerCount'
     global.store.set(dataUsagePath, global.store.get(dataUsagePath)+1);
     console.log('number of Breaks : ' + global.store.get(dataUsagePath));
+
     // Ends the timer
     global.timerSystem.end();
 })

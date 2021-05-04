@@ -68,7 +68,7 @@ const dataUsageDefaults = {
         timerUsage: {
             screenTime: 0,
             timerCount: 0,
-            usageDate: null,
+            usageDate: new Date(),
         }
     },
     fetched: {
@@ -76,7 +76,7 @@ const dataUsageDefaults = {
         timerUsage: {
             screenTime: 0,
             timerCount: 0,
-            usageDate: null,
+            usageDate: new Date(),
         }
     }
 }
@@ -146,9 +146,9 @@ store.onDidChange('insights', () => {
 store.onDidChange('messages', () => {
     global.mainWindow.webContents.send('store-changed', 'messages');
 });
-// store.onDidChange('dataUsage', () => {
-//     global.mainWindow.webContents.send('store-changed', 'dataUsage');
-// });
+store.onDidChange('dataUsage', () => {
+    global.mainWindow.webContents.send('store-changed', 'dataUsage');
+});
 
 /*---------------------------------------------------------------------------*/
 
@@ -313,17 +313,17 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
 
 // // Fetch data usage from the backend
 // // GET - /data
-// ipcMain.handle('fetch-data-usage', async (event) => {
-//     const successCallback = (res) => store.set('dataUsage.fetched', res.data.cards);
-//     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
-// })
+ipcMain.handle('fetch-data-usage', async (event) => {
+    const successCallback = (res) => store.set('dataUsage.fetched', res.data);
+    return await returnAxiosResult('get', 'data', {}, [200], successCallback);
+})
 
-// // Update data usage on the backend
-// // PUT - /data
-// ipcMain.handle('push-data-usage', async (event) => {
-//     const data = store.get('dataUsage.unsynced');
-//     return await returnAxiosResult('put', 'data', data, [200]);
-// })
+// Update data usage on the backend
+// PUT - /data
+ipcMain.handle('push-data-usage', async (event) => {
+    const data = store.get('dataUsage.unsynced');
+    return await returnAxiosResult('put', 'data', data, [200]);
+})
 
 // Fetch insights from the backend
 // GET - /data/insights

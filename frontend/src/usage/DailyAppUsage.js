@@ -1,9 +1,9 @@
 import React from "react";
-import { Pie, defaults } from "react-chartjs-2";
+import { Pie, defaults} from "react-chartjs-2";
 
 defaults.global.tooltips.enabled = true;
 
-export default class AppUsage extends React.Component {
+export default class DailyAppUsage extends React.Component {
   render() {
     return (
       <div>
@@ -45,7 +45,7 @@ export default class AppUsage extends React.Component {
           options={{
             title: {
               display: true,
-              text: "Total Hourly App Usage",
+              text: "Daily App Usage",
               fontColor: "#FFFFFF",
               fontSize: 15,
               padding: 10,

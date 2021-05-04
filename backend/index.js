@@ -268,8 +268,12 @@ const newman = require('newman');
 
       //------------------------
       // Update Data Usage
-      let dataUsageObjects = req.body.dataUsage;
+      let dataUsage = req.body.dataUsage;
       let duSuccess = false;
+      
+      // testing purposes
+      console.log(dataUsage);
+      console.log(dataUsage.timerUsage);
 
       for (const duObject of dataUsageObjects) {
         let row = JSON.parse(JSON.stringify(duObject));

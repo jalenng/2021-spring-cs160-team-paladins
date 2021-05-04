@@ -8,7 +8,7 @@ const preferencesStoreDefaults = {
     notifications: {
         enableSound: true,
         interval: 20,
-        sound: '../sounds/Long Expected.mp3'
+        sound: '../../sounds/Long Expected.mp3'
     },
     dataUsage: {
         trackAppUsageStats: true,
@@ -27,31 +27,31 @@ const preferencesStoreDefaults = {
 const soundsStoreDefaults = {
     defaultSounds: [
         {
-            key: '../sounds/Clearly.mp3',
+            key: '../../sounds/Clearly.mp3',
             text: 'Clearly'
         },
         {
-            key: '../sounds/Done For You.mp3',
+            key: '../../sounds/Done For You.mp3',
             text: 'Done For You'
         },
         {
-            key: '../sounds/Insight.mp3',
+            key: '../../sounds/Insight.mp3',
             text: 'Insight'
         },
         {
-            key: '../sounds/Juntos.mp3',
+            key: '../../sounds/Juntos.mp3',
             text: 'Juntos'
         },
         {
-            key: '../sounds/Long Expected.mp3',
+            key: '../../sounds/Long Expected.mp3',
             text: 'Long Expected'
         },
         {
-            key: '../sounds/Pristine.mp3',
+            key: '../../sounds/Pristine.mp3',
             text: 'Pristine'
         },
         {
-            key: '../sounds/When.mp3',
+            key: '../../sounds/When.mp3',
             text: 'When'
         },
     ],

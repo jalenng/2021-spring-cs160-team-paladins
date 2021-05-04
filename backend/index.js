@@ -19,7 +19,7 @@ const newman = require('newman');
  
     // Database Connection
     let db = require('./db.js');
-    let userDB = new db("localhost", "newuser", "", "iCare");
+    let userDB = new db("localhost", "newuser", "password", "iCare");
 
     // API Methods
     let apiM = require('./api_methods.js');
@@ -304,7 +304,7 @@ const newman = require('newman');
       else { email = await userDB.getEmail(ct); }
 
       // Get Insights
-      let insight = await api_methods.generateInsights();
+      let insight = await api_methods.generateInsights(email);
 
       // Response Codes
       if (insight != false) { 
@@ -337,7 +337,4 @@ newman.run(
     console.log('iCare Collection Run Complete!');
   }
 );
-
-
-
 

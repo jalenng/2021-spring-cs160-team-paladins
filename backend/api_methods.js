@@ -5,7 +5,7 @@ cryptr = new Cryptr('myTotalySecretKey');
 
 // Database Connection
 let db = require('./db.js');
-let userDB = new db("localhost", "newuser", "", "iCare");
+let userDB = new db("localhost", "newuser", "password", "iCare");
 
 // Token Methods
 let tokenClass = require('./token.js')
@@ -108,53 +108,16 @@ class api_methods {
    }
 
    /**
-    * Gets statistical values from data usage records
-    * @param {JSON} data records 
-    * @returns [aveST, minST, maxSt, aveTC, minTC, maxTC]
-    */
-   async getStatistics(data) {
-       // Screen Time, Timer Count - Min, Max, Average
-       let notZero = false;
-       let minSC = 0; let maxSC = 0; let aveSC = 0;
-       let minTC = 0; let maxTC = 0; let aveTC = 0;
-
-       // Get Values
-       let i = 0; let count = data.length;
-       for (i = 0; i < count; i++) {
-
-           // Get one row data
-           let row = JSON.parse(JSON.stringify(data[i]));
-           let rST = row.screenTime; let rTC = row.timerCount;
-
-           // Screen Time: Min/Max
-           if (minSC > rST) { minSC = rST; }
-           if (maxSC < rST) { maxSC = rST; }
-
-           // Timer Count: Min/Max
-           if (minTC > rTC) { minTC = rTC; }
-           if (maxTC < rTC) { maxTC = rTC; }
-
-           // Totals to calculate averages
-           aveSC += rST;  aveTC += rTC;
-           notZero = true;
-       }
-
-       // Averages
-       if (notZero == true) {
-           aveSC /= count; aveTC /= count;
-       }
-       
-       return [aveSC, minSC, maxSC, aveTC, minTC, maxTC];
-   }
-
-   /**
     * Generate dynamic insights for user based on data/app usage statistics
+    * @param {String} email 
     * @returns list of JSON objects
     */
-   async generateInsights() {
-       let insights = this.genericInsights();
+   async generateInsights(email) {
+       let insights = await this.genericInsights();
 
-       // Generate Dynamic insights here!
+       // Generate Dynamic Insights
+       let usageInsights = await this.usageInsights(email);
+       insights.concat(usageInsights);
 
        return insights;
    }
@@ -172,26 +135,65 @@ class api_methods {
             { header: "Bluelight Filter", content: "Consider using a blue light filter to protect your eyes" },
             { header: "Dark Mode", content: "Consider using a dark mode to protect your eyes" },
             { header: "Pomodoro technique", content: "Have you ever considered trying the Pomodoro technique" },
-
         ];
 
         return genericInsights;
-
-
    }
-
 
    /**
-    * Gets the integer value of a string from data/app usage for test comparison
-    * @param {String} string 
-    * @returns integer
+    * Generates dynamic usage insights based on 
+    * @param {String} email 
+    * @returns list of JSON objects
     */
-   async getIntValue(string) {
-       let remove1 = string.replace(':', '')
-       let remove2 = remove1.replace(',', '')
-       return parseInt(remove2)
+   async usageInsights(email) {
+       
+       let dataUsage = await userDB.getDataUsage(email, "WEEK");
+       let dataAggregate = await this.getDataAggregation(dataUsage);
+       let data = JSON.parse(JSON.stringify(dataAggregate));
+
+       let usageInsights = [
+           { header: "Average Screen Time", content: "Your average screen time in the last 7 days is " + data.aveSC + " minutes." },
+           { header: "Average Breaks Taken", content: "The average amount of breaks you have taken in the last 7 days is " + data.aveTC + " breaks." }
+       ]
+
+        return usageInsights
    }
 
+   /**
+    * Gets statistical values from data usage records
+    * @param {JSON} data records 
+    * @returns [aveST, minST, maxSt, aveTC, minTC, maxTC]
+    */
+    async getDataAggregation(data) {
+        // Screen Time, Timer Count - Min, Max, Average
+        let notZero = false;
+        let minSC = 0; let maxSC = 0; let aveSC = 0;
+        let minTC = 0; let maxTC = 0; let aveTC = 0;
+ 
+        // Get Values
+        let i = 0; let count = data.length;
+        for (i = 0; i < count; i++) {
+ 
+            // Get one row data
+            let row = JSON.parse(JSON.stringify(data[i]));
+            let rST = row.screenTime; let rTC = row.timerCount;
+ 
+            // Screen Time / Timer Count: Min/Max
+            if (minSC > rST) { minSC = rST; } if (maxSC < rST) { maxSC = rST; }
+            if (minTC > rTC) { minTC = rTC; } if (maxTC < rTC) { maxTC = rTC; }
+ 
+            // Totals to calculate averages
+            aveSC += rST;  aveTC += rTC;
+            notZero = true;
+        }
+ 
+        // Averages
+        if (notZero == true) {
+            aveSC /= count; aveTC /= count;
+        }
+
+        return { minSC: minSC, maxSC: maxSC, aveSC: aveSC, minTC: minTC, maxTC: maxTC, aveTC: aveTC }
+    }
 
 }
 

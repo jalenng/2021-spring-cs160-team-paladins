@@ -5,7 +5,7 @@ cryptr = new Cryptr('myTotalySecretKey');
 
 // Database Connection
 let db = require('./db.js');
-let userDB = new db("localhost", "newuser", "password", "iCare");
+let userDB = new db("localhost", "newuser", "", "iCare");
 
 // Token Methods
 let tokenClass = require('./token.js')

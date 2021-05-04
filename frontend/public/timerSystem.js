@@ -20,6 +20,7 @@ const TimerSystem = function(){
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
     this.remainingTime = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
 
+
     /**
      * Registers an event listener
      */
@@ -39,6 +40,8 @@ const TimerSystem = function(){
 
         if (this.state === states.RUNNING) {
             this.remainingTime = this.endDate - new Date();
+            let elapsedTime = (this.totalDuration - this.remainingTime) / 1000;
+            global.store.set('dataUsage.unsynced.timerUsage.screenTime', elapsedTime);
         }
 
         return {
@@ -99,6 +102,9 @@ const TimerSystem = function(){
      * Pauses the timer. Saves the remaining time.
      */
     this.pause = function() {
+        let usage = global.store.get('dataUsage');
+        console.log(usage);
+
         if (this.state === states.BLOCKED) return;
         if (this.state === states.PAUSED) return;
 

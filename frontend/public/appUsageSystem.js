@@ -6,7 +6,7 @@ const POWERSHELL_GET_PROCESS_COMMAND =
     `Get-Process | Where-Object {$_.mainWindowTitle} | Select-Object Name, mainWindowtitle, Description, Path | ConvertTo-Json | % {$_ -replace("\\u200B")} | % {$_ -replace("\\u200E")}`
 
 /**
- * Data usage system states
+ * app usage system states
  */
 const states = {
     RUNNING: 'running',
@@ -15,14 +15,14 @@ const states = {
 
 var interval;
 
-function dataUsageSystem() {
+function appUsageSystem() {
 
     this.state = states.STOPPED;
     this.ps = null;
 
     /**
      * Capture a snapshot of the list of open windows, 
-     * then update the data usage store accordingly.
+     * then update the app usage store accordingly.
      */
     this.captureAppSnapshot = async function () {
         let openProcesses = await this.getOpenProcesses();
@@ -54,7 +54,7 @@ function dataUsageSystem() {
             }            
         })
 
-        global.store.set('dataUsage.unsynced.appUsage', appUsage)
+        global.store.set('dataUsage.unsynced.appUsage', appUsage);
     }
 
     /**
@@ -97,7 +97,7 @@ function dataUsageSystem() {
     }
 
     /**
-     * Starts the data usage system.
+     * Starts the app usage system.
      */
     this.startSystem = function () {
         if (this.state = states.STOPPED) {
@@ -117,7 +117,7 @@ function dataUsageSystem() {
     }
 
     /**
-     * Stops the data usage system.
+     * Stops the app usage system.
      */
     this.stopSystem = function () {
         if (this.state = states.RUNNING)
@@ -127,19 +127,19 @@ function dataUsageSystem() {
 
 }
 
-// Instantiate the data usage system
-global.dataUsageSystem = new dataUsageSystem();
+// Instantiate the app usage system
+global.appUsageSystem = new appUsageSystem();
 
 
-// Start data usage system automatically based on user preference
-if (global.store.get('preferences.dataUsage.trackAppUsageStats'))
-    global.dataUsageSystem.startSystem();
+// Start app usage system automatically based on user preference
+if (global.store.get('preferences.appUsage.trackAppUsageStats'))
+    global.appUsageSystem.startSystem();
 
 
-// Update the status of the data usage system if the setting changes
-store.onDidChange('preferences.dataUsage.trackAppUsageStats', (newVal, oldVal) => {
+// Update the status of the app usage system if the setting changes
+store.onDidChange('preferences.appUsage.trackAppUsageStats', (newVal, oldVal) => {
     if (newVal)
-        global.dataUsageSystem.startSystem();
+        global.appUsageSystem.startSystem();
     else
-        global.dataUsageSystem.stopSystem();
+        global.appUsageSystem.stopSystem();
 });

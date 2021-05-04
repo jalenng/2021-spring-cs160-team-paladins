@@ -12,14 +12,9 @@ const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
-
+// Initialize the stores, systems, and popup window functions
 require('./store');
-require('./timerSystem');
-require('./breakSystem');
-require('./notificationSystem');
-require('./appSnapshotSystem');
-require('./dataUsageSystem');
-require('./blockerSystem');
+require('./initializeSystems');
 require('./popupWindows');
 
 const DEFAULT_WINDOW_SIZE = {
@@ -32,44 +27,9 @@ const MAX_WINDOW_SIZE = {
     height: 800,
 }
 
-
 global.mainWindow;
 
 let mainWindowState;
-
-
-/*---------------------------------------------------------------------------*/
-/* Configure event listeners and connect the various systems */
-
-// Start break when timer ends
-timerSystem.on('timer-end', () => breakSystem.start()); 
-
-// Create notification windows when timer ends
-timerSystem.on('timer-end', () => notificationSystem.createWindows());  
-
-// Minimize notification when the break time is set/reset
-breakSystem.on('break-times-set', () => notificationSystem.minimize()); 
-
-// Expand notification when the break time is past the intermediate point
-breakSystem.on('break-intermediate', () => notificationSystem.maximize());
-
-// Start timer when break ends
-breakSystem.on('break-end', () => timerSystem.start());
-
-// Close notification windows when break ends
-breakSystem.on('break-end', () => notificationSystem.closeWindows());
-
-// Process the list of open apps through the data usage system when a snapshot is taken
-appSnapshotSystem.on('app-snapshot-taken', (snapshot) => dataUsageSystem.processAppSnapshot(snapshot));
-
-// Process the list of open apps through the blocker system when a snapshot is taken
-appSnapshotSystem.on('app-snapshot-taken', (snapshot) => blockerSystem.processAppSnapshot(snapshot));
-
-// Block the timer when a blocker is detected
-blockerSystem.on('blocker-detected', () => timerSystem.block());
-
-// Unblock the timer when all blockers are cleared
-blockerSystem.on('blockers-cleared', () => timerSystem.unblock());
 
 
 /**

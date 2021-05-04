@@ -19,9 +19,11 @@ export default class DailyUsage extends React.Component {
     this.date = new Date();
     this.weekday = weekday[this.date.getDay()];
 
+    this.usage = store.dataUsage.getAll();
+
     // change to axios.get to get current values. 
-    this.hours = 5;
-    this.breaks = 10;
+    this.minutes = this.usage.unsynced.timerUsage.screenTime / 60;
+    this.breaks = this.usage.unsynced.timerUsage.timerCount;
   }
 
    // change to axios.put to update values.
@@ -40,8 +42,8 @@ export default class DailyUsage extends React.Component {
             ],
             datasets: [
               {
-                label: "Total usage (hours)",
-                data: [this.hours],
+                label: "Total usage (minutes)",
+                data: [this.minutes],
                 backgroundColor: [
                   "rgba(72, 121, 240, 1)",
                 ],

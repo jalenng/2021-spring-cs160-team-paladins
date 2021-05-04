@@ -146,9 +146,9 @@ store.onDidChange('insights', () => {
 store.onDidChange('messages', () => {
     global.mainWindow.webContents.send('store-changed', 'messages');
 });
-store.onDidChange('dataUsage', () => {
-    global.mainWindow.webContents.send('store-changed', 'dataUsage');
-});
+// store.onDidChange('dataUsage', () => {
+//     global.mainWindow.webContents.send('store-changed', 'dataUsage');
+// });
 
 /*---------------------------------------------------------------------------*/
 

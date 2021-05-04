@@ -20,6 +20,8 @@ const TimerSystem = function(){
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
     this.remainingTime = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
 
+    // Initialize unsynced timer usage tracking
+    global.store.set('dataUsage.unsynced.timerUsage.timerCount', 0);
 
     /**
      * Registers an event listener
@@ -168,6 +170,11 @@ ipcMain.handle('timer-reset', () => {
 
 // End the timer (and start the break)
 ipcMain.handle('timer-end', () => {
+    // Increments the unsynced timer/break count.
+    let dataUsagePath = 'dataUsage.unsynced.timerUsage.timerCount'
+    global.store.set(dataUsagePath, global.store.get(dataUsagePath)+1);
+    console.log('number of Breaks : ' + global.store.get(dataUsagePath));
+    // Ends the timer
     global.timerSystem.end();
 })
 

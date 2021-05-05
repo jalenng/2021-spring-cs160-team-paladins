@@ -47,6 +47,10 @@ const soundsStoreDefaults = {
             text: 'Long Expected'
         },
         {
+            key: '../../sounds/Nostalgia.mp3',
+            text: 'Nostalgia'
+        },
+        {
             key: '../../sounds/Pristine.mp3',
             text: 'Pristine'
         },

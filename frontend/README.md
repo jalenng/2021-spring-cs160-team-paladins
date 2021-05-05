@@ -1,33 +1,35 @@
+# Frontend
+
+This directory holds the source code for our frontend application. We are using Electron to provide native app functionality and React to render the user interface.
+
+<br/>
+
 # Commands
 
-## Main commands
+## `npm i`
+Installs the required dependencies for this project.
 
-### `npm run dev`
+## `npm run dev`
 Starts the React development environment and Electron process together.
 
-### `npm run build`
+## `npm run build`
 Creates a distributable build of the whole app.
 
-### `npm run test`
-Starts the React development environemtn and Spection to test the Electron app.
+## `npm test`
+Starts the React development environment and Spectron to test the Electron app.
 
-## Helper/advanced commands
-**Normally, you won't need to call these commands.**
+<br/>
 
-### `npm run react-start`
-Starts the React development environment only.
+# Directories
 
-### `npm run react-build`
-Creates a production build of the React app only.
+## `./public`
+Holds the source code for our Electron main process.
 
-### `npm run electron-build`
-Creates a production build of the Electron app only.
+## `./sounds`
+Holds the audio files for the default set of notification sounds.
 
-### `npm run electron-start`
-Starts the Electron process only.
+## `./src`
+Holds the source code for our Electron renderer process and React components.
 
-### `npm run electron-watch`
-Starts the Electron process with nodemon. Updating Electron source files will automatically reload Electron.
-
-### `npm run electron-test`
-Starts Spectron to test the Electrion app only.
+## `./test`
+Holds the frontend test scripts.

@@ -1,13 +1,21 @@
 # Backend
 
-This directory holds the source code for our backend. We are using ExpressJS to provide the  to provide native app functionality and React to render the user interface.
+This directory holds the source code for our backend. We are using ExpressJS to provide the backend API interface.
 
 <br/>
 
 # Commands
 
 ## `npm start`
+Starts the backend process.
 
+## `npm watch`
+Starts the backend process with nodemon. Updating backend source files will automatically reload the backend.
+
+## `npm test`
+Starts Mocha to the backend.
+
+<br/>
 
 # Tests
 The backend API testing is done using Postman.

@@ -19,10 +19,10 @@ export default class DailyTimerUsage extends React.Component {
     this.date = new Date();
     this.weekday = weekday[this.date.getDay()];
 
-    // get data usage.
+    // Get data usage values.
     this.usage = store.dataUsage.getAll();
-    this.minutes = Math.trunc(this.usage.unsynced.timerUsage.screenTime / 60);
-    this.breaks = this.usage.unsynced.timerUsage.timerCount;
+    this.screenTime = Math.trunc(this.usage.fetched.timerUsage.screenTime);
+    this.timerCount = this.usage.fetched.timerUsage.timerCount;
   }
 
    // change to axios.put to update values.
@@ -31,14 +31,25 @@ export default class DailyTimerUsage extends React.Component {
   }
 
   render() {
+    console.log(' screen time : ' + this.screenTime);
     return (
       <div>
         <div>
           {/* Daily screen time */}
           <Bar
             data={{
+              data: this.screenTime,
               labels: [
                 this.weekday,
+              ],
+              datasets: [
+                {
+                  label: "Daily Screen Usage (Seconds)",
+                  data: [this.screenTime],
+                  backgroundColor: [
+                    "rgba(72, 121, 240, 1)",
+                  ],
+                },
               ],
             }}
             height={400}
@@ -46,7 +57,7 @@ export default class DailyTimerUsage extends React.Component {
             options={{
               title: {
                 display: true,
-                text: "Total Screen Time (minutes)",
+                text: "Screen Usage (seconds)",
                 fontColor: "#FFFFFF",
                 fontSize: 15,
                 padding: 10,
@@ -84,13 +95,22 @@ export default class DailyTimerUsage extends React.Component {
               labels: [
                 this.weekday,
               ],
+              datasets: [
+                {
+                  label: "Breaks",
+                  data: [this.timerCount],
+                  backgroundColor: [
+                    "rgba(72, 121, 240, 1)",
+                  ],
+                },
+              ],
             }}
             height={400}
             width={30}
             options={{
               title: {
                 display: true,
-                text: "Total # of breaks",
+                text: "# of breaks",
                 fontColor: "#FFFFFF",
                 fontSize: 15,
                 padding: 10,
@@ -122,7 +142,6 @@ export default class DailyTimerUsage extends React.Component {
           />
   </div>
 </div>
-
     );
   }
 }

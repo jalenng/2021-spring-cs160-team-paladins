@@ -51,6 +51,7 @@ export default class UsageSidebar extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     console.log()
     this.handleRefreshBtn = this.handleRefreshBtn.bind(this);
+    this.dataUsage = store.dataUsage.getAll();
   }
 
   handleChange(event, item) {
@@ -59,31 +60,67 @@ export default class UsageSidebar extends React.Component {
   }
 
   handleRefreshBtn() {
+    console.log(this.dataUsage);
+
+    // Update data usage 
     store.dataUsage.push()
-        .then(result => {
-            if (!result.success) {
-                store.messages.add({
-                    type: MessageBarType.error,
-                    contents: `Failed to retrieve data usage: ${result.data.message}`
-                });
-            } 
-            else {
-              console.log('push success');
-              global.store.set('dataUsage.unsynced.timerUsage', {
-                screenTime: 0,
-                timerCount: 0,
-                usageDat: null,
-              });
-            }
-        });
-}
+    .then(result => {
+        if (!result.success) {
+            store.messages.add({
+                type: MessageBarType.error,
+                contents: `Failed to update data usage: ${result.data.message}`
+            });
+        } 
+        else {
+          console.log(this.dataUsage.unsynced.timerUsage.screenTime);
+          store.dataUsage.reset();
+          let screenTime = store.dataUsage.getAll().unsynced.timerUsage.screenTime;
+          console.log(screenTime);
+        }
+    })
+
+    // Fetch the latest changes
+    store.dataUsage.fetch()
+    .then(result => {
+        if (!result.success) {
+            store.messages.add({
+                type: MessageBarType.error,
+                contents: `Failed to retrieve data usage: ${result.data.message}`
+            });
+        } 
+        else {
+          console.log('fetched');
+          console.log(this.dataUsage.fetched.timerUsage);
+        }
+    })
+  };
+
+
+    // store.dataUsage.push()
+    //     .then(result => {
+    //         if (!result.success) {
+    //             store.messages.add({
+    //                 type: MessageBarType.error,
+    //                 contents: `Failed to retrieve data usage: ${result.data.message}`
+    //             });
+    //         } 
+    //         // If success, reset unsynced usage & update fetched usage.
+    //         else if (result.success) {
+    //           console.log('push success');
+    //           global.store.set('dataUsage.unsynced.timerUsage', {
+    //             screenTime: 0,
+    //             numBreaks: 0,
+    //             usageDate: '2021-05-03T07:00:00.000Z'
+    //           });
+            // store.dataUsage.fetch();
+        //     }
+        // });
 
   render() {
     return (
       <Stack 
         tokens={{ childrenGap: 12 }} 
         styles={navStyles}>
-
         <Text variant={'xxLarge'}>
           <b>Statistics</b>
           <TooltipHost content="Refresh">

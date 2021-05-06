@@ -48,7 +48,7 @@ const TimerSystem = function(){
             global.store.set('dataUsage.unsynced.timerUsage.screenTime', elapsedTime);
         }
 
-        console.log(global.store.get('dataUsage'));
+        // console.log(global.store.get('dataUsage'));
 
         return {
             state: this.state,

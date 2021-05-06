@@ -146,6 +146,12 @@ window.store = {
          */
         push: () => { return ipcRenderer.invoke('push-data-usage') },
 
+        /**
+         * Reset data usage on the frontend.
+         * Occurs after updating server
+         */
+        reset: () => { return ipcRenderer.invoke('reset-data-usage') },
+
         /* Event system */
         eventSystem: new EventSystem()
     },

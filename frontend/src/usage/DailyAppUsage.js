@@ -4,37 +4,54 @@ import { Pie, defaults} from "react-chartjs-2";
 defaults.global.tooltips.enabled = true;
 
 export default class DailyAppUsage extends React.Component {
+
+  constructor(props) {
+    super(props);
+    // Get data usage values.
+    this.dataUsage = store.dataUsage.getAll();
+    this.appUsage = this.dataUsage.unsynced.appUsage;
+    this.labels = [];
+    this.usage = [];
+    for (var i=0; i < this.appUsage.length; i++) {
+      this.labels.push(this.appUsage[i].appName);
+      this.usage.push(this.appUsage[i].appTime);
+      console.log(i);
+    }
+
+    console.log(this.labels);
+  }
+
   render() {
     return (
       <div>
         <Pie
           data={{
-            labels: [
-              "Zoom",
-              "Spotify",
-              "Netflix",
-              "VS Code",
-              "Google Chrome",
-              "Others",
-            ],
+            labels: this.labels,
             datasets: [
               {
-                data: [200, 1000, 410, 300, 520, 700],
+                data: this.usage,
                 backgroundColor: [
                   "rgba(255, 99, 132, 0.2)",
                   "rgba(54, 162, 235, 0.2)",
                   "rgba(255, 206, 86, 0.2)",
+                  "rgb(219,112,147, 0.2)",
                   "rgba(75, 192, 192, 0.2)",
                   "rgba(153, 102, 255, 0.2)",
                   "rgba(255, 159, 64, 0.2)",
+                  "rgba(30, 130, 76, 0.2)",
+                  "rgba(149, 165, 166, 0.2)",
                 ],
                 borderColor: [
                   "rgba(255, 99, 132, 1)",
                   "rgba(54, 162, 235, 1)",
                   "rgba(255, 206, 86, 1)",
+                  "rgb(219,112,147, 1)",
                   "rgba(75, 192, 192, 1)",
                   "rgba(153, 102, 255, 1)",
                   "rgba(255, 159, 64, 1)",
+                  "rgba(30, 130, 76, 1)",
+                  "rgba(149, 165, 166, 1)",
+                  "rgba(46, 49, 49, 1)",
                 ],
                 borderWidth: 1,
               },

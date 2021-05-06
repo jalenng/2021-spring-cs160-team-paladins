@@ -21,12 +21,15 @@ export default class DailyTimerUsage extends React.Component {
 
     // Get data usage values.
     this.usage = store.dataUsage.getAll();
-    this.screenTime = this.usage.fetched.timerUsage.screenTime + this.usage.unsynced.timerUsage.screenTime;
-    this.timerCount = this.usage.fetched.timerUsage.timerCount + this.usage.unsynced.timerUsage.timerCount;
+
+    console.log(this.usage);
+    this.screenTime = this.usage.fetched.timerUsage[0].screenTime + this.usage.unsynced.timerUsage.screenTime;
+
+    this.timerCount = this.usage.fetched.timerUsage[0].timerCount + this.usage.unsynced.timerUsage.timerCount;
+    console.log(this.timerCount);
   }
 
   render() {
-    console.log(' screen time : ' + this.screenTime);
     return (
       <div>
         <div>

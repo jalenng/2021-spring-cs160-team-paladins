@@ -19,7 +19,6 @@ function timerUsageSystem() {
 
     this.getUsage = async function() {
         let timerUsage = global.store.get('dataUsage.unsynced.timerUsage');
-        console.log('get timer usage');
         return timerUsage;
     } 
 

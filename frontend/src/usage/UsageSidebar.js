@@ -60,8 +60,6 @@ export default class UsageSidebar extends React.Component {
   }
 
   handleRefreshBtn() {
-    console.log(this.dataUsage);
-
     // Update data usage 
     store.dataUsage.push()
     .then(result => {
@@ -72,16 +70,20 @@ export default class UsageSidebar extends React.Component {
             });
         } 
         else {
-          console.log(this.dataUsage.unsynced.timerUsage.screenTime);
           store.dataUsage.reset();
-          let screenTime = store.dataUsage.getAll().unsynced.timerUsage.screenTime;
-          console.log(screenTime);
+          this.dataUsage = store.dataUsage.getAll();
         }
+        // else {
+        //   console.log(this.dataUsage.unsynced.timerUsage.screenTime);
+        //   store.dataUsage.reset();
+        //   let screenTime = store.dataUsage.getAll().unsynced.timerUsage.screenTime;
+        //   console.log(screenTime);
+        // }
     })
 
     // Fetch the latest changes
-    console.log('before fetch');
-    console.log(this.dataUsage.fetched.timerUsage);
+    // console.log('before fetch');
+    // console.log(this.dataUsage.fetched.timerUsage);
     store.dataUsage.fetch()
     .then(result => {
         if (!result.success) {
@@ -90,10 +92,10 @@ export default class UsageSidebar extends React.Component {
                 contents: `Failed to retrieve data usage: ${result.data.message}`
             });
         } 
-        else {
-          console.log('after fetched');
-          console.log(this.dataUsage.fetched.timerUsage);
-        }
+        // else {
+        //   console.log('after fetched');
+        //   console.log(this.dataUsage.fetched.timerUsage);
+        // }
     })
   };
 

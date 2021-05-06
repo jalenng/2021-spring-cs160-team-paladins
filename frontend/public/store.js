@@ -321,20 +321,20 @@ ipcMain.handle('fetch-data-usage', async (event) => {
 // Update data usage on the backend
 // PUT - /data
 ipcMain.handle('push-data-usage', async (event) => {
-    // remove later when app usage is implemented.
-    //
-    //
-    store.set('dataUsage.unsynced.appUsage', []);
     const data = store.get('dataUsage.unsynced');
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
 ipcMain.handle('reset-data-usage', async(event) => {
-    store.set('dataUsage.unsynced.timerUsage', {
-        screenTime: '0',
-        timerCount: '0',
+
+    let timerUsageDefaults = {
+        screenTime: 0,
+        timerCount: 0,
         usageDate: new Date(),
-    })
+    }
+
+    store.set('dataUsage.unsynced.timerUsage', timerUsageDefaults);
+    console.log(store.get('dataUsage.unsynced.timerUsage'));
 })
 
 // Fetch insights from the backend

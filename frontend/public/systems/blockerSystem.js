@@ -17,9 +17,7 @@ module.exports = function() {
      * Registers an event listener
      */
     this.on = function (name, listener) {
-        if (!this._events[name]) 
-            this._events[name] = [];
-
+        if (!this._events[name]) this._events[name] = [];
         this._events[name].push(listener);
     }
 
@@ -83,14 +81,22 @@ module.exports = function() {
     }
 
     /**
-     * Removes the app blockers in the blocker list whose app is not open.
+     * Removes the app blockers in the blocker list for the apps that are not open
      * @param {[Object]} openProcesses 
      */
     this.removeClosedBlockedApps = function(openProcesses) {
+        const blockedApps = global.store.get('preferences.blockers.apps')
+
         const filterFunction = blocker => {
             if (blocker.type !== 'app') return true;
-            const foundProcess = openProcesses.find(process => process.path === blocker.key);
-            return (foundProcess != undefined);
+
+            const foundInOpenProcesses = openProcesses.find(process => process.path === blocker.key);
+            if (foundInOpenProcesses == undefined) return false;
+
+            const foundInPreferencesList = blockedApps.find(appPath => appPath === blocker.key);
+            if (foundInPreferencesList == undefined) return false;
+
+            return true;
         }
 
         // Filter out the processes that are not open

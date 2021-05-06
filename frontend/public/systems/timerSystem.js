@@ -29,6 +29,12 @@ The states of the timers and its transitions are shown here:
 
                             <-------Toggle------>
 
+- Running:          the timer is counting down.
+- Idle:             the timer has finished its countdown and is waiting to restart automatically.
+- Blocked:          the timer is not counting down because of a blocker.
+- Paused:           the timer is not counting down because it was stopped manually.
+- Blocked & paused: the timer was blocked when it was paused.
+
 The timer system is also an event emitter that emits the following events:
     - timer-end: when the timer counts down to zero, or is manually ended.
 
@@ -61,8 +67,7 @@ module.exports = function () {
      * Registers an event listener
      */
     this.on = function (name, listener) {
-        if (!this._events[name])
-            this._events[name] = [];
+        if (!this._events[name]) this._events[name] = [];
         this._events[name].push(listener);
     }
 

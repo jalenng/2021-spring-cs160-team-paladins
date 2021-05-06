@@ -27,10 +27,7 @@ module.exports = function() {
      * Registers an event listener
      */
     this.on = function (name, listener) {
-        if (!this._events[name]) {
-            this._events[name] = [];
-        }
-
+        if (!this._events[name]) this._events[name] = [];
         this._events[name].push(listener);
     }
 

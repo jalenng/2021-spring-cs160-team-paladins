@@ -90,6 +90,7 @@ export default class extends React.Component {
                                 value={this.state.inputs.password}
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
+                                canRevealPassword
                             />
                         </Stack>
 

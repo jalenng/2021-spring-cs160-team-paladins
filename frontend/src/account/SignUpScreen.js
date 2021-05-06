@@ -147,12 +147,14 @@ export default class extends React.Component {
                                 styles={textFieldStyles}
                                 value={this.state.inputs.password}
                                 onChange={this.handleChange}
+                                canRevealPassword
                             />
                             <TextField label='Confirm password' type='password' id='confirm'
                                 styles={textFieldStyles}
                                 value={this.state.inputs.confirm}
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
+                                canRevealPassword
                             />
                         </Stack>
 

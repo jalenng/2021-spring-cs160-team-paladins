@@ -146,6 +146,11 @@ ipcMain.on('get-open-windows', async (event) => {
     event.returnValue = appSnapshotSystem.getLastSnapshot();
 });
 
+// Get timer status
+ipcMain.on('get-blockers', (event) => {
+    event.reply('receive-blockers', global.blockerSystem.getBlockers());
+});
+
 // Clear blockers
 ipcMain.handle('clear-blockers', () => {
     global.blockerSystem.clear();

@@ -242,7 +242,9 @@ window.breakSys = {
 }
 
 window.blockerSys = {
-    clear: () => { ipcRenderer.invoke('clear-blockers') }
+    getBlockers: () => {ipcRenderer.send('get-blockers')},
+    clear: () => { ipcRenderer.invoke('clear-blockers') },
+    eventSystem: new EventSystem()
 }
 
 
@@ -294,4 +296,9 @@ ipcRenderer.on('receive-break-status', (event, breakStatus) => {
 ipcRenderer.on('store-changed', (event, category) => {
     const fireCallbacks = (callback) => callback();
     window.store[category].eventSystem._events['changed'].forEach(fireCallbacks);
+})
+
+ipcRenderer.on('receive-blockers', (event, blockers) => {
+    const fireCallbacks = (callback) => callback(event, blockers);
+    window.blockerSys.eventSystem._events['update'].forEach(fireCallbacks);
 })

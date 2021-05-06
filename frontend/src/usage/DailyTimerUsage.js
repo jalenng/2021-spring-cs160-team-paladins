@@ -21,13 +21,8 @@ export default class DailyTimerUsage extends React.Component {
 
     // Get data usage values.
     this.usage = store.dataUsage.getAll();
-    this.screenTime = Math.trunc(this.usage.fetched.timerUsage.screenTime);
-    this.timerCount = this.usage.fetched.timerUsage.timerCount;
-  }
-
-   // change to axios.put to update values.
-  updateUsage(break_len) {
-    this.breaks = this.breaks + break_len;
+    this.screenTime = this.usage.fetched.timerUsage.screenTime + this.usage.unsynced.timerUsage.screenTime;
+    this.timerCount = this.usage.fetched.timerUsage.timerCount + this.usage.unsynced.timerUsage.timerCount;
   }
 
   render() {

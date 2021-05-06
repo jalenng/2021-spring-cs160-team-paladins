@@ -80,6 +80,8 @@ export default class UsageSidebar extends React.Component {
     })
 
     // Fetch the latest changes
+    console.log('before fetch');
+    console.log(this.dataUsage.fetched.timerUsage);
     store.dataUsage.fetch()
     .then(result => {
         if (!result.success) {
@@ -89,7 +91,7 @@ export default class UsageSidebar extends React.Component {
             });
         } 
         else {
-          console.log('fetched');
+          console.log('after fetched');
           console.log(this.dataUsage.fetched.timerUsage);
         }
     })

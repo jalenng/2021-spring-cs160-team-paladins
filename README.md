@@ -1,11 +1,9 @@
 ![image](https://user-images.githubusercontent.com/42555186/117086037-530e8d80-ad00-11eb-9ed7-77f48001290f.png)
 
 # iCare
+**SJSU CS 160 Spring 2021 Project - Team Paladins**
 
-**SJSU CS 160 Spring 2021 Project**
-
-## README TODO
-- [X] Add info about running the server in /backend/README.md
+<br/>
 
 ## Vision
 ### FOR

@@ -47,8 +47,17 @@ export default class extends React.Component {
 
     // Add the selected value of the app dropbown menu to the list of blocker apps
     handleAppAdd() {
-        if (this.state.appDropdownSelection === null) return 
+        // Ignore if there is no selection
+        const selection = this.state.appDropdownSelection;
+        if (selection === null) return 
+
         let appBlockers = this.state.blockers.apps;
+
+        // Check if app is already in the list
+        const foundExistingEntry = appBlockers.find(blocker => blocker === selection);
+        if (foundExistingEntry != undefined) return;
+
+        // Go ahead and append it to the list
         appBlockers.push(this.state.appDropdownSelection);
         store.preferences.set('blockers.apps', appBlockers);
     }

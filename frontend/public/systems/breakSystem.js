@@ -1,6 +1,10 @@
 /*
 The break system handles the timing and logic of the breaks. 
 
+The states of the break system are as follows:
+    - isOnBreak
+        - true <---> false
+
 The break system is also an event emitter that emits the following events:
     - break-start: when the break begins
     - break-times-set: when the break countdown resets (due to the user moving their mouse)
@@ -13,11 +17,6 @@ const path = require('path');
 
 const { screen } = require('electron');
 const soundPlayer = require('sound-play');
-
-const states = {
-    ON_BREAK: 'on_break',
-    NOT_ON_BREAK: 'not_on_break',
-}
 
 const BREAK_DURATION = 20000;
 const POPUP_NOTIF_DURATION = 5000;
@@ -32,7 +31,7 @@ module.exports = function(){
 
     this._events = {};
 
-    this.state = states.NOT_ON_BREAK;
+    this.isOnBreak = false;
     this.totalDuration = 0;
     this.endTime = new Date();
 
@@ -62,14 +61,12 @@ module.exports = function(){
      * @returns an object
      */
     this.getStatus = function() {
-        var remainingTime;
 
-        if (this.state === states.ON_BREAK)
-            remainingTime = this.endTime - new Date()
-        else 
-            remainingTime = this.totalDuration;
+        let remainingTime = this.isOnBreak
+                ? this.endTime - new Date()
+                : this.totalDuration;
 
-        var breakStatus = {
+        let breakStatus = {
             state: this.state,
             endTime: this.endTime,
             duration: this.totalDuration,
@@ -84,9 +81,9 @@ module.exports = function(){
      */
     this.start = function() {
 
-        if (this.state === states.ON_BREAK) return;
+        if (this.isOnBreak) return;
 
-        this.state = states.ON_BREAK;
+        this.isOnBreak = true;
 
         if (global.store.get('preferences.notifications.enableSound') === true) 
             this.playSound();
@@ -137,7 +134,7 @@ module.exports = function(){
      */
     this.end = function() {
 
-        if (this.state != states.NOT_ON_BREAK) {
+        if (!this.isOnBreak) {
 
             if (global.store.get('preferences.notifications.enableSound') === true) 
                 this.playSound();
@@ -148,7 +145,7 @@ module.exports = function(){
 
             this.emit('break-end')
 
-            this.state = states.NOT_ON_BREAK; 
+            this.isOnBreak = false; 
         }
 
     }

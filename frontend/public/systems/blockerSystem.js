@@ -63,7 +63,6 @@ module.exports = function() {
         
         this.blockers = this.blockers.filter(filterFunction);
         this.dismissedBlockers = this.dismissedBlockers.filter(filterFunction);
-        console.log(this.blockers)
     }
 
     /**

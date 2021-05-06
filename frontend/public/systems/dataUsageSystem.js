@@ -1,15 +1,14 @@
 /*
 The data usage system handles the aggregation of app-related and timer-related information.
-*/
 
-const states = {
-    RUNNING: 'running',
-    STOPPED:  'stopped',
-}
+The states of the data usage system are as follows:
+    - isRunning
+        - true <---> false
+*/
 
 module.exports = function() {
 
-    this.state = states.STOPPED;
+    this.isRunning = false;
     
     /**
      * Update the data usage store according to the list of open processes
@@ -51,16 +50,14 @@ module.exports = function() {
      * Starts the data usage system.
      */
     this.startSystem = function () {
-        if (this.state = states.STOPPED)   
-            this.state = states.RUNNING;            
+        if (!this.isRunning) this.isRunning = true;    
     }
 
     /**
      * Stops the data usage system.
      */
     this.stopSystem = function () {
-        if (this.state = states.RUNNING)
-            this.state = states.STOPPED;
+        if (this.isRunning) this.isRunning = false;
     }
 
     /**

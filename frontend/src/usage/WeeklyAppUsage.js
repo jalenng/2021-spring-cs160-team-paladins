@@ -15,10 +15,7 @@ export default class WeeklyAppUsage extends React.Component {
     for (var i=0; i < this.appUsage.length; i++) {
       this.labels.push(this.appUsage[i].appName);
       this.usage.push(this.appUsage[i].appTime);
-      console.log(i);
     }
-
-    console.log(this.labels);
   }
 
   render() {
@@ -40,6 +37,7 @@ export default class WeeklyAppUsage extends React.Component {
                   "rgba(255, 159, 64, 0.2)",
                   "rgba(30, 130, 76, 0.2)",
                   "rgba(149, 165, 166, 0.2)",
+                  "rgba(46, 49, 49, 1)",
                 ],
                 borderColor: [
                   "rgba(255, 99, 132, 1)",

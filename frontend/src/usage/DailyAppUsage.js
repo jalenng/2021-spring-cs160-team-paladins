@@ -15,10 +15,7 @@ export default class DailyAppUsage extends React.Component {
     for (var i=0; i < this.appUsage.length; i++) {
       this.labels.push(this.appUsage[i].appName);
       this.usage.push(this.appUsage[i].appTime);
-      console.log(i);
     }
-
-    console.log(this.labels);
   }
 
   render() {

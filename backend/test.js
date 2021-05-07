@@ -3,7 +3,7 @@ let assert = require('assert')
 
 // Database Connection
 let db = require('./db.js')
-const userDB = new db("localhost", "newuser", "", "iCare");
+const userDB = new db("localhost", "newuser", "password", "iCare");
 
 // API Methods
 let apiM = require('./api_methods.js');
@@ -307,7 +307,7 @@ describe('Notification Sound  On (user preferences)', () => {
 
 let timePeriod = "WEEK"
 
-let dataUsageObjects = [
+let timerUsageObjects = [
     {
         "screenTime": 50,
         "numBreaks": 4,
@@ -320,15 +320,15 @@ let dataUsageObjects = [
     }
 ]
 
-describe('Data Usage', () => {
+describe('Timer Usage', () => {
 
-    // Gets the default data usage (0, 0) of newEmail
-    describe('(Success) Get data usage of [' + newEmail + ']', () => {
+    // Gets the default timer usage (0, 0) of newEmail
+    describe('(Success) Get timer usage of [' + newEmail + ']', () => {
         it('should return screenTime (0), timerCount (0)', async () => {
 
             let today = await userDB.getDate(0);
 
-            let duo = await userDB.getDataUsage(newEmail, timePeriod);
+            let duo = await userDB.getTimerUsage(newEmail, timePeriod);
             for (const duObject of duo) {
                 let row = JSON.parse(JSON.stringify(duObject));
                 assert.strictEqual(row.screenTime, 0,  'screen time = 0')
@@ -340,13 +340,13 @@ describe('Data Usage', () => {
     });
 
 
-    // Sets the data usage of newEmail
-    for (const duObject of dataUsageObjects) {
+    // Sets the timer usage of newEmail
+    for (const duObject of timerUsageObjects) {
         let row = JSON.parse(JSON.stringify(duObject));
         
-        describe('(Success) Sets data usage of [' + newEmail + ']', () => {
+        describe('(Success) Sets timer usage of [' + newEmail + ']', () => {
             it('should return true for ' + JSON.stringify(duObject), async () => {
-                success = await userDB.setDataUsage(newEmail, row.screenTime, row.numBreaks, row.usageDate)            
+                success = await userDB.setTimerUsage(newEmail, row.screenTime, row.numBreaks, row.usageDate)            
                 assert.strictEqual(success, true,  'success is true')
             })
         });
@@ -381,7 +381,7 @@ let appUsageObjects = [
 // Get/Set App Usage
 describe('Set App Usage', () => {
 
-    // Sets the data usage of newEmail
+    // Sets the app usage of newEmail
     for (const auObject of appUsageObjects) {
         let row = JSON.parse(JSON.stringify(auObject));
         
@@ -396,32 +396,32 @@ describe('Set App Usage', () => {
 });
 
 
-// Get/Set Data Usage On
-describe('Data Usage  On (user preferences)', () => {
+// Get/Set Timer Usage On
+describe('Timer Usage  On (user preferences)', () => {
 
-    let dataUsageOn = "";
+    let timerUsageOn = "";
     
-    // Get default 'data usage on' boolean of newEmail (true)
-    describe('(Success) Get data usage on from [' + newEmail + ']', () => {
+    // Get default 'timer usage on' boolean of newEmail (true)
+    describe('(Success) Get timer usage on from [' + newEmail + ']', () => {
         it('should return true', async () => {
-            dataUsageOn = await userDB.getDataUsageOn(newEmail).then((r) => { return r; });
-            assert.strictEqual(dataUsageOn, true,  'data usage on = true')
+            timerUsageOn = await userDB.getTimerUsageOn(newEmail).then((r) => { return r; });
+            assert.strictEqual(timerUsageOn, true,  'timer usage on = true')
         })
     });
 
-    // Set 'data usage on' boolean of newEmail (false)
-    describe('(Success) Set data usage  on of [' + newEmail + '] to false', () => {
+    // Set 'timer usage on' boolean of newEmail (false)
+    describe('(Success) Set timer usage  on of [' + newEmail + '] to false', () => {
         it('should return true (set works)', async () => {
-            success = await userDB.setDataUsageOn(newEmail, false).then((r) => { return r; });
+            success = await userDB.setTimerUsageOn(newEmail, false).then((r) => { return r; });
             assert.strictEqual(success, true,  'success is true')
         })
     });
 
-    // Get 'data usage on' boolean of newEmail (false)
-    describe('(Success) Get data usage on from [' + newEmail + ']', () => {
+    // Get 'timer usage on' boolean of newEmail (false)
+    describe('(Success) Get timer usage on from [' + newEmail + ']', () => {
         it('should return false', async () => {
-            dataUsageOn = await userDB.getDataUsageOn(newEmail).then((r) => { return r; });
-            assert.strictEqual(dataUsageOn, false,  'data usage on = false')
+            timerUsageOn = await userDB.getTimerUsageOn(newEmail).then((r) => { return r; });
+            assert.strictEqual(timerUsageOn, false,  'timer usage on = false')
         })
     });
 
@@ -429,7 +429,7 @@ describe('Data Usage  On (user preferences)', () => {
 
 
 // Get/Set App Usage On
-describe('Data Usage  On (user preferences)', () => {
+describe('App Usage  On (user preferences)', () => {
 
     let appUsageOn = "";
     

@@ -16,20 +16,28 @@ module.exports = function() {
     this.processAppSnapshot = async function (openProcesses) {
         const appNamesDict  = global.store.get('appNames');
 
+        // Get current timestamp
+        const currentTimestamp = new Date();
+        currentTimestamp.setHours(0, 0, 0, 0);
+        const currentTimestampString = currentTimestamp.toISOString();
+
         // Update app usage
         let appUsage = global.store.get('dataUsage.unsynced.appUsage');
         openProcesses.forEach( process => {
             const processPath = process.path;
 
-            // Try to find an entry with the same path
-            const foundEntry = appUsage.find(app => app.appPath === processPath)
+            // Try to find an entry with the same path and timestamp
+            const foundEntry = appUsage.find(app => {
+                return (app.appPath === processPath && app.usageDate === currentTimestamp);
+            });
 
             // If this app has not been seen, add new entry
             if (foundEntry === undefined) {
                 appUsage.push({
                     appName: appNamesDict[processPath],
                     appPath: processPath,
-                    appTime: process.duration
+                    appTime: process.duration,
+                    usageDate: currentTimestampString
                 })
             }
             // Else, just update existing entry
@@ -38,12 +46,14 @@ module.exports = function() {
                 appUsage.push({ // Push updated entry
                     appName: appNamesDict[processPath],
                     appPath: processPath,
-                    appTime: foundEntry.appTime + process.duration
+                    appTime: foundEntry.appTime + process.duration,
+                    usageDate: currentTimestampString
                 })
             }            
         })
 
         global.store.set('dataUsage.unsynced.appUsage', appUsage)
+        console.log(store.get('dataUsage.unsynced.appUsage'))
     }
 
     /**

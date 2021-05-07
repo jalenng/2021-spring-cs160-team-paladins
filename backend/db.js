@@ -33,7 +33,7 @@ class db {
         q = q + "VALUES ('" + givenEmail + "', '" + givenPass + "', '" + displayName + "')";
 
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { resolve(false) }
+            if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
         return results;
@@ -64,10 +64,9 @@ class db {
      */
     async getEmail(id) {
         let q = "SELECT email FROM Users WHERE id=" + id 
-
         // Querying Result
         return await new Promise((resolve) => this.pool.query(q, function (err, result) {
-            if (err) { resolve(false) }
+            if (err) { console.log(err); resolve(false) }
             else { 
                 let splits = (JSON.stringify(result)).split('\"', 5);                
                 resolve(splits[3])
@@ -377,8 +376,6 @@ class db {
             q = "INSERT INTO TimerUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + usageDate + "')";
         }
 
-        console.log(q);
-
         // Updates the database
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
             if (err) { console.log(err); resolve(false) }
@@ -601,9 +598,7 @@ class db {
      */
     async checkUndefined(list) {
         for (const item of list) {
-            console.log('item')
             if (typeof item === 'undefined' || item.length === 0 || item === null) {
-                console.log('test')
                 return false;
             }
         }

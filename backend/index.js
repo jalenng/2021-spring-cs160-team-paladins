@@ -261,7 +261,6 @@ const { route } = require('./index.js');
       let email = ""
 
       // Check Token
-      console.log(token);
       let ct = await api_methods.checkToken(token)
       if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
       else { email = await userDB.getEmail(ct); }
@@ -269,11 +268,8 @@ const { route } = require('./index.js');
       // Update Timer Usage
       let dataUsage = req.body;
       let timerUsage = dataUsage.timerUsage;
-      console.log(timerUsage);
       console.log('email' + email);
       let tuSuccess = await userDB.setTimerUsage(email, timerUsage.screenTime, timerUsage.timerCount, timerUsage.usageDate);
-
-      console.log(tuSuccess);
 
       // Update App Usage
       // let appUsage = req.body.appUsage;

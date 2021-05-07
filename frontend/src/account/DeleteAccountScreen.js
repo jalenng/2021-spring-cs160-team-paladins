@@ -1,11 +1,13 @@
 import React from 'react';
 
-import DialogSpinner from "../DialogSpinner";
+import DialogSpinner from '../DialogSpinner';
 
-import { Text } from '@fluentui/react/lib/Text';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { TextField } from '@fluentui/react/lib/TextField';
-import { PrimaryButton } from '@fluentui/react/lib/Button';
+import { 
+    Text,
+    Stack,
+    TextField,
+    PrimaryButton 
+} from '@fluentui/react';
 
 const divStyle = {
     paddingTop: '10px',
@@ -42,12 +44,10 @@ export default class extends React.Component {
     }
 
     // Change spinner status
-    setSpinner(isLoading) {
-        let state = this.state;
-        state.isLoading = isLoading;
-        this.setState(state);
+    setSpinner(val) {
+        this.setState({...this.state, isLoading: val});
     }
-
+    
     handleSubmit(event) {
         event.preventDefault();
         this.setSpinner(true);
@@ -90,6 +90,7 @@ export default class extends React.Component {
                                 value={this.state.inputs.password}
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
+                                canRevealPassword
                             />
                         </Stack>
 

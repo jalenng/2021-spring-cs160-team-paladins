@@ -8,11 +8,15 @@ const preferencesStoreDefaults = {
     notifications: {
         enableSound: true,
         interval: 20,
-        sound: '../sounds/Long Expected.mp3'
+        sound: '../../sounds/Long Expected.mp3'
     },
     dataUsage: {
         trackAppUsageStats: true,
         enableWeeklyUsageStats: true
+    },
+    blockers: {
+        apps: [],
+        blockOnBattery: true
     },
     startup: {
         startAppOnLogin: true,
@@ -23,31 +27,35 @@ const preferencesStoreDefaults = {
 const soundsStoreDefaults = {
     defaultSounds: [
         {
-            key: '../sounds/Clearly.mp3',
+            key: '../../sounds/Clearly.mp3',
             text: 'Clearly'
         },
         {
-            key: '../sounds/Done For You.mp3',
+            key: '../../sounds/Done For You.mp3',
             text: 'Done For You'
         },
         {
-            key: '../sounds/Insight.mp3',
+            key: '../../sounds/Insight.mp3',
             text: 'Insight'
         },
         {
-            key: '../sounds/Juntos.mp3',
+            key: '../../sounds/Juntos.mp3',
             text: 'Juntos'
         },
         {
-            key: '../sounds/Long Expected.mp3',
+            key: '../../sounds/Long Expected.mp3',
             text: 'Long Expected'
         },
         {
-            key: '../sounds/Pristine.mp3',
+            key: '../../sounds/Nostalgia.mp3',
+            text: 'Nostalgia'
+        },
+        {
+            key: '../../sounds/Pristine.mp3',
             text: 'Pristine'
         },
         {
-            key: '../sounds/When.mp3',
+            key: '../../sounds/When.mp3',
             text: 'When'
         },
     ],
@@ -74,12 +82,7 @@ const dataUsageDefaults = {
 }
 
 const insightsDefaults = {
-    cards: [
-        {
-            header: 'Test insight 1',
-            content: 'Insight message.'
-        }
-    ]
+    cards: []
 }
 
 /* Create the store */
@@ -90,14 +93,20 @@ const storeOptions = {
         accounts: accountsStoreDefaults,
         dataUsage: dataUsageDefaults,
         insights: insightsDefaults,
-        messages: []
+        appNames: {},
+        messages: [],
+        resetFlag: false
     },
     watch: true
 }
 global.store = new Store(storeOptions);
 store.reset('messages'); // Clear all in-app messages on app startup
 
+// Reset entire store if the reset flag is enabled
+if (store.get('resetFlag')) store.clear();
+
 // store.clear();
+// store.set('preferences.notifications.interval', 0.2)
 // console.log(store.store)
 
 /* Configure axios */
@@ -139,11 +148,9 @@ store.onDidChange('messages', () => {
     global.mainWindow.webContents.send('store-changed', 'messages');
 });
 
-/*---------------------------------------------------------------------------*/
 
-/**
- * IPC event handlers & functions to manipulate and retrieve from the store
- */
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
 
 // Retrieve from the local store
 ipcMain.on('get-store', (event, key) => event.returnValue = store.get(key));
@@ -155,7 +162,7 @@ ipcMain.handle('set-prefs', (event, key, value) => {
 
 // Fetch user preferences from the backend
 // GET - /prefs
-ipcMain.handle('fetch-prefs', async (event) => {
+ipcMain.handle('fetch-prefs', async () => {
     const successCallback = (res) => {
         store.set('preferences.notifications', res.data.notifications);
         store.set('preferences.dataUsage', res.data.dataUsage);
@@ -302,24 +309,22 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
 
 // Fetch data usage from the backend
 // GET - /data
-ipcMain.handle('fetch-data-usage', async (event) => {
+ipcMain.handle('fetch-data-usage', async () => {
     const successCallback = (res) => store.set('dataUsage.fetched', res.data.cards);
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
 })
 
 // Update data usage on the backend
 // PUT - /data
-ipcMain.handle('push-data-usage', async (event) => {
+ipcMain.handle('push-data-usage', async () => {
     const data = store.get('dataUsage.unsynced');
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
 // Fetch insights from the backend
 // GET - /data/insights
-ipcMain.handle('fetch-insights', async (event) => {
-    const successCallback = (res) => {
-        store.set('insights.cards', res.data.cards);
-    }
+ipcMain.handle('fetch-insights', async () => {
+    const successCallback = (res) => store.set('insights.cards', res.data.cards);
     return await returnAxiosResult('get', 'data/insights', {}, [200], successCallback);
 })
 
@@ -340,6 +345,24 @@ ipcMain.handle('dismiss-message', (event, index) => {
     let messages = store.get('messages');
     messages.splice(index, 1);
     store.set('messages', messages);
+})
+
+// Show a dialog to confirm resetting the app
+ipcMain.handle('reset-store', () => {
+    dialog.showMessageBox(mainWindow, {
+        title: 'Reset iCare',
+        type: 'question',
+        message: 'Are you sure you want to reset iCare?',
+        detail: 'You will be signed out, and all unsynced data will be lost.',
+        buttons: ['Yes', 'No'],
+    })
+    .then( result => {
+        if (result.response == 0) {
+            store.set('resetFlag', true);
+            app.relaunch();
+            app.exit();
+        }
+    })
 })
 
 

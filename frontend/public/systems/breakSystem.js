@@ -63,7 +63,7 @@ module.exports = function(){
                 : this.totalDuration;
 
         let breakStatus = {
-            state: this.state,
+            isOnBreak: this.isOnBreak,
             endTime: this.endTime,
             duration: this.totalDuration,
             remainingTime: remainingTime
@@ -130,7 +130,7 @@ module.exports = function(){
      */
     this.end = function() {
 
-        if (!this.isOnBreak) {
+        if (this.isOnBreak) {
 
             if (global.store.get('preferences.notifications.enableSound') === true) 
                 this.playSound();

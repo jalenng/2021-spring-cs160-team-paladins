@@ -273,12 +273,12 @@ class db {
     }
 
     /**
-     * Gets the boolean value of dataUsageOn
+     * Gets the boolean value of timerUsageOn
      * @param {String} userEmail email (primary key)
-     * @returns boolean - dataUsageOn, false if fails
+     * @returns boolean - timerUsageOn, false if fails
      */
     async getTimerUsageOn(userEmail) {
-        let q = "SELECT dataUsageOn FROM UserPreferences"
+        let q = "SELECT timerUsageOn FROM UserPreferences"
         let data = await this.dbPromise(true, q, userEmail);
 
         if (data != false) {
@@ -290,9 +290,9 @@ class db {
     }
 
     /**
-     * Sets the boolean value for dataUsageOn
+     * Sets the boolean value for timerUsageOn
      * @param {String} userEmail email (primary key)
-     * @param {Boolean} boolValue set DataUsageOn
+     * @param {Boolean} boolValue set timerUsageOn
      * @returns true if no error
      */
     async setTimerUsageOn(userEmail, boolValue) {
@@ -305,7 +305,7 @@ class db {
 
         // Sets boolValue
         let i = boolValue ? true : false;
-        let q = "UPDATE UserPreferences SET dataUsageOn=" + i
+        let q = "UPDATE UserPreferences SET timerUsageOn=" + i
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -347,12 +347,12 @@ class db {
     }
 
     /**
-     * Sets the values of the data usage record or creates a new one.
+     * Sets the values of the timer usage record or creates a new one.
      * @param {String} userEmail user email
      * @param {int} screenTime screen time spent on computer
      * @param {int} timerCount amount of times counter has been called
      * @param {date} usageDate number of days the usageDate is away from today
-     * @returns true if success in updating datausage records, false if fails
+     * @returns true if success in updating timerUsage records, false if fails
      */
     async setTimerUsage(userEmail, screenTime, timerCount, usageDate) {
 
@@ -363,17 +363,17 @@ class db {
         }
 
         // Checks for existing record
-        let check = await this.check("DataUsage", userEmail, "", usageDate);
+        let check = await this.check("TimerUsage", userEmail, "", usageDate);
         let q = "";
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE DataUsage SET screenTime= screenTime + " + screenTime + ", timerCount= timerCount + " + timerCount + 
+            q = "UPDATE TimerUsage SET screenTime= screenTime + " + screenTime + ", timerCount= timerCount + " + timerCount + 
                 " WHERE email='" + userEmail + "' AND usageDate='" + usageDate + "'";
         }
         // Creates existing record
         else {
-            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + usageDate + "')";
+            q = "INSERT INTO TimerUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + usageDate + "')";
         }
 
         // Updates the database
@@ -393,7 +393,7 @@ class db {
      */
     async getTimerUsage(userEmail, time) {
 
-        let q = "SELECT screenTime, timerCount, usageDate FROM DataUsage WHERE email='" + userEmail + "'"
+        let q = "SELECT screenTime, timerCount, usageDate FROM TimerUsage WHERE email='" + userEmail + "'"
         let q2 = await this.getQueryUsage(time);
         q = q + q2
 
@@ -510,7 +510,7 @@ class db {
     }
 
     /**
-     * Gets today's date for setting the values of a Data/App Usage record in the db
+     * Gets today's date for setting the values of a Timer/App Usage record in the db
      * @param days subtract this to get a date in the past
      * @returns mysql date formats
      */
@@ -530,7 +530,7 @@ class db {
 
     /**
      * Checks if an entry exists in the table
-     * @param {String} table "AppUsage" or "DataUsage"
+     * @param {String} table "AppUsage" or "TimerUsage"
      * @param {String} userEmail email of user
      * @param {String} appName for "AppUsage"
      * @param {String} today the date of today
@@ -541,7 +541,7 @@ class db {
         let addq = ""
 
         // Checks if an entry for today exists in the database.
-        if (table == "DataUsage") {
+        if (table == "TimerUsage") {
             addq = table + " WHERE email='" + userEmail + "' AND usageDate='" + today + "')";
         }
         else if (table == "AppUsage") {
@@ -560,7 +560,7 @@ class db {
     }
 
     /**
-     * Gets the second half of a query for AppUsage/DataUsage where we 
+     * Gets the second half of a query for AppUsage/TimerUsage where we 
      * get a range of records back!
      * @param {String} time 
      */

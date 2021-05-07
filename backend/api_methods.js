@@ -147,7 +147,7 @@ class api_methods {
     */
    async usageInsights(email) {
        
-       let dataUsage = await userDB.getDataUsage(email, "WEEK");
+       let dataUsage = await userDB.getTimerUsage(email, "WEEK");
        let dataAggregate = await this.getDataAggregation(dataUsage);
        let data = JSON.parse(JSON.stringify(dataAggregate));
 

@@ -273,12 +273,12 @@ class db {
     }
 
     /**
-     * Gets the boolean value of dataUsageOn
+     * Gets the boolean value of TimerUsageOn
      * @param {String} userEmail email (primary key)
-     * @returns boolean - dataUsageOn, false if fails
+     * @returns boolean - TimerUsageOn, false if fails
      */
-    async getDataUsageOn(userEmail) {
-        let q = "SELECT dataUsageOn FROM UserPreferences"
+    async getTimerUsageOn(userEmail) {
+        let q = "SELECT TimerUsageOn FROM UserPreferences"
         let data = await this.dbPromise(true, q, userEmail);
 
         if (data != false) {
@@ -290,12 +290,12 @@ class db {
     }
 
     /**
-     * Sets the boolean value for dataUsageOn
+     * Sets the boolean value for TimerUsageOn
      * @param {String} userEmail email (primary key)
-     * @param {Boolean} boolValue set DataUsageOn
+     * @param {Boolean} boolValue set TimerUsageOn
      * @returns true if no error
      */
-    async setDataUsageOn(userEmail, boolValue) {
+    async setTimerUsageOn(userEmail, boolValue) {
 
         // Check for undefined values
         let checkValues = await this.checkUndefined([userEmail, boolValue]);
@@ -305,7 +305,7 @@ class db {
 
         // Sets boolValue
         let i = boolValue ? true : false;
-        let q = "UPDATE UserPreferences SET dataUsageOn=" + i
+        let q = "UPDATE UserPreferences SET TimerUsageOn=" + i
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -352,9 +352,9 @@ class db {
      * @param {int} screenTime screen time spent on computer
      * @param {int} timerCount amount of times counter has been called
      * @param {date} usageDate number of days the usageDate is away from today
-     * @returns true if success in updating datausage records, false if fails
+     * @returns true if success in updating TimerUsage records, false if fails
      */
-    async setDataUsage(userEmail, screenTime, timerCount, usageDate) {
+    async setTimerUsage(userEmail, screenTime, timerCount, usageDate) {
 
         // Check for undefined values
         let checkValues = await this.checkUndefined([userEmail, screenTime, timerCount, usageDate]);
@@ -363,18 +363,21 @@ class db {
         }
 
         // Checks for existing record
-        let check = await this.check("DataUsage", userEmail, "", usageDate);
+        let check = await this.check("TimerUsage", userEmail, '', usageDate);
         let q = "";
+
 
         // Updates existing record
         if (check == "1") {
-            q = "UPDATE DataUsage SET screenTime= screenTime + " + screenTime + ", timerCount= timerCount + " + timerCount + 
+            q = "UPDATE TimerUsage SET screenTime= screenTime + " + screenTime + ", timerCount= timerCount + " + timerCount + 
                 " WHERE email='" + userEmail + "' AND usageDate='" + usageDate + "'";
         }
         // Creates existing record
         else {
-            q = "INSERT INTO DataUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + usageDate + "')";
+            q = "INSERT INTO TimerUsage VALUES('" + userEmail + "', " + screenTime + ", " + timerCount + ", '" + usageDate + "')";
         }
+
+        console.log(q);
 
         // Updates the database
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
@@ -391,9 +394,9 @@ class db {
      * @param {String} time TODAY, WEEK, MONTH, ALL (querying usageDate)
      * @returns JSON of records, false if fails (there are no records)
      */
-    async getDataUsage(userEmail, time) {
+    async getTimerUsage(userEmail, time) {
 
-        let q = "SELECT screenTime, timerCount, usageDate FROM DataUsage WHERE email='" + userEmail + "'"
+        let q = "SELECT screenTime, timerCount, usageDate FROM TimerUsage WHERE email='" + userEmail + "'"
         let q2 = await this.getQueryUsage(time);
         q = q + q2
 
@@ -503,10 +506,11 @@ class db {
      */
     async gettingInteger(data) {
         let splits = (JSON.stringify(data)).split(':');
-        let splits2 = (JSON.stringify(splits[1])).split('}')
-        let splits3 = (JSON.stringify(splits2[0])).split('\"')
+        return splits[1][0];
 
-        return splits3[2]
+        // let splits2 = (JSON.stringify(splits[1])).split('}')
+        // let splits3 = (JSON.stringify(splits2[0])).split('\"')
+        // return splits3[2]
     }
 
     /**
@@ -530,7 +534,7 @@ class db {
 
     /**
      * Checks if an entry exists in the table
-     * @param {String} table "AppUsage" or "DataUsage"
+     * @param {String} table "AppUsage" or "TimerUsage"
      * @param {String} userEmail email of user
      * @param {String} appName for "AppUsage"
      * @param {String} today the date of today
@@ -541,7 +545,7 @@ class db {
         let addq = ""
 
         // Checks if an entry for today exists in the database.
-        if (table == "DataUsage") {
+        if (table == "TimerUsage") {
             addq = table + " WHERE email='" + userEmail + "' AND usageDate='" + today + "')";
         }
         else if (table == "AppUsage") {
@@ -560,7 +564,7 @@ class db {
     }
 
     /**
-     * Gets the second half of a query for AppUsage/DataUsage where we 
+     * Gets the second half of a query for AppUsage/TimerUsage where we 
      * get a range of records back!
      * @param {String} time 
      */
@@ -597,7 +601,9 @@ class db {
      */
     async checkUndefined(list) {
         for (const item of list) {
+            console.log('item')
             if (typeof item === 'undefined' || item.length === 0 || item === null) {
+                console.log('test')
                 return false;
             }
         }

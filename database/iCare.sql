@@ -18,14 +18,14 @@ CREATE TABLE UserPreferences (
     notiInterval int DEFAULT 20,
     notiSound varchar(200) DEFAULT '/Leaf.ogg',
     notiSoundOn boolean DEFAULT TRUE,
-    dataUsageOn bool DEFAULT TRUE,
+    timerUsageOn bool DEFAULT TRUE,
     appUsageOn bool DEFAULT TRUE,
     PRIMARY KEY (email),
     FOREIGN KEY (email) REFERENCES Users (email)  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-# Table of Data Usage
-CREATE TABLE DataUsage (
+# Table of TimerUsage
+CREATE TABLE TimerUsage (
 	email varchar(50),
     screenTime int DEFAULT 0,				# Tracks amount of screentime in minutes
     timerCount int DEFAULT 0,			# Tracks amount of times the timer has been used
@@ -57,25 +57,25 @@ DELIMITER ;
 
 # Trigger: After creating a new user 
 # - creates the UserPreferences entry for the new user
-# - creates a starting datausage entry for the new user
+# - creates a starting TimerUsage entry for the new user
 DROP TRIGGER IF EXISTS AfterInsertUsers; 
 DELIMITER $$
 CREATE TRIGGER AfterInsertUsers AFTER INSERT ON Users
 FOR EACH ROW BEGIN
 		INSERT INTO UserPreferences (email) VALUES (NEW.email);
-        INSERT INTO DataUsage (email, usageDate) VALUES (NEW.email, CURDATE());
+        INSERT INTO TimerUsage (email, usageDate) VALUES (NEW.email, CURDATE());
 END;
 $$
 DELIMITER ;
 
-# Trigger: Creating a new DataUsage entry - sets the usageDate for the new DataUsage entry
-DROP TRIGGER IF EXISTS BeforeInsertDataUsage; 
+# Trigger: Creating a new timerUsage entry - sets the usageDate for the new timerUsage entry
+DROP TRIGGER IF EXISTS BeforeInsertTimerUsage; 
 DELIMITER $$
-CREATE TRIGGER BeforeInsertDataUsage BEFORE INSERT ON DataUsage
+CREATE TRIGGER BeforeInsertTimerUsage BEFORE INSERT ON TimerUsage
 FOR EACH ROW BEGIN
 	
     DECLARE usageOn bool;
-    SELECT dataUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
+    SELECT timerUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
     IF (!usageOn) THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";
@@ -84,14 +84,14 @@ END;
 $$
 DELIMITER ;
 
-# Trigger: Updating a DataUsage entry - updates the screentime/timesTimerUsed for the DataUsage entry
-DROP TRIGGER IF EXISTS BeforeUpdateDataUsage; 
+# Trigger: Updating a timerUsage entry - updates the screentime/timesTimerUsed for the timerUsage entry
+DROP TRIGGER IF EXISTS BeforeUpdateTimerUsage; 
 DELIMITER $$
-CREATE TRIGGER BeforeUpdateDataUsage BEFORE Update ON DataUsage
+CREATE TRIGGER BeforeUpdateTimerUsage BEFORE Update ON TimerUsage
 FOR EACH ROW BEGIN
 	
     DECLARE usageOn bool;
-    SELECT dataUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
+    SELECT timerUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
     IF (!usageOn) THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";
@@ -116,7 +116,7 @@ END;
 $$
 DELIMITER ;
 
-# Trigger: Updating a AppUsage entry - updates the screentime/timesTimerUsed for the AppUsage entry
+# Trigger: Updating a AppUsage entry - updates the the AppUsage entry
 DROP TRIGGER IF EXISTS BeforeUpdateAppUsage; 
 DELIMITER $$
 CREATE TRIGGER BeforeUpdateAppUsage BEFORE Update ON AppUsage

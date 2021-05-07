@@ -277,7 +277,7 @@ class db {
      * @param {String} userEmail email (primary key)
      * @returns boolean - dataUsageOn, false if fails
      */
-    async getDataUsageOn(userEmail) {
+    async getTimerUsageOn(userEmail) {
         let q = "SELECT dataUsageOn FROM UserPreferences"
         let data = await this.dbPromise(true, q, userEmail);
 
@@ -295,7 +295,7 @@ class db {
      * @param {Boolean} boolValue set DataUsageOn
      * @returns true if no error
      */
-    async setDataUsageOn(userEmail, boolValue) {
+    async setTimerUsageOn(userEmail, boolValue) {
 
         // Check for undefined values
         let checkValues = await this.checkUndefined([userEmail, boolValue]);
@@ -354,7 +354,7 @@ class db {
      * @param {date} usageDate number of days the usageDate is away from today
      * @returns true if success in updating datausage records, false if fails
      */
-    async setDataUsage(userEmail, screenTime, timerCount, usageDate) {
+    async setTimerUsage(userEmail, screenTime, timerCount, usageDate) {
 
         // Check for undefined values
         let checkValues = await this.checkUndefined([userEmail, screenTime, timerCount, usageDate]);
@@ -391,7 +391,7 @@ class db {
      * @param {String} time TODAY, WEEK, MONTH, ALL (querying usageDate)
      * @returns JSON of records, false if fails (there are no records)
      */
-    async getDataUsage(userEmail, time) {
+    async getTimerUsage(userEmail, time) {
 
         let q = "SELECT screenTime, timerCount, usageDate FROM DataUsage WHERE email='" + userEmail + "'"
         let q2 = await this.getQueryUsage(time);

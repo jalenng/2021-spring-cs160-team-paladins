@@ -277,9 +277,12 @@ const { route } = require('./index.js');
       }
 
       // Update App Usage
-      // let appUsage = req.body.appUsage;
-      // let auSuccess = false;
-      // auSuccess = await userDB.setAppUsage(email, 'VSCode', '50', new Date());
+      let appUsageObjects = req.body.appUsage;
+      let auSuccess = false;
+      for (const auObject of appUsageObjects) {
+        let row = JSON.parse(JSON.stringify(auObject));
+        auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
+      }
 
       // Response Codes
       if (tuSuccess == true && auSuccess == true) { 
@@ -292,27 +295,6 @@ const { route } = require('./index.js');
         res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update timer usage." })
       }
       else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage." }) }
-
-
-      // for (const duObject of timerUsageObjects) {
-      //   let row = JSON.parse(JSON.stringify(duObject));
-      //   duSuccess = await userDB.settimerUsage(email, row.screenTime, row.numBreaks, row.usageDate)
-      // }
-
-      // Update App Usage
-      // let appUsageObjects = req.body.appUsage;
-      // let auSuccess = false;
-
-      // for (const auObject of appUsageObjects) {
-      //   let row = JSON.parse(JSON.stringify(auObject));
-      //   auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
-      // }
-
-      // Response Codes
-      // if (duSuccess == true && auSuccess == true) { 
-      //   res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
-      // }
-      // else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update all data/app usage" }) }
 
     });
 

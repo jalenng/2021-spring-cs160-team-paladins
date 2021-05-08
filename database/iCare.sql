@@ -16,7 +16,7 @@ CREATE TABLE Users (
 CREATE TABLE UserPreferences (
 	email varchar(50),
     notiInterval int DEFAULT 20,
-    notiSound varchar(200) DEFAULT '/Leaf.ogg',
+    notiSound varchar(200) DEFAULT '../../sounds/Long Expected.mp3',
     notiSoundOn boolean DEFAULT TRUE,
     timerUsageOn bool DEFAULT TRUE,
     appUsageOn bool DEFAULT TRUE,
@@ -24,7 +24,7 @@ CREATE TABLE UserPreferences (
     FOREIGN KEY (email) REFERENCES Users (email)  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-# Table of TimerUsage
+# Table of Timer Usage
 CREATE TABLE TimerUsage (
 	email varchar(50),
     screenTime int DEFAULT 0,				# Tracks amount of screentime in minutes
@@ -78,13 +78,13 @@ FOR EACH ROW BEGIN
     SELECT timerUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
     IF (!usageOn) THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Timer Usage is Disabled";
     END IF;
 END;
 $$
 DELIMITER ;
 
-# Trigger: Updating a timerUsage entry - updates the screentime/timesTimerUsed for the timerUsage entry
+# Trigger: Updating a TimerUsage entry - updates the screentime/timesTimerUsed for the TimerUsage entry
 DROP TRIGGER IF EXISTS BeforeUpdateTimerUsage; 
 DELIMITER $$
 CREATE TRIGGER BeforeUpdateTimerUsage BEFORE Update ON TimerUsage
@@ -94,7 +94,7 @@ FOR EACH ROW BEGIN
     SELECT timerUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
     IF (!usageOn) THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Timer Usage is Disabled";
     END IF;
 END;
 $$
@@ -110,7 +110,7 @@ FOR EACH ROW BEGIN
     SELECT appUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
     IF (!usageOn) THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "App Usage is Disabled";
     END IF;
 END;
 $$
@@ -126,7 +126,7 @@ FOR EACH ROW BEGIN
     SELECT appUsageOn INTO usageOn FROM UserPreferences WHERE email=NEW.email;
     
     IF (!usageOn) THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Data Usage is Disabled";
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "App Usage is Disabled";
     END IF;
 END;
 $$

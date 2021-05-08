@@ -49,7 +49,7 @@ const { route } = require('./index.js');
       }
 
       // Check Password Length
-      if (password.length > 8) { 
+      if (password.length >= 8) { 
         let encrypted_pass = await api_methods.encryptPass(password);
         success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
       } else {
@@ -73,11 +73,13 @@ const { route } = require('./index.js');
       let email = req.body.email;
       let password = req.body.password;
 
-      // Checks for undefined email input
-      let checkValues =  await api_methods.chkValues("email", email)
-      if (Array.isArray(checkValues)) {
-        res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
-        return;
+      // Checks for undefined inputs
+      for (const item of [["email", email], ["password", password]]) {
+        let checkValues =  await api_methods.chkValues(item[0], item[1])
+        if (Array.isArray(checkValues)) {
+          res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
+          return;
+        }
       }
   
       // Checks password, Response Codes
@@ -196,7 +198,7 @@ const { route } = require('./index.js');
       if (notiInterval == notiSound == notiSoundOn == tUsageOn == aUsageOn == true) {
         res.status(200).send({
           notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
-          timerUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: tUsageOn }
+          dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: tUsageOn }
         });
       }
       else { res.status(504).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }); }
@@ -209,8 +211,8 @@ const { route } = require('./index.js');
       let notiInterval = req.body.notifications.interval;
       let notiSound = req.body.notifications.sound;
       let notiSoundOn = req.body.notifications.enableSound;
-      let tUsageOn = req.body.timerUsage.enableWeeklyUsageStats;
-      let aUsageOn = req.body.timerUsage.trackAppUsageStats;
+      let tUsageOn = req.body.dataUsage.enableWeeklyUsageStats;
+      let aUsageOn = req.body.dataUsage.trackAppUsageStats;
       let email = ""
  
       // Check Token
@@ -252,7 +254,7 @@ const { route } = require('./index.js');
           || (tUsage != false && aUsage.length === 0) || (tUsage.length === 0 && aUsage.length === 0)) { 
         res.status(200).send({ timerUsage: tUsage, appUsage: aUsage }) 
       }
-      else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data/app usage." }) }
+      else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage." }) }
     });
 
     // Updates the data usage of user
@@ -266,42 +268,33 @@ const { route } = require('./index.js');
       else { email = await userDB.getEmail(ct); }
 
       // Update Timer Usage
-      let dataUsage = req.body;
-      let timerUsage = dataUsage.timerUsage;
-      console.log('email' + email);
-      let tuSuccess = await userDB.setTimerUsage(email, timerUsage.screenTime, timerUsage.timerCount, timerUsage.usageDate);
+      let timerUsageObjects = req.body.timerUsage;
+      let tuSuccess = false;
 
-      // Update App Usage
-      // let appUsage = req.body.appUsage;
-      // let auSuccess = false;
-      // auSuccess = await userDB.setAppUsage(email, 'VSCode', '50', new Date());
-
-      // Response Codes
-      if (tuSuccess == true) { 
-        res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
+      for (const duObject of timerUsageObjects) {
+        let row = JSON.parse(JSON.stringify(duObject));
+        tuSuccess = await userDB.setTimerUsage(email, row.screenTime, row.timerCount, row.usageDate)
       }
-      else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update all data/app usage" }) }
-
-
-      // for (const duObject of timerUsageObjects) {
-      //   let row = JSON.parse(JSON.stringify(duObject));
-      //   duSuccess = await userDB.settimerUsage(email, row.screenTime, row.numBreaks, row.usageDate)
-      // }
 
       // Update App Usage
-      // let appUsageObjects = req.body.appUsage;
-      // let auSuccess = false;
-
-      // for (const auObject of appUsageObjects) {
-      //   let row = JSON.parse(JSON.stringify(auObject));
-      //   auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
-      // }
+      let appUsageObjects = req.body.appUsage;
+      let auSuccess = false;
+      for (const auObject of appUsageObjects) {
+        let row = JSON.parse(JSON.stringify(auObject));
+        auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
+      }
 
       // Response Codes
-      // if (duSuccess == true && auSuccess == true) { 
-      //   res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
-      // }
-      // else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update all data/app usage" }) }
+      if (tuSuccess == true && auSuccess == true) { 
+        res.status(200).send({ reason: "SUCCESS", message: "Updated data usage." });  
+      }
+      else if (tuSuccess == true && auSuccess == false) {
+        res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update app usage." })
+      }
+      else if (tuSuccess == false && auSuccess == true) {
+        res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update timer usage." })
+      }
+      else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage." }) }
 
     });
 

@@ -50,36 +50,16 @@ store.onDidChange('preferences.blockers.apps', () => {
 
 
 /*---------------------------------------------------------------------------*/
-/* Update blockers when the power state updates */
-
-// Add a blocker if switched to battery power
-powerMonitor.on('on-battery', () => {
-    if (global.store.get('preferences.blockers.blockOnBattery')) 
-        blockerSystem.add({
-            type: 'other',
-            key: 'batteryPower',
-            message: 'Your computer is running on battery power.'
-        });
-});
-
-// Remove the blocker if switched to AC power
-powerMonitor.on('on-ac', () => {
-    if (global.store.get('preferences.blockers.blockOnBattery')) 
-        blockerSystem.remove('other', 'batteryPower');
-});
-
-
-/*---------------------------------------------------------------------------*/
 /* Configure event listeners and connect the various systems */
 
 // Start break when timer ends
-timerSystem.on('timer-end', () => breakSystem.start()); 
+timerSystem.on('timer-end', () => breakSystem.start());
 
 // Create notification windows when break starts
-breakSystem.on('break-start', () => notificationSystem.createWindows());  
+breakSystem.on('break-start', () => notificationSystem.createWindows());
 
 // Minimize notification when the break time is set/reset
-breakSystem.on('break-times-set', () => notificationSystem.minimize()); 
+breakSystem.on('break-times-set', () => notificationSystem.minimize());
 
 // Expand notification when the break time is past the intermediate point
 breakSystem.on('break-intermediate', () => notificationSystem.maximize());
@@ -101,6 +81,37 @@ blockerSystem.on('blocker-detected', () => timerSystem.block());
 
 // Unblock the timer when all blockers are cleared
 blockerSystem.on('blockers-cleared', () => timerSystem.unblock());
+
+
+/*---------------------------------------------------------------------------*/
+/* Update blockers when the power state updates */
+
+// If on battery when the app is open, add a blocker
+
+if (powerMonitor.isOnBatteryPower()) {
+    if (global.store.get('preferences.blockers.blockOnBattery'))
+        blockerSystem.add({
+            type: 'other',
+            key: 'batteryPower',
+            message: 'Your computer is running on battery power.'
+        });
+}
+
+// Add a blocker if switched to battery power
+powerMonitor.on('on-battery', () => {
+    if (global.store.get('preferences.blockers.blockOnBattery'))
+        blockerSystem.add({
+            type: 'other',
+            key: 'batteryPower',
+            message: 'Your computer is running on battery power.'
+        });
+});
+
+// Remove the blocker if switched to AC power
+powerMonitor.on('on-ac', () => {
+    if (global.store.get('preferences.blockers.blockOnBattery'))
+        blockerSystem.remove('other', 'batteryPower');
+});
 
 
 /*---------------------------------------------------------------------------*/

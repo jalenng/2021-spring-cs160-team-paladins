@@ -43,9 +43,7 @@ export default class UsageScreen extends React.Component {
           paddingBottom: "260px",
           paddingRight: "40px"
         }}>
-
           {usagePage}
-
         </ScrollablePane>
                 
         <UsageSidebar

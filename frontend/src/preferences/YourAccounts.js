@@ -34,7 +34,6 @@ export default class extends React.Component {
         return (
 
             <Stack id="your_accounts" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
-
                 <Stack horizontal
                     verticalAlign="center"
                     tokens={{ childrenGap: 16 }} >

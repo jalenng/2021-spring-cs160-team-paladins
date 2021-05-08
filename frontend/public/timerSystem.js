@@ -13,7 +13,6 @@ const states = {
 const TimerSystem = function(){
 
     this._events = {};
-
     this.timeout;
     this.state = states.PAUSED;
     this.endDate = new Date();  // When the timer will end
@@ -23,6 +22,8 @@ const TimerSystem = function(){
     // Initialize unsynced timer usage tracking
     let timerCount = global.store.get('dataUsage.unsynced.timerUsage.timerCount');
     global.store.set('dataUsage.unsynced.timerUsage.timerCount', 0);
+
+
 
     /**
      * Registers an event listener
@@ -171,6 +172,7 @@ ipcMain.handle('timer-reset', () => {
 ipcMain.handle('timer-end', () => {
     // Increments the unsynced timer/break count.
     let dataUsagePath = 'dataUsage.unsynced.timerUsage.timerCount'
+    console.log(dataUsagePath);
     global.store.set(dataUsagePath, global.store.get(dataUsagePath)+1);
 
     // Ends the timer

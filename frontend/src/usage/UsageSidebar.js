@@ -66,19 +66,14 @@ export default class UsageSidebar extends React.Component {
         if (!result.success) {
             store.messages.add({
                 type: MessageBarType.error,
-                contents: `Failed to update data usage: ${result.data.message}`
+                contents: `Failed to push latest data usage changes: ${result.data.message}`
             });
         } 
         else {
+          console.log("SUCCESS 1");
           store.dataUsage.reset();
           this.dataUsage = store.dataUsage.getAll();
         }
-        // else {
-        //   console.log(this.dataUsage.unsynced.timerUsage.screenTime);
-        //   store.dataUsage.reset();
-        //   let screenTime = store.dataUsage.getAll().unsynced.timerUsage.screenTime;
-        //   console.log(screenTime);
-        // }
     })
 
     // Fetch the latest changes
@@ -89,9 +84,13 @@ export default class UsageSidebar extends React.Component {
         if (!result.success) {
             store.messages.add({
                 type: MessageBarType.error,
-                contents: `Failed to retrieve data usage: ${result.data.message}`
+                contents: `Failed to retrieve latest data usage: ${result.data.message}`
             });
         } 
+        else {
+          console.log("SUCCESS 2");
+          console.log(this.dataUsage.fetched.timerUsage);
+        }
         // else {
         //   console.log('after fetched');
         //   console.log(this.dataUsage.fetched.timerUsage);

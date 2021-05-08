@@ -65,19 +65,11 @@ const accountsStoreDefaults = {
 const dataUsageDefaults = {
     unsynced: {
         appUsage: [],
-        timerUsage: {
-            screenTime: 0,
-            timerCount: 0,
-            usageDate: new Date(),
-        }
+        timerUsage: []
     },
     fetched: {
         appUsage: [],
-        timerUsage: {
-            screenTime: 0,
-            timerCount: 0,
-            usageDate: new Date(),
-        }
+        timerUsage: []
     }
 }
 
@@ -315,27 +307,41 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
 // // GET - /data
 ipcMain.handle('fetch-data-usage', async (event) => {
     const successCallback = (res) => store.set('dataUsage.fetched', res.data);
+    console.log(store.get('dataUsage.fetched'));
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
 })
 
 // Update data usage on the backend
 // PUT - /data
 ipcMain.handle('push-data-usage', async (event) => {
-    const data = store.get('dataUsage.unsynced');
+    // const data = store.get('dataUsage.unsynced');
+    // console.log(data);
+    
+    data = {
+        appUsage: [
+            {
+                appName: 'Task Switching',                     
+                appTime: 10000,
+                usageDate: '2021-05-06' 
+            }
+        ],
+        timerUsage: [
+            {
+                screenTime: 50,
+                timerCount: 5,
+                usageDate: '2021-05-06',
+            }
+        ]
+    }
+
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
 ipcMain.handle('reset-data-usage', async(event) => {
-
-    let timerUsageDefaults = {
-        screenTime: 0,
-        timerCount: 0,
-        usageDate: new Date(),
-    }
-
-    store.set('dataUsage.unsynced.timerUsage', timerUsageDefaults);
+    store.set('dataUsage.unsynced.timerUsage', dataUsageDefaults);
     console.log(store.get('dataUsage.unsynced.timerUsage'));
 })
+
 
 // Fetch insights from the backend
 // GET - /data/insights

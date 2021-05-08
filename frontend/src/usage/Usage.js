@@ -28,7 +28,7 @@ export default class Usage {
   
   // Gets usage for the specified date from given list of objects.
   // Returns the data usage for specified date from given usage list. 
-  getUsage(dateFormatted, usageList) {
+  getUsage(usageList, dateFormatted, ) {
     // will remove when db stops storing values with attached string.
     var todaysDate = dateFormatted + 'T00:00:00.000Z';
     var i;

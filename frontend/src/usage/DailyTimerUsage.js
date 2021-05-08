@@ -9,7 +9,7 @@ export default class DailyTimerUsage extends React.Component {
   constructor(props) {
     super(props);
     let usage = new Usage();
-    this.fetched = usage.getUsage(usage.todayFormatted, usage.state.fetched.timerUsage);
+    this.fetched = usage.getUsage(usage.state.fetched.timerUsage, usage.todayFormatted);
     let weeklyUsage = usage.getPastWeek();
     console.log(weeklyUsage);
 

@@ -12,11 +12,18 @@ export default class BarChart extends React.Component {
     let weeklyUsage = usage.getPastWeek();
     this.labels = weeklyUsage.names;
 
-    this.screenTime = 0;
-    this.timerCount = 0;
-    if (this.fetched != null) {
-      this.screenTime += this.fetched.screenTime;
-      this.timerCount += this.fetched.timerCount;
+    this.formatted = weeklyUsage.formatted;
+    console.log(this.formatted);
+    var i;
+    this.timerUsage = {
+      screenUsage:  [],
+      timerCount: []
+    }
+    for (i=0; i < this.formatted.length; i++) {
+      let usageObj = usage.getUsage(usage.state.fetched.timerUsage, this.formatted[i]);
+      console.log(usageObj);
+      this.timerUsage.screenUsage.push(usageObj.screenTime);
+      this.timerUsage.timerCount.push(usageObj.timerCount);
     }
   }
 
@@ -30,7 +37,7 @@ export default class BarChart extends React.Component {
             datasets: [
               {
                 label: "Total usage (hours)",
-                data: [5, 6, 6.5, 6, 8, 3, 5],
+                data: this.timerUsage.screenUsage,
                 backgroundColor: [
                   "rgba(72, 121, 240, 1)",
                   "rgba(72, 121, 240, 1)",
@@ -44,7 +51,7 @@ export default class BarChart extends React.Component {
               },
               {
                 label: "Total # of breaks",
-                data: [15, 18, 20, 20, 24, 9, 15],
+                data: this.timerUsage.timerCount,
                 backgroundColor: "lightblue",
               },
             ],

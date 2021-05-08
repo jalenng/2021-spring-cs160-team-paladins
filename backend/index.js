@@ -49,7 +49,7 @@ const { route } = require('./index.js');
       }
 
       // Check Password Length
-      if (password.length > 8) { 
+      if (password.length >= 8) { 
         let encrypted_pass = await api_methods.encryptPass(password);
         success = await userDB.createUser(email, encrypted_pass, dName).then((result) => { return result; }); 
       } else {
@@ -73,11 +73,13 @@ const { route } = require('./index.js');
       let email = req.body.email;
       let password = req.body.password;
 
-      // Checks for undefined email input
-      let checkValues =  await api_methods.chkValues("email", email)
-      if (Array.isArray(checkValues)) {
-        res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
-        return;
+      // Checks for undefined inputs
+      for (const item of [["email", email], ["password", password]]) {
+        let checkValues =  await api_methods.chkValues(item[0], item[1])
+        if (Array.isArray(checkValues)) {
+          res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
+          return;
+        }
       }
   
       // Checks password, Response Codes

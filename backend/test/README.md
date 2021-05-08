@@ -4,7 +4,9 @@ The backend api testing is done using Postman.
 The link below consists of the Postman collection of backend api tests for our iCare application. You will not be able to run it because it requires the environment, which I cannot share. As such, I have an image of the runner in Postman successfully running the tests.
 POSTMAN: [Backend API Tests](https://www.getpostman.com/collections/fcd8a3e81ecbc02034b1)
 
-In this backend folder, there are two JSON files that I exported from Postman that will run the tests when you npm start in the backend.
+In this folder, there are two JSON files that I exported from Postman that will run the tests using the following command:
+`node test.js`
+
 This should give you the result below:
 ```
 iCare Testing (Local Host)

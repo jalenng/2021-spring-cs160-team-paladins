@@ -4,10 +4,10 @@
   "description": "iCare",
   "version": "0.1.0",
   "repository": "https://github.com/jalenng/2021-spring-cs160-team-paladins",
-  "url" : "https://jalenng.github.io/2021-spring-cs160-team-paladins",
+  "url": "https://jalenng.github.io/2021-spring-cs160-team-paladins",
   "author": {
     "name": "Team Paladins",
-    "email" : "null@null.com"
+    "email": "null@null.com"
   },
   "private": true,
   "build": {

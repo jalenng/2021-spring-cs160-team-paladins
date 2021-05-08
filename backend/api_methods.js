@@ -5,7 +5,7 @@ cryptr = new Cryptr('myTotalySecretKey');
 
 // Database Connection
 let db = require('./db.js');
-let userDB = new db("localhost", "newuser", "password", "iCare");
+let userDB = new db("localhost", "newuser", "", "iCare");
 
 // Token Methods
 let tokenClass = require('./token.js')
@@ -147,8 +147,8 @@ class api_methods {
     */
    async usageInsights(email) {
        
-       let dataUsage = await userDB.getDataUsage(email, "WEEK");
-       let dataAggregate = await this.getDataAggregation(dataUsage);
+       let timerUsage = await userDB.getTimerUsage(email, "WEEK");
+       let dataAggregate = await this.getDataAggregation(timerUsage);
        let data = JSON.parse(JSON.stringify(dataAggregate));
 
        let usageInsights = [

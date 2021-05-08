@@ -3,7 +3,7 @@ let assert = require('assert')
 
 // Database Connection
 let db = require('./db.js')
-const userDB = new db("localhost", "newuser", "password", "iCare");
+const userDB = new db("localhost", "newuser", "", "iCare");
 
 // API Methods
 let apiM = require('./api_methods.js');
@@ -302,8 +302,6 @@ describe('Notification Sound  On (user preferences)', () => {
     });
 
 });
-
-
 
 let timePeriod = "WEEK"
 

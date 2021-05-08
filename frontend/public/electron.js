@@ -194,6 +194,11 @@ ipcMain.on('is-dev', (event) => {
     event.returnValue = isDev;
 })
 
+// Get the name of the current platform. https://nodejs.org/api/process.html#process_process_platform
+ipcMain.on('get-platform', (event) => {
+    event.returnValue = process.platform;
+})
+
 // Get info about the app
 ipcMain.on('get-about-info', (event) => {
     let aboutInfo = {

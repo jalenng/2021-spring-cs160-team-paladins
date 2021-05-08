@@ -1,9 +1,24 @@
 import React from "react";
 import { Bar, defaults } from "react-chartjs-2"
+import Usage from "./Usage.js"
 
 defaults.global.tooltips.enabled = true;
 
 export default class BarChart extends React.Component {
+
+  constructor(props) {
+    super(props);
+    let usage = new Usage();
+    let weeklyUsage = usage.getPastWeek();
+    this.labels = weeklyUsage.names;
+
+    this.screenTime = 0;
+    this.timerCount = 0;
+    if (this.fetched != null) {
+      this.screenTime += this.fetched.screenTime;
+      this.timerCount += this.fetched.timerCount;
+    }
+  }
 
   render() {
 
@@ -11,15 +26,7 @@ export default class BarChart extends React.Component {
       <div>
         <Bar
           data={{
-            labels: [
-              "Sunday",
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday",
-              "Saturday",
-            ],
+            labels: this.labels,
             datasets: [
               {
                 label: "Total usage (hours)",

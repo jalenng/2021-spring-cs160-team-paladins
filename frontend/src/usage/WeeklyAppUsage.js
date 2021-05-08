@@ -1,69 +1,78 @@
 import React from "react";
-import { Pie, defaults} from "react-chartjs-2";
+import { Bar, defaults } from "react-chartjs-2"
+import Usage from "./Usage.js"
 
 defaults.global.tooltips.enabled = true;
 
-export default class WeeklyAppUsage extends React.Component {
+export default class BarChart extends React.Component {
 
   constructor(props) {
     super(props);
-    // Get data usage values.
-    this.dataUsage = store.dataUsage.getAll();
-    this.appUsage = this.dataUsage.unsynced.appUsage;
-    this.labels = [];
-    this.usage = [];
-    for (var i=0; i < this.appUsage.length; i++) {
-      this.labels.push(this.appUsage[i].appName);
-      this.usage.push(this.appUsage[i].appTime);
+    let usage = new Usage();
+    let weeklyUsage = usage.getPastWeek();
+    this.labels = weeklyUsage.names;
+
+    this.screenTime = 0;
+    this.timerCount = 0;
+    if (this.fetched != null) {
+      this.screenTime += this.fetched.screenTime;
+      this.timerCount += this.fetched.timerCount;
     }
   }
 
   render() {
+
     return (
       <div>
-        <Pie
+        <Bar
           data={{
             labels: this.labels,
             datasets: [
               {
-                data: this.usage,
+                label: "Total usage (hours)",
+                data: [5, 6, 6.5, 6, 8, 3, 5],
                 backgroundColor: [
-                  "rgba(255, 99, 132, 0.2)",
-                  "rgba(54, 162, 235, 0.2)",
-                  "rgba(255, 206, 86, 0.2)",
-                  "rgb(219,112,147, 0.2)",
-                  "rgba(75, 192, 192, 0.2)",
-                  "rgba(153, 102, 255, 0.2)",
-                  "rgba(255, 159, 64, 0.2)",
-                  "rgba(30, 130, 76, 0.2)",
-                  "rgba(149, 165, 166, 0.2)",
-                  "rgba(46, 49, 49, 1)",
+                  "rgba(72, 121, 240, 1)",
+                  "rgba(72, 121, 240, 1)",
+                  "rgba(72, 121, 240, 1)",
+                  "rgba(72, 121, 240, 1)",
+                  "rgba(72, 121, 240, 1)",
+                  "rgba(72, 121, 240, 1)",
+                  "rgba(72, 121, 240, 1)",
+                  "rgba(72, 121, 240, 1)",
                 ],
-                borderColor: [
-                  "rgba(255, 99, 132, 1)",
-                  "rgba(54, 162, 235, 1)",
-                  "rgba(255, 206, 86, 1)",
-                  "rgb(219,112,147, 1)",
-                  "rgba(75, 192, 192, 1)",
-                  "rgba(153, 102, 255, 1)",
-                  "rgba(255, 159, 64, 1)",
-                  "rgba(30, 130, 76, 1)",
-                  "rgba(149, 165, 166, 1)",
-                  "rgba(46, 49, 49, 1)",
-                ],
-                borderWidth: 1,
+              },
+              {
+                label: "Total # of breaks",
+                data: [15, 18, 20, 20, 24, 9, 15],
+                backgroundColor: "lightblue",
               },
             ],
           }}
           height={400}
-          width={800}
+          width={30}
           options={{
             title: {
               display: true,
-              text: "Daily App Usage",
+              text: "Weekly Timer Usage",
               fontColor: "#FFFFFF",
               fontSize: 15,
               padding: 10,
+            },
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    beginAtZero: true,
+                    fontColor: "#FFFFFF",
+                  },
+                },
+              ],
+              xAxes: [
+                {
+                  ticks: { fontColor: "#FFFFFF" },
+                },
+              ],
             },
             maintainAspectRatio: false,
             legend: {

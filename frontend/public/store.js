@@ -322,14 +322,14 @@ ipcMain.handle('push-data-usage', async (event) => {
             {
                 appName: 'Task Switching',                     
                 appTime: 10000,
-                usageDate: '2021-05-07' 
+                usageDate: '2021-05-08' 
             }
         ],
         timerUsage: [
             {
                 screenTime: 50,
                 timerCount: 5,
-                usageDate: '2021-05-07',
+                usageDate: '2021-05-08',
             }
         ]
     }

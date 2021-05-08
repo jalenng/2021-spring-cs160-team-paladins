@@ -10,7 +10,8 @@ export default class DailyTimerUsage extends React.Component {
     super(props);
     let usage = new Usage();
     this.fetched = usage.getUsage(usage.todayFormatted, usage.state.fetched.timerUsage);
-    console.log(this.fetched);
+    let weeklyUsage = usage.getPastWeek();
+    console.log(weeklyUsage);
 
     this.screenTime = 0;
     this.timerCount = 0;

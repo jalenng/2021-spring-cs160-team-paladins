@@ -20,9 +20,9 @@ const navLinkGroups = [
     {
         links: [
             {
-                name: 'Accounts',
+                name: 'Account',
                 icon: 'ContactInfo',
-                key: 'your_accounts'
+                key: 'account'
             },
             {
                 name: 'Notifications',

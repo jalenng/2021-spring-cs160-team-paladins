@@ -257,7 +257,7 @@ const { route } = require('./index.js');
       else { res.status(504).send({ reason: "GET_REQUEST_FAILED", message: "Couldn't get data usage." }) }
     });
 
-    // Updates the data/app usage of user
+    // Updates the data usage of user
     router.put('/data', async (req, res) => {
       let token = req.headers.auth;
       let email = ""
@@ -291,10 +291,10 @@ const { route } = require('./index.js');
         res.status(200).send({ reason: "SUCCESS", message: "Updated data usage." });  
       }
       else if (tuSuccess == true && auSuccess == false) {
-        res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update timer usage." })
+        res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update app usage." })
       }
       else if (tuSuccess == false && auSuccess == true) {
-        res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update app usage." })
+        res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update timer usage." })
       }
       else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage." }) }
 

@@ -1,5 +1,7 @@
 import React from "react";
 
+import DialogSpinner from "./DialogSpinner";
+
 import { IconButton } from '@fluentui/react/lib/Button';
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 import { Stack } from '@fluentui/react/lib/Stack';
@@ -11,17 +13,9 @@ import {
     DocumentCardActions
 } from '@fluentui/react/lib/DocumentCard';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
-
-const { ipcRenderer } = window.require('electron');
-
-const { getAllInsights } = require('./storeHelperFunctions');
-
+import { MessageBarType } from '@fluentui/react/lib/MessageBar';
 
 const divStyle = {
-    MozUserSelect: "none",
-    WebkitUserSelect: "none",
-    msUserSelect: "none",
-
     paddingTop: '10px',
     paddingLeft: '30px'
 };
@@ -47,46 +41,67 @@ export default class InsightsScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            cards: getAllInsights().cards
+            cards: store.insights.getAll().cards
         };
+        this.handleRefreshBtn = this.handleRefreshBtn.bind(this);
     };
 
     componentDidMount() {
         // Update this component's state when insights are updated
-        ipcRenderer.on('insights-store-changed', () => {
+        store.insights.eventSystem.on('changed', () => {
             this.updateState();
         })
     };
 
+    setSpinner(isLoading) {
+        let state = this.state;
+        state.isLoading = isLoading;
+        this.setState(state);
+    }
+
+    handleRefreshBtn() {
+        this.setSpinner(true);
+        store.insights.fetch()
+            .then(result => {
+                if (!result.success) {
+                    store.messages.add({
+                        type: MessageBarType.error,
+                        contents: `Failed to retrieve insights: ${result.data.message}`
+                    });
+                } 
+                this.setSpinner(false);
+            });
+    }
+
     updateState() {
         this.setState({
-            cards: getAllInsights().cards
+            cards: store.insights.getAll().cards
         });
     };
 
     render() {
 
         // Map all card objects in the state to React components
-        const cards = this.state.cards.map( card => {
+        const cards = this.state.cards.map(card => {
             return (
                 <DocumentCard styles={cardStyles} >
-    
+
                     {/* Card image */}
-                    <DocumentCardImage 
-                        height={100} 
-                        imageFit={ImageFit.cover} 
+                    <DocumentCardImage
+                        height={100}
+                        imageFit={ImageFit.cover}
                         iconProps={{
                             iconName: 'RedEye',
                             styles: { root: { color: '#ffffff', fontSize: '96px', width: '96px', height: '96px' } }
                         }}
                     />
-    
+
                     {/* Card contents/stack */}
                     <Stack style={cardStackStyle} tokens={{ childrenGap: 8 }}>
                         <Text variant="large" block> {card.header} </Text>
                         <Text block> {card.content} </Text>
                     </Stack>
-    
+
                     {/* Card action buttons */}
                     <DocumentCardActions actions={[
                         {
@@ -98,10 +113,10 @@ export default class InsightsScreen extends React.Component {
                             onClick: () => { alert('Dislike clicked') }
                         }
                     ]} />
-    
+
                 </DocumentCard>
             );
-        });     
+        });
 
         // Create the Insights screen
         return (
@@ -117,7 +132,7 @@ export default class InsightsScreen extends React.Component {
                     <TooltipHost content="Refresh">
                         <IconButton
                             iconProps={{ iconName: 'Refresh' }}
-                            onClick={() => alert('Refresh clicked') }
+                            onClick={this.handleRefreshBtn}
                         />
                     </TooltipHost>
                 </Stack>
@@ -130,14 +145,16 @@ export default class InsightsScreen extends React.Component {
                     paddingBottom: "260px",
                     paddingRight: "40px"
                 }}>
-
                     {cards}
-
                 </ScrollablePane>
+
+                <DialogSpinner
+                    show={this.state.isLoading}
+                    text='Retrieving your insights'
+                />
 
             </div>
 
         );
     }
 }
-

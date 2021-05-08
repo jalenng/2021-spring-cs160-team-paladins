@@ -1,20 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Dialog } from '@fluentui/react/lib/Dialog';
+import DialogSpinner from "../DialogSpinner";
+
 import { Text } from '@fluentui/react/lib/Text';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
-
-const { signIn } = require('../storeHelperFunctions');
 
 const divStyle = {
-    MozUserSelect: 'none',
-    WebkitUserSelect: 'none',
-    msUserSelect: 'none',
-
     paddingTop: '10px',
     paddingLeft: '30px',
 };
@@ -67,7 +61,7 @@ export default class extends React.Component {
         let email = state.inputs.email;
         let password = state.inputs.password;
 
-        signIn(email, password)
+        store.accounts.signIn(email, password)
             .then(result => {
 
                 // If sign-in was successful, close the window
@@ -115,13 +109,14 @@ export default class extends React.Component {
                             tokens={{ childrenGap: 20 }}>
 
                             <PrimaryButton
+                                id='submitButton'
                                 text='Sign in'
                                 type='submit'
                                 onClick={this.handleSubmit}
                             />
 
                             <Link to='/signup'>
-                                <ActionButton> Don't have an account? </ActionButton>
+                                <ActionButton id='noAccountLink'> Don't have an account? </ActionButton>
                             </Link>
 
                         </Stack>
@@ -129,11 +124,10 @@ export default class extends React.Component {
                     </Stack>
                 </form>
 
-                {/* Spinner that shows when loading */}
-                <Dialog hidden={!this.state.isLoading}>
-                    <Spinner 
-                    label='Signing you in' size={SpinnerSize.large} />
-                </Dialog>
+                <DialogSpinner
+                    show={this.state.isLoading}
+                    text='Signing you in'
+                />
 
             </div>
         );

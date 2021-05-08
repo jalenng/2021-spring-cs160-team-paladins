@@ -274,7 +274,7 @@ const { route } = require('./index.js');
 
       for (const duObject of timerUsageObjects) {
         let row = JSON.parse(JSON.stringify(duObject));
-        duSuccess = await userDB.setTimerUsage(email, row.screenTime, row.numBreaks, row.usageDate)
+        duSuccess = await userDB.setTimerUsage(email, row.screenTime, row.timerCount, row.usageDate)
       }
 
       // Update App Usage

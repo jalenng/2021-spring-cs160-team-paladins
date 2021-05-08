@@ -8,7 +8,8 @@ const preferencesStoreDefaults = {
     notifications: {
         enableSound: true,
         interval: 20,
-        sound: '../../sounds/Long Expected.mp3'
+        sound: '../../sounds/Long Expected.mp3',
+        soundVolume: 100
     },
     dataUsage: {
         trackAppUsageStats: true,

@@ -38,8 +38,6 @@ export default class extends React.Component {
 
                 {/* Version info */}
                 <Stack {...level2Props}>
-                    <Text variant={'xLarge'} block> About </Text>
-
                     <Stack {...level2HorizontalProps}>
                         
                         <Image

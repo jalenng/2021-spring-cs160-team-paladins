@@ -22,7 +22,6 @@ module.exports = function() {
         const nowMonth = ("00" + (now.getMonth() + 1)).substr(-2, 2);
         const nowDate = ("00" + now.getDate()).substr(-2, 2);
         const timestampString = `${nowYear}-${nowMonth}-${nowDate}`;
-        console.log(timestampString);
 
         // Update app usage
         let appUsage = global.store.get('dataUsage.unsynced.appUsage');
@@ -56,7 +55,6 @@ module.exports = function() {
         })
 
         global.store.set('dataUsage.unsynced.appUsage', appUsage)
-        // console.log(store.get('dataUsage.unsynced.appUsage'))
     }
 
     /**

@@ -198,7 +198,11 @@ const { route } = require('./index.js');
       if (notiInterval == notiSound == notiSoundOn == tUsageOn == aUsageOn == true) {
         res.status(200).send({
           notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
+<<<<<<< HEAD
           dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: tUsageOn }
+=======
+          timerUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: tUsageOn }
+>>>>>>> origin/api-update
         });
       }
       else { res.status(504).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }); }
@@ -211,8 +215,13 @@ const { route } = require('./index.js');
       let notiInterval = req.body.notifications.interval;
       let notiSound = req.body.notifications.sound;
       let notiSoundOn = req.body.notifications.enableSound;
+<<<<<<< HEAD
       let tUsageOn = req.body.dataUsage.enableWeeklyUsageStats;
       let aUsageOn = req.body.dataUsage.trackAppUsageStats;
+=======
+      let tUsageOn = req.body.timerUsage.enableWeeklyUsageStats;
+      let aUsageOn = req.body.timerUsage.trackAppUsageStats;
+>>>>>>> origin/api-update
       let email = ""
  
       // Check Token
@@ -267,8 +276,8 @@ const { route } = require('./index.js');
       if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
       else { email = await userDB.getEmail(ct); }
 
-      //------------------------
       // Update Timer Usage
+<<<<<<< HEAD
       let timerUsageObjects = req.body.timerUsage;
       let tuSuccess = false;
 
@@ -276,17 +285,20 @@ const { route } = require('./index.js');
         let row = JSON.parse(JSON.stringify(duObject));
         tuSuccess = await userDB.setTimerUsage(email, row.screenTime, row.timerCount, row.usageDate)
       }
+=======
+      let dataUsage = req.body;
+      let timerUsage = dataUsage.timerUsage;
+      console.log('email' + email);
+      let tuSuccess = await userDB.setTimerUsage(email, timerUsage.screenTime, timerUsage.timerCount, timerUsage.usageDate);
+>>>>>>> origin/api-update
 
       // Update App Usage
-      let appUsageObjects = req.body.appUsage;
-      let auSuccess = false;
-
-      for (const auObject of appUsageObjects) {
-        let row = JSON.parse(JSON.stringify(auObject));
-        auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
-      }
+      // let appUsage = req.body.appUsage;
+      // let auSuccess = false;
+      // auSuccess = await userDB.setAppUsage(email, 'VSCode', '50', new Date());
 
       // Response Codes
+<<<<<<< HEAD
       if (tuSuccess == true && auSuccess == true) { 
         res.status(200).send({ reason: "SUCCESS", message: "Updated data usage." });  
       }
@@ -295,8 +307,33 @@ const { route } = require('./index.js');
       }
       else if (tuSuccess == false && auSuccess == true) {
         res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update timer usage." })
+=======
+      if (tuSuccess == true) { 
+        res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
+>>>>>>> origin/api-update
       }
       else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update data usage." }) }
+
+
+      // for (const duObject of timerUsageObjects) {
+      //   let row = JSON.parse(JSON.stringify(duObject));
+      //   duSuccess = await userDB.settimerUsage(email, row.screenTime, row.numBreaks, row.usageDate)
+      // }
+
+      // Update App Usage
+      // let appUsageObjects = req.body.appUsage;
+      // let auSuccess = false;
+
+      // for (const auObject of appUsageObjects) {
+      //   let row = JSON.parse(JSON.stringify(auObject));
+      //   auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
+      // }
+
+      // Response Codes
+      // if (duSuccess == true && auSuccess == true) { 
+      //   res.status(200).send({ reason: "SUCCESS", message: "Updated data/app usage" });  
+      // }
+      // else { res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update all data/app usage" }) }
 
     });
 

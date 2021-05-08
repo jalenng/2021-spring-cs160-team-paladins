@@ -57,7 +57,7 @@ DELIMITER ;
 
 # Trigger: After creating a new user 
 # - creates the UserPreferences entry for the new user
-# - creates a starting timerusage entry for the new user
+# - creates a starting TimerUsage entry for the new user
 DROP TRIGGER IF EXISTS AfterInsertUsers; 
 DELIMITER $$
 CREATE TRIGGER AfterInsertUsers AFTER INSERT ON Users
@@ -68,7 +68,7 @@ END;
 $$
 DELIMITER ;
 
-# Trigger: Creating a new TimerUsage entry - sets the usageDate for the new TimerUsage entry
+# Trigger: Creating a new timerUsage entry - sets the usageDate for the new timerUsage entry
 DROP TRIGGER IF EXISTS BeforeInsertTimerUsage; 
 DELIMITER $$
 CREATE TRIGGER BeforeInsertTimerUsage BEFORE INSERT ON TimerUsage
@@ -116,7 +116,7 @@ END;
 $$
 DELIMITER ;
 
-# Trigger: Updating a AppUsage entry - updates the screentime/timesTimerUsed for the AppUsage entry
+# Trigger: Updating a AppUsage entry - updates the the AppUsage entry
 DROP TRIGGER IF EXISTS BeforeUpdateAppUsage; 
 DELIMITER $$
 CREATE TRIGGER BeforeUpdateAppUsage BEFORE Update ON AppUsage

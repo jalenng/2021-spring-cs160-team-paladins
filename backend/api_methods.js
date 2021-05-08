@@ -147,13 +147,8 @@ class api_methods {
     */
    async usageInsights(email) {
        
-<<<<<<< HEAD
        let timerUsage = await userDB.getTimerUsage(email, "WEEK");
        let dataAggregate = await this.getDataAggregation(timerUsage);
-=======
-       let dataUsage = await userDB.getTimerUsage(email, "WEEK");
-       let dataAggregate = await this.getDataAggregation(dataUsage);
->>>>>>> origin/api-update
        let data = JSON.parse(JSON.stringify(dataAggregate));
 
        let usageInsights = [

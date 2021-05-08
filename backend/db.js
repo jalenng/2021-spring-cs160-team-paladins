@@ -272,21 +272,12 @@ class db {
     }
 
     /**
-<<<<<<< HEAD
      * Gets the boolean value of timerUsageOn
      * @param {String} userEmail email (primary key)
      * @returns boolean - timerUsageOn, false if fails
      */
     async getTimerUsageOn(userEmail) {
         let q = "SELECT timerUsageOn FROM UserPreferences"
-=======
-     * Gets the boolean value of TimerUsageOn
-     * @param {String} userEmail email (primary key)
-     * @returns boolean - TimerUsageOn, false if fails
-     */
-    async getTimerUsageOn(userEmail) {
-        let q = "SELECT TimerUsageOn FROM UserPreferences"
->>>>>>> origin/api-update
         let data = await this.dbPromise(true, q, userEmail);
 
         if (data != false) {
@@ -298,15 +289,9 @@ class db {
     }
 
     /**
-<<<<<<< HEAD
      * Sets the boolean value for timerUsageOn
      * @param {String} userEmail email (primary key)
      * @param {Boolean} boolValue set timerUsageOn
-=======
-     * Sets the boolean value for TimerUsageOn
-     * @param {String} userEmail email (primary key)
-     * @param {Boolean} boolValue set TimerUsageOn
->>>>>>> origin/api-update
      * @returns true if no error
      */
     async setTimerUsageOn(userEmail, boolValue) {
@@ -319,11 +304,7 @@ class db {
 
         // Sets boolValue
         let i = boolValue ? true : false;
-<<<<<<< HEAD
         let q = "UPDATE UserPreferences SET timerUsageOn=" + i
-=======
-        let q = "UPDATE UserPreferences SET TimerUsageOn=" + i
->>>>>>> origin/api-update
 
         return await this.dbPromise(false, q, userEmail)
     }
@@ -370,11 +351,7 @@ class db {
      * @param {int} screenTime screen time spent on computer
      * @param {int} timerCount amount of times counter has been called
      * @param {date} usageDate number of days the usageDate is away from today
-<<<<<<< HEAD
      * @returns true if success in updating timerUsage records, false if fails
-=======
-     * @returns true if success in updating TimerUsage records, false if fails
->>>>>>> origin/api-update
      */
     async setTimerUsage(userEmail, screenTime, timerCount, usageDate) {
 
@@ -385,11 +362,7 @@ class db {
         }
 
         // Checks for existing record
-<<<<<<< HEAD
         let check = await this.check("TimerUsage", userEmail, "", usageDate);
-=======
-        let check = await this.check("TimerUsage", userEmail, '', usageDate);
->>>>>>> origin/api-update
         let q = "";
 
 

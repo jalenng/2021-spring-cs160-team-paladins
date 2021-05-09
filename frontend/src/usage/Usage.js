@@ -19,6 +19,7 @@ export default class Usage {
     // 
   }
 
+
   getFormatted(theDate) {
     var year = theDate.getFullYear();
     var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);

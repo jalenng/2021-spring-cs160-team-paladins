@@ -72,13 +72,11 @@ export default class UsageSidebar extends React.Component {
         else {
           console.log("SUCCESS 1");
           store.dataUsage.reset();
+          console.log('value after reset');
           this.dataUsage = store.dataUsage.getAll();
         }
     })
 
-    // Fetch the latest changes
-    // console.log('before fetch');
-    // console.log(this.dataUsage.fetched.timerUsage);
     store.dataUsage.fetch()
     .then(result => {
         if (!result.success) {
@@ -91,33 +89,8 @@ export default class UsageSidebar extends React.Component {
           console.log("SUCCESS 2");
           console.log(this.dataUsage.fetched.timerUsage);
         }
-        // else {
-        //   console.log('after fetched');
-        //   console.log(this.dataUsage.fetched.timerUsage);
-        // }
     })
   };
-
-
-    // store.dataUsage.push()
-    //     .then(result => {
-    //         if (!result.success) {
-    //             store.messages.add({
-    //                 type: MessageBarType.error,
-    //                 contents: `Failed to retrieve data usage: ${result.data.message}`
-    //             });
-    //         } 
-    //         // If success, reset unsynced usage & update fetched usage.
-    //         else if (result.success) {
-    //           console.log('push success');
-    //           global.store.set('dataUsage.unsynced.timerUsage', {
-    //             screenTime: 0,
-    //             numBreaks: 0,
-    //             usageDate: '2021-05-03T07:00:00.000Z'
-    //           });
-            // store.dataUsage.fetch();
-        //     }
-        // });
 
   render() {
     return (

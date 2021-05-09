@@ -314,9 +314,7 @@ ipcMain.handle('fetch-data-usage', async (event) => {
 // Update data usage on the backend
 // PUT - /data
 ipcMain.handle('push-data-usage', async (event) => {
-    // const data = store.get('dataUsage.unsynced');
-    // console.log(data);
-    
+    console.log(global.store.get('dataUsage.unsynced.timerUsage'));
     data = {
         appUsage: [
             {
@@ -325,21 +323,14 @@ ipcMain.handle('push-data-usage', async (event) => {
                 usageDate: '2021-05-08' 
             }
         ],
-        timerUsage: [
-            {
-                screenTime: 50,
-                timerCount: 5,
-                usageDate: '2021-05-08',
-            }
-        ]
+        timerUsage: global.store.get('dataUsage.unsynced.timerUsage')
     }
 
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
 ipcMain.handle('reset-data-usage', async(event) => {
-    store.set('dataUsage.unsynced.timerUsage', dataUsageDefaults);
-    console.log(store.get('dataUsage.unsynced.timerUsage'));
+    store.set('dataUsage.unsynced.timerUsage', dataUsageDefaults.unsynced.timerUsage);
 })
 
 

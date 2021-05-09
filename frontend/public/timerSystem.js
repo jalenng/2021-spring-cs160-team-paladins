@@ -19,12 +19,7 @@ const TimerSystem = function(){
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
     this.remainingTime = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
 
-    // Initialize unsynced timer usage tracking
-    let timerCount = global.store.get('dataUsage.unsynced.timerUsage.timerCount');
-    global.store.set('dataUsage.unsynced.timerUsage.timerCount', 0);
-
-
-
+    this.elapsedTime = 0;
     /**
      * Registers an event listener
      */
@@ -36,16 +31,21 @@ const TimerSystem = function(){
         this._events[name].push(listener);
     }
 
+
+
     /**
      * Gets the status of the timer system
      * @returns an object
      */
     this.getStatus = function() {
-
         if (this.state === states.RUNNING) {
+            let oldRemainingTime = this.remainingTime;
             this.remainingTime = this.endDate - new Date();
-            let elapsedTime = (this.totalDuration - this.remainingTime) / 1000;
-            global.store.set('dataUsage.unsynced.timerUsage.screenTime', elapsedTime);
+            this.elapsedTime += ((oldRemainingTime - this.remainingTime) /1000);
+
+            if (this.elapsedTime > 10) {
+                this.updateUsage();
+            }
         }
 
         return {
@@ -148,6 +148,44 @@ const TimerSystem = function(){
         else 
             this.pause();
     }
+
+    /**
+     * Update store's unsynced timer usage. 
+     */
+         this.updateUsage = function() {
+            var timerUsage = global.store.get('dataUsage.unsynced.timerUsage');
+    
+            // Get todays date.
+            var theDate = new Date();
+            var year = theDate.getFullYear();
+            var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
+            var day = ("00" + theDate.getDate()).substr(-2, 2);
+            var dateFormatted = `${year}-${month}-${day}`;
+            
+            if (timerUsage.length == 0) {
+                timerUsage = [
+                    {
+                        screenTime: 0,
+                        timerCount: 0,
+                        usageDate: dateFormatted,
+                    }
+                ]
+            }
+    
+            var i, usageDay;
+            for (i=0; i < timerUsage.length; i++) {
+                usageDay = timerUsage[i];
+                if (usageDay.usageDate === dateFormatted) {
+                    usageDay.screenTime += this.elapsedTime;
+                    usageDay.timerCount += 0;
+                    break;
+                }
+            }
+            console.log('timer usage updated');
+            console.log(timerUsage);
+            global.store.set('dataUsage.unsynced.timerUsage', timerUsage);
+            this.elapsedTime = 0;
+        }
 }
 
 // Instantiate the timer system

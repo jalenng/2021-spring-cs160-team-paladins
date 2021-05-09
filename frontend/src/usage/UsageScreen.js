@@ -30,7 +30,7 @@ export default class UsageScreen extends React.Component {
     super(props);
     this.state = { 
       isSignedIn: store.accounts.getAll().token !== null,
-      selectedKey: 'app_usage' 
+      selectedKey: 'daily_app_usage' 
     };
 
     // Every 10 seconds, push unsynced data usage to the server.

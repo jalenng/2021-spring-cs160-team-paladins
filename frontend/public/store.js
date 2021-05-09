@@ -307,8 +307,7 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
     return result;
 })
 
-// // Fetch data usage from the backend
-// // GET - /data
+// Fetch data usage
 ipcMain.handle('fetch-data-usage', async (event) => {
     const successCallback = (res) => store.set('dataUsage.fetched', res.data);
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
@@ -332,8 +331,9 @@ ipcMain.handle('push-data-usage', async (event) => {
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
-ipcMain.handle('reset-data-usage', async(event) => {
-    store.set('dataUsage.unsynced.timerUsage', dataUsageDefaults.unsynced.timerUsage);
+// Clear the unsynced data usage (timer usage only as of now)
+ipcMain.handle('reset-data-usage', async () => {
+    store.reset('dataUsage.unsynced.timerUsage');
 })
 
 // Fetch insights from the backend

@@ -152,7 +152,7 @@ window.store = {
         push: () => { return ipcRenderer.invoke('push-data-usage') },
 
         /**
-         * Reset data usage on the frontend (store)
+         * Clear the local unsynced data usage
          */
         reset: () => { return ipcRenderer.invoke('reset-data-usage') },
 

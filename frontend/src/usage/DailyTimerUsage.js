@@ -18,18 +18,11 @@ export default class DailyTimerUsage extends React.Component {
     // Get fetched usage for todays date.
     this.usage = new Usage();
     this.fetched = this.usage.getUsage(this.usage.state.fetched.timerUsage, this.usage.todayFormatted);
-    if (this.fetched != null) {
-      this.state.screenTime += this.fetched.screenTime;
-      this.state.timerCount += this.fetched.timerCount;
-    }
+    this.state.screenTime += this.fetched.screenTime;
+    this.state.timerCount += this.fetched.timerCount;
 
     this.minutes = Math.floor(this.state.screenTime/60);
     this.seconds = this.state.screenTime%60;
-    
-    if (this.state.screenTime != 0) {
-      this.minutes = 0;
-      this.seconds = 0;
-    }
   }
 
   render() {

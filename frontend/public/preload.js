@@ -1,10 +1,10 @@
-/**
- * The purpose of this preload script is to provide a set of methods for the 
- * renderer (React code) to interact with the main process (Electron). 
- * 
- * This compartmentalization ensures that logic is handled exclusively by Electron,
- * and displaying UI elements is handled exclusively by React.
- */
+/*
+The purpose of this preload script is to provide a set of methods for the 
+renderer (React code) to interact with the main process (Electron). 
+ 
+This compartmentalization ensures that logic is handled exclusively by Electron,
+and displaying UI elements is handled exclusively by React.
+*/
 
 // Allow access to core Electron APIs when testing
 if (process.env.NODE_ENV === 'test') 
@@ -12,7 +12,10 @@ if (process.env.NODE_ENV === 'test')
 
 const { ipcRenderer } = require('electron');
 
+
+/*---------------------------------------------------------------------------*/
 /* Event system */
+
 const EventSystem = function () {
 
     this._events = {}
@@ -30,7 +33,9 @@ const EventSystem = function () {
 }
 
 
+/*---------------------------------------------------------------------------*/
 /* Store helper functions */
+
 window.store = {
     preferences: {
         /**
@@ -170,6 +175,13 @@ window.store = {
         /* Event system */
         eventSystem: new EventSystem()
     },
+    appNames: {
+        /**
+         * Retrieve the dictionary of friendly app names
+         * @returns {Object}
+         */
+        getAll: () => { return ipcRenderer.sendSync('get-store', 'appNames') },
+    },
     messages: {
         /**
          * Retrieve the list of in-app messages
@@ -189,10 +201,12 @@ window.store = {
         
         /* Event system */
         eventSystem: new EventSystem()
-    }
+    },
+    reset: () => { return ipcRenderer.invoke('reset-store') }
 }
 
 
+/*---------------------------------------------------------------------------*/
 /* Popup window helper functions */
 window.showPopup = {
     /**
@@ -217,7 +231,8 @@ window.showPopup = {
 }
 
 
-/* Timer and break system helper functions */
+/*---------------------------------------------------------------------------*/
+/* Timer, break, and blocker system helper functions */
 window.timer = {
     toggle: () => { ipcRenderer.invoke('timer-toggle') },
     end: () => { ipcRenderer.invoke('timer-end') },
@@ -231,18 +246,46 @@ window.breakSys = {
     eventSystem: new EventSystem()
 }
 
+window.blockerSys = {
+    getBlockers: () => {ipcRenderer.send('get-blockers')},
+    clear: () => { ipcRenderer.invoke('clear-blockers') },
+    eventSystem: new EventSystem()
+}
 
+
+/*---------------------------------------------------------------------------*/
 /* Other functions */
+
 /**
  * Play the selected notification sound in preferences
  */
 window.playSound = () => { ipcRenderer.invoke('play-sound') }
+
 /**
  * Retrieves information about the app
  * @returns an object with the relevant information
  */
 window.getAboutInfo = () => { return ipcRenderer.sendSync('get-about-info') }
 
+/**
+ * Get a list of open windows on the system
+ */
+window.getOpenWindows = () => { return ipcRenderer.sendSync('get-open-windows') }
+
+/**
+ * Prints content on the main process's console
+ */
+window.logToMain = (content) => { ipcRenderer.invoke('log-to-main', content) }
+
+/**
+ * Relaunches the iCare application
+ */
+window.restartApp = () => { ipcRenderer.invoke('restart-app') }
+
+/**
+ * Return a boolean that tells whether or not this app is running in a dev environment
+ */
+window.isDev = ipcRenderer.sendSync('is-dev');
 
 /* Listen for events from ipcRenderer and relay them accordingly */
 ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
@@ -258,4 +301,9 @@ ipcRenderer.on('receive-break-status', (event, breakStatus) => {
 ipcRenderer.on('store-changed', (event, category) => {
     const fireCallbacks = (callback) => callback();
     window.store[category].eventSystem._events['changed'].forEach(fireCallbacks);
+})
+
+ipcRenderer.on('receive-blockers', (event, blockers) => {
+    const fireCallbacks = (callback) => callback(event, blockers);
+    window.blockerSys.eventSystem._events['update'].forEach(fireCallbacks);
 })

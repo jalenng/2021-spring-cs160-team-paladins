@@ -1,11 +1,19 @@
 import React from 'react';
 
+<<<<<<< HEAD
 import { Nav } from '@fluentui/react/lib/Nav';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 import { TooltipHost } from '@fluentui/react/lib/Tooltip';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { MessageBarType } from '@fluentui/react/lib/MessageBar';
+=======
+import { 
+  Nav,
+  Stack,
+  Text 
+} from '@fluentui/react';
+>>>>>>> frontend-dev
 
 const navStyles = {
   root: {

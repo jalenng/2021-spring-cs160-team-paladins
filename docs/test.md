@@ -1,0 +1,783 @@
+<!-- Output copied to clipboard! -->
+
+
+<p style="color: red; font-weight: bold">>>>>>  gd2md-html alert:  ERRORs: 0; WARNINGs: 1; ALERTS: 29.</p>
+<ul style="color: red; font-weight: bold"><li>See top comment block for details on ERRORs and WARNINGs. <li>In the converted Markdown or HTML, search for inline alerts that start with >>>>>  gd2md-html alert:  for specific instances that need correction.</ul>
+
+<p style="color: red; font-weight: bold">Links to alert messages:</p><a href="#gdcalert1">alert1</a>
+<a href="#gdcalert2">alert2</a>
+<a href="#gdcalert3">alert3</a>
+<a href="#gdcalert4">alert4</a>
+<a href="#gdcalert5">alert5</a>
+<a href="#gdcalert6">alert6</a>
+<a href="#gdcalert7">alert7</a>
+<a href="#gdcalert8">alert8</a>
+<a href="#gdcalert9">alert9</a>
+<a href="#gdcalert10">alert10</a>
+<a href="#gdcalert11">alert11</a>
+<a href="#gdcalert12">alert12</a>
+<a href="#gdcalert13">alert13</a>
+<a href="#gdcalert14">alert14</a>
+<a href="#gdcalert15">alert15</a>
+<a href="#gdcalert16">alert16</a>
+<a href="#gdcalert17">alert17</a>
+<a href="#gdcalert18">alert18</a>
+<a href="#gdcalert19">alert19</a>
+<a href="#gdcalert20">alert20</a>
+<a href="#gdcalert21">alert21</a>
+<a href="#gdcalert22">alert22</a>
+<a href="#gdcalert23">alert23</a>
+<a href="#gdcalert24">alert24</a>
+<a href="#gdcalert25">alert25</a>
+<a href="#gdcalert26">alert26</a>
+<a href="#gdcalert27">alert27</a>
+<a href="#gdcalert28">alert28</a>
+<a href="#gdcalert29">alert29</a>
+
+<p style="color: red; font-weight: bold">>>>>> PLEASE check and correct alert issues and delete this message and the inline alerts.<hr></p>
+
+
+
+```
+
+iCare User Guide
+Team Paladins
+```
+
+
+
+# Table of Contents
+
+
+[TOC]
+
+
+
+
+
+# 1 Introduction
+
+
+## 1.1 Why iCare?
+
+
+
+<p id="gdcalert1" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image1.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert2">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image1.png "image_tooltip")
+
+
+Many of us spend plenty of time staring at the computer screen every day. This can put a lot of strain on our eyes and cause eye fatigue. iCare is a desktop app that uses the 20-20-20 rule to motivate users to develop good habits to avoid eye strain without being too intrusive to their schedule. iCare would suggest users to take a 20-second break every 20 minutes and look at something at least 20 feet away.
+
+
+## 1.2 The 20-20-20 rule
+
+The 20-20-20 rule is the idea that, every 20 minutes 
+
+<p id="gdcalert2" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image2.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert3">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image2.png "image_tooltip")
+spent using a screen, you should try to look away from the device and look at something that is 20 feet away for a total of 20 seconds. This is done in order to take care of your eyes in the current digital age where many people spend their day staring at their screens.
+
+While the rule recommends that you look at something that is 20 feet away, being exact isn’t the idea. You should just try to focus on something that is far away from you for 20 seconds, which is the amount of time it takes for your eyes to completely relax.
+
+Of course, most people do not keep track of the time and get absorbed in reading or working when looking at a screen. Using iCare to set a timed reminder to pop up will help you take your needed break to rest your eyes.
+
+
+# 
+
+
+# 2 Installation
+
+Installation is simple and takes just a few minutes.
+
+
+## 2.1 Windows
+
+
+
+1. Open your browser and navigate to &lt;TODO: insert site link>. 
+2. Click the green **_Download iCare for Windows_** button.
+3. Once the download is complete, open **iCareSetup.exe** to finish installation
+
+
+## 2.2 macOS
+
+
+
+1. Open your browser and navigate to icare.github.io/setup. 
+2. Click the green **_Download iCare for Mac_** button.
+3. Once the download is complete, open Finder and navigate to the downloaded file
+4. Double-click **_iCareSetup.dmg_** to open.
+5. Once installation is complete, drag the iCare app into your Applications folder.
+
+
+## 2.3 Linux
+
+**TODO**
+
+
+# 
+
+
+# 3 Getting Started
+
+
+## 3.1 Application overview
+
+In the upper left-hand corner of the iCare window, we have four tabs that refer to four different screens. By default, you start on the first tab, the Home screen, whenever you open the application. The other tabs can only be used if you are logged into an account. 
+
+The second tab, the Usage Statistics screen, shows you data and app usage statistics for the past 7 days if there are any available on the server. The third tab, the Insights screen, shows insights cards that are generated by the iCare application based on any data and application usage statistics you have on the server. The fourth tab is the Preferences screen that shows you your custom user saved preferences on the account.
+
+In the upper right-hand corner, we have the Sign-in button that opens up the Login window. If you are already logged in, it will display your display name there.
+
+
+## 
+
+<p id="gdcalert3" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image3.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert4">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image3.png "image_tooltip")
+
+
+_▲The various tabs of the application (for a guest)_
+
+
+
+<p id="gdcalert4" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image4.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert5">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image4.png "image_tooltip")
+
+
+_▲The various tabs of the application (for a user account)_
+
+
+
+**Application Icon Overview**
+
+
+<table>
+  <tr>
+   <td><strong>Image</strong>
+   </td>
+   <td><strong>Name</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert5" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image5.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert6">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image5.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Home</strong>
+   </td>
+   <td>Opens the <strong>Home screen</strong>, which houses the timer.
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert6" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image6.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert7">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image6.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Usage Statistics</strong>
+   </td>
+   <td>Opens the <strong>Usage Statistics screen.</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert7" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image7.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert8">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image7.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Insights</strong>
+   </td>
+   <td>Opens the<strong> Insights screen.</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert8" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image8.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert9">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image8.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Preferences</strong>
+   </td>
+   <td>Opens the <strong>Preferences screen.</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert9" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image9.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert10">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image9.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Sign in</strong>
+   </td>
+   <td>Opens the <strong>Sign-in Popup window.</strong>
+   </td>
+  </tr>
+</table>
+
+
+
+# 
+
+
+# 4 Timer
+
+
+## 4.1 Overview of the timer interface
+
+When you start the iCare application, the timer on the Home screen will start automatically from the default 20 minutes. If you have an account and a customized timer notification interval, the timer will start from that customized interval.
+
+At the end of your timer, a break notification will appear and have you take a 20 second break away from the screen. When your break is over, the timer will automatically start counting down again.
+
+This feature is default by nature and cannot be disabled. If you want your timer to stop, you must press the pause button underneath the timer. Just keep in mind that this will reset the timer back to its default notification interval.
+
+
+## 
+
+<p id="gdcalert10" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image10.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert11">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image10.png "image_tooltip")
+
+
+_▲The timer on the Home screen_
+
+
+
+**Timer Interface Overview**
+
+
+<table>
+  <tr>
+   <td><strong>Image</strong>
+   </td>
+   <td><strong>Name</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert11" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image11.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert12">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image11.png" width="" alt="alt_text" title="image_tooltip">
+
+<p>
+
+
+<p id="gdcalert12" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image12.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert13">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image12.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Start/Pause</strong>
+   </td>
+   <td>If the timer is paused, starts the timer.
+<p>
+If the timer is running, pauses the timer.
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert13" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image13.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert14">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image13.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>More</strong>
+   </td>
+   <td>Expands a pop-up menu with additional buttons.
+<p>
+
+
+<p id="gdcalert14" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image14.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert15">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image14.png" width="" alt="alt_text" title="image_tooltip">
+
+<p>
+Restarts the countdown.
+<p>
+
+
+<p id="gdcalert15" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image15.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert16">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image15.png" width="" alt="alt_text" title="image_tooltip">
+
+<p>
+Opens the timer in a new window.
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert16" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image16.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert17">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image16.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Remaining time</strong>
+   </td>
+   <td>The remaining time in MM:SS format.
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert17" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image17.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert18">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image17.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>End time</strong>
+   </td>
+   <td>The time in which the timer will end.
+   </td>
+  </tr>
+</table>
+
+
+
+## 
+
+
+## 4.2 How breaks work
+
+In iCare, a break occurs when the timer finishes, which results in a pop-up notification that indicates the start of the 20 second break. 
+
+While the initial pop-up notification is small, five seconds into the break, the pop-up notification will turn into a full-screen overlay that takes over your screen. During the time the notification or overlay is present, the break timer will reset when it senses any mouse movement.
+
+
+
+<p id="gdcalert18" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image18.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert19">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image18.png "image_tooltip")
+
+
+_▲The popup notification_
+
+
+
+<p id="gdcalert19" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image19.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert20">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image19.png "image_tooltip")
+
+
+_▲The full-screen notification_
+
+
+# 5 iCare Account
+
+
+## 5.1 Why make an account?
+
+To be able to use all of iCare’s extensive features, you must register and create an account. This will allow you to keep track of your own data and app usage (if desired) and generate insights based on those statistics. 
+
+Additionally, creating an account will allow you to customize your experience that will be stored in iCare servers to use for any device with the iCare application installed that you log into.
+
+
+## 5.2 How to sign up
+
+
+
+<p id="gdcalert20" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image20.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert21">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image20.png "image_tooltip")
+
+
+_▲The sign-up screen_
+
+
+
+1. Click **Sign in** at the top right corner. The Sign in pop-up window should appear.
+2. Click ‘**Don’t have an account**?’ to go to the sign-up page.
+3. Complete all fields.
+4. Provide your name, email address, and create a password for your iCare account.
+    1. Your password must contain at least 8 characters.
+    2. Your email address must follow the email format.
+5. Click **Sign up**.
+
+
+## 5.3 How to sign in
+
+
+
+<p id="gdcalert21" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image21.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert22">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image21.png "image_tooltip")
+
+
+_▲The sign-in screen_
+
+
+
+1. Click **Sign in** at the top right corner. The Sign in pop-up window should appear.
+2. On the sign in page, enter the email address and password that you registered with.
+3. Click **Sign in**.
+
+
+
+
+# 6 Usage Statistics
+
+
+## 6.1 Data Usage
+
+By default, iCare will collect your PC’s data usage statistics that is associated with your account. It will keep track of the total amount of screen time and the total amount of times the timer has been successfully used per day on the account.
+
+This information will be used for you to keep track of the time you have spent on your device and how much you have been diligently following the 20-20-20 rule over the past 7 days.
+
+
+
+<p id="gdcalert22" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image22.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert23">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image22.png "image_tooltip")
+
+
+_▲Weekly usage being shown on the Usage Statistics screen_
+
+If you do not want iCare to collect your data, it is possible to turn off this data collection feature in your account’s user preferences. Furthermore, when you delete your account the data associated with your account will automatically be deleted from our server.
+
+
+## 
+
+
+## 6.2 App Usage
+
+By default, iCare will collect information on how much time you spend on any applications that your PC will use when linked to your iCare account. These application statistics will be used for you to keep track of the amount of time you have spent on these applications over the past 7 days.
+
+
+
+<p id="gdcalert23" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image23.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert24">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image23.png "image_tooltip")
+
+
+_▲ App usage being shown on the Usage Statistics screen_
+
+If you do not want iCare to collect your application data, you can turn this feature off in **Preferences**. Furthermore, when you delete your account the application data associated with your account will automatically be deleted from our server.
+
+
+
+
+# 7 Insights
+
+
+## 7.1 Default Insights
+
+The default insights cards are insight cards that you are always going to get, regardless of any data or app usage statistics.
+
+These insight cards provide great tips that you, as a user of the iCare application, would consider helpful in your journey to take care of your eyes.
+
+
+
+<p id="gdcalert24" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image24.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert25">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image24.png "image_tooltip")
+
+
+_▲The Insights screen_
+
+
+## 7.2 Custom Insights
+
+Custom insight cards are insight cards that you will receive that are generated from your data and app usage statistics for the past 7 days.
+
+If you do not have any data or app usage statistics over the past 7 days, then you will not receive any custom insight cards.
+
+
+
+
+# 8 Preferences
+
+
+## 8.1 Overview of preferences
+
+In the Preferences screen, there exists a sidebar on the left-hand-side of the window. It lists the six different preferences windows that you can view by clicking on the sidebar.
+
+
+
+<p id="gdcalert25" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image25.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert26">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image25.png "image_tooltip")
+
+
+_▲The sidebar in the Preferences screen_
+
+
+## 8.2 Notif
+
+
+## 8**.** Notifications
+
+The Notification screen 
+
+
+<table>
+  <tr>
+   <td><strong>Option</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Notification interval</strong>
+   </td>
+   <td><strong>Slider</strong>
+   </td>
+   <td>
+
+<p id="gdcalert26" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image26.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert27">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image26.png" width="" alt="alt_text" title="image_tooltip">
+
+<p>
+Changes the time duration between each break. 
+<p>
+Valid values are multiples of 5 minutes between 5 and 60 minutes.
+<p>
+<em>Default: 20 minutes</em>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Enable sound notifications</strong>
+   </td>
+   <td><strong>Toggle</strong>
+   </td>
+   <td>Chooses whether to play a sound when the break starts and ends.
+<p>
+<em>Default: On</em>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Sound</strong>
+   </td>
+   <td><strong>Dropdown</strong>
+   </td>
+   <td>The sound to play when the break starts and ends.
+<p>
+
+
+<p id="gdcalert27" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image27.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert28">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image27.png" width="" alt="alt_text" title="image_tooltip">
+
+
+<table>
+  <tr>
+   <td>
+
+<p id="gdcalert28" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image28.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert29">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image28.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Preview</strong>
+   </td>
+   <td>Plays the currently selected sound.
+   </td>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <td>
+
+<p id="gdcalert29" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image29.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert30">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+<img src="images/image29.png" width="" alt="alt_text" title="image_tooltip">
+
+   </td>
+   <td><strong>Import</strong>
+   </td>
+   <td>Import a sound from your local file system.
+   </td>
+   <td>
+   </td>
+  </tr>
+</table>
+
+
+_Default: Long expected_
+
+   </td>
+  </tr>
+</table>
+
+
+
+## 8**.**3 Startup 
+
+
+<table>
+  <tr>
+   <td><strong>Option</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Start app on login</strong>
+   </td>
+   <td><strong>Toggle</strong>
+   </td>
+   <td>Chooses whether to start the app automatically after logging into your device.
+<p>
+<em>Default: On</em>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Start timer on app startup</strong>
+   </td>
+   <td><strong>Toggle</strong>
+   </td>
+   <td>Chooses whether to start the timer automatically after starting the app.
+<p>
+<em>Default: On</em>
+   </td>
+  </tr>
+</table>
+
+
+
+## 
+
+
+## 8.4 Data usage
+
+
+<table>
+  <tr>
+   <td><strong>Option</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Track my application usage statistics</strong>
+   </td>
+   <td><strong>Toggle</strong>
+   </td>
+   <td>Chooses whether to allow the app to record a list of your open apps to track application usage statistics.
+<p>
+<em>Default: On</em>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Enable weekly usage statistics</strong>
+   </td>
+   <td><strong>Toggle</strong>
+   </td>
+   <td>Chooses whether to allow the app to track timer usage statistics.
+<p>
+<em>Default: On</em>
+   </td>
+  </tr>
+</table>
+
+
+
+## 8.**5** Sync
+
+**NOTE: **These options are available only if you have signed into iCare.
+
+
+<table>
+  <tr>
+   <td><strong>Option</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Upload preference</strong>
+   </td>
+   <td><strong>Button</strong>
+   </td>
+   <td>Save and sync current preferences.
+<p>
+The following preferences are synced.
+<ul>
+
+<li>Notifications
+
+<li>Startup
+
+<li>Data usage
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Download preference</strong>
+   </td>
+   <td><strong>Button</strong>
+   </td>
+   <td>Download previous syncing preferences.
+<p>
+The following preferences are synced.
+<ul>
+
+<li>Notifications
+
+<li>Startup
+
+<li>Data usage
+</li>
+</ul>
+   </td>
+  </tr>
+</table>
+

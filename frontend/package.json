@@ -1,10 +1,14 @@
 {
-  "name": "icare_client",
+  "name": "icare",
   "productName": "iCare",
   "description": "iCare",
   "author": "Team Paladins",
   "version": "0.1.0",
   "repository": "https://github.com/jalenng/2021-spring-cs160-team-paladins",
+  "url" : "https://jalenng.github.io/2021-spring-cs160-team-paladins",
+  "author": {
+    "email" : "null@null.com"
+  },
   "private": true,
   "build": {
     "appId": "team_paladins.icare",
@@ -23,7 +27,13 @@
     "asarUnpack": [
       "sounds/**/*",
       "trayAssets/**/*"
-    ]
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "deb"
+    }
   },
   "dependencies": {
     "@fluentui/react": "^8.8.0",

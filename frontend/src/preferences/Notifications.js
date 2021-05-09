@@ -1,12 +1,16 @@
 import React from 'react';
 
-import { IconButton } from '@fluentui/react/lib/Button';
-import { Dropdown, DropdownMenuItemType } from '@fluentui/react/lib/Dropdown';
-import { Slider } from '@fluentui/react/lib/Slider';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
-import { Toggle } from '@fluentui/react/lib/Toggle';
-import { TooltipHost } from '@fluentui/react/lib/Tooltip';
+import { 
+    IconButton,
+    Dropdown, DropdownMenuItemType,
+    Slider,
+    Stack,
+    Text,
+    Toggle,
+    TooltipHost
+} from '@fluentui/react';
+
+import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 
 export default class extends React.Component {
 
@@ -67,51 +71,54 @@ export default class extends React.Component {
         
         return (
 
-            <Stack id="notifications" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
+            <Stack id='notifications' {...level1Props}>
 
-                <Text variant={'xLarge'} block> Notifications </Text>
+                <Stack {...level2Props}>
+                    <Text variant={'xLarge'} block> Notifications </Text>
 
-                <Slider
-                    label="Notification interval"
-                    min={5} max={60} step={5}
-                    showValue snapToStep
-                    valueFormat={(number) => `${number} minutes`}
-                    styles={{ root: { maxWidth: 300 } }}
-                    value={this.state.notifications.interval}
-                    onChange={number => store.preferences.set("notifications.interval", number)}
-                /> 
+                    <Slider
+                        label='Notification interval'
+                        min={5} max={60} step={5}
+                        showValue snapToStep
+                        valueFormat={(number) => `${number} minutes`}
+                        styles={{ root: { maxWidth: 300 } }}
+                        value={this.state.notifications.interval}
+                        onChange={number => store.preferences.set('notifications.interval', number)}
+                    /> 
 
-                <Toggle
-                    label="Enable sound notifications"
-                    onText="On" offText="Off"
-                    checked={this.state.notifications.enableSound}
-                    onChange={(event, checked) => store.preferences.set("notifications.enableSound", checked)}
-                />
-
-                <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign="end">
-
-                    <Dropdown label="Sound"
-                        styles={{ dropdown: { width: 300 } }}
-                        selectedKey={this.state.notifications.sound}
-                        options={combinedSoundList}
-                        onChange={(event, option, index) => {
-                            store.preferences.set("notifications.sound", combinedSoundList[index].key)
-                        }}
+                    <Toggle
+                        label='Enable sound notifications'
+                        onText='On' offText='Off'
+                        checked={this.state.notifications.enableSound}
+                        onChange={(event, checked) => store.preferences.set('notifications.enableSound', checked)}
                     />
 
-                    <TooltipHost content="Preview">
-                        <IconButton
-                            iconProps={{ iconName: 'Play' }}
-                            onClick={ playSound }
-                        />
-                    </TooltipHost>
+                    <Stack {...level2HorizontalProps} verticalAlign='end'>
 
-                    <TooltipHost content="Import">
-                        <IconButton
-                            iconProps={{ iconName: 'Add' }}
-                            onClick={store.sounds.add}
+                        <Dropdown label='Sound'
+                            styles={{ dropdown: { width: 300 } }}
+                            selectedKey={this.state.notifications.sound}
+                            options={combinedSoundList}
+                            onChange={(event, option, index) => {
+                                store.preferences.set('notifications.sound', combinedSoundList[index].key)
+                            }}
                         />
-                    </TooltipHost>
+
+                        <TooltipHost content='Preview'>
+                            <IconButton
+                                iconProps={{ iconName: 'Play' }}
+                                onClick={ playSound }
+                            />
+                        </TooltipHost>
+
+                        <TooltipHost content='Import'>
+                            <IconButton
+                                iconProps={{ iconName: 'Add' }}
+                                onClick={store.sounds.add}
+                            />
+                        </TooltipHost>
+
+                    </Stack>
 
                 </Stack>
 

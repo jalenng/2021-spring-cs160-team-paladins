@@ -1,14 +1,16 @@
-import React from "react";
+import React from 'react';
 
-import { mergeStyles } from '@fluentui/react/lib/Styling';
-import { FontIcon } from '@fluentui/react/lib/Icon';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
+import { 
+    mergeStyles,
+    FontIcon,
+    Stack,
+    Text 
+} from '@fluentui/react';
 
 const divStyle = {
-    MozUserSelect: "none",
-    WebkitUserSelect: "none",
-    msUserSelect: "none",
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
 };
 
 const iconClass = mergeStyles({
@@ -24,7 +26,7 @@ export default class extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            remainingTimeString: ""
+            remainingTimeString: ''
         };
 
         breakSys.eventSystem.on('update', (event, breakStatus) => {
@@ -57,14 +59,14 @@ export default class extends React.Component {
 
                     <Stack horizontal token={{childrenGap: 32}}>
                         <Stack.Item>
-                            <FontIcon iconName="RedEye" className={iconClass} />
+                            <FontIcon iconName='RedEye' className={iconClass} />
                         </Stack.Item>
 
                         <Stack.Item>
                             <Stack>
-                                <Text variant={"large"}> <b>Time for a break. </b> </Text>
-                                <Text variant={"medium"}> Look at something 20 feet away. </Text>
-                                <Text variant={"medium"} align="center">
+                                <Text variant={'large'}> <b>Time for a break. </b> </Text>
+                                <Text variant={'medium'}> Look at something 20 feet away. </Text>
+                                <Text variant={'medium'} align='center'>
                                     {this.state.remainingTimeString}
                                 </Text>
                             </Stack>

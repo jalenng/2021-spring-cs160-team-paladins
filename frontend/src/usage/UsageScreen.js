@@ -1,13 +1,15 @@
 import React from 'react';
 
-import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
+import { 
+  ScrollablePane,
+  Text
+} from '@fluentui/react';
 
 import UsageSidebar from './UsageSidebar';
 import DailyAppUsage from './DailyAppUsage';
 import WeeklyAppUsage from './WeeklyAppUsage';
 import DailyTimerUsage from './DailyTimerUsage'
 import WeeklyTimerUsage from './WeeklyTimerUsage';
-
 
 const divStyle = {
   paddingTop: '10px',
@@ -26,8 +28,22 @@ export default class UsageScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { selectedKey: 'app_usage' };
+    this.state = { 
+      isSignedIn: store.accounts.getAll().token !== null,
+      selectedKey: 'app_usage' 
+    };
   }
+
+  componentDidMount() {
+    store.accounts.eventSystem.on('changed', () => this.updateState())
+  }
+
+  updateState() {
+    this.setState({
+        ...this.state,
+        isSignedIn: store.accounts.getAll().token !== null,
+    });
+  };
 
   render() {
     const selectedKey = this.state.selectedKey;
@@ -43,13 +59,26 @@ export default class UsageScreen extends React.Component {
           paddingBottom: "260px",
           paddingRight: "40px"
         }}>
+<<<<<<< HEAD
           {usagePage}
+=======
+          {/* Show message if not signed in */}
+          {!this.state.isSignedIn &&
+            <Text>To view your usage statistics, please sign in. </Text>
+          }
+
+          {/* Show usage page if signed in */}
+          {this.state.isSignedIn && 
+            usagePage
+          }
+
+>>>>>>> frontend-dev
         </ScrollablePane>
                 
         <UsageSidebar
           selectedKey={selectedKey} 
           onUpdateSelectedKey={(key) => {
-            this.setState({ selectedKey: key });
+            this.setState({...this.state, selectedKey: key });
           }}
         />
 

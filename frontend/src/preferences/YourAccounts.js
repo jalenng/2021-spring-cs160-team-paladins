@@ -1,10 +1,14 @@
 import React from 'react';
 
-import { DefaultButton, ActionButton, IconButton } from '@fluentui/react/lib/Button';
-import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
-import { TooltipHost } from '@fluentui/react/lib/Tooltip';
+import { 
+    DefaultButton, ActionButton, IconButton,
+    Persona, PersonaSize,
+    Stack,
+    Text,
+    TooltipHost
+} from '@fluentui/react';
+
+import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 
 export default class extends React.Component {
 
@@ -33,6 +37,7 @@ export default class extends React.Component {
 
         return (
 
+<<<<<<< HEAD
             <Stack id="your_accounts" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
                 <Stack horizontal
                     verticalAlign="center"
@@ -50,38 +55,60 @@ export default class extends React.Component {
                         
                     }
                 </Stack>
+=======
+            <Stack {...level1Props} id="your_accounts">
+>>>>>>> frontend-dev
 
-                <Persona
-                    text = {displayName}
-                    size={PersonaSize.size100}
+                
+                <Stack {...level2Props}>
+                    <Stack {...level2HorizontalProps}>
+                        <Text variant={'xLarge'} block> iCare account </Text>
 
-                    // Display email address only if signed in
-                    onRenderSecondaryText={ () => {
-                        if (isSignedIn) {
-                            return (
-                                <Text> {email} </Text> 
-                            )
+                        {/* Show Edit button only if signed in */}
+                        { isSignedIn && 
+                            <TooltipHost content="Edit account details">
+                                <IconButton
+                                    iconProps={{ iconName: 'Edit' }}
+                                    onClick={ showPopup.editAccount }
+                                />
+                            </TooltipHost>
+                            
                         }
-                    }}
-        
-                    // Display "Sign out" and "Delete account" button only if signed in
-                    onRenderTertiaryText = { () => {
-                        if (isSignedIn) {
-                            return (
-                                <Stack horizontal
-                                    verticalAlign="center"
-                                    style={{ marginTop: "12px" }}
-                                    tokens={{ childrenGap: 20 }}
-                                >
-                                    <DefaultButton text="Sign out" onClick={ store.accounts.signOut } />
-                                    <ActionButton onClick={ showPopup.deleteAccount }> 
-                                        Delete account 
-                                    </ActionButton>
-                                </Stack>
-                            )
-                        }
-                    }}
-                />
+                    </Stack>
+
+                    <Persona
+                        text = {displayName}
+                        size={PersonaSize.size100}
+
+                        // Display email address only if signed in
+                        onRenderSecondaryText={ () => {
+                            if (isSignedIn) {
+                                return (
+                                    <Text> {email} </Text> 
+                                )
+                            }
+                        }}
+            
+                        // Display "Sign out" and "Delete account" button only if signed in
+                        onRenderTertiaryText = { () => {
+                            if (isSignedIn) {
+                                return (
+                                    <Stack horizontal
+                                        verticalAlign="center"
+                                        style={{ marginTop: "12px" }}
+                                        tokens={{ childrenGap: 20 }}
+                                    >
+                                        <DefaultButton text="Sign out" onClick={ store.accounts.signOut } />
+                                        <ActionButton onClick={ showPopup.deleteAccount }> 
+                                            Delete account 
+                                        </ActionButton>
+                                    </Stack>
+                                )
+                            }
+                        }}
+                    />
+
+                </Stack>
 
             </Stack>
         )

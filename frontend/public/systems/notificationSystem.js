@@ -1,3 +1,8 @@
+/*
+The notification system handles the opening, closing, and updating of the 
+notification windows during a break. 
+*/
+
 const { BrowserWindow, screen } = require('electron');
 const path = require('path'); 
 const isDev = require('electron-is-dev'); 
@@ -14,10 +19,10 @@ const sharedWindowOptions = {
     maximizable: false,
     skipTaskbar: true,
     show: false,
-    title: "iCare Notification",
+    title: 'iCare Notification',
     backgroundColor: '#222222',
     webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
+        preload: path.join(__dirname, '../preload.js'),
         contextIsolation: false
     }
 };
@@ -27,7 +32,7 @@ const POPUP_SIZE = {
     height: 90
 }
 
-const NotificationSystem = function() {
+module.exports = function() {
 
     this.fullscreenWindows = [];
     this.popupWindows = [];
@@ -87,7 +92,7 @@ const NotificationSystem = function() {
         window.loadURL(
             isDev
             ? 'http://localhost:3000#/fullscreenNotification'
-            : `file://${path.join(__dirname, '../build/index.html#fullscreenNotification')}`
+            : `file://${path.join(__dirname, '../../build/index.html#fullscreenNotification')}`
         ); 
 
         // Configure bounds and visibility
@@ -123,7 +128,7 @@ const NotificationSystem = function() {
         window.loadURL(
             isDev
             ? 'http://localhost:3000#/popupNotification'
-            : `file://${path.join(__dirname, '../build/index.html#popupNotification')}`
+            : `file://${path.join(__dirname, '../../build/index.html#popupNotification')}`
         ); 
 
         // Configure bounds and visibility
@@ -171,7 +176,3 @@ const NotificationSystem = function() {
     }
 
 }
-
-
-// Instantiate the break system
-global.notificationSystem = new NotificationSystem();

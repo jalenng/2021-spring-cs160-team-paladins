@@ -62,7 +62,12 @@ module.exports = function () {
     this.endDate = new Date();  // The Date Object indicating when the timer will end
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
     this.savedTime = this.totalDuration;    // Stores the remaining time when the timer is paused or blocked
-
+    
+    this.remainingTime = this.endDate - new Date();
+    this.prevRemainingTime = this.remainingTime;
+    this.unsyncedUsage = 0; // Unsynced timer usage. Resets when store is updated. 
+    
+    
     /**
      * Registers an event listener
      */
@@ -110,14 +115,42 @@ module.exports = function () {
             endDate: this.endDate,
             totalDuration: this.totalDuration,
             remainingTime: (() => {
-                if (this.savedTime != null) return this.savedTime   // Use this only if the timer is paused or blocked
-                else return this.endDate - new Date();      // Otherwise, calculate it dynamically
-            })(),
+                // Use this only if the timer is paused or blocked
+                if (this.savedTime != null) {
+                    return this.savedTime;
+                }    
+                // Otherwise, calculate it dynamically
+                else {
+                    this.prevRemainingTime = this.remainingTime;
+                    this.remainingTime = this.endDate - new Date();
+                    return this.remainingTime;
+                }})(),
+            unsyncedUsage: this.getUnsyncedUsage(),
             isBlocked: this.isBlocked,
             isPaused: this.isPaused,
             isIdle: this.isIdle
         }
     };
+
+    /**
+     * Gets the latest timer usage duration.
+     * When store is updated, this value is reset to 0.
+     * @returns unsynced timer usage (seconds)
+     */
+    this.getUnsyncedUsage = function() {
+        if (this.prevRemainingTime !== 0 && this.savedTime === null) {
+            var elapsedTime = (this.prevRemainingTime - this.remainingTime)/1000;
+            this.unsyncedUsage += elapsedTime;
+        }
+
+        if (this.unsyncedUsage > 5) {
+            var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
+            global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime + this.unsyncedUsage);
+            this.unsyncedUsage = 0;
+        }
+        console.log(global.store.get('dataUsage.unsynced.timerUsage.screenTime');
+        return this.unsyncedUsage
+    }
 
     /**
      * Updates the timer.

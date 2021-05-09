@@ -49,59 +49,27 @@ export default class UsageSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.syncUsage = this.syncUsage.bind(this);
     this.dataUsage = store.dataUsage.getAll();
 
     // Every 10 seconds, push unsynced data usage to the server.
-    setInterval(() => {
-      store.dataUsage.push().then(result => {
-        if (result.success) {
-           store.dataUsage.reset();
-           this.dataUsage = store.dataUsage.getAll();
-           store.dataUsage.fetch();
-          }
-          });
-    }, 10000);
+    setInterval(this.syncUsage, 10000);
   }
+
+  syncUsage() {
+    store.dataUsage.push().then(result => {
+      if (result.success) {
+          store.dataUsage.reset();
+          this.dataUsage = store.dataUsage.getAll();
+          store.dataUsage.fetch();
+        }
+      });
+  }
+  
 
   handleChange(event, item) {
     const key = item.key;
     this.props.onUpdateSelectedKey(key);
   }
-
-  syncUsage() {
-    // Update data usage 
-    store.dataUsage.push()
-    .then(result => {
-        if (!result.success) {
-            store.messages.add({
-                type: MessageBarType.error,
-                contents: `Failed to push latest data usage changes: ${result.data.message}`
-            });
-        } 
-        else {
-          console.log("SUCCESS 1");
-          store.dataUsage.reset();
-          console.log('value after reset');
-          this.dataUsage = store.dataUsage.getAll();
-        }
-    })
-
-    store.dataUsage.fetch()
-    .then(result => {
-        if (!result.success) {
-            store.messages.add({
-                type: MessageBarType.error,
-                contents: `Failed to retrieve latest data usage: ${result.data.message}`
-            });
-        } 
-        else {
-          console.log("SUCCESS 2"); 
-          console.log(this.dataUsage.fetched.timerUsage);
-        }
-    })
-  };
-
 
   render() {
     return (
@@ -110,12 +78,6 @@ export default class UsageSidebar extends React.Component {
         styles={navStyles}>
         <Text variant={'xxLarge'}>
           <b>Statistics</b>
-          <TooltipHost content="Refresh">
-            <IconButton
-                iconProps={{ iconName: 'Refresh' }}
-                onClick={this.syncUsage}
-            />
-           </TooltipHost>
         </Text>
         <Nav
           selectedKey={this.props.selectedKey}

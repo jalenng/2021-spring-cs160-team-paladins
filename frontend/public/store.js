@@ -304,15 +304,14 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
 // // GET - /data
 ipcMain.handle('fetch-data-usage', async (event) => {
     const successCallback = (res) => store.set('dataUsage.fetched', res.data);
-    console.log(store.get('dataUsage.fetched'));
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
 })
 
 // Update data usage on the backend
 // PUT - /data
 ipcMain.handle('push-data-usage', async (event) => {
-    console.log(global.store.get('dataUsage.unsynced.timerUsage'));
     data = {
+        // Will remove when merged & can access timestamps from AppUsageSystem.
         appUsage: [
             {
                 appName: 'Task Switching',                     
@@ -320,16 +319,15 @@ ipcMain.handle('push-data-usage', async (event) => {
                 usageDate: '2021-05-09' 
             }
         ],
+        // Push unsynced timer usage to backend.
         timerUsage: global.store.get('dataUsage.unsynced.timerUsage')
     }
-
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
 ipcMain.handle('reset-data-usage', async(event) => {
     store.set('dataUsage.unsynced.timerUsage', dataUsageDefaults.unsynced.timerUsage);
 })
-
 
 // Fetch insights from the backend
 // GET - /data/insights

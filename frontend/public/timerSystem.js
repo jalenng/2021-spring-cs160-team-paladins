@@ -42,12 +42,18 @@ const TimerSystem = function(){
      */
     this.getStatus = function() {
         if (this.state === states.RUNNING) {
+
+            
             let oldRemainingTime = this.remainingTime;
             this.remainingTime = this.endDate - new Date();
+            // Gets elapsed time in seconds. 
             this.unsyncedUsage += ((oldRemainingTime - this.remainingTime) /1000);
 
+            // Update store w/unsynced values and reset them.
             if (this.unsyncedUsage > 10) {
                 this.updateUsage();
+                this.unsyncedUsage = 0;
+                this.numBreaks = 0;
             }
         }
 
@@ -102,7 +108,6 @@ const TimerSystem = function(){
          // Call timer-end listeners
         const fireCallbacks = (callback) => callback();
         this._events['timer-end'].forEach(fireCallbacks);
-
         this.state = states.IDLE;        
     };
 
@@ -158,7 +163,7 @@ const TimerSystem = function(){
     */
          this.updateUsage = function() {
             var timerUsage = global.store.get('dataUsage.unsynced.timerUsage');
-    
+
             // Get todays date.
             var theDate = new Date();
             var year = theDate.getFullYear();
@@ -166,6 +171,7 @@ const TimerSystem = function(){
             var day = ("00" + theDate.getDate()).substr(-2, 2);
             var dateFormatted = `${year}-${month}-${day}`;
             
+            // if timer usage is empty, init with todays date.
             if (timerUsage.length == 0) {
                 timerUsage = [
                     {
@@ -176,6 +182,7 @@ const TimerSystem = function(){
                 ]
             }
     
+            // Update today's unsynced screen time and number of breaks.
             var i, usageDay;
             for (i=0; i < timerUsage.length; i++) {
                 usageDay = timerUsage[i];
@@ -185,11 +192,8 @@ const TimerSystem = function(){
                     break;
                 }
             }
-            console.log('timer usage updated');
-            console.log(timerUsage);
+            // Update the store and reset unsynced values.
             global.store.set('dataUsage.unsynced.timerUsage', timerUsage);
-            this.unsyncedUsage = 0;
-            this.numBreaks = 0;
         }
 }
 
@@ -213,11 +217,6 @@ ipcMain.handle('timer-reset', () => {
 
 // End the timer (and start the break)
 ipcMain.handle('timer-end', () => {
-    // Increments the unsynced timer/break count.
-    // let dataUsagePath = 'dataUsage.unsynced.timerUsage.timerCount'
-    // console.log(dataUsagePath);
-    // global.store.set(dataUsagePath, global.store.get(dataUsagePath)+1);
-
     // Ends the timer
     global.timerSystem.end();
 })

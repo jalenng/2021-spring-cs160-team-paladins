@@ -20,7 +20,6 @@ export default class BarChart extends React.Component {
     }
     for (i=0; i < this.formatted.length; i++) {
       let usageObj = usage.getUsage(usage.state.fetched.timerUsage, this.formatted[i]);
-      console.log(usageObj);
       var minsUsage = Math.floor(usageObj.screenTime/60);
       this.timerUsage.screenUsage.push(minsUsage);
       this.timerUsage.timerCount.push(usageObj.timerCount);

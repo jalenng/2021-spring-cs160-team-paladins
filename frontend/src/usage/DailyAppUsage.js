@@ -17,7 +17,9 @@ export default class DailyAppUsage extends React.Component {
     this.usage = [];
     for (var i=0; i < this.appUsage.length; i++) {
       this.labels.push(this.appUsage[i].appName);
-      this.usage.push(this.appUsage[i].appTime / 1000);
+      var seconds = this.appUsage[i].appTime / 1000;
+      var minutes = Math.floor(seconds / 60);
+      this.usage.push(minutes);
     }
   }
 
@@ -62,7 +64,7 @@ export default class DailyAppUsage extends React.Component {
           options={{
             title: {
               display: true,
-              text: "Daily App Usage",
+              text: "Daily App Usage (Minutes)",
               fontColor: "#FFFFFF",
               fontSize: 20,
             },

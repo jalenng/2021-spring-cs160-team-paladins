@@ -147,8 +147,7 @@ window.store = {
         push: () => { return ipcRenderer.invoke('push-data-usage') },
 
         /**
-         * Reset data usage on the frontend.
-         * Occurs after updating server
+         * Reset data usage on the frontend (store)
          */
         reset: () => { return ipcRenderer.invoke('reset-data-usage') },
 

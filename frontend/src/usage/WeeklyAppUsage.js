@@ -11,6 +11,7 @@ export default class BarChart extends React.Component {
     let usage = new Usage();
     let weeklyUsage = usage.getPastWeek();
     this.labels = weeklyUsage.names;
+    this.backgroundColor = []
 
     this.screenTime = 0;
     this.timerCount = 0;
@@ -18,10 +19,25 @@ export default class BarChart extends React.Component {
       this.screenTime += this.fetched.screenTime;
       this.timerCount += this.fetched.timerCount;
     }
+
+    // Get data usage values.
+    this.dataUsage = store.dataUsage.getAll();
+    this.appUsage = this.dataUsage.unsynced.appUsage;
+
+    // Get apps names & usage from unsynced.
+    this.labels = [];
+    this.usage = [];
+    for (var i=0; i < this.appUsage.length; i++) {
+      this.labels.push(this.appUsage[i].appName);
+      // appUsage converted from milliseconds -> minutes
+      var seconds = this.appUsage[i].appTime / 1000;
+      var minutes = Math.floor(seconds / 60);
+      this.usage.push(minutes);
+      this.backgroundColor.push("rgba(72, 121, 240, 1)");
+    }
   }
 
   render() {
-
     return (
       <div>
         <Bar
@@ -29,23 +45,9 @@ export default class BarChart extends React.Component {
             labels: this.labels,
             datasets: [
               {
-                label: "Total usage (hours)",
-                data: [5, 6, 6.5, 6, 8, 3, 5],
-                backgroundColor: [
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                  "rgba(72, 121, 240, 1)",
-                ],
-              },
-              {
-                label: "Total # of breaks",
-                data: [15, 18, 20, 20, 24, 9, 15],
-                backgroundColor: "lightblue",
+                label: "Total Weekly Usage (Minutes)",
+                data: this.usage,
+                backgroundColor: this.backgroundColor,
               },
             ],
           }}
@@ -54,7 +56,7 @@ export default class BarChart extends React.Component {
           options={{
             title: {
               display: true,
-              text: "Weekly Timer Usage",
+              text: "Weekly App Usage",
               fontColor: "#FFFFFF",
               fontSize: 20,
             },

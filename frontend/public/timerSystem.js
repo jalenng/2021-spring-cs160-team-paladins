@@ -19,7 +19,8 @@ const TimerSystem = function(){
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
     this.remainingTime = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
 
-    this.elapsedTime = 0;
+    
+    this.unsyncedUsage = 0;
     this.numBreaks = 0;
 
     /**
@@ -43,9 +44,9 @@ const TimerSystem = function(){
         if (this.state === states.RUNNING) {
             let oldRemainingTime = this.remainingTime;
             this.remainingTime = this.endDate - new Date();
-            this.elapsedTime += ((oldRemainingTime - this.remainingTime) /1000);
+            this.unsyncedUsage += ((oldRemainingTime - this.remainingTime) /1000);
 
-            if (this.elapsedTime > 10) {
+            if (this.unsyncedUsage > 10) {
                 this.updateUsage();
             }
         }
@@ -179,7 +180,7 @@ const TimerSystem = function(){
             for (i=0; i < timerUsage.length; i++) {
                 usageDay = timerUsage[i];
                 if (usageDay.usageDate === dateFormatted) {
-                    usageDay.screenTime += this.elapsedTime;
+                    usageDay.screenTime += this.unsyncedUsage;
                     usageDay.timerCount = this.numBreaks;
                     break;
                 }
@@ -187,7 +188,7 @@ const TimerSystem = function(){
             console.log('timer usage updated');
             console.log(timerUsage);
             global.store.set('dataUsage.unsynced.timerUsage', timerUsage);
-            this.elapsedTime = 0;
+            this.unsyncedUsage = 0;
             this.numBreaks = 0;
         }
 }

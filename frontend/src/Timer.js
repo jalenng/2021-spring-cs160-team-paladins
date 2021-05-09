@@ -27,19 +27,6 @@ export default class Timer extends React.Component {
             endTimeString: "",
             state: ""
         };
-    }
-
-    componentDidMount() {
-        store.dataUsage.fetch()
-        .then(result => {
-            if (!result.success) {
-                store.messages.add({
-                    type: MessageBarType.error,
-                    contents: `Failed to retrieve data usage: ${result.data.message}`
-                });
-            } 
-        });
-
 
         timer.eventSystem.on("update", (event, timerStatus) => {
             let remainingMinutes = Math.floor(timerStatus.remainingTime / 60000).toString();

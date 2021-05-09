@@ -9,14 +9,15 @@ export default class Usage {
     this.date = new Date();
     this.weekday = weekdays[this.date.getDay()];
 
-    // Format: YEAR-MONTH-DAY  
-    // ex. '2021-05-07'
+
     this.todayFormatted = this.getFormatted(this.date);
 
     // Get data usage values.
     this.state = store.dataUsage.getAll();
   }
 
+  // Format: YEAR-MONTH-DAY  
+  // ex. '2021-05-07'
   getFormatted(theDate) {
     var year = theDate.getFullYear();
     var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
@@ -24,9 +25,8 @@ export default class Usage {
     return  `${year}-${month}-${day}`;
   }
   
-  // Gets usage for the specified date from given list of objects.
   // Returns the data usage for specified date from given usage list. 
-  getUsage(usageList, dateFormatted, ) {
+  getUsage(usageList, dateFormatted) {
     // will remove when db stops storing values with attached string.
     var todaysDate = dateFormatted + 'T00:00:00.000Z';
     var i;
@@ -37,7 +37,6 @@ export default class Usage {
         return usageObj;
       }
     }
-
     return {
         appUsage: [],
         timerUsage: []

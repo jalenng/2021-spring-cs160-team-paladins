@@ -138,9 +138,9 @@ store.onDidChange('insights', () => {
 store.onDidChange('messages', () => {
     global.mainWindow.webContents.send('store-changed', 'messages');
 });
-// store.onDidChange('dataUsage', () => {
-//     global.mainWindow.webContents.send('store-changed', 'dataUsage');
-// });
+store.onDidChange('dataUsage', () => {
+    global.mainWindow.webContents.send('store-changed', 'dataUsage');
+});
 
 /*---------------------------------------------------------------------------*/
 
@@ -320,7 +320,7 @@ ipcMain.handle('push-data-usage', async (event) => {
             {
                 appName: 'Task Switching',                     
                 appTime: 10000,
-                usageDate: '2021-05-08' 
+                usageDate: '2021-05-09' 
             }
         ],
         timerUsage: global.store.get('dataUsage.unsynced.timerUsage')

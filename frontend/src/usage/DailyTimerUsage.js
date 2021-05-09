@@ -9,14 +9,16 @@ export default class DailyTimerUsage extends React.Component {
 
   constructor(props) {
     super(props);
-    let usage = new Usage();
-    this.fetched = usage.getUsage(usage.state.fetched.timerUsage, usage.todayFormatted);
+    this.state = {
+      screenTime: 0,
+      timerCount: 0,
+    }
 
-    this.screenTime = 0;
-    this.timerCount = 0;
+    this.usage = new Usage();
+    this.fetched = this.usage.getUsage(this.usage.state.fetched.timerUsage, this.usage.todayFormatted);
     if (this.fetched != null) {
-      this.screenTime += this.fetched.screenTime;
-      this.timerCount += this.fetched.timerCount;
+      this.state.screenTime += this.fetched.screenTime;
+      this.state.timerCount += this.fetched.timerCount;
     }
   }
 
@@ -25,12 +27,12 @@ export default class DailyTimerUsage extends React.Component {
       <div style={{alignItems: 'center', verticalAlign: 'center'}}>
         <Text variant={"xxLarge"} style={{ fontSize: "3rem"}} block>
           Smart Screen Usage : 
-            <span style={{color: 'green'}}> {this.screenTime} seconds</span> 
+            <span style={{color: 'green'}}> {this.state.screenTime} seconds</span> 
         </Text>
         
         <Text variant={"xxLarge"} style={{ fontSize: "3rem" }} block>
           You've taken 
-          <span style={{color: 'green'}}> {this.timerCount} </span> 
+          <span style={{color: 'green'}}> {this.state.timerCount} </span> 
           breaks today
         </Text>
       </div>

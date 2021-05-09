@@ -14,7 +14,8 @@ export default class DailyAppUsage extends React.Component {
     this.usage = [];
     for (var i=0; i < this.appUsage.length; i++) {
       this.labels.push(this.appUsage[i].appName);
-      this.usage.push(this.appUsage[i].appTime);
+      // convert millseconds -> seconds
+      this.usage.push(this.appUsage[i].appTime / 1000);
     }
   }
 

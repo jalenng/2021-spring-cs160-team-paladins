@@ -20,6 +20,8 @@ const TimerSystem = function(){
     this.remainingTime = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
 
     this.elapsedTime = 0;
+    this.numBreaks = 0;
+
     /**
      * Registers an event listener
      */
@@ -89,6 +91,7 @@ const TimerSystem = function(){
      * Ends the timer and emits the 'timer-end' event. Used to start the break.
      */
     this.end = function() {
+        this.numBreaks++;
         
         if (this.state === states.BLOCKED) return;
         if (this.state === states.IDLE) return;
@@ -177,7 +180,7 @@ const TimerSystem = function(){
                 usageDay = timerUsage[i];
                 if (usageDay.usageDate === dateFormatted) {
                     usageDay.screenTime += this.elapsedTime;
-                    usageDay.timerCount += 0;
+                    usageDay.timerCount = this.numBreaks;
                     break;
                 }
             }
@@ -185,6 +188,7 @@ const TimerSystem = function(){
             console.log(timerUsage);
             global.store.set('dataUsage.unsynced.timerUsage', timerUsage);
             this.elapsedTime = 0;
+            this.numBreaks = 0;
         }
 }
 
@@ -209,9 +213,9 @@ ipcMain.handle('timer-reset', () => {
 // End the timer (and start the break)
 ipcMain.handle('timer-end', () => {
     // Increments the unsynced timer/break count.
-    let dataUsagePath = 'dataUsage.unsynced.timerUsage.timerCount'
-    console.log(dataUsagePath);
-    global.store.set(dataUsagePath, global.store.get(dataUsagePath)+1);
+    // let dataUsagePath = 'dataUsage.unsynced.timerUsage.timerCount'
+    // console.log(dataUsagePath);
+    // global.store.set(dataUsagePath, global.store.get(dataUsagePath)+1);
 
     // Ends the timer
     global.timerSystem.end();

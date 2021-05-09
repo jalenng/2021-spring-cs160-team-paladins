@@ -49,9 +49,19 @@ export default class UsageSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    console.log()
-    this.handleRefreshBtn = this.handleRefreshBtn.bind(this);
+    this.syncUsage = this.syncUsage.bind(this);
     this.dataUsage = store.dataUsage.getAll();
+
+    // Every 10 seconds, push unsynced data usage to the server.
+    setInterval(() => {
+      store.dataUsage.push().then(result => {
+        if (result.success) {
+           store.dataUsage.reset();
+           this.dataUsage = store.dataUsage.getAll();
+           store.dataUsage.fetch();
+          }
+          });
+    }, 10000);
   }
 
   handleChange(event, item) {
@@ -59,7 +69,7 @@ export default class UsageSidebar extends React.Component {
     this.props.onUpdateSelectedKey(key);
   }
 
-  handleRefreshBtn() {
+  syncUsage() {
     // Update data usage 
     store.dataUsage.push()
     .then(result => {
@@ -92,6 +102,7 @@ export default class UsageSidebar extends React.Component {
     })
   };
 
+
   render() {
     return (
       <Stack 
@@ -102,7 +113,7 @@ export default class UsageSidebar extends React.Component {
           <TooltipHost content="Refresh">
             <IconButton
                 iconProps={{ iconName: 'Refresh' }}
-                onClick={this.handleRefreshBtn}
+                onClick={this.syncUsage}
             />
            </TooltipHost>
         </Text>

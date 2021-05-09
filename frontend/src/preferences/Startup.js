@@ -33,12 +33,12 @@ export default class extends React.Component {
                 <Stack {...level2Props}>
                     <Text variant={'xLarge'} block> Startup </Text>
 
-                    <Toggle label='Start app on login'
+                    <Toggle label='Start iCare when your computer starts up'
                         onText='On' offText='Off'
                         checked={this.state.startAppOnLogin}
                         onChange={(event, checked) => store.preferences.set('startup.startAppOnLogin', checked)}
                     />
-                    <Toggle label='Start timer on app startup'
+                    <Toggle label='Start the timer when iCare starts up'
                         onText='On' offText='Off'
                         checked={this.state.startTimerOnAppStartup}
                         onChange={(event, checked) => {

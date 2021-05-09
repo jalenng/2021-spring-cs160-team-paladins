@@ -153,13 +153,6 @@ app.whenReady().then(() => {
         });
     }
 
-    /* Block timer if on battery power */
-    if (powerMonitor.isOnBatteryPower() && global.store.get('preferences.blockers.blockOnBattery'))
-    blockerSystem.addBlocker({
-        type: 'Other',
-        message: 'Your computer is running on battery power.'
-    })
-
 })
 
 /* Handle closing all windows behavior for macOS */

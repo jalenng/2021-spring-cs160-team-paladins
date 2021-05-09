@@ -307,23 +307,15 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
     return result;
 })
 
-<<<<<<< HEAD
 // // Fetch data usage from the backend
 // // GET - /data
 ipcMain.handle('fetch-data-usage', async (event) => {
     const successCallback = (res) => store.set('dataUsage.fetched', res.data);
-=======
-// Fetch data usage from the backend
-// GET - /data
-ipcMain.handle('fetch-data-usage', async () => {
-    const successCallback = (res) => store.set('dataUsage.fetched', res.data.cards);
->>>>>>> frontend-dev
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
 })
 
 // Update data usage on the backend
 // PUT - /data
-<<<<<<< HEAD
 ipcMain.handle('push-data-usage', async (event) => {
     data = {
         // Will remove when merged & can access timestamps from AppUsageSystem.
@@ -337,10 +329,6 @@ ipcMain.handle('push-data-usage', async (event) => {
         // Push unsynced timer usage to backend.
         timerUsage: global.store.get('dataUsage.unsynced.timerUsage')
     }
-=======
-ipcMain.handle('push-data-usage', async () => {
-    const data = store.get('dataUsage.unsynced');
->>>>>>> frontend-dev
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 

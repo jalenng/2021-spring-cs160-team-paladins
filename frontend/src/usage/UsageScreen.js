@@ -59,9 +59,6 @@ export default class UsageScreen extends React.Component {
           paddingBottom: "260px",
           paddingRight: "40px"
         }}>
-<<<<<<< HEAD
-          {usagePage}
-=======
           {/* Show message if not signed in */}
           {!this.state.isSignedIn &&
             <Text>To view your usage statistics, please sign in. </Text>
@@ -72,7 +69,6 @@ export default class UsageScreen extends React.Component {
             usagePage
           }
 
->>>>>>> frontend-dev
         </ScrollablePane>
                 
         <UsageSidebar

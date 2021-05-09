@@ -37,27 +37,7 @@ export default class extends React.Component {
 
         return (
 
-<<<<<<< HEAD
-            <Stack id="your_accounts" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
-                <Stack horizontal
-                    verticalAlign="center"
-                    tokens={{ childrenGap: 16 }} >
-                    <Text variant={'xLarge'} block> Your account </Text>
-
-                    {/* Show Edit button only if signed in */}
-                    { isSignedIn && 
-                        <TooltipHost content="Edit account details">
-                            <IconButton
-                                iconProps={{ iconName: 'Edit' }}
-                                onClick={ showPopup.editAccount }
-                            />
-                        </TooltipHost>
-                        
-                    }
-                </Stack>
-=======
             <Stack {...level1Props} id="your_accounts">
->>>>>>> frontend-dev
 
                 
                 <Stack {...level2Props}>

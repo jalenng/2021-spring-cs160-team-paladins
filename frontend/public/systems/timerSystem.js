@@ -145,7 +145,7 @@ module.exports = function () {
 
         if (this.unsyncedUsage > 5) {
             var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
-            console.log(screenTime);
+            console.log('Total screen time : ' + screenTime);
             global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime + this.unsyncedUsage);
             this.unsyncedUsage = 0;
         }

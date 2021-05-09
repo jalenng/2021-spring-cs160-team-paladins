@@ -319,6 +319,9 @@ ipcMain.handle('fetch-data-usage', async (event) => {
 // Update data usage on the backend
 // PUT - /data
 ipcMain.handle('push-data-usage', async (event) => {
+
+    let timerUsage = store.get('dataUsage.unsynced.timerUsage');
+
     data = {
         // Will remove when merged & can access timestamps from AppUsageSystem.
         appUsage: [
@@ -329,7 +332,20 @@ ipcMain.handle('push-data-usage', async (event) => {
             }
         ],
         // Push unsynced timer usage to backend.
-        timerUsage: global.store.get('dataUsage.unsynced.timerUsage')
+        timerUsage: [
+            {
+                screenTime: timerUsage.screenTime,
+                timerCount: timerUsage.timerCount,
+                usageDate: () => {
+                    var theDate = new Date();
+                    var year = theDate.getFullYear();
+                    var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
+                    var day = ("00" + theDate.getDate()).substr(-2, 2);
+                    return  `${year}-${month}-${day}`;
+                }
+            }
+        ]
+
     }
     return await returnAxiosResult('put', 'data', data, [200]);
 })

@@ -315,7 +315,7 @@ const { route } = require('./index.js');
 
       // Response Codes
       if (insight != false) { 
-        res.status(200).send({ header: insight });  
+        res.status(200).send({ cards: insight });  
       }
       else { res.status(504).send({ reason: "RETRIEVE_FAILED", message: "Insights could not be generated." }) }
     });

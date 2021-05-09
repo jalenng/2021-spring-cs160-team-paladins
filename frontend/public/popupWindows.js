@@ -2,6 +2,8 @@ const { BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
+let popupWindow;
+
 // Shared popup window options
 const sharedWindowOptions = {
     width: 380,
@@ -17,9 +19,9 @@ const sharedWindowOptions = {
     }
 }
 
-
 function openPopup(customOptions, destination) {
-    const popupWindow = new BrowserWindow({
+    
+    popupWindow = new BrowserWindow({
         ...sharedWindowOptions,
         ...customOptions
     })

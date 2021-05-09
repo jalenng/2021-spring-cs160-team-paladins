@@ -110,6 +110,7 @@ export default class extends React.Component {
                                 value={this.state.inputs.email}
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.email}
+                                autoFocus 
                             />
                             <TextField label='Password' type='password' id='password'
                                 styles={textFieldStyles}

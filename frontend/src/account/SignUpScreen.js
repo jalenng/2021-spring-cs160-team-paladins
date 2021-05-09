@@ -152,6 +152,7 @@ export default class extends React.Component {
                                 onChange={this.handleChange}
                                 value={this.state.inputs.displayName}
                                 errorMessage={this.state.errors.displayName}
+                                autoFocus 
                             />
                             <TextField label='Email' id='email'
                                 styles={textFieldStyles}

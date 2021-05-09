@@ -102,6 +102,7 @@ export default class extends React.Component {
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
                                 canRevealPassword
+                                autoFocus 
                             />
                         </Stack>
 

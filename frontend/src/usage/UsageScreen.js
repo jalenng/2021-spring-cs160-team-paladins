@@ -51,9 +51,13 @@ export default class UsageScreen extends React.Component {
   syncUsage() {
     store.dataUsage.push().then(result => {
       if (result.success) {
+          console.log("PUSH SUCCESS");
           store.dataUsage.reset();
           store.dataUsage.fetch();
         }
+      else {
+        console.log("PUSH FAILURE");
+      }
       });
   }
 

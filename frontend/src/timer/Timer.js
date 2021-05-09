@@ -20,6 +20,9 @@ export default class extends React.Component {
 
         timer.getStatus();
         setInterval(timer.getStatus, 100);
+
+
+
     }
 
     componentWillUnmount() {
@@ -27,6 +30,8 @@ export default class extends React.Component {
     }
 
     updateState(status) {
+
+
         // Don't update state if component is not mounted
         if (!this._isMounted) return;
 

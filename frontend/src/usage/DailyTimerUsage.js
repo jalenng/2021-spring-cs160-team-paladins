@@ -9,25 +9,33 @@ export default class DailyTimerUsage extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = store.dataUsage.getAll();
 
-    this.state = {
-      screenTime: 0,
-      timerCount: 0,
-    }
-
-    // Get fetched usage for todays date.
-    this.usage = new Usage();
-    this.fetched = this.usage.getUsage(this.usage.state.fetched.timerUsage, this.usage.todayFormatted);
-
-    if (this.fetched !== null) {
-      this.state.screenTime += this.fetched.screenTime;
-      this.state.timerCount += this.fetched.timerCount;
-    }  
-
+    var todaysDate = (this.getTodaysDate() + 'T00:00:00.000Z');
+    console.log('TODAYS DATE' + todaysDate);
+    this.todaysUsage = 0;
     
+    var i, usageObj;
+    var timerUsageList = this.state.fetched.timerUsage;
+    console.log(timerUsageList);
+    for (i=0; i<timerUsageList.length; i++) {
+      usageObj = timerUsageList[i];
+      if (usageObj.usageDate === todaysDate) {
+        this.todaysUsage = usageObj;
+      }
+    }
+    this.minutes = Math.floor(this.todaysUsage.screenTime/60);
+    this.seconds = Math.floor(this.todaysUsage.screenTime%60);
+  }
 
-    this.minutes = Math.floor(this.state.screenTime/60);
-    this.seconds = this.state.screenTime%60;
+  /**
+  Gets todays date in format : YEAR-MONTH-DAY */
+  getTodaysDate() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = ("00" + (today.getMonth() + 1)).substr(-2, 2);
+    var day = ("00" + today.getDate()).substr(-2, 2);
+    return  `${year}-${month}-${day}`;
   }
 
   render() {
@@ -41,7 +49,7 @@ export default class DailyTimerUsage extends React.Component {
         {/*  Number of Breaks */}
         <Text variant={"xxLarge"} style={{ fontSize: "2rem" }} block>
           You've taken 
-          <span style={{color: 'green'}}> {this.state.timerCount} </span> 
+          <span style={{color: 'green'}}> {this.todaysUsage.timerCount} </span> 
           breaks today
         </Text>
 

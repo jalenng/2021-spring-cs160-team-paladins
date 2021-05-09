@@ -336,23 +336,23 @@ ipcMain.handle('push-data-usage', async (event) => {
             {
                 screenTime: timerUsage.screenTime,
                 timerCount: timerUsage.timerCount,
-                usageDate: () => {
-                    var theDate = new Date();
-                    var year = theDate.getFullYear();
-                    var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
-                    var day = ("00" + theDate.getDate()).substr(-2, 2);
-                    return  `${year}-${month}-${day}`;
-                }
+                usageDate: '2021-05-09'
+                // usageDate: () => {
+                //     var theDate = new Date();
+                //     var year = theDate.getFullYear();
+                //     var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
+                //     var day = ("00" + theDate.getDate()).substr(-2, 2);
+                //     return  `${year}-${month}-${day}`;
+                // }
             }
         ]
-
     }
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
 // Clear the unsynced data usage (timer usage only as of now)
 ipcMain.handle('reset-data-usage', async () => {
-    store.set('dataUsage.unsynced.timerUsage', dataUsageDefaults.unsynced.timerUsage)
+    store.set('dataUsage.unsynced', dataUsageDefaults.unsynced)
 })
 
 // Fetch insights from the backend

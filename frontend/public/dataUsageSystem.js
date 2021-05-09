@@ -1,55 +1,54 @@
-const psShell = require('node-powershell');
-const isWindows = process.platform == 'win32';
+/*
+The data usage system handles the aggregation of app-related and timer-related information.
+The states of the data usage system are as follows:
+    - isRunning
+        - true <---> false
+*/
 
-const APP_SNAPSHOT_INTERVAL = 10000
-const POWERSHELL_GET_PROCESS_COMMAND = 
-    `Get-Process | Where-Object {$_.mainWindowTitle} | Select-Object Name, mainWindowtitle, Description, Path | ConvertTo-Json | % {$_ -replace("\\u200B")} | % {$_ -replace("\\u200E")}`
+module.exports = function() {
 
-/**
- * Data usage system states
- */
-const states = {
-    RUNNING: 'running',
-    STOPPED:  'stopped',
-}
-
-var interval;
-
-function dataUsageSystem() {
-
-    this.state = states.STOPPED;
-    this.ps = null;
-
+    this.isRunning = false;
+    
     /**
-     * Capture a snapshot of the list of open windows, 
-     * then update the data usage store accordingly.
+     * Update the data usage store according to the list of open processes
      */
-    this.captureAppSnapshot = async function () {
-        let openProcesses = await this.getOpenProcesses();
+    this.processAppSnapshot = async function (openProcesses) {
+        const appNamesDict  = global.store.get('appNames');
+
+        // Get current timestamp
+        const now = new Date();
+        const nowYear = now.getFullYear();
+        const nowMonth = ("00" + (now.getMonth() + 1)).substr(-2, 2);
+        const nowDate = ("00" + now.getDate()).substr(-2, 2);
+        const timestampString = `${nowYear}-${nowMonth}-${nowDate}`;
 
         // Update app usage
         let appUsage = global.store.get('dataUsage.unsynced.appUsage');
         openProcesses.forEach( process => {
             const processPath = process.path;
 
-            // Try to find an entry with the same path
-            const foundEntry = appUsage.find(app => app.appPath === processPath)
+            // Try to find an entry with the same path and timestamp
+            const foundEntry = appUsage.find(app => {
+                return (app.appPath === processPath && app.usageDate === timestampString);
+            });
 
             // If this app has not been seen, add new entry
             if (foundEntry === undefined) {
                 appUsage.push({
-                    appName: process.name,
+                    appName: appNamesDict[processPath],
                     appPath: processPath,
-                    appTime:  APP_SNAPSHOT_INTERVAL
+                    appTime: process.duration,
+                    usageDate: timestampString
                 })
             }
             // Else, just update existing entry
             else {
                 appUsage = appUsage.filter(app => app.appPath != processPath); // Remove existing entry
                 appUsage.push({ // Push updated entry
-                    appName: process.name,
+                    appName: appNamesDict[processPath],
                     appPath: processPath,
-                    appTime: foundEntry.appTime + APP_SNAPSHOT_INTERVAL
+                    appTime: foundEntry.appTime + process.duration,
+                    usageDate: timestampString  
                 })
             }            
         })
@@ -58,88 +57,26 @@ function dataUsageSystem() {
     }
 
     /**
-     * Get the list of open windows.
-     * @returns {[Object]} List of objects representing the open windows
-     */
-    this.getOpenProcesses = async function() {
-        let result = [];
-
-        // WINDOWS: Invoke PowerShell command to get open windows
-        if (isWindows) {
-            try {
-                // Evaluate the JSON string output to a JSON object
-                this.ps.addCommand(POWERSHELL_GET_PROCESS_COMMAND);
-                const psOutput = await this.ps.invoke();
-                const psJson = eval(psOutput)
-
-                // Perform processing to get the ideal name
-                psJson.forEach( process => {
-                    const winTitle = process.MainWindowTitle;
-                    const winDesc = process.Description;
-                    const winPath = process.Path;
-                    if (winTitle.indexOf(winDesc) === -1 || winDesc === '') 
-                        result.push({
-                            name: winTitle,
-                            path: winPath
-                        });
-                    else
-                        result.push({
-                            name: winDesc,
-                            path: winPath
-                        });
-                })
-
-            }
-            catch (error) { console.log(error) }
-        }
-
-        return result;
-    }
-
-    /**
      * Starts the data usage system.
      */
     this.startSystem = function () {
-        if (this.state = states.STOPPED) {
-            // Set interval to take snapshots of open processes
-            interval = setInterval(this.captureAppSnapshot.bind(this), APP_SNAPSHOT_INTERVAL);
-            
-            // WINDOWS: Set up PowerShell shell
-            if (isWindows) {
-                this.ps = new psShell({
-                    executionPolicy: 'Bypass',
-                    noProfile: true
-                });
-            }
-            
-            this.state = states.RUNNING;            
-        }
+        if (!this.isRunning) this.isRunning = true;    
     }
 
     /**
      * Stops the data usage system.
      */
     this.stopSystem = function () {
-        if (this.state = states.RUNNING)
-            clearInterval(interval);
-            this.state = states.STOPPED;
+        if (this.isRunning) this.isRunning = false;
     }
 
+    /**
+     * Starts or stops the data usage system depending on user preferences
+     */
+    this.updateState = function () {
+        if (global.store.get('preferences.dataUsage.trackAppUsageStats')) 
+            this.startSystem();
+        else
+            this.stopSystem();
+    }
 }
-
-// Instantiate the data usage system
-global.dataUsageSystem = new dataUsageSystem();
-
-
-// Start data usage system automatically based on user preference
-if (global.store.get('preferences.dataUsage.trackAppUsageStats'))
-    global.dataUsageSystem.startSystem();
-
-
-// Update the status of the data usage system if the setting changes
-store.onDidChange('preferences.dataUsage.trackAppUsageStats', (newVal, oldVal) => {
-    if (newVal)
-        global.dataUsageSystem.startSystem();
-    else
-        global.dataUsageSystem.stopSystem();
-});

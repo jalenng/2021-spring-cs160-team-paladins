@@ -48,22 +48,7 @@ export default class UsageSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.dataUsage = store.dataUsage.getAll();
-
-    // Every 10 seconds, push unsynced data usage to the server.
-    setInterval(this.syncUsage, 10000);
   }
-
-  syncUsage() {
-    store.dataUsage.push().then(result => {
-      if (result.success) {
-          store.dataUsage.reset();
-          this.dataUsage = store.dataUsage.getAll();
-          store.dataUsage.fetch();
-        }
-      });
-  }
-  
 
   handleChange(event, item) {
     const key = item.key;

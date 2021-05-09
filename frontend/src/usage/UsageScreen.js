@@ -32,6 +32,9 @@ export default class UsageScreen extends React.Component {
       isSignedIn: store.accounts.getAll().token !== null,
       selectedKey: 'app_usage' 
     };
+
+    // Every 10 seconds, push unsynced data usage to the server.
+    setInterval(this.syncUsage, 10000);
   }
 
   componentDidMount() {
@@ -44,6 +47,15 @@ export default class UsageScreen extends React.Component {
         isSignedIn: store.accounts.getAll().token !== null,
     });
   };
+
+  syncUsage() {
+    store.dataUsage.push().then(result => {
+      if (result.success) {
+          store.dataUsage.reset();
+          store.dataUsage.fetch();
+        }
+      });
+  }
 
   render() {
     const selectedKey = this.state.selectedKey;

@@ -96,7 +96,7 @@ export default class UsageSidebar extends React.Component {
             });
         } 
         else {
-          console.log("SUCCESS 2");
+          console.log("SUCCESS 2"); 
           console.log(this.dataUsage.fetched.timerUsage);
         }
     })

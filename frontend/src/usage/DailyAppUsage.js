@@ -14,7 +14,6 @@ export default class DailyAppUsage extends React.Component {
     this.usage = [];
     for (var i=0; i < this.appUsage.length; i++) {
       this.labels.push(this.appUsage[i].appName);
-      // convert millseconds -> seconds
       this.usage.push(this.appUsage[i].appTime / 1000);
     }
   }
@@ -62,8 +61,7 @@ export default class DailyAppUsage extends React.Component {
               display: true,
               text: "Daily App Usage",
               fontColor: "#FFFFFF",
-              fontSize: 15,
-              padding: 10,
+              fontSize: 20,
             },
             maintainAspectRatio: false,
             legend: {

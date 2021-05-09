@@ -56,8 +56,7 @@ export default class BarChart extends React.Component {
               display: true,
               text: "Weekly Timer Usage",
               fontColor: "#FFFFFF",
-              fontSize: 15,
-              padding: 10,
+              fontSize: 20,
             },
             scales: {
               yAxes: [

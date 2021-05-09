@@ -16,25 +16,31 @@ export default class DailyTimerUsage extends React.Component {
 
     this.usage = new Usage();
     this.fetched = this.usage.getUsage(this.usage.state.fetched.timerUsage, this.usage.todayFormatted);
+
     if (this.fetched != null) {
       this.state.screenTime += this.fetched.screenTime;
       this.state.timerCount += this.fetched.timerCount;
     }
+
+    this.minutes = Math.floor(this.state.screenTime/60);
+    this.seconds = this.state.screenTime%60;
   }
 
   render() {
     return (
       <div style={{alignItems: 'center', verticalAlign: 'center'}}>
+        {/* Screen Usage Duration */}
         <Text variant={"xxLarge"} style={{ fontSize: "3rem"}} block>
           Smart Screen Usage : 
-            <span style={{color: 'green'}}> {this.state.screenTime} seconds</span> 
+            <span style={{color: 'green'}}> {this.minutes} minutes {this.seconds} seconds</span> 
         </Text>
-        
+        {/*  Number of Breaks */}
         <Text variant={"xxLarge"} style={{ fontSize: "3rem" }} block>
           You've taken 
           <span style={{color: 'green'}}> {this.state.timerCount} </span> 
           breaks today
         </Text>
+
       </div>
     );
   }

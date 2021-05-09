@@ -151,7 +151,7 @@ const TimerSystem = function(){
 
     /**
      * Update store's unsynced timer usage. 
-     */
+    */
          this.updateUsage = function() {
             var timerUsage = global.store.get('dataUsage.unsynced.timerUsage');
     

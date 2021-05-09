@@ -5,7 +5,7 @@ export default class Usage {
 
   constructor() {
 
-    // Get current date
+    // Get current date.
     this.date = new Date();
     this.weekday = weekdays[this.date.getDay()];
 
@@ -15,10 +15,7 @@ export default class Usage {
 
     // Get data usage values.
     this.state = store.dataUsage.getAll();
-
-    // 
   }
-
 
   getFormatted(theDate) {
     var year = theDate.getFullYear();

@@ -1,6 +1,7 @@
 import React from "react";
 import { Bar, defaults } from "react-chartjs-2"
 import Usage from "./Usage.js"
+import { Text } from '@fluentui/react/lib/Text';
 
 defaults.global.tooltips.enabled = true;
 
@@ -10,8 +11,6 @@ export default class DailyTimerUsage extends React.Component {
     super(props);
     let usage = new Usage();
     this.fetched = usage.getUsage(usage.state.fetched.timerUsage, usage.todayFormatted);
-    let weeklyUsage = usage.getPastWeek();
-    console.log(weeklyUsage);
 
     this.screenTime = 0;
     this.timerCount = 0;
@@ -23,9 +22,17 @@ export default class DailyTimerUsage extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>You've been using iCare for {this.screenTime} seconds today.</h1>
-        <h1>You've taken {this.timerCount} breaks today.</h1>
+      <div style={{alignItems: 'center', verticalAlign: 'center'}}>
+        <Text variant={"xxLarge"} style={{ fontSize: "3rem"}} block>
+          Smart Screen Usage : 
+            <span style={{color: 'green'}}> {this.screenTime} seconds</span> 
+        </Text>
+        
+        <Text variant={"xxLarge"} style={{ fontSize: "3rem" }} block>
+          You've taken 
+          <span style={{color: 'green'}}> {this.timerCount} </span> 
+          breaks today
+        </Text>
       </div>
     );
   }

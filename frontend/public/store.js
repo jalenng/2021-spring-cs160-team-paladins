@@ -73,7 +73,10 @@ const accountsStoreDefaults = {
 const dataUsageDefaults = {
     unsynced: {
         appUsage: [],
-        timerUsage: []
+        timerUsage:  {
+            screenTime: 0,
+            timerCount: 0,
+        }
     },
     fetched: {
         appUsage: [],
@@ -333,7 +336,7 @@ ipcMain.handle('push-data-usage', async (event) => {
 
 // Clear the unsynced data usage (timer usage only as of now)
 ipcMain.handle('reset-data-usage', async () => {
-    store.reset('dataUsage.unsynced.timerUsage');
+    store.set('dataUsage.unsynced.timerUsage', dataUsageDefaults.unsynced.timerUsage)
 })
 
 // Fetch insights from the backend

@@ -145,10 +145,10 @@ module.exports = function () {
 
         if (this.unsyncedUsage > 5) {
             var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
+            console.log(screenTime);
             global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime + this.unsyncedUsage);
             this.unsyncedUsage = 0;
         }
-        console.log(global.store.get('dataUsage.unsynced.timerUsage.screenTime');
         return this.unsyncedUsage
     }
 

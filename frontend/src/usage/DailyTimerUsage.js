@@ -1,6 +1,5 @@
 import React from "react";
 import { Bar, defaults } from "react-chartjs-2"
-import Usage from "./Usage.js"
 import { Text } from '@fluentui/react/lib/Text';
 
 defaults.global.tooltips.enabled = true;

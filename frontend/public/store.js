@@ -323,13 +323,21 @@ ipcMain.handle('push-data-usage', async (event) => {
     let timerUsage = store.get('dataUsage.unsynced.timerUsage');
     let appUsage = store.get('dataUsage.unsynced.appUsage');
 
+    var getTodaysDate = () => {
+        var theDate = new Date();
+        var year = theDate.getFullYear();
+        var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
+        var day = ("00" + theDate.getDate()).substr(-2, 2);
+        return  `${year}-${month}-${day}`;
+    }
+
     var appUsageData = [];
     var i;
     for (i=0; i<appUsage.length; i++) {
         appUsageData.push({
             appName: appUsage[i].appName,
             appTime: appUsage[i].appTime,
-            usageDate: '2021-05-09',
+            usageDate: getTodaysDate,
         })
     }
 
@@ -341,14 +349,7 @@ ipcMain.handle('push-data-usage', async (event) => {
             {
                 screenTime: timerUsage.screenTime,
                 timerCount: timerUsage.timerCount,
-                usageDate: '2021-05-09'
-                // usageDate: () => {
-                //     var theDate = new Date();
-                //     var year = theDate.getFullYear();
-                //     var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
-                //     var day = ("00" + theDate.getDate()).substr(-2, 2);
-                //     return  `${year}-${month}-${day}`;
-                // }
+                usageDate: getTodaysDate,
             }
         ]
     }

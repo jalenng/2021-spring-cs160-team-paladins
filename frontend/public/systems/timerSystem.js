@@ -232,6 +232,11 @@ module.exports = function () {
      * Ends the timer and starts the break
      */
     this.end = function () {
+        var numBreaks = global.store.get('dataUsage.unsynced.timerUsage.timerCount');
+        console.log("NUMBER OF BREAKS" + numBreaks);
+        global.store.set('dataUsage.unsynced.timerUsage.timerCount', numBreaks++);
+        console.log('UPDATED BREAKS' + global.store.get('dataUsage.unsynced.timerUsage.timerCount'));
+
         if (this.isBlocked) return;
         if (this.isIdle) return;
 

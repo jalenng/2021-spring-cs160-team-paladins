@@ -9,19 +9,22 @@ export default class DailyAppUsage extends React.Component {
     super(props);
 
     // Get data usage values.
-    this.usage = store.dataUsage.getAll();
-    this.appUsage = this.usage.fetched.appUsage;
+    let usage = store.dataUsage.getAll();
+    this.appUsage = usage.fetched.appUsage;
 
     // Get apps names & usage from unsynced.
     this.labels = [];
     this.usage = [];
+    var today = usage.unsynced.timerUsage.usageDate + 'T00:00:00.000Z'
     for (var i=0; i < this.appUsage.length; i++) {
-      this.labels.push(this.appUsage[i].appName);
-      var seconds = this.appUsage[i].appTime / 1000;
-      var minutes = Math.floor(seconds / 60);
-      this.usage.push(minutes);
+      if (this.appUsage[i].usageDate == today) {
+        this.labels.push(this.appUsage[i].appName);
+        var seconds = this.appUsage[i].appTime / 1000;
+        var minutes = Math.floor(seconds / 60);
+        this.usage.push(minutes);
+        }
+      }
     }
-  }
 
   render() {
     return (
@@ -42,6 +45,7 @@ export default class DailyAppUsage extends React.Component {
                   "rgba(255, 159, 64, 0.2)",
                   "rgba(30, 130, 76, 0.2)",
                   "rgba(149, 165, 166, 0.2)",
+                  "rgba(46, 49, 49, 1)",
                 ],
                 borderColor: [
                   "rgba(255, 99, 132, 1)",

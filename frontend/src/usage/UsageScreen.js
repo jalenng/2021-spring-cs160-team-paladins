@@ -47,6 +47,7 @@ export default class UsageScreen extends React.Component {
         ...this.state,
         isSignedIn: store.accounts.getAll().token !== null,
     });
+    this.syncUsage;
   };
 
   // 

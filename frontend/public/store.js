@@ -325,17 +325,13 @@ ipcMain.handle('push-data-usage', async (event) => {
     let timerUsage = store.get('dataUsage.unsynced.timerUsage')
     let appUsage = store.get('dataUsage.unsynced.appUsage');
 
-    // The unsynced usage date is always set to todays date. 
-    let today = store.get('dataUsage.unsynced.timerUsage.usageDate');
-    console.log(today);
-
     var appUsageData = [];
     var i;
     for (i=0; i<appUsage.length; i++) {
         appUsageData.push({
             appName: appUsage[i].appName,
             appTime: appUsage[i].appTime,
-            usageDate: today,
+            usageDate: appUsage[i].usageDate,
         })
     }
 

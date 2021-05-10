@@ -33,7 +33,8 @@ export default class UsageScreen extends React.Component {
       selectedKey: 'daily_app_usage' 
     };
 
-    setInterval(this.syncUsage, 10000);
+    // 
+    setInterval(this.syncUsage, 5000);
   }
 
   componentDidMount() {
@@ -54,7 +55,6 @@ export default class UsageScreen extends React.Component {
    */
   syncUsage() {
     let unsyncedScreenTime = store.dataUsage.getAll().unsynced.timerUsage.screenTime;
-    console.log('unsynced screen time ' + unsyncedScreenTime);
     if (unsyncedScreenTime > 10) {
       store.dataUsage.push().then(result => {
         if (result.success) {

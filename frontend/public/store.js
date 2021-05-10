@@ -343,8 +343,7 @@ ipcMain.handle('push-data-usage', async (event) => {
         })
     }
 
-
-    var data = {
+    data = {
         // Will remove when merged & can access timestamps from AppUsageSystem.
         appUsage: appUsageData,
         // Push unsynced timer usage to backend.
@@ -356,8 +355,6 @@ ipcMain.handle('push-data-usage', async (event) => {
             }
         ]
     }
-    console.log('data');
-    console.log(data);
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 

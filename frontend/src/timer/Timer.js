@@ -20,9 +20,6 @@ export default class extends React.Component {
 
         timer.getStatus();
         setInterval(timer.getStatus, 100);
-
-
-
     }
 
     componentWillUnmount() {

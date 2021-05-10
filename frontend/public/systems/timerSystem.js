@@ -66,7 +66,7 @@ module.exports = function () {
     this.remainingTime = this.endDate - new Date();
     this.prevRemainingTime = this.remainingTime;
     this.unsyncedUsage = 0; // Unsynced timer usage. Resets when store is updated. 
-    
+
     
     /**
      * Registers an event listener
@@ -134,18 +134,18 @@ module.exports = function () {
     };
 
     /**
-     * Gets the latest timer usage duration.
-     * When store is updated, this value is reset to 0.
+     * Updates store with latest unsynced timer usage changes. 
+     * After update, unsynced usage reset to 0.
      */
     this.updateUnsyncedUsage = function() {
         if (this.prevRemainingTime !== 0 && this.savedTime === null) {
             var elapsedTime = (this.prevRemainingTime - this.remainingTime)/1000;
             this.unsyncedUsage += elapsedTime;
         }
-
+        
         var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
+        console.log(screenTime);
         screenTime += this.unsyncedUsage;
-        console.log('screen time ' + screenTime);
         global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime); 
         this.unsyncedUsage = 0;
     }
@@ -231,10 +231,8 @@ module.exports = function () {
      */
     this.end = function () {
         var numBreaks = global.store.get('dataUsage.unsynced.timerUsage.timerCount');
-        console.log("NUMBER OF BREAKS" + numBreaks);
         numBreaks = numBreaks+1;
         global.store.set('dataUsage.unsynced.timerUsage.timerCount', numBreaks);
-        console.log('UPDATED BREAKS' + global.store.get('dataUsage.unsynced.timerUsage.timerCount'));
 
         if (this.isBlocked) return;
         if (this.isIdle) return;

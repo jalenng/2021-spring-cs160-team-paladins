@@ -37,7 +37,7 @@ export default class UsageScreen extends React.Component {
   componentDidMount() {
     store.accounts.eventSystem.on('changed', () => this.updateState())
     if (this.state.isSignedIn === true) {
-      this.syncUsage;
+      this.syncUsage();
       setInterval(this.syncUsage, 10000);
     }
   }
@@ -47,7 +47,7 @@ export default class UsageScreen extends React.Component {
         ...this.state,
         isSignedIn: store.accounts.getAll().token !== null,
     });
-    this.syncUsage;
+    this.syncUsage();
   };
 
   // 
@@ -56,7 +56,6 @@ export default class UsageScreen extends React.Component {
    * 
    */
   syncUsage() {
-    let unsynced = store.dataUsage.getAll().unsynced.timerUsage;
     // only push to server if updates exist
     store.dataUsage.push().then(result => {
       if (result.success) {

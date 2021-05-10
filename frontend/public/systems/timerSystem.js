@@ -112,7 +112,6 @@ module.exports = function () {
      */
     this.getStatus = function () {
         this.updateUnsyncedUsage();
-
         return { 
             endDate: this.endDate,
             totalDuration: this.totalDuration,

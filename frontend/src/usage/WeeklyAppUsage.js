@@ -41,7 +41,7 @@ export default class BarChart extends React.Component {
             labels: this.labels,
             datasets: [
               {
-                label: "Minutes",
+                label: "Seconds",
                 data: this.usage,
                 backgroundColor: this.backgroundColor,
               },

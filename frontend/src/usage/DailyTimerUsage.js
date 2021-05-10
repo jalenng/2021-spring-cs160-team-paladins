@@ -10,16 +10,20 @@ export default class DailyTimerUsage extends React.Component {
     super(props);
     this.state = store.dataUsage.getAll();
 
+    // Get list of fetched timer usage.
+    var timerUsageList = this.state.fetched.timerUsage;
     var todaysDate = (this.getTodaysDate() + 'T00:00:00.000Z');
     this.todaysUsage = 0;
+
+    // Get todays timer usage from list.
     var i, usageObj;
-    var timerUsageList = this.state.fetched.timerUsage;
     for (i=0; i<timerUsageList.length; i++) {
       usageObj = timerUsageList[i];
       if (usageObj.usageDate === todaysDate) {
         this.todaysUsage = usageObj;
       }
     }
+
     this.minutes = Math.floor(this.todaysUsage.screenTime/60);
     this.seconds = Math.floor(this.todaysUsage.screenTime%60);
   }

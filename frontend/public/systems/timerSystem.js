@@ -111,6 +111,8 @@ module.exports = function () {
      * @returns an object
      */
     this.getStatus = function () {
+        this.updateUnsyncedUsage();
+
         return { 
             endDate: this.endDate,
             totalDuration: this.totalDuration,
@@ -125,7 +127,6 @@ module.exports = function () {
                     this.remainingTime = this.endDate - new Date();
                     return this.remainingTime;
                 }})(),
-            unsyncedUsage: this.getUnsyncedUsage(),
             isBlocked: this.isBlocked,
             isPaused: this.isPaused,
             isIdle: this.isIdle
@@ -135,21 +136,18 @@ module.exports = function () {
     /**
      * Gets the latest timer usage duration.
      * When store is updated, this value is reset to 0.
-     * @returns unsynced timer usage (seconds)
      */
-    this.getUnsyncedUsage = function() {
+    this.updateUnsyncedUsage = function() {
         if (this.prevRemainingTime !== 0 && this.savedTime === null) {
             var elapsedTime = (this.prevRemainingTime - this.remainingTime)/1000;
             this.unsyncedUsage += elapsedTime;
         }
 
-        if (this.unsyncedUsage > 5) {
-            var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
-            console.log('Total screen time : ' + screenTime);
-            global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime + this.unsyncedUsage);
-            this.unsyncedUsage = 0;
-        }
-        return this.unsyncedUsage
+        var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
+        screenTime += this.unsyncedUsage;
+        console.log('screen time ' + screenTime);
+        global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime); 
+        this.unsyncedUsage = 0;
     }
 
     /**

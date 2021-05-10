@@ -33,7 +33,6 @@ export default class UsageScreen extends React.Component {
       selectedKey: 'daily_app_usage' 
     };
 
-    // Every 10 seconds, push unsynced data usage to the server.
     setInterval(this.syncUsage, 10000);
   }
 
@@ -48,17 +47,26 @@ export default class UsageScreen extends React.Component {
     });
   };
 
+  // 
+  /**
+   * Pushes unsynced data usage & resets its values 
+   * 
+   */
   syncUsage() {
-    store.dataUsage.push().then(result => {
-      if (result.success) {
-          console.log("PUSH SUCCESS");
-          store.dataUsage.reset();
-          store.dataUsage.fetch();
+    let unsyncedScreenTime = store.dataUsage.getAll().unsynced.timerUsage.screenTime;
+    console.log('unsynced screen time ' + unsyncedScreenTime);
+    if (unsyncedScreenTime > 10) {
+      store.dataUsage.push().then(result => {
+        if (result.success) {
+            console.log("PUSH SUCCESS");
+            store.dataUsage.reset();
+            store.dataUsage.fetch();
+          }
+        else {
+          console.log("PUSH FAILURE");
         }
-      else {
-        console.log("PUSH FAILURE");
-      }
       });
+    } 
   }
 
   render() {

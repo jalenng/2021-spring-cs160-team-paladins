@@ -33,12 +33,11 @@ export default class UsageScreen extends React.Component {
       selectedKey: 'daily_app_usage' 
     };
 
-    // 
-    setInterval(this.syncUsage, 5000);
   }
 
   componentDidMount() {
     store.accounts.eventSystem.on('changed', () => this.updateState())
+    setInterval(this.syncUsage, 5000);
   }
 
   updateState() {
@@ -50,7 +49,7 @@ export default class UsageScreen extends React.Component {
 
   // 
   /**
-   * Pushes unsynced data usage & resets its values 
+   * Pushes unsynced data usage to server & resets its values 
    * 
    */
   syncUsage() {

@@ -138,14 +138,15 @@ module.exports = function () {
      * After update, unsynced usage reset to 0.
      */
     this.updateUnsyncedUsage = function() {
-        if (this.prevRemainingTime !== 0 && this.savedTime === null) {
+        if (this.prevRemainingTime > 0 && this.savedTime === null) {
             var elapsedTime = (this.prevRemainingTime - this.remainingTime)/1000;
             this.unsyncedUsage += elapsedTime;
         }
         
         var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
-        console.log(screenTime);
+        console.log('screen time : ' + screenTime);
         screenTime += this.unsyncedUsage;
+        console.log('unsynced usage time : ' + screenTime);
         global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime); 
         this.unsyncedUsage = 0;
     }

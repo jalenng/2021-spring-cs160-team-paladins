@@ -10,12 +10,12 @@ export default class DailyTimerUsage extends React.Component {
     super(props);
     this.state = store.dataUsage.getAll();
 
-    // Get list of fetched timer usage.
+    // Get list of timer usage days.
     var timerUsageList = this.state.fetched.timerUsage;
-    var todaysDate = (this.getTodaysDate() + 'T00:00:00.000Z');
     this.todaysUsage = 0;
 
-    // Get todays timer usage from list.
+    // Get todays timer usage from list of days.
+    var todaysDate = (this.getTodaysDate() + 'T00:00:00.000Z');
     var i, usageObj;
     for (i=0; i<timerUsageList.length; i++) {
       usageObj = timerUsageList[i];
@@ -26,6 +26,9 @@ export default class DailyTimerUsage extends React.Component {
 
     this.minutes = Math.floor(this.todaysUsage.screenTime/60);
     this.seconds = Math.floor(this.todaysUsage.screenTime%60);
+
+
+
   }
 
   /**
@@ -39,20 +42,36 @@ export default class DailyTimerUsage extends React.Component {
   }
 
   render() {
+    // Since this screen displays, "You've taken X breaks today"
+    // If user took one break, display 'break today' instead of 'breaks today'
+    let endingBreakStr, minuteStr = '';
+    if (this.todaysUsage.timerCount == 1) {
+      endingBreakStr = 'break today';
+    }
+    else {
+      endingBreakStr = 'breaks today';
+    }
+    // same logic for the word minute
+    if (this.minutes == 1) {
+      minuteStr = 'minute'
+    }
+    else {
+      minuteStr = 'minutes'
+    }
+    
     return (
       <div style={{alignItems: 'center', verticalAlign: 'center'}}>
         {/* Screen Usage Duration */}
-        <Text variant={"xxLarge"} style={{ fontSize: "2rem"}} block>
-          Smart Screen Usage : 
-            <span style={{color: 'green'}}> {this.minutes} minutes {this.seconds} seconds</span> 
+        <Text variant={"xxLarge"} block>
+          Smart Screen  Usage : 
+            <span style={{color: 'green'}}> {this.minutes} {minuteStr} {this.seconds} seconds</span> 
         </Text>
         {/*  Number of Breaks */}
-        <Text variant={"xxLarge"} style={{ fontSize: "2rem" }} block>
+        <Text variant={"xxLarge"} block>
           You've taken 
           <span style={{color: 'green'}}> {this.todaysUsage.timerCount} </span> 
-          breaks today
+          {endingBreakStr}
         </Text>
-
       </div>
     );
   }

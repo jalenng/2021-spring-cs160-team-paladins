@@ -32,7 +32,6 @@ export default class UsageScreen extends React.Component {
       isSignedIn: store.accounts.getAll().token !== null,
       selectedKey: 'daily_app_usage' 
     };
-
   }
 
   componentDidMount() {

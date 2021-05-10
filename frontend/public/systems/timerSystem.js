@@ -142,11 +142,8 @@ module.exports = function () {
             var elapsedTime = (this.prevRemainingTime - this.remainingTime)/1000;
             this.unsyncedUsage += elapsedTime;
         }
-        
         var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
-        console.log('screen time : ' + screenTime);
         screenTime += this.unsyncedUsage;
-        console.log('unsynced usage time : ' + screenTime);
         global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime); 
         this.unsyncedUsage = 0;
     }

@@ -1,6 +1,5 @@
 import React from "react";
 import { Bar, defaults } from "react-chartjs-2"
-import Usage from "./Usage.js"
 
 defaults.global.tooltips.enabled = true;
 
@@ -37,7 +36,6 @@ export default class BarChart extends React.Component {
   //  2. Names (ex. 'Sunday', 'Monday', etc)
   //  3. Formatted Dates ('2021-05-02')
   getPastWeek() {
-    var dates, names, formatted = [];
     var dates = [];
     var names = [];
     var formatted = [];

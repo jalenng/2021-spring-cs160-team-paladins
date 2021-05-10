@@ -325,24 +325,14 @@ ipcMain.handle('push-data-usage', async (event) => {
     let timerUsage = store.get('dataUsage.unsynced.timerUsage')
     let appUsage = store.get('dataUsage.unsynced.appUsage');
 
-    var appUsageData = [];
-    var i;
-    for (i=0; i<appUsage.length; i++) {
-        appUsageData.push({
-            appName: appUsage[i].appName,
-            appTime: appUsage[i].appTime,
-            usageDate: appUsage[i].usageDate,
-        })
-    }
-
     data = {
-        appUsage: appUsageData,
+        appUsage: appUsage,
         timerUsage: [timerUsage]
     }
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 
-// Clear the unsynced data usage (timer usage only as of now)
+// Clear the unsynced data usage
 ipcMain.handle('reset-data-usage', async () => {
     store.set('dataUsage.unsynced', dataUsageDefaults.unsynced)
 })

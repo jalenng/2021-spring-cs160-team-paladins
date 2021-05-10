@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import DialogSpinner from '../DialogSpinner';
 
-import { 
+import {
     Text,
     Stack,
     TextField,
@@ -39,6 +39,11 @@ export default class extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // Update title
+    componentDidMount() {
+        document.title = 'Sign in';
+    }
+
     // Handles changes to the TextFields by updating the state
     handleChange(event) {
         let state = this.state;
@@ -48,7 +53,7 @@ export default class extends React.Component {
 
     // Change spinner status
     setSpinner(val) {
-        this.setState({...this.state, isLoading: val});
+        this.setState({ ...this.state, isLoading: val });
     }
 
     // Handles a submit
@@ -56,7 +61,7 @@ export default class extends React.Component {
         event.preventDefault();
         this.setSpinner(true);
         let state = this.state;
-        
+
         // Authenticate user with sign-in
         let email = state.inputs.email;
         let password = state.inputs.password;
@@ -66,7 +71,7 @@ export default class extends React.Component {
 
                 // If sign-in was successful, close the window
                 if (result.success) window.close()
-                
+
                 else {
                     state.errors.password = result.data.message;   // Update error message
                     this.setState(state);
@@ -79,12 +84,23 @@ export default class extends React.Component {
     render() {
         return (
             <div style={divStyle}>
+
+                {/* Show "Back" button on macOS because modal windows are sheets and don't have close buttons */}
+                {platform === 'darwin' &&
+                    <ActionButton
+                        style={{ left: '-10px' }}
+                        onClick={window.close}
+                        iconProps={{ iconName: 'NavigateBack' }}
+                        text={'Back to iCare'}
+                    />
+                }
+
                 <Text variant={'xxLarge'} block>
                     <b>Sign in</b>
                 </Text>
 
                 <form>
-                    <Stack 
+                    <Stack
                         style={{ marginTop: '10px' }}
                         tokens={{ childrenGap: 15 }}>
 
@@ -94,6 +110,7 @@ export default class extends React.Component {
                                 value={this.state.inputs.email}
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.email}
+                                autoFocus 
                             />
                             <TextField label='Password' type='password' id='password'
                                 styles={textFieldStyles}
@@ -102,11 +119,12 @@ export default class extends React.Component {
                                 errorMessage={this.state.errors.password}
                                 canRevealPassword
                             />
+
                         </Stack>
 
-                        <Stack 
-                            horizontal 
-                            verticalAlign='center' 
+                        <Stack
+                            horizontal
+                            verticalAlign='center'
                             tokens={{ childrenGap: 20 }}>
 
                             <PrimaryButton
@@ -116,8 +134,8 @@ export default class extends React.Component {
                                 onClick={this.handleSubmit}
                             />
 
-                            <Link to='/signup'>
-                                <ActionButton id='noAccountLink'> Don't have an account? </ActionButton>
+                            <Link to='/signup' id='noAccountLink'>
+                                <ActionButton text={"Don't have an account?"} />
                             </Link>
 
                         </Stack>

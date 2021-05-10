@@ -8,7 +8,8 @@ const preferencesStoreDefaults = {
     notifications: {
         enableSound: true,
         interval: 20,
-        sound: '../../sounds/Long Expected.mp3'
+        sound: '../../sounds/Long Expected.mp3',
+        soundVolume: 100
     },
     dataUsage: {
         trackAppUsageStats: true,
@@ -356,13 +357,13 @@ ipcMain.handle('reset-store', () => {
         detail: 'You will be signed out, and all unsynced data will be lost.',
         buttons: ['Yes', 'No'],
     })
-    .then( result => {
-        if (result.response == 0) {
-            store.set('resetFlag', true);
-            app.relaunch();
-            app.exit();
-        }
-    })
+        .then(result => {
+            if (result.response == 0) {
+                store.set('resetFlag', true);
+                app.relaunch();
+                app.exit();
+            }
+        })
 })
 
 

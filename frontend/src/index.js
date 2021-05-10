@@ -62,16 +62,16 @@ ReactDOM.render(
             <ErrorBoundary>
                 <HashRouter>
                     <Switch>
-                            <Route path='/' exact component={App} />
-                            <Route path='/signin' exact component={SignInScreen} />
-                            <Route path='/signup' exact component={SignUpScreen} />
-                            <Route path='/deleteAccount' exact component={DeleteAccountScreen} />
-                            <Route path='/editAccount' exact component={EditAccountScreen} />
+                        <Route path='/' exact component={App} />
+                        <Route path='/signin' exact component={SignInScreen} />
+                        <Route path='/signup' exact component={SignUpScreen} />
+                        <Route path='/deleteAccount' exact component={DeleteAccountScreen} />
+                        <Route path='/editAccount' exact component={EditAccountScreen} />
 
-                            <Route path='/fullscreenNotification' exact component={FullscreenNotification} />
-                            <Route path='/popupNotification' exact component={PopupNotification} />
+                        <Route path='/fullscreenNotification' exact component={FullscreenNotification} />
+                        <Route path='/popupNotification' exact component={PopupNotification} />
 
-                            <Route path='/popupTimer' exact component={Timer} />
+                        <Route path='/popupTimer' exact component={Timer} />
                     </Switch>
                 </HashRouter>
             </ErrorBoundary>

@@ -37,7 +37,7 @@ export default class extends React.Component {
 
         return (
 
-            <Stack {...level1Props} id="your_accounts">
+            <Stack {...level1Props} id="accounts">
 
                 
                 <Stack {...level2Props}>

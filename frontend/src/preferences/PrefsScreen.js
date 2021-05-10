@@ -3,7 +3,7 @@ import React from 'react';
 import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
 
 import PrefsSidebar from './PrefsSidebar';
-import YourAccounts from './YourAccounts';
+import Account from './Account';
 import Notifications from './Notifications';
 import Blockers from './Blockers';
 import Startup from './Startup';
@@ -18,7 +18,7 @@ const divStyle = {
 };
 
 const preferencePages = {
-    your_accounts: <YourAccounts />,
+    account: <Account />,
     notifications: <Notifications />,
     blockers: <Blockers />,
     startup: <Startup />,
@@ -32,7 +32,7 @@ export default class extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { selectedKey: 'your_accounts' };
+        this.state = { selectedKey: 'account' };
     }
 
     render() {

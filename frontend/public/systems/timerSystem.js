@@ -234,7 +234,8 @@ module.exports = function () {
     this.end = function () {
         var numBreaks = global.store.get('dataUsage.unsynced.timerUsage.timerCount');
         console.log("NUMBER OF BREAKS" + numBreaks);
-        global.store.set('dataUsage.unsynced.timerUsage.timerCount', numBreaks++);
+        numBreaks = numBreaks+1;
+        global.store.set('dataUsage.unsynced.timerUsage.timerCount', numBreaks);
         console.log('UPDATED BREAKS' + global.store.get('dataUsage.unsynced.timerUsage.timerCount'));
 
         if (this.isBlocked) return;
@@ -257,7 +258,6 @@ module.exports = function () {
         // Set flags
         this.isIdle = false;
         this.isPaused = true;
-
         this.update();
     }
 

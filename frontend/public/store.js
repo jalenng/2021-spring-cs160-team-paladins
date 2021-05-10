@@ -323,7 +323,7 @@ ipcMain.handle('push-data-usage', async (event) => {
     let timerUsage = store.get('dataUsage.unsynced.timerUsage');
     let appUsage = store.get('dataUsage.unsynced.appUsage');
 
-    var getTodaysDate = () => {
+    getTodaysDate = () => {
         var theDate = new Date();
         var year = theDate.getFullYear();
         var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
@@ -331,17 +331,20 @@ ipcMain.handle('push-data-usage', async (event) => {
         return  `${year}-${month}-${day}`;
     }
 
+    let today = getTodaysDate();
+
     var appUsageData = [];
     var i;
     for (i=0; i<appUsage.length; i++) {
         appUsageData.push({
             appName: appUsage[i].appName,
             appTime: appUsage[i].appTime,
-            usageDate: getTodaysDate,
+            usageDate: today,
         })
     }
 
-    data = {
+
+    var data = {
         // Will remove when merged & can access timestamps from AppUsageSystem.
         appUsage: appUsageData,
         // Push unsynced timer usage to backend.
@@ -349,10 +352,12 @@ ipcMain.handle('push-data-usage', async (event) => {
             {
                 screenTime: timerUsage.screenTime,
                 timerCount: timerUsage.timerCount,
-                usageDate: getTodaysDate,
+                usageDate: today,
             }
         ]
     }
+    console.log('data');
+    console.log(data);
     return await returnAxiosResult('put', 'data', data, [200]);
 })
 

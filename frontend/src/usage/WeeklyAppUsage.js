@@ -19,7 +19,7 @@ export default class BarChart extends React.Component {
     for (var i=0; i < this.appUsage.length; i++) {
       this.labels.push(this.appUsage[i].appName);
       // appTime (minutes) pushed to usage.
-      var appTime = this.appUsage[i].appTime/1000;
+      var appTime = this.appUsage[i].appTime/60000;
       this.usage.push(Math.floor(appTime/60));
       this.backgroundColor.push("rgba(72, 121, 240, 1)");
     }

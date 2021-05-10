@@ -38,7 +38,7 @@ export default class UsageScreen extends React.Component {
     store.accounts.eventSystem.on('changed', () => this.updateState())
     if (this.state.isSignedIn === true) {
       this.syncUsage;
-      setInterval(this.syncUsage, 5000);
+      setInterval(this.syncUsage, 10000);
     }
   }
 
@@ -58,19 +58,17 @@ export default class UsageScreen extends React.Component {
   syncUsage() {
     let unsynced = store.dataUsage.getAll().unsynced.timerUsage;
     // only push to server if updates exist
-    if (unsynced.screenTime > 10 || unsynced.timerCount > 0) {
-      store.dataUsage.push().then(result => {
-        if (result.success) {
-            store.dataUsage.reset();
-            store.dataUsage.fetch();
-            // console.logs for debugging purposes. remove later.
-            console.log("SUCCESS: Unsynced data usage pushed to server");
-        }
-        else {
-          console.log("FAILURE: Cant push unsynced data usage to server");
-        }
-      });
-    } 
+    store.dataUsage.push().then(result => {
+      if (result.success) {
+          store.dataUsage.reset();
+          store.dataUsage.fetch();
+          // console.logs for debugging purposes. remove later.
+          console.log("SUCCESS: Unsynced data usage pushed to server");
+      }
+      else {
+        console.log("FAILURE: Cant push unsynced data usage to server");
+      }
+    });
   }
 
   render() {

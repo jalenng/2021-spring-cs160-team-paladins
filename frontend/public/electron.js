@@ -153,13 +153,6 @@ app.whenReady().then(() => {
         });
     }
 
-    /* Block timer if on battery power */
-    if (powerMonitor.isOnBatteryPower() && global.store.get('preferences.blockers.blockOnBattery'))
-    blockerSystem.addBlocker({
-        type: 'Other',
-        message: 'Your computer is running on battery power.'
-    })
-
 })
 
 /* Handle closing all windows behavior for macOS */
@@ -192,6 +185,11 @@ ipcMain.handle('restart-app', () => {
 // Find out whether or not the app is running in a dev environment
 ipcMain.on('is-dev', (event) => {
     event.returnValue = isDev;
+})
+
+// Get the name of the current platform. https://nodejs.org/api/process.html#process_process_platform
+ipcMain.on('get-platform', (event) => {
+    event.returnValue = process.platform;
 })
 
 // Get info about the app

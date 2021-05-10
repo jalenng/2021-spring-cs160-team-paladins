@@ -2,11 +2,11 @@ import React from 'react';
 
 import DialogSpinner from '../DialogSpinner';
 
-import { 
+import {
     Text,
     Stack,
     TextField,
-    PrimaryButton 
+    PrimaryButton, ActionButton
 } from '@fluentui/react';
 
 const divStyle = {
@@ -45,9 +45,9 @@ export default class extends React.Component {
 
     // Change spinner status
     setSpinner(val) {
-        this.setState({...this.state, isLoading: val});
+        this.setState({ ...this.state, isLoading: val });
     }
-    
+
     handleSubmit(event) {
         event.preventDefault();
         this.setSpinner(true);
@@ -64,7 +64,7 @@ export default class extends React.Component {
                 if (result.success) window.close()
 
                 // Else, update state
-                else {  
+                else {
                     state.errors.password = result.data.message;
                     this.setState(state);
                     this.setSpinner(false);
@@ -75,6 +75,17 @@ export default class extends React.Component {
     render() {
         return (
             <div style={divStyle}>
+
+                {/* Show "Back" button on macOS because modal windows are sheets and don't have close buttons */}
+                {platform === 'darwin' &&
+                    <ActionButton
+                        style={{ left: '-10px' }}
+                        onClick={window.close}
+                        iconProps={{ iconName: 'NavigateBack' }}
+                        text={'Back to iCare'}
+                    />
+                }
+
                 <Text variant={'xxLarge'} block>
                     <b>Delete account</b>
                 </Text>
@@ -91,12 +102,13 @@ export default class extends React.Component {
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
                                 canRevealPassword
+                                autoFocus 
                             />
                         </Stack>
 
-                        <Stack 
-                            horizontal 
-                            verticalAlign='center' 
+                        <Stack
+                            horizontal
+                            verticalAlign='center'
                             tokens={{ childrenGap: 20 }}>
                             <PrimaryButton
                                 text='Delete account'
@@ -104,10 +116,10 @@ export default class extends React.Component {
                                 onClick={this.handleSubmit}
                             />
                         </Stack>
-                        
+
                     </Stack>
                 </form>
-                
+
                 <DialogSpinner
                     show={this.state.isLoading}
                     text='Deleting your account'

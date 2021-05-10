@@ -4,11 +4,12 @@ module.exports = {
         style: { paddingBottom: '20px' }
     },
     level2Props: {
-        tokens: { childrenGap: 8 }
+        tokens: { childrenGap: 8 },
     },
     level2HorizontalProps: {
         horizontal: true,
         verticalAlign: 'center',
-        tokens: { childrenGap: 16 }
+        tokens: { childrenGap: 16 },
+        style: { marginBottom: '8px' }
     }
 }

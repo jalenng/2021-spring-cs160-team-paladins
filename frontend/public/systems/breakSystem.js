@@ -151,11 +151,12 @@ module.exports = function(){
      */
     this.playSound = function() {
         let soundKey = global.store.get('preferences.notifications.sound');
+        let volume = global.store.get('preferences.notifications.soundVolume') / 100;
 
         let fullFilepath = path.isAbsolute(soundKey)
             ? soundKey
             : path.join(__dirname, soundKey);
-        soundPlayer.play(fullFilepath);
+        soundPlayer.play(fullFilepath, volume);
     }
 
 }

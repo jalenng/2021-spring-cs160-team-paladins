@@ -74,7 +74,7 @@ export default class extends React.Component {
             <Stack id='notifications' {...level1Props}>
 
                 <Stack {...level2Props}>
-                    <Text variant={'xLarge'} block> Notifications </Text>
+                    <Text variant={'xLarge'} block> Timing </Text>
 
                     <Slider
                         label='Notification interval'
@@ -85,9 +85,13 @@ export default class extends React.Component {
                         value={this.state.notifications.interval}
                         onChange={number => store.preferences.set('notifications.interval', number)}
                     /> 
+                </Stack>
+
+                <Stack {...level2Props}>
+                    <Text variant={'xLarge'} block> Sound </Text>
 
                     <Toggle
-                        label='Enable sound notifications'
+                        label='Enable sound'
                         onText='On' offText='Off'
                         checked={this.state.notifications.enableSound}
                         onChange={(event, checked) => store.preferences.set('notifications.enableSound', checked)}
@@ -95,7 +99,7 @@ export default class extends React.Component {
 
                     <Stack {...level2HorizontalProps} verticalAlign='end'>
 
-                        <Dropdown label='Sound'
+                        <Dropdown label='Sound selection'
                             styles={{ dropdown: { width: 300 } }}
                             selectedKey={this.state.notifications.sound}
                             options={combinedSoundList}
@@ -119,6 +123,16 @@ export default class extends React.Component {
                         </TooltipHost>
 
                     </Stack>
+
+                    <Slider
+                        label='Volume'
+                        min={0} max={100} step={1}
+                        showValue snapToStep
+                        valueFormat={(number) => `${number}%`}
+                        styles={{ root: { maxWidth: 300 } }}
+                        value={this.state.notifications.soundVolume}
+                        onChange={number => store.preferences.set('notifications.soundVolume', number)}
+                    /> 
 
                 </Stack>
 

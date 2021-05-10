@@ -2,6 +2,8 @@ const { BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
+let popupWindow;
+
 // Shared popup window options
 const sharedWindowOptions = {
     width: 380,
@@ -9,17 +11,17 @@ const sharedWindowOptions = {
     minimizable: false,
     maximizable: false,
     backgroundColor: '#222222',
-    parent: global.mainWindow,
     show: false,
+    modal: true,
     webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
         contextIsolation: false
     }
 }
 
-
 function openPopup(customOptions, destination) {
-    const popupWindow = new BrowserWindow({
+    
+    popupWindow = new BrowserWindow({
         ...sharedWindowOptions,
         ...customOptions
     })
@@ -41,7 +43,8 @@ function openPopup(customOptions, destination) {
 ipcMain.handle('show-sign-in-popup', event => {
     openPopup({
         height: 420,
-        title: 'Sign in'
+        title: 'Sign in',
+        parent: global.mainWindow
     }, 'signin');
 })
 
@@ -50,7 +53,8 @@ ipcMain.handle('show-sign-in-popup', event => {
 ipcMain.handle('show-delete-account-popup', event => {
     openPopup({
         height: 240,
-        title: 'Delete account'
+        title: 'Delete account',
+        parent: global.mainWindow
     }, 'deleteAccount');
 })
 
@@ -59,7 +63,8 @@ ipcMain.handle('show-delete-account-popup', event => {
 ipcMain.handle('show-edit-account-popup', event => {
     openPopup({
         height: 420,
-        title: 'Edit account'
+        title: 'Edit account',
+        parent: global.mainWindow
     }, 'editAccount');
 })
 
@@ -70,6 +75,8 @@ ipcMain.handle('show-timer-popup', event => {
         width: 320,
         height: 400,
         title: 'iCare',
-        alwaysOnTop: true
+        alwaysOnTop: true,
+        modal: false,
+        parent: global.mainWindow
     }, 'popupTimer');
 })

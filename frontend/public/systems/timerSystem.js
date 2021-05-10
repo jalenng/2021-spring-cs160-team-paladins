@@ -134,8 +134,7 @@ module.exports = function () {
     };
 
     /**
-     * Updates store with latest unsynced timer usage changes. 
-     * After update, unsynced usage reset to 0.
+     * Updates store with latest timer usage changes. 
      */
     this.updateUnsyncedUsage = function() {
         if (this.prevRemainingTime > 0 && this.savedTime === null) {

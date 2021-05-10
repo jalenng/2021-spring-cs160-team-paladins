@@ -76,6 +76,8 @@ const dataUsageDefaults = {
         timerUsage:  {
             screenTime: 0,
             timerCount: 0,
+            // Gets todays date in format YEAR-MONTH-DAY
+            usageDate: `${new Date().getFullYear()}-${("00" + (new Date().getMonth() + 1)).substr(-2, 2)}-${("00" + new Date().getDate()).substr(-2, 2)}`
         }
     },
     fetched: {
@@ -320,18 +322,12 @@ ipcMain.handle('fetch-data-usage', async (event) => {
 // PUT - /data
 ipcMain.handle('push-data-usage', async (event) => {
 
-    let timerUsage = store.get('dataUsage.unsynced.timerUsage');
+    let timerUsage = store.get('dataUsage.unsynced.timerUsage')
     let appUsage = store.get('dataUsage.unsynced.appUsage');
 
-    getTodaysDate = () => {
-        var theDate = new Date();
-        var year = theDate.getFullYear();
-        var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
-        var day = ("00" + theDate.getDate()).substr(-2, 2);
-        return  `${year}-${month}-${day}`;
-    }
-
-    let today = getTodaysDate();
+    // The unsynced usage date is always set to todays date. 
+    let today = store.get('dataUsage.unsynced.timerUsage.usageDate');
+    console.log(today);
 
     var appUsageData = [];
     var i;
@@ -344,16 +340,8 @@ ipcMain.handle('push-data-usage', async (event) => {
     }
 
     data = {
-        // Will remove when merged & can access timestamps from AppUsageSystem.
         appUsage: appUsageData,
-        // Push unsynced timer usage to backend.
-        timerUsage: [
-            {
-                screenTime: timerUsage.screenTime,
-                timerCount: timerUsage.timerCount,
-                usageDate: today,
-            }
-        ]
+        timerUsage: [timerUsage]
     }
     return await returnAxiosResult('put', 'data', data, [200]);
 })

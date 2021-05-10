@@ -23,18 +23,13 @@ export default class BarChart extends React.Component {
       timerCount: []
     }
 
-    console.log('fetched usage');
-    console.log(this.usage.fetched);
-
     this.formattedDate = this.getFormattedDate(this.date);
     for (i=0; i < this.formatted.length; i++) {
       var usageObj = this.getUsage(this.usage.fetched.timerUsage, this.formatted[i]);
-      console.log('USAGE OBJ ' + usageObj);
       var minsUsage = Math.floor(usageObj.screenTime/60);
       this.timerUsage.screenUsage.push(minsUsage);
       this.timerUsage.timerCount.push(usageObj.timerCount);
     }
-
   }
 
    // Gets the past week's 
@@ -89,7 +84,6 @@ export default class BarChart extends React.Component {
   }
 
   render() {
-
     return (
       <div>
         <Bar

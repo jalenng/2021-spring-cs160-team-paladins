@@ -321,16 +321,21 @@ ipcMain.handle('fetch-data-usage', async (event) => {
 ipcMain.handle('push-data-usage', async (event) => {
 
     let timerUsage = store.get('dataUsage.unsynced.timerUsage');
+    let appUsage = store.get('dataUsage.unsynced.appUsage');
+
+    var appUsageData = [];
+    var i;
+    for (i=0; i<appUsage.length; i++) {
+        appUsageData.push({
+            appName: appUsage[i].appName,
+            appTime: appUsage[i].appTime,
+            usageDate: '2021-05-09',
+        })
+    }
 
     data = {
         // Will remove when merged & can access timestamps from AppUsageSystem.
-        appUsage: [
-            {
-                appName: 'Task Switching',                     
-                appTime: 10000,
-                usageDate: '2021-05-09' 
-            }
-        ],
+        appUsage: appUsageData,
         // Push unsynced timer usage to backend.
         timerUsage: [
             {

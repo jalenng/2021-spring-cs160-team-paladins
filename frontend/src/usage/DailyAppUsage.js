@@ -9,8 +9,8 @@ export default class DailyAppUsage extends React.Component {
     super(props);
 
     // Get data usage values.
-    this.dataUsage = store.dataUsage.getAll();
-    this.appUsage = this.dataUsage.unsynced.appUsage;
+    this.usage = store.dataUsage.getAll();
+    this.appUsage = this.usage.fetched.appUsage;
 
     // Get apps names & usage from unsynced.
     this.labels = [];

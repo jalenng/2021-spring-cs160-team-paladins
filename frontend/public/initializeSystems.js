@@ -6,8 +6,6 @@ const NotificationSystem = require('./systems/notificationSystem');
 const AppSnapshotSystem = require('./systems/appSnapshotSystem');
 const DataUsageSystem = require('./systems/dataUsageSystem');
 const BlockerSystem = require('./systems/blockerSystem');
-const dataUsageSystem = require('./systems/dataUsageSystem');
-
 
 // Instantiate the systems
 global.timerSystem = new TimerSystem();

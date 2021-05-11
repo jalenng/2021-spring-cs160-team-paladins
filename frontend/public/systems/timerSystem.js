@@ -199,10 +199,6 @@ module.exports = function () {
      * Ends the timer and starts the break
      */
     this.end = function () {
-        var numBreaks = global.store.get('dataUsage.unsynced.timerUsage.timerCount');
-        numBreaks = numBreaks+1;
-        global.store.set('dataUsage.unsynced.timerUsage.timerCount', numBreaks);
-
         if (this.isBlocked) return;
         if (this.isIdle) return;
 
@@ -223,6 +219,7 @@ module.exports = function () {
         // Set flags
         this.isIdle = false;
         this.isPaused = true;
+        
         this.update();
     }
 

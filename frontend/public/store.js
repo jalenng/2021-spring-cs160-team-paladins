@@ -318,10 +318,10 @@ ipcMain.handle('fetch-data-usage', async (event) => {
 // PUT - /data
 ipcMain.handle('push-data-usage', async (event) => {
 
-    let timerUsage = store.get('dataUsage.unsynced.timerUsage')
-    let appUsage = store.get('dataUsage.unsynced.appUsage');
+    const timerUsage = store.get('dataUsage.unsynced.timerUsage')
+    const appUsage = store.get('dataUsage.unsynced.appUsage');
 
-    data = {
+    const data = {
         appUsage: appUsage,
         timerUsage: [timerUsage]
     }

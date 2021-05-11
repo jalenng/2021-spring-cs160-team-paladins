@@ -330,7 +330,9 @@ ipcMain.handle('push-data-usage', async (event) => {
 
 // Clear the unsynced data usage
 ipcMain.handle('reset-data-usage', async () => {
-    store.set('dataUsage.unsynced', dataUsageDefaults.unsynced)
+    console.log('before reset : ' + JSON.stringify(store.get('dataUsage.unsynced')));
+    store.set('dataUsage.unsynced', dataUsageDefaults.unsynced);
+    console.log('after reset : ' + JSON.stringify(store.get('dataUsage.unsynced')));
 })
 
 // Fetch insights from the backend

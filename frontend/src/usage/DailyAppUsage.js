@@ -74,7 +74,7 @@ export default class DailyAppUsage extends React.Component {
           options={{
             title: {
               display: true,
-              text: "Daily App Usage (Minutes)",
+              text: "Daily App Usage (Seconds)",
               fontColor: "#FFFFFF",
               fontSize: 20,
             },

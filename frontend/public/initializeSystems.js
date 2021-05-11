@@ -6,6 +6,7 @@ const NotificationSystem = require('./systems/notificationSystem');
 const AppSnapshotSystem = require('./systems/appSnapshotSystem');
 const DataUsageSystem = require('./systems/dataUsageSystem');
 const BlockerSystem = require('./systems/blockerSystem');
+const dataUsageSystem = require('./systems/dataUsageSystem');
 
 
 // Instantiate the systems
@@ -53,34 +54,37 @@ store.onDidChange('preferences.blockers.apps', () => {
 /* Configure event listeners and connect the various systems */
 
 // Start break when timer ends
-timerSystem.on('timer-end', () => breakSystem.start());
+global.timerSystem.on('timer-end', () => global.breakSystem.start());
 
 // Create notification windows when break starts
-breakSystem.on('break-start', () => notificationSystem.createWindows());
+global.breakSystem.on('break-start', () => global.notificationSystem.createWindows());
 
 // Minimize notification when the break time is set/reset
-breakSystem.on('break-times-set', () => notificationSystem.minimize());
+global.breakSystem.on('break-times-set', () => global.notificationSystem.minimize());
 
 // Expand notification when the break time is past the intermediate point
-breakSystem.on('break-intermediate', () => notificationSystem.maximize());
+global.breakSystem.on('break-intermediate', () => global.notificationSystem.maximize());
 
 // Close notification windows when break ends
-breakSystem.on('break-end', () => notificationSystem.closeWindows());
+global.breakSystem.on('break-end', () => global.notificationSystem.closeWindows());
 
 // Start timer when break ends
-breakSystem.on('break-end', () => timerSystem.start());
+global.breakSystem.on('break-end', () => global.timerSystem.start());
 
 // Process the list of open apps through the data usage system when a snapshot is taken
-appSnapshotSystem.on('app-snapshot-taken', (snapshot) => dataUsageSystem.processAppSnapshot(snapshot));
+global.appSnapshotSystem.on('app-snapshot-taken', (snapshot) => global.dataUsageSystem.processAppSnapshot(snapshot));
 
 // Process the list of open apps through the blocker system when a snapshot is taken
-appSnapshotSystem.on('app-snapshot-taken', (snapshot) => blockerSystem.processAppSnapshot(snapshot));
+global.appSnapshotSystem.on('app-snapshot-taken', (snapshot) => global.blockerSystem.processAppSnapshot(snapshot));
 
 // Block the timer when a blocker is detected
-blockerSystem.on('blocker-detected', () => timerSystem.block());
+global.blockerSystem.on('blocker-detected', () => global.timerSystem.block());
 
 // Unblock the timer when all blockers are cleared
-blockerSystem.on('blockers-cleared', () => timerSystem.unblock());
+global.blockerSystem.on('blockers-cleared', () => global.timerSystem.unblock());
+
+// Update timer usage when the timer ends
+global.timerSystem.on('timer-end', (duration) => global.dataUsageSystem.registerTimerEnd(duration));
 
 
 /*---------------------------------------------------------------------------*/

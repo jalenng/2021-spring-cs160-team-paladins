@@ -74,12 +74,7 @@ const accountsStoreDefaults = {
 const dataUsageDefaults = {
     unsynced: {
         appUsage: [],
-        timerUsage:  {
-            screenTime: 0,
-            timerCount: 0,
-            // Gets todays date in format YEAR-MONTH-DAY
-            usageDate: `${new Date().getFullYear()}-${("00" + (new Date().getMonth() + 1)).substr(-2, 2)}-${("00" + new Date().getDate()).substr(-2, 2)}`
-        }
+        timerUsage: []
     },
     fetched: {
         appUsage: [],

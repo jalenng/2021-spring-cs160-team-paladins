@@ -63,11 +63,6 @@ module.exports = function () {
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
     this.savedTime = this.totalDuration;    // Stores the remaining time when the timer is paused or blocked
     
-    this.remainingTime = this.endDate - new Date();
-    this.prevRemainingTime = this.remainingTime;
-    this.unsyncedUsage = 0; // Unsynced timer usage. Resets when store is updated. 
-
-    
     /**
      * Registers an event listener
      */
@@ -111,41 +106,18 @@ module.exports = function () {
      * @returns an object
      */
     this.getStatus = function () {
-        this.updateUnsyncedUsage();
-
         return { 
             endDate: this.endDate,
             totalDuration: this.totalDuration,
             remainingTime: (() => {
-                // Use this only if the timer is paused or blocked
-                if (this.savedTime != null) {
-                    return this.savedTime;
-                }    
-                // Otherwise, calculate it dynamically
-                else {
-                    this.prevRemainingTime = this.remainingTime;
-                    this.remainingTime = this.endDate - new Date();
-                    return this.remainingTime;
-                }})(),
+                if (this.savedTime != null) return this.savedTime   // Use this only if the timer is paused or blocked
+                else return this.endDate - new Date();      // Otherwise, calculate it dynamically
+                })(),
             isBlocked: this.isBlocked,
             isPaused: this.isPaused,
             isIdle: this.isIdle
         }
     };
-
-    /**
-     * Updates store with latest timer usage changes. 
-     */
-    this.updateUnsyncedUsage = function() {
-        if (this.prevRemainingTime > 0 && this.savedTime === null) {
-            var elapsedTime = (this.prevRemainingTime - this.remainingTime)/1000;
-            this.unsyncedUsage += elapsedTime;
-        }
-        var screenTime = global.store.get('dataUsage.unsynced.timerUsage.screenTime');
-        screenTime += this.unsyncedUsage;
-        global.store.set('dataUsage.unsynced.timerUsage.screenTime', screenTime); 
-        this.unsyncedUsage = 0;
-    }
 
     /**
      * Updates the timer.
@@ -165,7 +137,7 @@ module.exports = function () {
                 this.savedTime = 0;
                 clearTimeout(this.timeout);
 
-                this.emit('timer-end')
+                this.emit('timer-end', callback => callback(this.totalDuration));
 
                 break;
 

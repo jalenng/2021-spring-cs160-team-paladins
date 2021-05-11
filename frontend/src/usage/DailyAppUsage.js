@@ -15,7 +15,8 @@ export default class DailyAppUsage extends React.Component {
     // Get apps names & usage from unsynced.
     this.labels = [];
     this.usage = [];
-    var today = usage.unsynced.timerUsage.usageDate + 'T00:00:00.000Z'
+    var today = getToday() + 'T00:00:00.000Z'
+    console.log(today)
     for (var i=0; i < this.appUsage.length; i++) {
       if (this.appUsage[i].usageDate == today) {
         this.labels.push(this.appUsage[i].appName);

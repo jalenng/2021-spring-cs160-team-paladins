@@ -292,6 +292,18 @@ window.isDev = ipcRenderer.sendSync('is-dev');
  */
 window.platform = ipcRenderer.sendSync('get-platform');
 
+/**
+ * Get the current date
+ */
+window.getToday = () => {
+    const now = new Date();
+    const nowYear = now.getFullYear();
+    const nowMonth = ("00" + (now.getMonth() + 1)).substr(-2, 2);
+    const nowDate = ("00" + now.getDate()).substr(-2, 2);
+    return (`${nowYear}-${nowMonth}-${nowDate}`);
+}
+
+
 /* Listen for events from ipcRenderer and relay them accordingly */
 ipcRenderer.on('receive-timer-status', (event, timerStatus) => {
     const fireCallbacks = (callback) => callback(event, timerStatus);

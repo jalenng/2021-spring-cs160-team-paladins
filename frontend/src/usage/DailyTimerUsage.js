@@ -15,7 +15,7 @@ export default class DailyTimerUsage extends React.Component {
     this.todaysUsage = 0;
 
     // Get todays timer usage from list of days.
-    var todaysDate = this.state.unsynced.timerUsage.usageDate + 'T00:00:00.000Z';
+    var todaysDate = getToday() + 'T00:00:00.000Z';
     console.log('todaysDate : ' + todaysDate);
     var i, usageObj;
     for (i=0; i<timerUsageList.length; i++) {

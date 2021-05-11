@@ -24,15 +24,6 @@ export default class BarChart extends React.Component {
     }
   }
 
-  // Format: YEAR-MONTH-DAY  
-  // ex. '2021-05-07'
-  getFormattedDate(theDate) {
-    var year = theDate.getFullYear();
-    var month = ("00" + (theDate.getMonth() + 1)).substr(-2, 2);
-    var day = ("00" + theDate.getDate()).substr(-2, 2);
-    return  `${year}-${month}-${day}`;
-  }
-
   render() {
     return (
       <div>

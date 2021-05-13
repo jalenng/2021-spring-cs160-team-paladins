@@ -299,12 +299,13 @@ const { route } = require('./index.js');
       let appUsageObjects = req.body.appUsage;
       let auSuccess = false;
 
-      console.log('app upload success : ' + auSuccess);
 
       for (const auObject of appUsageObjects) {
         let row = JSON.parse(JSON.stringify(auObject));
         auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
       }
+
+      console.log('app upload success : ' + auSuccess);
 
       // Response Codes
       if (tuSuccess == true && auSuccess == true) { 

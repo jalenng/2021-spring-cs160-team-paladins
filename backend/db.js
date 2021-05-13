@@ -416,6 +416,23 @@ class db {
      */
     async setAppUsage(userEmail, appName, appTime, date) {
 
+        // Keep popping the first word of the app's name until under 50 characters.
+        if (appName.length >= 50) {
+            console.log(appName);
+            var words = appName.split(' ');
+            var result = '';
+            var appended = ''
+            var i = words.length-1;
+            for (i; i >= 0; i--) {
+              appended = words[i] + ' ' + result;
+              if (appended.length >= 50) {
+                break;
+              }
+              result = appended;
+            }
+            appName = result;
+        }
+
         // Check for undefined values
         let checkValues = await this.checkUndefined([userEmail, appName, appTime, date]);
         if (checkValues == false) {

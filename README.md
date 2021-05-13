@@ -69,6 +69,23 @@ Creates a new branch from the specified development branch.
 
 <br/>
 
+## Testing
+Test the changes you made before creating your PR.
+
+Frontend Automation Testing (Electron)
+1. Navigate to the frontend directory.
+    - `cd frontend`
+2. Run the Spectron tests 
+    - 'npm run test'
+
+Backend Automation Testing (Postman)
+1. Navigate to the backend directory
+    - `cd backend`
+2. Run the Postman tests.
+    - `npm test`
+
+If all the tests pass, you're ready to make a PR.
+
 ## Creating pull requests
 
 When your branch/feature is complete and ready for merging:
@@ -98,4 +115,5 @@ When the issues are resolved, the branch is ready to be merged. Once the branch 
 <br />
 
 ## Pair Programming
-2+ people will work on the same feature. One shares their screen and codes, while the others watch and review the code. All members should be actively engaged for best results, and roles should be switched frequently.
+2+ people will work on the same feature. One shares their screen and codes, while the others watch and review the code. All members should be actively engaged for best results, and roles should be switched frequently. 
+

@@ -6,8 +6,8 @@ This directory holds the source code for our backend. We are using ExpressJS to 
 
 # Technologies
 
-Language: JavaScript (ExpressJS)
-Database: mySQL
+- Language: JavaScript (ExpressJS)
+- Database: mySQL
 
 <br/>
 

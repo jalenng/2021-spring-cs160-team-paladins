@@ -113,8 +113,6 @@ Updates the backend dependencies.
 
 # Database commands
 
-<br/>
-
 # Restarting the MySQL server
 - To check status: sudo systemctl status mysql.service
 - To start MySQL service: sudo systemctl start mysql.service

@@ -76,7 +76,7 @@ Frontend Automation Testing (Electron)
 1. Navigate to the frontend directory.
     - `cd frontend`
 2. Run the Spectron tests 
-    - 'npm run test'
+    - `npm run test`
 
 Backend Automation Testing (Postman)
 1. Navigate to the backend directory
@@ -85,6 +85,8 @@ Backend Automation Testing (Postman)
     - `npm test`
 
 If all the tests pass, you're ready to make a PR.
+
+<br/>
 
 ## Creating pull requests
 

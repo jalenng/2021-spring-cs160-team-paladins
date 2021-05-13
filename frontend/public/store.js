@@ -320,8 +320,8 @@ ipcMain.handle('push-data-usage', async () => {
     const successCallback = () => store.reset('dataUsage.unsynced');
 
     const data = {
-        appUsage: store.get('dataUsage.unsynced.timerUsage'),
-        timerUsage: store.get('dataUsage.unsynced.appUsage')
+        timerUsage: store.get('dataUsage.unsynced.timerUsage'),
+        appUsage: store.get('dataUsage.unsynced.appUsage')
     }
     return await returnAxiosResult('put', 'data', data, [200], successCallback);
 })

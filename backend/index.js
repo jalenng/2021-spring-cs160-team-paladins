@@ -110,7 +110,7 @@ const { route } = require('./index.js');
       else { oldEmail = await userDB.getEmail(ct) }
 
       // Checks for undefined inputs
-      for (const item of [["email", email], ["password", pass], ["display_name", dName]]) {
+      for (const item of [["email", newEmail], ["password", pass], ["display_name", newDisplay]]) {
         let checkValues =  await api_methods.chkValues(item[0], item[1])
         if (Array.isArray(checkValues)) {
           res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
@@ -271,7 +271,6 @@ const { route } = require('./index.js');
 
     // Updates the data usage of user
     router.put('/data', async (req, res) => {
-      console.log('data usage push request');
 
       let token = req.headers.auth;
       let email = ""
@@ -280,8 +279,6 @@ const { route } = require('./index.js');
       let ct = await api_methods.checkToken(token)
       if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
       else { email = await userDB.getEmail(ct); }
-
-      console.log('email : ' + email);
 
       //------------------------
       // Update Timer Usage
@@ -293,13 +290,9 @@ const { route } = require('./index.js');
         tuSuccess = await userDB.setTimerUsage(email, row.screenTime, row.timerCount, row.usageDate)
       }
 
-      console.log('timer upload success : ' + tuSuccess);
-
       // Update App Usage
       let appUsageObjects = req.body.appUsage;
       let auSuccess = false;
-
-      console.log('app upload success : ' + auSuccess);
 
       for (const auObject of appUsageObjects) {
         let row = JSON.parse(JSON.stringify(auObject));

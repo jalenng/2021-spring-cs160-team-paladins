@@ -422,8 +422,6 @@ class db {
             return false;
         }
 
-        console.log('no undefined values');
-        
         // Checks for existing record
         let check = await this.check("AppUsage", userEmail, appName, date).then((result) => { return result; })
         let q = "";

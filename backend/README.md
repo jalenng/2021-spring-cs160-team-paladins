@@ -7,7 +7,7 @@ This directory holds the source code for our backend. We are using ExpressJS to 
 # Technologies
 
 - Language: JavaScript (ExpressJS)
-- Database: mySQL
+- Database: MySQL
 
 <br/>
 
@@ -34,8 +34,8 @@ Instructions for opening up the server using VSCode
 
 <br/>
 
-# Connecting to the mySQL database
-- Open the mySQL workbench
+# Connecting to the MySQL database
+- Open the MySQL workbench
 - Navigate to Setup New Connection
 - Change the connection method to Standard TCP/IP over SSH
 - Input the following

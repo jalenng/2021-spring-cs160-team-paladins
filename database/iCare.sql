@@ -27,7 +27,7 @@ CREATE TABLE UserPreferences (
 # Table of Timer Usage
 CREATE TABLE TimerUsage (
 	email varchar(50),
-    screenTime int DEFAULT 0,				# Tracks amount of screentime in milliseconds
+    screenTime int DEFAULT 0,				# Tracks amount of screentime in minutes
     timerCount int DEFAULT 0,			# Tracks amount of times the timer has been used
     usageDate date,					
     PRIMARY KEY (email, usageDate),
@@ -38,7 +38,7 @@ CREATE TABLE TimerUsage (
 CREATE TABLE AppUsage (
 	email varchar(50),
     appName varchar(50) NOT NULL,
-    appTime int DEFAULT 0,				# Tracks amount of apptime in milliseconds
+    appTime int DEFAULT 0,				# Tracks amount of apptime in minutes
     usageDate date,					
     PRIMARY KEY (email, appName, usageDate),
     FOREIGN KEY (email) REFERENCES Users (email)  ON DELETE CASCADE ON UPDATE CASCADE

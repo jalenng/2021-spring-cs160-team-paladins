@@ -110,7 +110,7 @@ const { route } = require('./index.js');
       else { oldEmail = await userDB.getEmail(ct) }
 
       // Checks for undefined inputs
-      for (const item of [["email", newEmail], ["password", pass], ["display_name", newDisplay]]) {
+      for (const item of [["email", newEmail], ["display_name", newDisplay]]) {
         let checkValues =  await api_methods.chkValues(item[0], item[1])
         if (Array.isArray(checkValues)) {
           res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
@@ -156,7 +156,6 @@ const { route } = require('./index.js');
     // Delete user
     router.delete('/user', async (req, res) => {
       let token = req.headers.auth;
-      let pass = req.body.password;
       let email = ""
 
       // Check Token
@@ -164,17 +163,8 @@ const { route } = require('./index.js');
       if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
       else { email = await userDB.getEmail(ct); }
 
-
-      // Checks for undefined inputs
-      for (const item of [["email", email], ["password", pass]]) {
-        let checkValues =  await api_methods.chkValues(item[0], item[1])
-        if (Array.isArray(checkValues)) {
-          res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
-          return;
-        }
-      }
-
       // Checks crypto pass, Deletes User, Response Codes
+      let pass = req.body.password;
       let checkPass = await api_methods.checkPass(pass, email).then((r) => { return r; });
 
       if (checkPass == true) { 
@@ -205,16 +195,14 @@ const { route } = require('./index.js');
       let aUsageOn = await userDB.getAppUsageOn(email)
  
       // Response Codes
-      if (Number.isInteger(notiInterval) && typeof notiSound === 'string' && typeof notiSoundOn === 'boolean'
-          && typeof tUsageOn === 'boolean' && typeof aUsageOn === 'boolean') {
+      if (notiInterval == notiSound == notiSoundOn == tUsageOn == aUsageOn == true) {
         res.status(200).send({
           notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
           dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: tUsageOn }
         });
       }
-      else { 
-        res.status(504).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }); 
-      }
+      else { res.status(504).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }); }
+ 
     });
  
     // Saves the user preferences
@@ -271,7 +259,6 @@ const { route } = require('./index.js');
 
     // Updates the data usage of user
     router.put('/data', async (req, res) => {
-
       let token = req.headers.auth;
       let email = ""
 
@@ -284,8 +271,8 @@ const { route } = require('./index.js');
       let timerUsageObjects = req.body.timerUsage;
       let tuSuccess = false;
 
-      for (const tuObject of timerUsageObjects) {
-        let row = JSON.parse(JSON.stringify(tuObject));
+      for (const duObject of timerUsageObjects) {
+        let row = JSON.parse(JSON.stringify(duObject));
         tuSuccess = await userDB.setTimerUsage(email, row.screenTime, row.timerCount, row.usageDate)
       }
 
@@ -296,8 +283,6 @@ const { route } = require('./index.js');
         let row = JSON.parse(JSON.stringify(auObject));
         auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
       }
-
-      console.log('app upload success : ' + auSuccess);
 
       // Response Codes
       if (tuSuccess == true && auSuccess == true) { 
@@ -328,7 +313,7 @@ const { route } = require('./index.js');
 
       // Response Codes
       if (insight != false) { 
-        res.status(200).send({ cards: insight });  
+        res.status(200).send({ header: insight });  
       }
       else { res.status(504).send({ reason: "RETRIEVE_FAILED", message: "Insights could not be generated." }) }
     });

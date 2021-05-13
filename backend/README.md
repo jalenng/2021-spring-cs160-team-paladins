@@ -118,9 +118,9 @@ Updates the backend dependencies.
 - To start MySQL service: sudo systemctl start mysql.service
 
 # Viewing all users in the database
-mysql --local-infile -u root -p
-no password so just press enter
-select * from iCare.Users;
+- mysql --local-infile -u root -p
+- Since there is no password, you can just press enter
+- select * from iCare.Users;
 
 <br/>
 

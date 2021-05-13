@@ -418,7 +418,6 @@ class db {
 
         // Keep popping the first word of the app's name until under 50 characters.
         if (appName.length >= 50) {
-            console.log(appName);
             var words = appName.split(' ');
             var result = '';
             var appended = ''

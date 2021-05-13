@@ -421,6 +421,8 @@ class db {
         if (checkValues == false) {
             return false;
         }
+
+        console.log('no undefined values');
         
         // Checks for existing record
         let check = await this.check("AppUsage", userEmail, appName, date).then((result) => { return result; })
@@ -438,7 +440,7 @@ class db {
 
         // Updates the database
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { resolve(false) }
+            if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
 

@@ -110,7 +110,7 @@ const { route } = require('./index.js');
       else { oldEmail = await userDB.getEmail(ct) }
 
       // Checks for undefined inputs
-      for (const item of [["email", newEmail], ["display_name", newDisplay]]) {
+      for (const item of [["email", email], ["password", pass], ["display_name", dName]]) {
         let checkValues =  await api_methods.chkValues(item[0], item[1])
         if (Array.isArray(checkValues)) {
           res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
@@ -156,6 +156,7 @@ const { route } = require('./index.js');
     // Delete user
     router.delete('/user', async (req, res) => {
       let token = req.headers.auth;
+      let pass = req.body.password;
       let email = ""
 
       // Check Token
@@ -163,8 +164,17 @@ const { route } = require('./index.js');
       if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
       else { email = await userDB.getEmail(ct); }
 
+
+      // Checks for undefined inputs
+      for (const item of [["email", email], ["password", pass]]) {
+        let checkValues =  await api_methods.chkValues(item[0], item[1])
+        if (Array.isArray(checkValues)) {
+          res.status(401).send({ reason: checkValues[0], message: checkValues[1] }); 
+          return;
+        }
+      }
+
       // Checks crypto pass, Deletes User, Response Codes
-      let pass = req.body.password;
       let checkPass = await api_methods.checkPass(pass, email).then((r) => { return r; });
 
       if (checkPass == true) { 
@@ -195,14 +205,16 @@ const { route } = require('./index.js');
       let aUsageOn = await userDB.getAppUsageOn(email)
  
       // Response Codes
-      if (notiInterval == notiSound == notiSoundOn == tUsageOn == aUsageOn == true) {
+      if (Number.isInteger(notiInterval) && typeof notiSound === 'string' && typeof notiSoundOn === 'boolean'
+          && typeof tUsageOn === 'boolean' && typeof aUsageOn === 'boolean') {
         res.status(200).send({
           notifications: { enableSound: notiSoundOn, interval: notiInterval, sound: notiSound, },
           dataUsage: { trackAppUsageStats: aUsageOn, enableWeeklyUsageStats: tUsageOn }
         });
       }
-      else { res.status(504).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }); }
- 
+      else { 
+        res.status(504).send({ reason: "RETRIEVAL_FAILED", message: "Couldn't retrieve preferences." }); 
+      }
     });
  
     // Saves the user preferences
@@ -259,6 +271,8 @@ const { route } = require('./index.js');
 
     // Updates the data usage of user
     router.put('/data', async (req, res) => {
+      console.log('data usage push request');
+
       let token = req.headers.auth;
       let email = ""
 
@@ -267,19 +281,25 @@ const { route } = require('./index.js');
       if (Array.isArray(ct)) { res.status(401).send({ reason: ct[0], message: ct[1] }); return; }
       else { email = await userDB.getEmail(ct); }
 
+      console.log('email : ' + email);
+
       //------------------------
       // Update Timer Usage
       let timerUsageObjects = req.body.timerUsage;
       let tuSuccess = false;
 
-      for (const duObject of timerUsageObjects) {
-        let row = JSON.parse(JSON.stringify(duObject));
+      for (const tuObject of timerUsageObjects) {
+        let row = JSON.parse(JSON.stringify(tuObject));
         tuSuccess = await userDB.setTimerUsage(email, row.screenTime, row.timerCount, row.usageDate)
       }
+
+      console.log('timer upload success : ' + tuSuccess);
 
       // Update App Usage
       let appUsageObjects = req.body.appUsage;
       let auSuccess = false;
+
+      console.log('app upload success : ' + auSuccess);
 
       for (const auObject of appUsageObjects) {
         let row = JSON.parse(JSON.stringify(auObject));

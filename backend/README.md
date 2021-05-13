@@ -2,7 +2,10 @@
 
 This directory holds the source code for our backend. We are using ExpressJS to provide the backend API interface.
 
-<br/>
+# Functionality
+-  Authenticating users.
+-  Tracking weekly timer & app usage.
+-  Setting user preferences.
 
 # Technologies
 
@@ -12,6 +15,11 @@ This directory holds the source code for our backend. We are using ExpressJS to 
 <br/>
 
 # Setting up the server
+1. Navigate to the backend folder.
+2. Inside, there's two shell scripts which runs the server in a new Linux screen.
+2. To start the server, Type `./start.sh` 
+3. To stop the server, type `./stop.sh`.
+
 
 # Generating an authorized key to access the server
 SSH (Secure Shell)
@@ -94,8 +102,6 @@ Contains required backend testing configuration/necessary parameter values
 <br/>
 
 # Index of Commands
-
-# npm commmands
 
 ## `npm start`
 Starts the backend process.

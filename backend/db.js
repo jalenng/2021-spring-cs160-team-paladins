@@ -33,7 +33,7 @@ class db {
         q = q + "VALUES ('" + givenEmail + "', '" + givenPass + "', '" + displayName + "')";
 
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { resolve(true) }
         }));
         return results;
@@ -64,9 +64,10 @@ class db {
      */
     async getEmail(id) {
         let q = "SELECT email FROM Users WHERE id=" + id 
+
         // Querying Result
         return await new Promise((resolve) => this.pool.query(q, function (err, result) {
-            if (err) { console.log(err); resolve(false) }
+            if (err) { resolve(false) }
             else { 
                 let splits = (JSON.stringify(result)).split('\"', 5);                
                 resolve(splits[3])
@@ -365,7 +366,6 @@ class db {
         let check = await this.check("TimerUsage", userEmail, "", usageDate);
         let q = "";
 
-
         // Updates existing record
         if (check == "1") {
             q = "UPDATE TimerUsage SET screenTime= screenTime + " + screenTime + ", timerCount= timerCount + " + timerCount + 
@@ -418,7 +418,6 @@ class db {
 
         // Keep popping the first word of the app's name until under 50 characters.
         if (appName.length >= 50) {
-            console.log(appName);
             var words = appName.split(' ');
             var result = '';
             var appended = ''
@@ -438,7 +437,7 @@ class db {
         if (checkValues == false) {
             return false;
         }
-        
+
         // Checks for existing record
         let check = await this.check("AppUsage", userEmail, appName, date).then((result) => { return result; })
         let q = "";
@@ -455,7 +454,7 @@ class db {
 
         // Updates the database
         let results = await new Promise((resolve) => this.pool.query(q, function (err) {
-            if (err) { resolve(false) }
+            if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
 
@@ -520,11 +519,10 @@ class db {
      */
     async gettingInteger(data) {
         let splits = (JSON.stringify(data)).split(':');
-        return splits[1][0];
+        let splits2 = (JSON.stringify(splits[1])).split('}')
+        let splits3 = (JSON.stringify(splits2[0])).split('\"')
 
-        // let splits2 = (JSON.stringify(splits[1])).split('}')
-        // let splits3 = (JSON.stringify(splits2[0])).split('\"')
-        // return splits3[2]
+        return splits3[2]
     }
 
     /**

@@ -5,11 +5,8 @@
 
 ### by Team Paladins
 
-
-
-
-**Table of Contents** 
-TODO
+**iCare User Guide Link** 
+https://discordapp.com/channels/808522944044859463/808522944044859468/844054321166811194
 
 # 1 Introduction
 <img src="screenshots/monitor_smash.png" alt="iCare icon"/>

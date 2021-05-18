@@ -3,101 +3,11 @@ const Store = require('electron-store');
 const path = require('path');
 const axios = require('axios');
 
-/* Store defaults */
-const preferencesStoreDefaults = {
-    notifications: {
-        enableSound: true,
-        interval: 20,
-        sound: '../../sounds/Long Expected.mp3',
-        soundVolume: 100
-    },
-    dataUsage: {
-        trackAppUsageStats: true,
-        enableWeeklyUsageStats: true
-    },
-    blockers: {
-        apps: [],
-        blockOnBattery: true
-    },
-    startup: {
-        startAppOnLogin: true,
-        startTimerOnAppStartup: true
-    }
-}
-
-const soundsStoreDefaults = {
-    defaultSounds: [
-        {
-            key: '../../sounds/Clearly.mp3',
-            text: 'Clearly'
-        },
-        {
-            key: '../../sounds/Done For You.mp3',
-            text: 'Done For You'
-        },
-        {
-            key: '../../sounds/Insight.mp3',
-            text: 'Insight'
-        },
-        {
-            key: '../../sounds/Juntos.mp3',
-            text: 'Juntos'
-        },
-        {
-            key: '../../sounds/Long Expected.mp3',
-            text: 'Long Expected'
-        },
-        {
-            key: '../../sounds/Nostalgia.mp3',
-            text: 'Nostalgia'
-        },
-        {
-            key: '../../sounds/Pristine.mp3',
-            text: 'Pristine'
-        },
-        {
-            key: '../../sounds/When.mp3',
-            text: 'When'
-        },
-    ],
-    customSounds: []
-}
-
-const accountsStoreDefaults = {
-    token: null,
-    accountInfo: {
-        email: '',
-        displayName: 'iCare Guest',
-    }
-}
-
-const dataUsageDefaults = {
-    unsynced: {
-        appUsage: [],
-        timerUsage: []
-    },
-    fetched: {
-        appUsage: [],
-        timerUsage: []
-    }
-}
-
-const insightsDefaults = {
-    cards: []
-}
+const storeSchema = require('./storeSchema');
 
 /* Create the store */
 const storeOptions = {
-    defaults: {
-        preferences: preferencesStoreDefaults,
-        sounds: soundsStoreDefaults,
-        accounts: accountsStoreDefaults,
-        dataUsage: dataUsageDefaults,
-        insights: insightsDefaults,
-        appNames: {},
-        messages: [],
-        resetFlag: false
-    },
+    schema: storeSchema,
     watch: true
 }
 global.store = new Store(storeOptions);
@@ -183,7 +93,7 @@ ipcMain.handle('push-prefs', async (event) => {
 
 // Show a dialog to import a custom sound
 ipcMain.handle('add-custom-sound', (event) => {
-    dialog.showOpenDialog(mainWindow, {
+    dialog.showOpenDialog(global.mainWindow, {
         title: 'Choose custom sound',
         filters: [{
             name: 'Audio files',
@@ -358,7 +268,7 @@ ipcMain.handle('dismiss-message', (event, index) => {
 
 // Show a dialog to confirm resetting the app
 ipcMain.handle('reset-store', () => {
-    dialog.showMessageBox(mainWindow, {
+    dialog.showMessageBox(global.mainWindow, {
         title: 'Reset iCare',
         type: 'question',
         message: 'Are you sure you want to reset iCare?',

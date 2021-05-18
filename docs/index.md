@@ -6,7 +6,7 @@
 ### by Team Paladins
 
 **iCare User Guide Link** 
-https://discordapp.com/channels/808522944044859463/808522944044859468/844054321166811194
+https://docs.google.com/document/d/1lY7-EF1ffaiswsUEsFRBRabMbqeoNP5AqQhFWS2n7zc/edit?usp=sharing
 
 # 1 Introduction
 <img src="screenshots/monitor_smash.png" alt="iCare icon"/>

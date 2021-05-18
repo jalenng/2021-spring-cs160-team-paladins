@@ -285,23 +285,36 @@ const { route } = require('./index.js');
       let timerUsageObjects = req.body.timerUsage;
       let tuSuccess = false;
 
-      for (const tuObject of timerUsageObjects) {
-        let row = JSON.parse(JSON.stringify(tuObject));
-        tuSuccess = await userDB.setTimerUsage(email, row.screenTime, row.timerCount, row.usageDate)
+      if (timerUsageObjects.length != 0) {
+        for (const tuObject of timerUsageObjects) {
+          let row = JSON.parse(JSON.stringify(tuObject));
+          tuSuccess = await userDB.setTimerUsage(email, row.screenTime, row.timerCount, row.usageDate)
+        }
       }
 
       // Update App Usage
       let appUsageObjects = req.body.appUsage;
       let auSuccess = false;
 
-      for (const auObject of appUsageObjects) {
-        let row = JSON.parse(JSON.stringify(auObject));
-        auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
+      if (appUsageObjects.length != 0) {
+        for (const auObject of appUsageObjects) {
+          let row = JSON.parse(JSON.stringify(auObject));
+          auSuccess = await userDB.setAppUsage(email, row.appName, row.appTime, row.usageDate)
+        }
       }
 
       // Response Codes
       if (tuSuccess == true && auSuccess == true) { 
         res.status(200).send({ reason: "SUCCESS", message: "Updated data usage." });  
+      }
+      else if (tuSuccess == true && appUsageObjects.length == 0) {
+        res.status(200).send({ reason: "SUCCESS", message: "Updated timer usage." });  
+      }
+      else if (auSuccess == true && timerUsageObjects.length == 0) {
+        res.status(200).send({ reason: "SUCCESS", message: "Updated app usage." });  
+      }
+      else if (appUsageObjects.length == 0 && timerUsageObjects.length == 0) {
+        res.status(200).send({ reason: "SUCCESS", message: "No data usage given." });  
       }
       else if (tuSuccess == true && auSuccess == false) {
         res.status(504).send({ reason: "UPDATE_FAILED", message: "Couldn't update app usage." })

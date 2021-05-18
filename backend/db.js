@@ -448,17 +448,19 @@ class db {
                 " WHERE email='" + userEmail + "' AND usageDate='" + date + "'";
         }
         // Creates a new record
-        else {
+        else if (check == "0") {
             q = "INSERT INTO AppUsage VALUES('" + userEmail + "', '" + appName + "', " + appTime + ", '" + date + "')";
+        }
+        else {
+            return false;
         }
 
         // Updates the database
-        let results = await new Promise((resolve) => this.pool.query(q, function (err) {
+        return await new Promise((resolve) => this.pool.query(q, function (err) {
             if (err) { console.log(err); resolve(false) }
             else { resolve(true) }
         }));
 
-        return results;
     }
 
 

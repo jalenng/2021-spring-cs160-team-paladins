@@ -59,7 +59,6 @@ export default class UsageScreen extends React.Component {
     // only push to server if updates exist
     store.dataUsage.push().then(result => {
       if (result.success) {
-          store.dataUsage.reset();
           store.dataUsage.fetch();
           // console.logs for debugging purposes. remove later.
           console.log("SUCCESS: Unsynced data usage pushed to server");

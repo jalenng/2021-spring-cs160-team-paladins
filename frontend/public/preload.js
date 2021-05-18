@@ -151,11 +151,6 @@ window.store = {
          */
         push: () => { return ipcRenderer.invoke('push-data-usage') },
 
-        /**
-         * Clear the local unsynced data usage
-         */
-        reset: () => { return ipcRenderer.invoke('reset-data-usage') },
-
         /* Event system */
         eventSystem: new EventSystem()
     },

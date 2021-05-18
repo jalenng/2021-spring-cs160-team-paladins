@@ -317,7 +317,11 @@ ipcMain.handle('fetch-data-usage', async () => {
 // Update data usage on the backend, and reset local data usage
 // PUT - /data
 ipcMain.handle('push-data-usage', async () => {
-    const successCallback = () => store.reset('dataUsage.unsynced');
+    const successCallback = () => {
+        // Clear unsynced data
+        store.set('dataUsage.unsynced.timerUsage', []);
+        store.set('dataUsage.unsynced.appUsage', []);
+    }
 
     const data = {
         timerUsage: store.get('dataUsage.unsynced.timerUsage'),

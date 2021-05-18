@@ -20,19 +20,24 @@ const groups = [
   {
     links: [
       {
-        name: 'App Usage',
+        name: 'Daily App Usage',
         icon: 'Favicon',
-        key: 'app_usage'
+        key: 'daily_app_usage'
       },
       {
-        name: 'Daily Usage',
+        name: 'Weekly App Usage',
+        icon: 'Favicon',
+        key: 'weekly_app_usage'
+      },
+      {
+        name: 'Daily Timer Usage',
         icon: 'GoToToday',
-        key: 'daily_usage'
+        key: 'daily_timer_usage'
       },
       {
-        name: 'Weekly Usage',
+        name: 'Weekly Timer Usage',
         icon: 'CalendarWorkWeek',
-        key: 'weekly_usage'
+        key: 'weekly_timer_usage'
       },
     ],
   },
@@ -43,9 +48,7 @@ export default class UsageSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    console.log()
   }
-
 
   handleChange(event, item) {
     const key = item.key;
@@ -57,17 +60,14 @@ export default class UsageSidebar extends React.Component {
       <Stack 
         tokens={{ childrenGap: 12 }} 
         styles={navStyles}>
-
         <Text variant={'xxLarge'}>
           <b>Statistics</b>
         </Text>
-    
         <Nav
           selectedKey={this.props.selectedKey}
           groups={groups}
           onLinkClick={this.handleChange}
         />
-  
       </Stack>
     )
   }

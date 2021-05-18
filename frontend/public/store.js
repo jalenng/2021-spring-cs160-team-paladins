@@ -218,18 +218,26 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
     return result;
 })
 
-// Fetch data usage from the backend
-// GET - /data
+// Fetch data usage
 ipcMain.handle('fetch-data-usage', async () => {
-    const successCallback = (res) => store.set('dataUsage.fetched', res.data.cards);
+    const successCallback = (res) => store.set('dataUsage.fetched', res.data);
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
 })
 
-// Update data usage on the backend
+// Update data usage on the backend, and reset local data usage
 // PUT - /data
 ipcMain.handle('push-data-usage', async () => {
-    const data = store.get('dataUsage.unsynced');
-    return await returnAxiosResult('put', 'data', data, [200]);
+    const successCallback = () => {
+        // Clear unsynced data
+        store.set('dataUsage.unsynced.timerUsage', []);
+        store.set('dataUsage.unsynced.appUsage', []);
+    }
+
+    const data = {
+        timerUsage: store.get('dataUsage.unsynced.timerUsage'),
+        appUsage: store.get('dataUsage.unsynced.appUsage')
+    }
+    return await returnAxiosResult('put', 'data', data, [200], successCallback);
 })
 
 // Fetch insights from the backend
@@ -316,6 +324,7 @@ async function returnAxiosResult(request, location, data, successStatuses, succe
         }
     }
     catch (error) {
+        console.log(error)
         // If backend returned a reason and message for the error
         let responseMessageExists =
             error.response

@@ -62,7 +62,7 @@ module.exports = function () {
     this.endDate = new Date();  // The Date Object indicating when the timer will end
     this.totalDuration = global.store.get('preferences.notifications.interval') * 60000; // In milliseconds
     this.savedTime = this.totalDuration;    // Stores the remaining time when the timer is paused or blocked
-
+    
     /**
      * Registers an event listener
      */
@@ -112,7 +112,7 @@ module.exports = function () {
             remainingTime: (() => {
                 if (this.savedTime != null) return this.savedTime   // Use this only if the timer is paused or blocked
                 else return this.endDate - new Date();      // Otherwise, calculate it dynamically
-            })(),
+                })(),
             isBlocked: this.isBlocked,
             isPaused: this.isPaused,
             isIdle: this.isIdle
@@ -137,7 +137,7 @@ module.exports = function () {
                 this.savedTime = 0;
                 clearTimeout(this.timeout);
 
-                this.emit('timer-end')
+                this.emit('timer-end', callback => callback(this.totalDuration));
 
                 break;
 
@@ -219,7 +219,7 @@ module.exports = function () {
         // Set flags
         this.isIdle = false;
         this.isPaused = true;
-
+        
         this.update();
     }
 

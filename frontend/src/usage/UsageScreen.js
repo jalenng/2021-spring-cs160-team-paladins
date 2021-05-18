@@ -6,10 +6,10 @@ import {
 } from '@fluentui/react';
 
 import UsageSidebar from './UsageSidebar';
-import AppUsage from './AppUsage';
-import DailyUsage from './DailyUsage'
-import WeeklyUsage from './WeeklyUsage';
-import TotalUsage from './TotalUsage';
+import DailyAppUsage from './DailyAppUsage';
+import WeeklyAppUsage from './WeeklyAppUsage';
+import DailyTimerUsage from './DailyTimerUsage'
+import WeeklyTimerUsage from './WeeklyTimerUsage';
 
 const divStyle = {
   paddingTop: '10px',
@@ -18,10 +18,10 @@ const divStyle = {
 };
 
 const usagePages = {
-  app_usage: <AppUsage/>,
-  daily_usage: <DailyUsage/>,
-  weekly_usage: <WeeklyUsage/>,
-  total_usage: <TotalUsage/>,
+  daily_app_usage: <DailyAppUsage/>,
+  weekly_app_usage: <WeeklyAppUsage/>,
+  daily_timer_usage: <DailyTimerUsage/>,
+  weekly_timer_usage: <WeeklyTimerUsage/>,
 }
 
 export default class UsageScreen extends React.Component {
@@ -30,12 +30,16 @@ export default class UsageScreen extends React.Component {
     super(props);
     this.state = { 
       isSignedIn: store.accounts.getAll().token !== null,
-      selectedKey: 'app_usage' 
+      selectedKey: 'daily_app_usage' 
     };
   }
 
   componentDidMount() {
     store.accounts.eventSystem.on('changed', () => this.updateState())
+    if (this.state.isSignedIn === true) {
+      this.syncUsage();
+      setInterval(this.syncUsage, 10000);
+    }
   }
 
   updateState() {
@@ -43,7 +47,27 @@ export default class UsageScreen extends React.Component {
         ...this.state,
         isSignedIn: store.accounts.getAll().token !== null,
     });
+    this.syncUsage();
   };
+
+  // 
+  /**
+   * Pushes unsynced data usage to server & resets its values 
+   * 
+   */
+  syncUsage() {
+    // only push to server if updates exist
+    store.dataUsage.push().then(result => {
+      if (result.success) {
+          store.dataUsage.fetch();
+          // console.logs for debugging purposes. remove later.
+          console.log("SUCCESS: Unsynced data usage pushed to server");
+      }
+      else {
+        console.log("FAILURE: Cant push unsynced data usage to server");
+      }
+    });
+  }
 
   render() {
     const selectedKey = this.state.selectedKey;

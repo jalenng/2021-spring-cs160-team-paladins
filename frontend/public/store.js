@@ -3,101 +3,21 @@ const Store = require('electron-store');
 const path = require('path');
 const axios = require('axios');
 
-/* Store defaults */
-const preferencesStoreDefaults = {
-    notifications: {
-        enableSound: true,
-        interval: 20,
-        sound: '../sounds/Long Expected.mp3'
-    },
-    dataUsage: {
-        trackAppUsageStats: true,
-        enableWeeklyUsageStats: true
-    },
-    startup: {
-        startAppOnLogin: true,
-        startTimerOnAppStartup: true
-    }
-}
-
-const soundsStoreDefaults = {
-    defaultSounds: [
-        {
-            key: '../sounds/Clearly.mp3',
-            text: 'Clearly'
-        },
-        {
-            key: '../sounds/Done For You.mp3',
-            text: 'Done For You'
-        },
-        {
-            key: '../sounds/Insight.mp3',
-            text: 'Insight'
-        },
-        {
-            key: '../sounds/Juntos.mp3',
-            text: 'Juntos'
-        },
-        {
-            key: '../sounds/Long Expected.mp3',
-            text: 'Long Expected'
-        },
-        {
-            key: '../sounds/Pristine.mp3',
-            text: 'Pristine'
-        },
-        {
-            key: '../sounds/When.mp3',
-            text: 'When'
-        },
-    ],
-    customSounds: []
-}
-
-const accountsStoreDefaults = {
-    token: null,
-    accountInfo: {
-        email: '',
-        displayName: 'iCare Guest',
-    }
-}
-
-const dataUsageDefaults = {
-    unsynced: {
-        appUsage: [],
-        timerUsage: []
-    },
-    fetched: {
-        appUsage: [],
-        timerUsage: []
-    }
-}
-
-const insightsDefaults = {
-    cards: [
-        {
-            header: 'Test insight 1',
-            content: 'Insight message.'
-        }
-    ]
-}
+const storeSchema = require('./storeSchema');
 
 /* Create the store */
 const storeOptions = {
-    defaults: {
-        preferences: preferencesStoreDefaults,
-        sounds: soundsStoreDefaults,
-        accounts: accountsStoreDefaults,
-        dataUsage: dataUsageDefaults,
-        insights: insightsDefaults,
-        messages: []
-    },
+    schema: storeSchema,
     watch: true
 }
 global.store = new Store(storeOptions);
 store.reset('messages'); // Clear all in-app messages on app startup
 
+// Reset entire store if the reset flag is enabled
+if (store.get('resetFlag')) store.clear();
+
 // store.clear();
+// store.set('preferences.notifications.interval', 0.2)
 // console.log(store.store)
 
 /* Configure axios */
@@ -139,11 +59,9 @@ store.onDidChange('messages', () => {
     global.mainWindow.webContents.send('store-changed', 'messages');
 });
 
-/*---------------------------------------------------------------------------*/
 
-/**
- * IPC event handlers & functions to manipulate and retrieve from the store
- */
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
 
 // Retrieve from the local store
 ipcMain.on('get-store', (event, key) => event.returnValue = store.get(key));
@@ -155,7 +73,7 @@ ipcMain.handle('set-prefs', (event, key, value) => {
 
 // Fetch user preferences from the backend
 // GET - /prefs
-ipcMain.handle('fetch-prefs', async (event) => {
+ipcMain.handle('fetch-prefs', async () => {
     const successCallback = (res) => {
         store.set('preferences.notifications', res.data.notifications);
         store.set('preferences.dataUsage', res.data.dataUsage);
@@ -175,7 +93,7 @@ ipcMain.handle('push-prefs', async (event) => {
 
 // Show a dialog to import a custom sound
 ipcMain.handle('add-custom-sound', (event) => {
-    dialog.showOpenDialog(mainWindow, {
+    dialog.showOpenDialog(global.mainWindow, {
         title: 'Choose custom sound',
         filters: [{
             name: 'Audio files',
@@ -300,26 +218,32 @@ ipcMain.handle('sign-out', async (event, deleteAccount = false, password = '') =
     return result;
 })
 
-// Fetch data usage from the backend
-// GET - /data
-ipcMain.handle('fetch-data-usage', async (event) => {
-    const successCallback = (res) => store.set('dataUsage.fetched', res.data.cards);
+// Fetch data usage
+ipcMain.handle('fetch-data-usage', async () => {
+    const successCallback = (res) => store.set('dataUsage.fetched', res.data);
     return await returnAxiosResult('get', 'data', {}, [200], successCallback);
 })
 
-// Update data usage on the backend
+// Update data usage on the backend, and reset local data usage
 // PUT - /data
-ipcMain.handle('push-data-usage', async (event) => {
-    const data = store.get('dataUsage.unsynced');
-    return await returnAxiosResult('put', 'data', data, [200]);
+ipcMain.handle('push-data-usage', async () => {
+    const successCallback = () => {
+        // Clear unsynced data
+        store.set('dataUsage.unsynced.timerUsage', []);
+        store.set('dataUsage.unsynced.appUsage', []);
+    }
+
+    const data = {
+        timerUsage: store.get('dataUsage.unsynced.timerUsage'),
+        appUsage: store.get('dataUsage.unsynced.appUsage')
+    }
+    return await returnAxiosResult('put', 'data', data, [200], successCallback);
 })
 
 // Fetch insights from the backend
 // GET - /data/insights
-ipcMain.handle('fetch-insights', async (event) => {
-    const successCallback = (res) => {
-        store.set('insights.cards', res.data.cards);
-    }
+ipcMain.handle('fetch-insights', async () => {
+    const successCallback = (res) => store.set('insights.cards', res.data.cards);
     return await returnAxiosResult('get', 'data/insights', {}, [200], successCallback);
 })
 
@@ -340,6 +264,24 @@ ipcMain.handle('dismiss-message', (event, index) => {
     let messages = store.get('messages');
     messages.splice(index, 1);
     store.set('messages', messages);
+})
+
+// Show a dialog to confirm resetting the app
+ipcMain.handle('reset-store', () => {
+    dialog.showMessageBox(global.mainWindow, {
+        title: 'Reset iCare',
+        type: 'question',
+        message: 'Are you sure you want to reset iCare?',
+        detail: 'You will be signed out, and all unsynced data will be lost.',
+        buttons: ['Yes', 'No'],
+    })
+        .then(result => {
+            if (result.response == 0) {
+                store.set('resetFlag', true);
+                app.relaunch();
+                app.exit();
+            }
+        })
 })
 
 
@@ -382,6 +324,7 @@ async function returnAxiosResult(request, location, data, successStatuses, succe
         }
     }
     catch (error) {
+        console.log(error)
         // If backend returned a reason and message for the error
         let responseMessageExists =
             error.response

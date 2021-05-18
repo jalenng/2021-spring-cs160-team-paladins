@@ -3,53 +3,38 @@ import { Bar, defaults } from "react-chartjs-2"
 
 defaults.global.tooltips.enabled = true;
 
-let weekday = new Array(7);
-weekday[0] = "Sunday";
-weekday[1] = "Monday";
-weekday[2] = "Tuesday";
-weekday[3] = "Wednesday";
-weekday[4] = "Thursday";
-weekday[5] = "Friday";
-weekday[6] = "Saturday";
+const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-export default class DailyUsage extends React.Component {
+export default class BarChart extends React.Component {
 
   constructor(props) {
     super(props);
-    this.date = new Date();
-    this.weekday = weekday[this.date.getDay()];
 
-    // change to axios.get to get current values. 
-    this.hours = 5;
-    this.breaks = 10;
-  }
+    this.appUsage = store.dataUsage.getAll().fetched.appUsage;
+    this.backgroundColor = [];
 
-   // change to axios.put to update values.
-  updateUsage(break_len) {
-    this.breaks = this.breaks + break_len;
+    // Get apps names & usage from unsynced.
+    this.labels = [];
+    this.usage = [];
+    for (var i=0; i < this.appUsage.length; i++) {
+      this.labels.push(this.appUsage[i].appName);
+      var appTime = this.appUsage[i].appTime;
+      this.usage.push(Math.floor(appTime/60000));
+      this.backgroundColor.push("rgba(72, 121, 240, 1)");
+    }
   }
 
   render() {
-
     return (
       <div>
         <Bar
           data={{
-            labels: [
-              this.weekday,
-            ],
+            labels: this.labels,
             datasets: [
               {
-                label: "Total usage (hours)",
-                data: [this.hours],
-                backgroundColor: [
-                  "rgba(72, 121, 240, 1)",
-                ],
-              },
-              {
-                label: "Total # of breaks",
-                data: [this.breaks],
-                backgroundColor: "lightblue",
+                label: "Seconds",
+                data: this.usage,
+                backgroundColor: this.backgroundColor,
               },
             ],
           }}
@@ -58,10 +43,9 @@ export default class DailyUsage extends React.Component {
           options={{
             title: {
               display: true,
-              text: "Daily Timer Usage",
+              text: "Weekly App Usage",
               fontColor: "#FFFFFF",
-              fontSize: 15,
-              padding: 10,
+              fontSize: 20,
             },
             scales: {
               yAxes: [

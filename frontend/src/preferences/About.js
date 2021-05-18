@@ -1,10 +1,14 @@
 import React from 'react';
 
-import { Image, ImageFit } from '@fluentui/react/lib/Image';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
+import { 
+    DefaultButton,
+    Image, ImageFit,
+    Stack, 
+    Text 
+} from '@fluentui/react';
 
 import logo from '../assets/icon.png';
+import { level1Props, level2Props, level2HorizontalProps } from './PrefsStackProps';
 
 export default class extends React.Component {
 
@@ -30,14 +34,11 @@ export default class extends React.Component {
     render() {
 
         return (
-            <Stack id='about' tokens={{ childrenGap: 24 }} style={{ paddingBottom: '20px' }}>
-
-                <Text variant={'xLarge'} block> About </Text>
+            <Stack {...level1Props} id='about'>
 
                 {/* Version info */}
-                <Stack tokens={{ childrenGap: 8 }}>
-
-                    <Stack horizontal verticalAlign='center' tokens={{ childrenGap: 16 }}>
+                <Stack {...level2Props}>
+                    <Stack {...level2HorizontalProps}>
                         
                         <Image
                             imageFit={ImageFit.centerContain}
@@ -46,14 +47,10 @@ export default class extends React.Component {
                             height={96}
                         />
 
-                        <Stack vertical tokens={{ childrenGap: 8 }}>
-
-                            <Text variant={'xxLarge'} block>  
-                                {`${this.state.appInfo.name} ${this.state.appInfo.version}`}
-                            </Text>
-                            
-                        </Stack>
-
+                        <Text variant={'xxLarge'} block>  
+                            {`${this.state.appInfo.name} ${this.state.appInfo.version}`}
+                        </Text>
+                        
                     </Stack>
 
                     <Stack>
@@ -79,7 +76,7 @@ export default class extends React.Component {
                 </Stack>
 
                 {/* Contributors */}
-                <Stack tokens={{ childrenGap: 8 }}>
+                <Stack {...level2Props}>
                     <Text variant={'xLarge'} block> Contributors </Text>
 
                     <Stack>
@@ -90,7 +87,7 @@ export default class extends React.Component {
                 </Stack>
 
                 {/* Attributions to open-source libraries */}
-                <Stack tokens={{ childrenGap: 8 }}>
+                <Stack {...level2Props}>
                     <Text variant={'xLarge'} block> Open-source libraries </Text>
 
                     <div style={{
@@ -101,6 +98,21 @@ export default class extends React.Component {
                             return ( <Text variant={'medium'} block> {libName} </Text> )
                         })}
                     </div>
+                </Stack>
+
+                {/* Options to reset the app */}
+                <Stack {...level2Props}>
+
+                    <Text variant={'xLarge'} block> Reset app </Text>
+
+                    <Stack {...level2HorizontalProps}>
+                        <DefaultButton
+                            text='Reset iCare'
+                            iconProps={{ iconName: 'Refresh' }}
+                            onClick={store.reset}
+                        />
+                    </Stack>
+
                 </Stack>
 
             </Stack>

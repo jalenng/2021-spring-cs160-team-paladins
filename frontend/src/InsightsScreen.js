@@ -1,19 +1,17 @@
-import React from "react";
+import React from 'react';
 
-import DialogSpinner from "./DialogSpinner";
+import { 
+    IconButton,
+    ScrollablePane,
+    Stack,
+    Text,
+    ImageFit,
+    DocumentCard, DocumentCardImage, DocumentCardActions,
+    TooltipHost,
+    MessageBarType 
+} from '@fluentui/react';
 
-import { IconButton } from '@fluentui/react/lib/Button';
-import { ScrollablePane } from '@fluentui/react/lib/ScrollablePane';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
-import { ImageFit } from '@fluentui/react/lib/Image';
-import {
-    DocumentCard,
-    DocumentCardImage,
-    DocumentCardActions
-} from '@fluentui/react/lib/DocumentCard';
-import { TooltipHost } from '@fluentui/react/lib/Tooltip';
-import { MessageBarType } from '@fluentui/react/lib/MessageBar';
+import DialogSpinner from './DialogSpinner';
 
 const divStyle = {
     paddingTop: '10px',
@@ -30,10 +28,10 @@ const cardStyles = {
 }
 
 const cardStackStyle = {
-    marginTop: "8px",
-    marginLeft: "16px",
-    marginRight: "16px",
-    height: "auto"
+    marginTop: '8px',
+    marginLeft: '16px',
+    marginRight: '16px',
+    height: 'auto'
 }
 
 export default class InsightsScreen extends React.Component {
@@ -41,16 +39,16 @@ export default class InsightsScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isSignedIn: store.accounts.getAll().token !== null,
             cards: store.insights.getAll().cards
         };
         this.handleRefreshBtn = this.handleRefreshBtn.bind(this);
     };
 
     componentDidMount() {
-        // Update this component's state when insights are updated
-        store.insights.eventSystem.on('changed', () => {
-            this.updateState();
-        })
+        // Update this component's state when insights or accounts have updated
+        store.insights.eventSystem.on('changed', () => this.updateState())
+        store.accounts.eventSystem.on('changed', () => this.updateState())
     };
 
     setSpinner(isLoading) {
@@ -75,6 +73,7 @@ export default class InsightsScreen extends React.Component {
 
     updateState() {
         this.setState({
+            isSignedIn: store.accounts.getAll().token !== null,
             cards: store.insights.getAll().cards
         });
     };
@@ -98,17 +97,19 @@ export default class InsightsScreen extends React.Component {
 
                     {/* Card contents/stack */}
                     <Stack style={cardStackStyle} tokens={{ childrenGap: 8 }}>
-                        <Text variant="large" block> {card.header} </Text>
+                        <Text variant='large' block> {card.header} </Text>
                         <Text block> {card.content} </Text>
                     </Stack>
 
                     {/* Card action buttons */}
                     <DocumentCardActions actions={[
                         {
+                            key: 'like',
                             iconProps: { iconName: 'Like' },
                             onClick: () => { alert('Like clicked') }
                         },
                         {
+                            key: 'dislike',
                             iconProps: { iconName: 'Dislike' },
                             onClick: () => { alert('Dislike clicked') }
                         }
@@ -125,28 +126,43 @@ export default class InsightsScreen extends React.Component {
 
                 {/* Insights screen header */}
                 <Stack horizontal
-                    verticalAlign="center"
+                    verticalAlign='center'
                     tokens={{ childrenGap: 16 }} >
                     <Text variant={'xxLarge'} block> <b>Insights</b> </Text>
 
-                    <TooltipHost content="Refresh">
-                        <IconButton
-                            iconProps={{ iconName: 'Refresh' }}
-                            onClick={this.handleRefreshBtn}
-                        />
-                    </TooltipHost>
+                    {this.state.isSignedIn && 
+                        <TooltipHost content='Refresh'>
+                            <IconButton
+                                iconProps={{ iconName: 'Refresh' }}
+                                onClick={this.handleRefreshBtn}
+                            />
+                        </TooltipHost>
+                    }
+
                 </Stack>
 
-                {/* Insights contents */}
-                <ScrollablePane style={{
-                    position: "absolute",
-                    top: "105px",
-                    left: "30px",
-                    paddingBottom: "260px",
-                    paddingRight: "40px"
-                }}>
-                    {cards}
-                </ScrollablePane>
+                {/* Show message if not signed in */}
+                {!this.state.isSignedIn && 
+                    <Text>To view your insights, please sign in. </Text>
+                }
+                
+                {/* Show message if signed in, but no cards */}
+                {this.state.isSignedIn && cards.length === 0 &&
+                    <Text>There are currently no insights. Click 'Refresh' or try again later. </Text>
+                }
+
+                {/* Show insights contents if signed in */}
+                {this.state.isSignedIn && 
+                    <ScrollablePane style={{
+                        position: 'absolute',
+                        top: '105px',
+                        left: '30px',
+                        paddingBottom: '260px',
+                        paddingRight: '40px'
+                    }}>
+                        {cards}
+                    </ScrollablePane>
+                }
 
                 <DialogSpinner
                     show={this.state.isLoading}

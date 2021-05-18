@@ -1,8 +1,12 @@
 import React from 'react';
 
-import { Stack } from '@fluentui/react/lib/Stack';
-import { Text } from '@fluentui/react/lib/Text';
-import { Toggle } from '@fluentui/react/lib/Toggle';
+import { 
+    Stack,
+    Text,
+    Toggle 
+} from '@fluentui/react';
+
+import { level1Props, level2Props } from './PrefsStackProps';
 
 export default class extends React.Component {
 
@@ -24,24 +28,26 @@ export default class extends React.Component {
 
     render() {
         return (
-            <Stack id="startup" tokens={{ childrenGap: 10 }} style={{ paddingBottom: '20px' }}>
+            <Stack id='startup' {...level1Props}>
 
-                <Text variant={'xLarge'} block> Startup </Text>
+                <Stack {...level2Props}>
+                    <Text variant={'xLarge'} block> Startup </Text>
 
-                <Toggle label="Start app on login"
-                    id="autoLoginToggle"
-                    onText="On" offText="Off"
-                    checked={this.state.startAppOnLogin}
-                    onChange={(event, checked) => store.preferences.set("startup.startAppOnLogin", checked)}
-                />
-                <Toggle label="Start timer on app startup"
-                    id="appStartupToggle"
-                    onText="On" offText="Off"
-                    checked={this.state.startTimerOnAppStartup}
-                    onChange={(event, checked) => {
-                        store.preferences.set("startup.startTimerOnAppStartup", checked);
-                    }}
-                />
+                    <Toggle label='Start iCare when your computer starts up'
+                        id="autoLoginToggle"
+                        onText='On' offText='Off'
+                        checked={this.state.startAppOnLogin}
+                        onChange={(event, checked) => store.preferences.set('startup.startAppOnLogin', checked)}
+                    />
+                    <Toggle label='Start the timer when iCare starts up'
+                        id="appStartupToggle"
+                        onText='On' offText='Off'
+                        checked={this.state.startTimerOnAppStartup}
+                        onChange={(event, checked) => {
+                            store.preferences.set('startup.startTimerOnAppStartup', checked);
+                        }}
+                    />
+                </Stack>
 
             </Stack>
         )

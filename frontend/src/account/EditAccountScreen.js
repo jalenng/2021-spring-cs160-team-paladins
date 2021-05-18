@@ -1,12 +1,14 @@
 import React from 'react';
 
-import DialogSpinner from "../DialogSpinner";
+import DialogSpinner from '../DialogSpinner';
 
-import { Text } from '@fluentui/react/lib/Text';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { TextField } from '@fluentui/react/lib/TextField';
-import { PrimaryButton } from '@fluentui/react/lib/Button';
-import { Separator } from '@fluentui/react/lib/Separator';
+import {
+    Text,
+    Stack,
+    TextField,
+    PrimaryButton, ActionButton,
+    Separator
+} from '@fluentui/react';
 
 const divStyle = {
     paddingTop: '10px',
@@ -59,10 +61,8 @@ export default class extends React.Component {
     }
 
     // Change spinner status
-    setSpinner(isLoading) {
-        let state = this.state;
-        state.isLoading = isLoading;
-        this.setState(state);
+    setSpinner(val) {
+        this.setState({ ...this.state, isLoading: val });
     }
 
     handleSubmit(event) {
@@ -84,7 +84,7 @@ export default class extends React.Component {
                 if (result.success) window.close()
 
                 // Else, update state
-                else {  
+                else {
                     let data = result.data;
 
                     state.errors = {    // Update error messages
@@ -117,6 +117,17 @@ export default class extends React.Component {
     render() {
         return (
             <div style={divStyle}>
+
+                {/* Show "Back" button on macOS because modal windows are sheets and don't have close buttons */}
+                {platform === 'darwin' &&
+                    <ActionButton
+                        style={{ left: '-10px' }}
+                        onClick={window.close}
+                        iconProps={{ iconName: 'NavigateBack' }}
+                        text={'Back to iCare'}
+                    />
+                }
+
                 <Text variant={'xxLarge'} block>
                     <b>Edit account</b>
                 </Text>
@@ -140,21 +151,22 @@ export default class extends React.Component {
                                 errorMessage={this.state.errors.email}
                             />
 
-                            <Separator/>
+                            <Separator />
 
                             <TextField label='Confirm password' type='password' id='password'
                                 styles={textFieldStyles}
                                 value={this.state.inputs.password}
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
+                                canRevealPassword
                             />
                         </Stack>
 
-                        <Stack 
-                            horizontal 
-                            verticalAlign='center' 
+                        <Stack
+                            horizontal
+                            verticalAlign='center'
                             tokens={{ childrenGap: 20 }}>
-                                
+
                             <PrimaryButton
                                 text='Save'
                                 type='submit'
@@ -165,7 +177,7 @@ export default class extends React.Component {
 
                     </Stack>
                 </form>
-                
+
                 <DialogSpinner
                     show={this.state.isLoading}
                     text='Saving your changes'

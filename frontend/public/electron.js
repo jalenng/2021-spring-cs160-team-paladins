@@ -5,17 +5,16 @@ const {
     nativeImage, 
     app, 
     ipcMain, 
-    globalShortcut
+    globalShortcut,
+    powerMonitor
 } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const isDev = require('electron-is-dev'); 
 const path = require('path'); 
 
+// Initialize the stores, systems, and popup window functions
 require('./store');
-require('./timerSystem.js');
-require('./breakSystem.js');
-require('./notificationSystem.js');
-require('./dataUsageSystem');
+require('./initializeSystems');
 require('./popupWindows');
 
 const DEFAULT_WINDOW_SIZE = {
@@ -28,31 +27,9 @@ const MAX_WINDOW_SIZE = {
     height: 800,
 }
 
-
 global.mainWindow;
 
 let mainWindowState;
-
-/**
- * Configure event listeners and connect the various systems
- */
-// Start break when timer ends
-timerSystem.on('timer-end', () => breakSystem.start()); 
-
-// Create notification windows when timer ends
-timerSystem.on('timer-end', () => notificationSystem.createWindows());  
-
-// Minimize notification when the break time is set/reset
-breakSystem.on('break-times-set', () => notificationSystem.minimize()); 
-
-// Expand notification when the break time is past the intermediate point
-breakSystem.on('break-intermediate', () => notificationSystem.maximize());
-
-// Start timer when break ends
-breakSystem.on('break-end', () => timerSystem.start());
-
-// Close notification windows when break ends
-breakSystem.on('break-end', () => notificationSystem.closeWindows());
 
 
 /**
@@ -116,14 +93,13 @@ function createWindow() {
 
 }
 
+/*---------------------------------------------------------------------------*/
+/* Mechanism to allow only one instance of the app at once */
 
-/**
- * Mechanism to allow only one instance of the app at once
- */
 const gotSingleInstanceLock = app.requestSingleInstanceLock()
 if (!gotSingleInstanceLock) app.exit()
 
-/* Show first instance if a second instance is requested */
+// Show first instance if a second instance is requested
  app.on('second-instance', (event, commandLine, workingDirectory) => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
@@ -132,18 +108,18 @@ if (!gotSingleInstanceLock) app.exit()
 })
 
 
-/**
- * App settings for when user logs in
- */
+/*---------------------------------------------------------------------------*/
+/* App settings for when user logs in */
+
 app.setLoginItemSettings({
     openAtLogin: global.store.get('preferences.startup.startAppOnLogin'),
     enabled: global.store.get('preferences.startup.startAppOnLogin'),
     path: app.getPath('exe')
 })
 
-/**
- * Application event handlers
- */
+
+/*---------------------------------------------------------------------------*/
+/* Application event handlers */
 let appTray = null;
 app.whenReady().then(() => {
 
@@ -192,14 +168,28 @@ app.on('web-contents-created', (event, contents) => {
 })
 
 
-/**
- * IPC event handlers
- * These event handlers are executed when another process invokes the event.
- */
+/*---------------------------------------------------------------------------*/
+/* IPC event handlers */
 
 // Log to main process's console
-ipcMain.handle('log-to-console', (event, message) => {
-    console.log(message);
+ipcMain.handle('log-to-main', (event, content) => {
+    console.log(content.toString());
+})
+
+// Restart the app
+ipcMain.handle('restart-app', () => {
+    app.relaunch();
+    app.exit();
+})
+
+// Find out whether or not the app is running in a dev environment
+ipcMain.on('is-dev', (event) => {
+    event.returnValue = isDev;
+})
+
+// Get the name of the current platform. https://nodejs.org/api/process.html#process_process_platform
+ipcMain.on('get-platform', (event) => {
+    event.returnValue = process.platform;
 })
 
 // Get info about the app

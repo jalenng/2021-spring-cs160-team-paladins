@@ -12,12 +12,12 @@ import EditAccountScreen from './account/EditAccountScreen';
 import FullscreenNotification from './notifications/FullscreenNotification';
 import PopupNotification from './notifications/PopupNotification';
 
-import Timer from './Timer';
+import Timer from './timer/Timer';
 
-import { HashRouter, Route, Switch } from "react-router-dom";
-import { loadTheme } from '@fluentui/react'
-import { createTheme } from '@fluentui/theme/lib/createTheme'
-import { initializeIcons } from '@fluentui/react/lib/Icons';
+import ErrorBoundary from './ErrorBoundary';
+
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import { loadTheme, createTheme, initializeIcons } from '@fluentui/react';
 
 const myTheme = createTheme({
     palette: {
@@ -51,30 +51,32 @@ document.body.style = 'background: #222222;';
 initializeIcons();
 
 const unselectableTextStyle = {
-    MozUserSelect: "none",
-    WebkitUserSelect: "none",
-    msUserSelect: "none",
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
 }
 
 ReactDOM.render(
-    <React.StrictMode>
-        <HashRouter>
-            <Switch>
-                <div className="App" style={unselectableTextStyle}>
-                    <Route path="/" exact component={App} />
-                    <Route path="/signin" exact component={SignInScreen} />
-                    <Route path="/signup" exact component={SignUpScreen} />
-                    <Route path="/deleteAccount" exact component={DeleteAccountScreen} />
-                    <Route path="/editAccount" exact component={EditAccountScreen} />
+    <div style={unselectableTextStyle}>
+        <React.StrictMode>
+            <ErrorBoundary>
+                <HashRouter>
+                    <Switch>
+                        <Route path='/' exact component={App} />
+                        <Route path='/signin' exact component={SignInScreen} />
+                        <Route path='/signup' exact component={SignUpScreen} />
+                        <Route path='/deleteAccount' exact component={DeleteAccountScreen} />
+                        <Route path='/editAccount' exact component={EditAccountScreen} />
 
-                    <Route path="/fullscreenNotification" exact component={FullscreenNotification} />
-                    <Route path="/popupNotification" exact component={PopupNotification} />
+                        <Route path='/fullscreenNotification' exact component={FullscreenNotification} />
+                        <Route path='/popupNotification' exact component={PopupNotification} />
 
-                    <Route path="/popupTimer" exact component={Timer} />
-                </div>
-            </Switch>
-        </HashRouter>
-    </React.StrictMode>,
+                        <Route path='/popupTimer' exact component={Timer} />
+                    </Switch>
+                </HashRouter>
+            </ErrorBoundary>
+        </React.StrictMode>
+    </div>,
     document.getElementById('root')
 );
 

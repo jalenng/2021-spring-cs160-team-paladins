@@ -3,14 +3,16 @@ import React from 'react';
 import HomeScreen from './HomeScreen';
 import UsageScreen from './usage/UsageScreen';
 import InsightsScreen from './InsightsScreen';
-import PreferencesScreen from './preferences/PreferencesScreen'
+import PrefsScreen from './preferences/PrefsScreen'
 
-import { MessageBar, MessageBarType } from '@fluentui/react/lib/MessageBar';
-import { Text } from '@fluentui/react/lib/Text';
-import { Pivot, PivotItem } from '@fluentui/react/lib/Pivot';
-import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
-import { DefaultButton } from '@fluentui/react/lib/Button';
-import { Stack } from '@fluentui/react/lib/Stack';
+import { 
+    MessageBar, MessageBarType,
+    Text,
+    Pivot, PivotItem,
+    Persona, PersonaSize,
+    DefaultButton,
+    Stack
+} from '@fluentui/react';
 
 const topRightCornerProps = {
     horizontal: true,
@@ -74,8 +76,7 @@ export default class App extends React.Component {
         this.setState(state);
     }
 
-    render() {
-
+    render() {        
         const isSignedIn = this.state.account.token != null
         const displayName = this.state.account.accountInfo.displayName.toString()
 
@@ -104,7 +105,7 @@ export default class App extends React.Component {
                         <InsightsScreen />
                     </PivotItem>
                     <PivotItem itemIcon='Settings'>
-                        <PreferencesScreen/>
+                        <PrefsScreen />
                     </PivotItem>
                 </Pivot>
 

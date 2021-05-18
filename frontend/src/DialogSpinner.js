@@ -1,7 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import { Dialog } from '@fluentui/react/lib/Dialog';
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
+import { 
+    Dialog,
+    Spinner, SpinnerSize 
+} from '@fluentui/react';
 
 export default class extends React.Component {
 

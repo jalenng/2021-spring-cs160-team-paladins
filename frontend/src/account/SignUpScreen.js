@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import DialogSpinner from "../DialogSpinner";
+import DialogSpinner from '../DialogSpinner';
 
-import { Text } from '@fluentui/react/lib/Text';
-import { Stack } from '@fluentui/react/lib/Stack';
-import { TextField } from '@fluentui/react/lib/TextField';
-import { ActionButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import {
+    Text,
+    Stack,
+    TextField,
+    PrimaryButton, ActionButton
+} from '@fluentui/react';
 
 const divStyle = {
     paddingTop: '10px',
@@ -40,6 +42,11 @@ export default class extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // Update title
+    componentDidMount() {
+        document.title = 'Sign up';
+    }
+
     // Handles changes to the TextFields by updating the state
     handleChange(event) {
         let state = this.state;
@@ -63,10 +70,8 @@ export default class extends React.Component {
     }
 
     // Change spinner status
-    setSpinner(isLoading) {
-        let state = this.state;
-        state.isLoading = isLoading;
-        this.setState(state);
+    setSpinner(val) {
+        this.setState({ ...this.state, isLoading: val });
     }
 
     handleSubmit(event) {
@@ -78,7 +83,7 @@ export default class extends React.Component {
 
         this.setSpinner(true);
         let state = this.state;
-        
+
         // Get email and passwords from TextFields
         let email = state.inputs.email;
         let password = state.inputs.password;
@@ -92,7 +97,7 @@ export default class extends React.Component {
                 if (result.success) window.close()
 
                 // Else, update state
-                else {  
+                else {
                     state.errors = {    // Update error messages
                         email: '',
                         displayName: '',
@@ -121,6 +126,17 @@ export default class extends React.Component {
     render() {
         return (
             <div style={divStyle}>
+
+                {/* Show "Back" button on macOS because modal windows are sheets and don't have close buttons */}
+                {platform === 'darwin' &&
+                    <ActionButton
+                        style={{ left: '-10px' }}
+                        onClick={window.close}
+                        iconProps={{ iconName: 'NavigateBack' }}
+                        text={'Back to iCare'}
+                    />
+                }
+
                 <Text variant={'xxLarge'} block>
                     <b>Sign up</b>
                 </Text>
@@ -136,6 +152,7 @@ export default class extends React.Component {
                                 onChange={this.handleChange}
                                 value={this.state.inputs.displayName}
                                 errorMessage={this.state.errors.displayName}
+                                autoFocus 
                             />
                             <TextField label='Email' id='email'
                                 styles={textFieldStyles}
@@ -147,20 +164,22 @@ export default class extends React.Component {
                                 styles={textFieldStyles}
                                 value={this.state.inputs.password}
                                 onChange={this.handleChange}
+                                canRevealPassword
                             />
                             <TextField label='Confirm password' type='password' id='confirm'
                                 styles={textFieldStyles}
                                 value={this.state.inputs.confirm}
                                 onChange={this.handleChange}
                                 errorMessage={this.state.errors.password}
+                                canRevealPassword
                             />
                         </Stack>
 
-                        <Stack 
-                            horizontal 
-                            verticalAlign='center' 
+                        <Stack
+                            horizontal
+                            verticalAlign='center'
                             tokens={{ childrenGap: 20 }}>
-                                
+
                             <PrimaryButton
                                 id='submitButton'
                                 text='Sign up'

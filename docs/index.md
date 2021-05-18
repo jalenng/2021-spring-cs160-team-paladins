@@ -5,7 +5,6 @@
 
 ### by Team Paladins
 
-**iCare User Guide** 
 [iCare User Guide](https://docs.google.com/document/d/1lY7-EF1ffaiswsUEsFRBRabMbqeoNP5AqQhFWS2n7zc/edit?usp=sharing)
 
 # 1 Introduction
